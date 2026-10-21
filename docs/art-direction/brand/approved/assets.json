@@ -1,0 +1,17 @@
+{
+  "source": "approved-board.png",
+  "selection": "Left With rig nodes icon and top KinetiFrame logo",
+  "policy": "Use original pixels. Do not substitute traced silhouettes or regenerate the artwork.",
+  "android": {
+    "launcherLayerDp": 108,
+    "launcherArtworkSquareDp": 44,
+    "splashLayerDp": 288,
+    "splashArtworkSquareDp": 132,
+    "densities": ["mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"],
+    "adaptiveBackground": "#176B62",
+    "processing": "Crop original board, remove tile background for adaptive layers, resize and pad. Original unmodified crops remain alongside exports."
+  },
+  "rebuild": "node tools/branding/export-approved-brand.mjs <sharp-package-path>",
+  "verify": "node tools/branding/verify-brand-assets.mjs",
+  "limitation": "Source is the approved raster board, not a vector master. Upscaling does not add original detail."
+}

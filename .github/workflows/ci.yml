@@ -1,0 +1,115 @@
+name: Android checks
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: ${{ matrix.scope }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        scope: [app, sandbox]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install Android platform
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-37.0' > /dev/null
+      - name: Test architecture checker
+        if: matrix.scope == 'app'
+        run: |
+          chmod +x gradlew
+          ./gradlew -p buildSrc test --no-daemon
+      - name: Verify and build
+        shell: bash
+        run: |
+          chmod +x gradlew
+          if [ '${{ matrix.scope }}' = 'app' ]; then
+            ./gradlew verify :app:assembleDebug :app:compileDebugAndroidTestKotlin :designsystem:compileDebugAndroidTestKotlin --no-daemon
+          else
+            ./gradlew -PengineOnly=true verify :sandbox:assembleDebug :sandbox:compileDebugAndroidTestKotlin --no-daemon
+          fi
+      - name: Collect development APK
+        if: success()
+        shell: bash
+        env:
+          SCOPE: ${{ matrix.scope }}
+        run: |
+          mkdir -p distribution
+          cp "$SCOPE/build/outputs/apk/debug/$SCOPE-debug.apk" "distribution/kinetiframe-$SCOPE-dev-${GITHUB_SHA:0:12}.apk"
+          printf '%s\n' "$GITHUB_SHA" > distribution/COMMIT.txt
+          (cd distribution && sha256sum *.apk > SHA256SUMS.txt)
+      - name: Upload development APK
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: development-${{ matrix.scope }}-${{ github.sha }}
+          path: distribution/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload test reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: reports-${{ matrix.scope }}-${{ github.sha }}
+          path: |
+            **/build/reports/tests/
+            **/build/test-results/
+            **/build/reports/lint-results-*.html
+          if-no-files-found: warn
+          retention-days: 14
+
+  development-release:
+    name: Development prerelease
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Download app build from this run
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: development-app-${{ github.sha }}
+          path: distribution
+      - name: Verify build contents
+        working-directory: distribution
+        env:
+          EXPECTED_COMMIT: ${{ github.sha }}
+        run: |
+          test "$(cat COMMIT.txt)" = "$EXPECTED_COMMIT"
+          sha256sum --check SHA256SUMS.txt
+      - name: Publish development prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          COMMIT: ${{ github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          tag="dev-$COMMIT"
+          printf 'Development build from develop at commit %s.\n\nChecks: %s\n\nNot a stable release or Play Store build. Installs as com.donnclab.kinetiframe.dev. Debug signing certificates can change between builds; export projects before uninstalling an older development build.\n' "$COMMIT" "$RUN_URL" > notes.md
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" distribution/*.apk distribution/SHA256SUMS.txt distribution/COMMIT.txt --clobber
+          else
+            gh release create "$tag" distribution/*.apk distribution/SHA256SUMS.txt distribution/COMMIT.txt \
+              --target "$COMMIT" --title "Development ${COMMIT:0:12}" \
+              --notes-file notes.md --prerelease --latest=false
+          fi

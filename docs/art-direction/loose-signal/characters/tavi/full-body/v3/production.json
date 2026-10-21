@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "character": "tavi",
+  "role": "Continuous full-body street rig",
+  "inherits": "../v2/cutouts (head, facial expressions, hands, shoes and retained covered lower cutouts)",
+  "sources": "../../../_shared/rig-sources/street-v2",
+  "parts": [
+    "sleeve.png",
+    "trouser-leg.png",
+    "torso.png",
+    "profile-torso.png"
+  ],
+  "engine": "TextureBinding.skin / ArtworkSkinBuilder / dual-quaternion skinning",
+  "project": "ls-street-a-small-interruption-v2",
+  "views": [
+    "THREE_QUARTER",
+    "PROFILE"
+  ],
+  "rebuild": "pwsh -File tools/loose_signal/extract_continuous_cutouts.ps1"
+}

@@ -1,0 +1,36 @@
+name: Artwork or audio contribution
+description: Offer an actor kit, stamp pack, background, brush or sound.
+labels: ["assets"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for offering your work! Please read the [asset guide](https://github.com/DonnC/kinetiframe/blob/main/docs/assets.md) first.
+        Contributed assets are shared under Apache-2.0, like the rest of the project.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What are you contributing?
+      options:
+        - Actor kit (character)
+        - Stamp pack
+        - Background
+        - Brush
+        - Audio
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What is it, and how would animators use it? Add a preview image if you can.
+    validations:
+      required: true
+  - type: textarea
+    id: provenance
+    attributes:
+      label: Source and license
+      description: Who made it, how it was made (including any tools or image generators), and confirmation that you can share it under Apache-2.0.
+    validations:
+      required: true

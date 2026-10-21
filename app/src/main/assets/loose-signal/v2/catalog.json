@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "name": "Loose Signal · Tavi production",
+  "packs": [],
+  "supplementalPacks": [],
+  "background": "ls-room-background-v2.png",
+  "project": "ls-tavi-presentation-v2.kframe",
+  "audio": false
+}

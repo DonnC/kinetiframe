@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 2,
+  "id": "quarter-present",
+  "name": "Present ahead",
+  "description": "Near arm indicates a topic; far hand follows with a restrained accent.",
+  "durationSeconds": 2.3,
+  "loop": false,
+  "authoredView": "THREE_QUARTER",
+  "requiredBones": [
+    "right_upper_arm",
+    "right_forearm",
+    "left_upper_arm",
+    "head"
+  ],
+  "channels": [
+    {
+      "boneId": "right_upper_arm",
+      "points": [
+        {
+          "progress": 0,
+          "degrees": 0
+        },
+        {
+          "progress": 0.18,
+          "degrees": -30
+        },
+        {
+          "progress": 0.42,
+          "degrees": -60
+        },
+        {
+          "progress": 0.68,
+          "degrees": -55
+        },
+        {
+          "progress": 1,
+          "degrees": 0
+        }
+      ]
+    },
+    {
+      "boneId": "right_forearm",
+      "points": [
+        {
+          "progress": 0,
+          "degrees": 0
+        },
+        {
+          "progress": 0.18,
+          "degrees": -20
+        },
+        {
+          "progress": 0.42,
+          "degrees": -30
+        },
+        {
+          "progress": 0.68,
+          "degrees": -25
+        },
+        {
+          "progress": 1,
+          "degrees": 0
+        }
+      ]
+    },
+    {
+      "boneId": "left_upper_arm",
+      "points": [
+        {
+          "progress": 0,
+          "degrees": 0
+        },
+        {
+          "progress": 0.18,
+          "degrees": 8
+        },
+        {
+          "progress": 0.42,
+          "degrees": 16
+        },
+        {
+          "progress": 0.68,
+          "degrees": 12
+        },
+        {
+          "progress": 1,
+          "degrees": 0
+        }
+      ]
+    },
+    {
+      "boneId": "head",
+      "points": [
+        {
+          "progress": 0,
+          "degrees": 0
+        },
+        {
+          "progress": 0.18,
+          "degrees": -2
+        },
+        {
+          "progress": 0.42,
+          "degrees": -5
+        },
+        {
+          "progress": 0.68,
+          "degrees": -3
+        },
+        {
+          "progress": 1,
+          "degrees": 0
+        }
+      ]
+    }
+  ]
+}

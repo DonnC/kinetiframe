@@ -1,0 +1,15 @@
+KinetiFrame
+Copyright KinetiFrame contributors.
+
+Project-owned source code, documentation, branding and bundled sample artwork/audio
+are provided under the Apache License, Version 2.0. See LICENSE.
+
+Third-party dependencies and any separately identified third-party content retain
+their own copyrights and licenses. See THIRD_PARTY_NOTICES.md.
+
+Earlier repository revisions carried AGPL-3.0 and, later, a module-scoped licensing
+policy. Grants already made under those terms are not withdrawn. The historical
+AGPL text is retained at LICENSES/historical/AGPL-3.0.txt for reference.
+
+The project name and artwork must not be used to imply maintainer endorsement of
+a modified distribution. This notice does not change third-party rights.

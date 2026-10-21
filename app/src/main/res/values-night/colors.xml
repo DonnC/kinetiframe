@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand_mark_foreground">@color/brand_ivory</color>
+    <color name="brand_window_background">#111C19</color>
+    <color name="brand_on_window">@color/brand_ivory</color>
+</resources>

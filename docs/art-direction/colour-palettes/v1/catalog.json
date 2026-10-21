@@ -1,0 +1,554 @@
+{
+  "version": 1,
+  "source": "app/src/main/java/com/donnclab/kinetiframe/data/color/BundledPalettes.kt",
+  "colourSpace": "sRGB",
+  "representation": "Exact ARGB data; no raster sampling",
+  "palettes": [
+    {
+      "id": "kf-palette-essentials-v1",
+      "name": "Essentials",
+      "schemaVersion": 1,
+      "swatches": [
+        {
+          "name": "Ink",
+          "argb": 4279704092,
+          "hex": "#171A1C"
+        },
+        {
+          "name": "White",
+          "argb": 4294967295,
+          "hex": "#FFFFFF"
+        },
+        {
+          "name": "Light grey",
+          "argb": 4293191657,
+          "hex": "#E4E7E9"
+        },
+        {
+          "name": "Mid grey",
+          "argb": 4287797662,
+          "hex": "#92999E"
+        },
+        {
+          "name": "Dark grey",
+          "argb": 4282797395,
+          "hex": "#464D53"
+        },
+        {
+          "name": "Red",
+          "argb": 4293152336,
+          "hex": "#E44E50"
+        },
+        {
+          "name": "Orange",
+          "argb": 4294085173,
+          "hex": "#F28A35"
+        },
+        {
+          "name": "Yellow",
+          "argb": 4294234974,
+          "hex": "#F4D35E"
+        },
+        {
+          "name": "Leaf",
+          "argb": 4284853603,
+          "hex": "#65AD63"
+        },
+        {
+          "name": "Green",
+          "argb": 4280518254,
+          "hex": "#23866E"
+        },
+        {
+          "name": "Cyan",
+          "argb": 4281777099,
+          "hex": "#36BBCB"
+        },
+        {
+          "name": "Blue",
+          "argb": 4282612696,
+          "hex": "#437BD8"
+        },
+        {
+          "name": "Indigo",
+          "argb": 4283782320,
+          "hex": "#5554B0"
+        },
+        {
+          "name": "Purple",
+          "argb": 4287783870,
+          "hex": "#9263BE"
+        },
+        {
+          "name": "Pink",
+          "argb": 4293429174,
+          "hex": "#E887B6"
+        },
+        {
+          "name": "Brown",
+          "argb": 4287455301,
+          "hex": "#8D6045"
+        }
+      ]
+    },
+    {
+      "id": "kf-palette-skin-v1",
+      "name": "Skin tones",
+      "schemaVersion": 1,
+      "swatches": [
+        {
+          "name": "Porcelain shadow",
+          "argb": 4291333753,
+          "hex": "#C88E79"
+        },
+        {
+          "name": "Porcelain",
+          "argb": 4294034860,
+          "hex": "#F1C5AC"
+        },
+        {
+          "name": "Porcelain light",
+          "argb": 4294960079,
+          "hex": "#FFE3CF"
+        },
+        {
+          "name": "Warm shadow",
+          "argb": 4290212689,
+          "hex": "#B77351"
+        },
+        {
+          "name": "Warm",
+          "argb": 4293108084,
+          "hex": "#E3A174"
+        },
+        {
+          "name": "Warm light",
+          "argb": 4294690204,
+          "hex": "#FBC59C"
+        },
+        {
+          "name": "Golden shadow",
+          "argb": 4288505407,
+          "hex": "#9D663F"
+        },
+        {
+          "name": "Golden",
+          "argb": 4291530840,
+          "hex": "#CB9058"
+        },
+        {
+          "name": "Golden light",
+          "argb": 4293900159,
+          "hex": "#EFB77F"
+        },
+        {
+          "name": "Olive shadow",
+          "argb": 4286734408,
+          "hex": "#826048"
+        },
+        {
+          "name": "Olive",
+          "argb": 4290087784,
+          "hex": "#B58B68"
+        },
+        {
+          "name": "Olive light",
+          "argb": 4292391819,
+          "hex": "#D8B38B"
+        },
+        {
+          "name": "Deep shadow",
+          "argb": 4283907120,
+          "hex": "#573C30"
+        },
+        {
+          "name": "Deep",
+          "argb": 4286929731,
+          "hex": "#855B43"
+        },
+        {
+          "name": "Deep light",
+          "argb": 4289559385,
+          "hex": "#AD7B59"
+        },
+        {
+          "name": "Rich shadow",
+          "argb": 4281345576,
+          "hex": "#302628"
+        },
+        {
+          "name": "Rich",
+          "argb": 4283644983,
+          "hex": "#533C37"
+        },
+        {
+          "name": "Rich light",
+          "argb": 4286075977,
+          "hex": "#785449"
+        }
+      ]
+    },
+    {
+      "id": "kf-palette-nature-v1",
+      "name": "Nature",
+      "schemaVersion": 1,
+      "swatches": [
+        {
+          "name": "Sky",
+          "argb": 4286761448,
+          "hex": "#82C9E8"
+        },
+        {
+          "name": "Cloud",
+          "argb": 4294046952,
+          "hex": "#F1F4E8"
+        },
+        {
+          "name": "Water",
+          "argb": 4282551466,
+          "hex": "#428CAA"
+        },
+        {
+          "name": "Deep water",
+          "argb": 4280570218,
+          "hex": "#24516A"
+        },
+        {
+          "name": "Leaf",
+          "argb": 4286493541,
+          "hex": "#7EB365"
+        },
+        {
+          "name": "Forest",
+          "argb": 4281425481,
+          "hex": "#315E49"
+        },
+        {
+          "name": "Grass",
+          "argb": 4289117289,
+          "hex": "#A6BC69"
+        },
+        {
+          "name": "Soil",
+          "argb": 4286603334,
+          "hex": "#806046"
+        },
+        {
+          "name": "Sand",
+          "argb": 4292527774,
+          "hex": "#DAC69E"
+        },
+        {
+          "name": "Stone",
+          "argb": 4288257684,
+          "hex": "#999E94"
+        },
+        {
+          "name": "Flower",
+          "argb": 4291788704,
+          "hex": "#CF7FA0"
+        },
+        {
+          "name": "Sun",
+          "argb": 4293775740,
+          "hex": "#EDD17C"
+        }
+      ]
+    },
+    {
+      "id": "kf-palette-materials-v1",
+      "name": "Interiors & materials",
+      "schemaVersion": 1,
+      "swatches": [
+        {
+          "name": "Cream wall",
+          "argb": 4294108878,
+          "hex": "#F2E6CE"
+        },
+        {
+          "name": "Warm wall",
+          "argb": 4292461475,
+          "hex": "#D9C3A3"
+        },
+        {
+          "name": "Wood light",
+          "argb": 4291402344,
+          "hex": "#C99A68"
+        },
+        {
+          "name": "Wood",
+          "argb": 4289360722,
+          "hex": "#AA7352"
+        },
+        {
+          "name": "Wood dark",
+          "argb": 4284826934,
+          "hex": "#654536"
+        },
+        {
+          "name": "Metal light",
+          "argb": 4291219666,
+          "hex": "#C6D0D2"
+        },
+        {
+          "name": "Metal",
+          "argb": 4286485402,
+          "hex": "#7E939A"
+        },
+        {
+          "name": "Metal dark",
+          "argb": 4281681230,
+          "hex": "#35454E"
+        },
+        {
+          "name": "Teal fabric",
+          "argb": 4282417541,
+          "hex": "#408185"
+        },
+        {
+          "name": "Brick",
+          "argb": 4290341460,
+          "hex": "#B96A54"
+        },
+        {
+          "name": "Clay",
+          "argb": 4291992187,
+          "hex": "#D29A7B"
+        },
+        {
+          "name": "Paper",
+          "argb": 4294965481,
+          "hex": "#FFF8E9"
+        }
+      ]
+    },
+    {
+      "id": "kf-palette-pastels-v1",
+      "name": "Soft pastels",
+      "schemaVersion": 1,
+      "swatches": [
+        {
+          "name": "Rose",
+          "argb": 4293967820,
+          "hex": "#F0BFCC"
+        },
+        {
+          "name": "Peach",
+          "argb": 4294231470,
+          "hex": "#F4C5AE"
+        },
+        {
+          "name": "Apricot",
+          "argb": 4294235304,
+          "hex": "#F4D4A8"
+        },
+        {
+          "name": "Butter",
+          "argb": 4294305711,
+          "hex": "#F5E7AF"
+        },
+        {
+          "name": "Mint",
+          "argb": 4290962125,
+          "hex": "#C2E2CD"
+        },
+        {
+          "name": "Sage",
+          "argb": 4291418556,
+          "hex": "#C9D9BC"
+        },
+        {
+          "name": "Aqua",
+          "argb": 4290371812,
+          "hex": "#B9E0E4"
+        },
+        {
+          "name": "Sky",
+          "argb": 4290697201,
+          "hex": "#BED7F1"
+        },
+        {
+          "name": "Lavender",
+          "argb": 4292003820,
+          "hex": "#D2C7EC"
+        },
+        {
+          "name": "Lilac",
+          "argb": 4293117664,
+          "hex": "#E3C6E0"
+        },
+        {
+          "name": "Sand",
+          "argb": 4293252545,
+          "hex": "#E5D5C1"
+        },
+        {
+          "name": "Soft ink",
+          "argb": 4284640131,
+          "hex": "#626B83"
+        }
+      ]
+    },
+    {
+      "id": "kf-palette-night-v1",
+      "name": "Night & neon",
+      "schemaVersion": 1,
+      "swatches": [
+        {
+          "name": "Night",
+          "argb": 4279573813,
+          "hex": "#151D35"
+        },
+        {
+          "name": "Navy",
+          "argb": 4280693845,
+          "hex": "#263455"
+        },
+        {
+          "name": "Dusk",
+          "argb": 4283517560,
+          "hex": "#514A78"
+        },
+        {
+          "name": "Shadow",
+          "argb": 4280623934,
+          "hex": "#25233E"
+        },
+        {
+          "name": "Moon",
+          "argb": 4292733428,
+          "hex": "#DDE9F4"
+        },
+        {
+          "name": "Neon cyan",
+          "argb": 4283754467,
+          "hex": "#54E7E3"
+        },
+        {
+          "name": "Neon pink",
+          "argb": 4293878974,
+          "hex": "#EF64BE"
+        },
+        {
+          "name": "Electric blue",
+          "argb": 4284647923,
+          "hex": "#6289F3"
+        },
+        {
+          "name": "Violet",
+          "argb": 4289037040,
+          "hex": "#A582F0"
+        },
+        {
+          "name": "Lime",
+          "argb": 4291095403,
+          "hex": "#C4EB6B"
+        },
+        {
+          "name": "Amber",
+          "argb": 4294295387,
+          "hex": "#F5BF5B"
+        },
+        {
+          "name": "Signal red",
+          "argb": 4294143088,
+          "hex": "#F36C70"
+        }
+      ]
+    },
+    {
+      "id": "kf-palette-education-v1",
+      "name": "Educational diagrams",
+      "schemaVersion": 1,
+      "swatches": [
+        {
+          "name": "Ink",
+          "argb": 4280693304,
+          "hex": "#263238"
+        },
+        {
+          "name": "Paper",
+          "argb": 4294637808,
+          "hex": "#FAF8F0"
+        },
+        {
+          "name": "Blue",
+          "argb": 4281956025,
+          "hex": "#3976B9"
+        },
+        {
+          "name": "Orange",
+          "argb": 4292578101,
+          "hex": "#DB8B35"
+        },
+        {
+          "name": "Teal",
+          "argb": 4281502593,
+          "hex": "#328B81"
+        },
+        {
+          "name": "Plum",
+          "argb": 4288177563,
+          "hex": "#98659B"
+        },
+        {
+          "name": "Gold",
+          "argb": 4291339075,
+          "hex": "#C8A343"
+        },
+        {
+          "name": "Grey",
+          "argb": 4287535776,
+          "hex": "#8E9AA0"
+        }
+      ]
+    },
+    {
+      "id": "kf-palette-loose-signal-v1",
+      "name": "Loose Signal",
+      "schemaVersion": 1,
+      "swatches": [
+        {
+          "name": "Tavi teal",
+          "argb": 4279736733,
+          "hex": "#17999D"
+        },
+        {
+          "name": "Tie orange",
+          "argb": 4294282551,
+          "hex": "#F58D37"
+        },
+        {
+          "name": "Studio cream",
+          "argb": 4294042312,
+          "hex": "#F1E2C8"
+        },
+        {
+          "name": "Desk wood",
+          "argb": 4290342739,
+          "hex": "#B96F53"
+        },
+        {
+          "name": "Hair",
+          "argb": 4281148448,
+          "hex": "#2D2420"
+        },
+        {
+          "name": "Tavi skin",
+          "argb": 4294360201,
+          "hex": "#F6BC89"
+        },
+        {
+          "name": "Guest skin",
+          "argb": 4286993982,
+          "hex": "#86563E"
+        },
+        {
+          "name": "Outline",
+          "argb": 4279704092,
+          "hex": "#171A1C"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+# Gradle and build output
+.gradle/
+build/
+**/build/
+.kotlin/
+.externalNativeBuild/
+.cxx/
+captures/
+
+# IDE and OS files
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+**/bin/
+.DS_Store
+Thumbs.db
+
+# Local machine configuration and secrets
+local.properties
+keystore.properties
+*.jks
+*.keystore
+
+# JVM crash logs
+hs_err_pid*.log
+replay_pid*.log
+
+# Python tool caches
+__pycache__/
+*.pyc
+
+# Working notes, plans and generated review output. These stay on your machine.
+# Use notes/ for brainstorming, planning and scratch documents.
+/notes/
+/.artifacts/
+/state/
+*.local.md

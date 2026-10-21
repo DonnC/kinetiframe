@@ -1,0 +1,25 @@
+{
+  "tool": "Built-in imagegen",
+  "transparent_background": true,
+  "intent": "precise-object-edit",
+  "repairs": [
+    {
+      "character": "tavi",
+      "source": "docs/art-direction/loose-signal/characters/tavi/full-body/v5/sources/body-atlas.png",
+      "output": "docs/art-direction/loose-signal/characters/tavi/full-body/v7/sources/body-atlas.png",
+      "prompt": "Use case: precise-object-edit. Edit target: the supplied Tavi character body atlas. Production transparent PNG rig cutout atlas, SAME four columns front, back, right profile, right three-quarter; head row above torso row. Keep Tavi's identity, dark swooped hair, peach skin, teal shirt, orange tie, all perspective directions, consistent dimensions, cell positions, line weight and illustration style. Repair only rig attachment edges: remove the large dark charcoal band hanging below all four shirt hems; instead the teal shirt hems end cleanly with the existing outer outline. For all head neck stems extend a smooth skin-colour neck tab below jaw with NO black horizontal closing line at the tab's open bottom. Torso should NOT include an extra protruding neck stump above the collar; only the shirt/collar silhouette, leaving collar opening transparent, so head neck can overlap behind it without a double collar/neck line. At sleeve sockets no extra interior black shoulder cap contours. Keep faces blank for separate eyes and mouths; back head fully hair. Preserve exactly eight isolated parts, ample transparent gutters, no extra objects, no text, no ground shadow, genuinely transparent background. No decorative changes. This is mechanical join repair, not redesign."
+    },
+    {
+      "character": "mira",
+      "source": "docs/art-direction/loose-signal/characters/mira/full-body/v5/sources/body-atlas.png",
+      "output": "docs/art-direction/loose-signal/characters/mira/full-body/v7/sources/body-atlas.png",
+      "prompt": "Use case precise-object-edit. Edit target Mira rig atlas supplied. Keep exactly eight original isolated parts, same 4 columns FRONT BACK RIGHT PROFILE RIGHT THREE-QUARTER, head row and torso row, identical character identity/hair, purple blouse, source positions/proportions, clean cartoon black outlines and soft fills. Repair ONLY open attachment boundaries: the head neck tabs must end in peach skin with no dark closing horizontal cap. Torso neckline/chest skin remains intact and same shape; upper neck tab open edge must have no black horizontal cap either, so overlapping the two skin tabs yields one continuous neck without doubled horizontal seams. Match peach colour at both attachment areas. Do not extend neck or change chest neckline depth. Torso shoulders should have only outer silhouette, no detached socket marks. Keep faces blank; back head shows only hair. Keep original transparent gutters; genuine transparent PNG, no labels, no shadows, no text, no new parts. Do not redesign or turn front into three-quarter."
+    },
+    {
+      "character": "kuda",
+      "source": "docs/art-direction/loose-signal/characters/kuda/full-body/v5/sources/body-atlas.png",
+      "output": "docs/art-direction/loose-signal/characters/kuda/full-body/v7/sources/body-atlas.png",
+      "prompt": "Use case precise-object-edit. Edit target supplied Kuda rig atlas: same eight isolated head/torso parts, head row and torso row, four columns FRONT BACK RIGHT PROFILE RIGHT THREE-QUARTER. Keep exactly character identity, rounded dark afro, warm brown skin, yellow crewneck shirt, blank face for separate facial art, directions/proportions/cell positions, style and black outline weight. Fix open neck attachment boundaries only: no black horizontal closing cap along bottom edge of the head neck tabs, and no black closing cap at the open top edge of torso neck tabs. Skin colours at both connection areas must match so overlapping them creates one smooth continuous neck, not two necks. Preserve neckline chest and shirt shape and outer contours. No dark waist band, no separated shoulder socket marks. Rear view fully hair/no face, all parts separate. Genuine transparent PNG and original gutters; no text, no shadow, no redesign."
+    }
+  ]
+}

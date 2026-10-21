@@ -1,0 +1,36 @@
+name: Bug report
+description: Report a reproducible problem with KinetiFrame.
+body:
+  - type: markdown
+    attributes:
+      value: "For vulnerabilities, follow SECURITY.md. Do not attach private projects or credentials."
+  - type: input
+    id: version
+    attributes:
+      label: App version or Git commit
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and Android version
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include the starting project and actions in order.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots, recording, minimal project or relevant logs
+      description: Remove personal media and sensitive information before sharing.

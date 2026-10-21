@@ -1,0 +1,3 @@
+# Default reviewer for every change. Add maintainers for specific areas as the team grows,
+# for example:  /engine/  @DonnC @engine-maintainer
+* @DonnC

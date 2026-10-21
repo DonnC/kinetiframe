@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Approved rig-node mark on a density-aware 288dp native splash layer. -->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/brand_splash_pixels" android:gravity="fill" android:filter="true" />

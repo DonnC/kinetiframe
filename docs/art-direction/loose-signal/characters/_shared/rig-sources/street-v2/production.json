@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "method": "built-in image generation",
+  "limbPrompt": "Use case: illustration-story. Production raster atlas for an existing 2D cartoon rig, genuinely transparent background, no glow or cast shadow. References show approved Tavi (teal shirt/orange tie/charcoal trousers), Kuda (mustard pullover/navy trousers), Mira (plum blouse/charcoal trousers). Preserve their exact clothing colours and simple clean black contour drawing, no mechanical joints.\nCreate EXACTLY SIX isolated source cutouts, laid out in a strict three-column two-row atlas, equal cells with wide empty gutters. Columns Tavi, Kuda, Mira. Top row: ONE full continuous LONG SLEEVE for each character, shoulder to wrist, hanging straight vertically, no hand. Bottom row: ONE full continuous TROUSER LEG for each character, hip to ankle, straight vertically, no shoe. Make sleeves about 4 times longer than wide, trousers about 6 times longer than wide. Sleeve shoulder end smoothly rounded, wrist with a subtle real cuff; trouser top rounded, ankle straight. The midpoint of each piece is the elbow/knee, but NEVER draw any line, cut, break, plate, band, black cap or extra piece there: ONE unbroken fabric silhouette and fill from end to end. Very minimal flat shading matching the references. No skin, head, torso, tie or footwear, no text. Shapes must be fully inside their cells, upright, neither rotated nor bent. This atlas will be split mechanically; preserve true transparent alpha.",
+  "torsoPrompt": "Use case: precise-object-edit. Image 1 is the edit target: transparent six torso atlas. Preserve all six torsos, exact cell layout, shape, neck skin, clothing colours, orange ties, shading and clean outer outlines. Remove ONLY every oval/circular shoulder socket line and its socket-like shading from all six torsos, replacing those marks with uninterrupted matching fabric. They should look like plain torso clothing, not vests with visible arm sockets or mechanical discs. In particular no oval seam on either shoulder. Keep outside silhouette, real collar/neckline and bottom hem outlines. No arms or new body parts. True transparent background, no glow, no shadow, no extra text. Top row Tavi/Kuda/Mira three-quarter torsos, bottom row same profiles.",
+  "referenceModels": [
+    "../../../tavi/full-body/v1/model-sheet.png",
+    "../../../kuda/full-body/v1/model-sheet.png",
+    "../../../mira/full-body/v1/model-sheet.png"
+  ],
+  "sources": [
+    "continuous-limbs-atlas.png",
+    "socket-free-torsos-atlas.png"
+  ],
+  "extraction": "tools/loose_signal/extract_continuous_cutouts.ps1",
+  "invariants": "Character identity, original heads/face variants/hands/feet and story timing retained. Whole limbs contain no elbow/knee cuts. True source alpha preserved.",
+  "review": "All 480 frames rendered through the Android-native compositor. Reviewed approach, greeting, conversation, anger, profile exit and final poses; continuous sleeves/trousers and socket-free shoulders verified. Native scene import, contacts, deterministic seeks, restart/export and nine skinning math tests passed. No physical-device test or APK installation."
+}

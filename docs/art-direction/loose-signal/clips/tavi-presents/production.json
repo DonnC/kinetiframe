@@ -1,0 +1,82 @@
+{
+  "version": 2,
+  "method": "Built-in image generation from approved visual masters, followed by mechanical atlas slicing and native cutout animation composition",
+  "fidelity": "Reference-derived adaptation, not pixel-identical extraction",
+  "visualMaster": "../../characters/tavi/references/model-sheet.png",
+  "roomMaster": "../../studio/backgrounds/room.png",
+  "sources": [
+    {
+      "file": "../../characters/tavi/body/sources/v2/core.png",
+      "layout": "2x2, 1254 square",
+      "items": [
+        "blank head with hair",
+        "collar-free shirt with tie",
+        "upper sleeve",
+        "forearm"
+      ],
+      "direction": "Keep swept chocolate hooked hair, rounded peach face, teal shirt, orange crooked tie. No facial features or collar. Rounded isolated arm cutouts, no internal cap seams. Fully opaque interior and genuine transparent exterior."
+    },
+    {
+      "file": "../../characters/tavi/face/eyes/sources/v2/eyes.png",
+      "layout": "2x2, 1254 square",
+      "items": [
+        "neutral",
+        "skeptical",
+        "laugh",
+        "surprised"
+      ],
+      "direction": "Eyes and thick uneven eyebrows together. No face, hair or mouths. Dark source-matched oval eyes, skeptical lids and laugh arcs."
+    },
+    {
+      "file": "../../characters/tavi/face/mouths/sources/v2/mouths.png",
+      "layout": "3x2, 1536x1024",
+      "items": [
+        "smile",
+        "small talking",
+        "open talking",
+        "O",
+        "laugh",
+        "frown"
+      ],
+      "direction": "Isolated source-matched dark mouths with coral tongues. No face, shadows, skin backing or glow. Keep silhouette interiors opaque, transparent outside."
+    },
+    {
+      "file": "../../characters/tavi/hands/sources/v2/hands.png",
+      "layout": "2x2, 1254 square",
+      "items": [
+        "relaxed",
+        "point",
+        "fist",
+        "palm up"
+      ],
+      "direction": "Source bottom-right mitten hands with teal cuffs, rounded peach shapes and restrained texture. No nails, detailed fingers or labels."
+    },
+    {
+      "file": "../../studio/furniture/sources/v2/desk.png",
+      "layout": "single cutout, 2172x724",
+      "items": [
+        "desk"
+      ],
+      "direction": "Room-matched wide low homemade reporter desk. Warm muted wood, teal edge, charcoal outlines; no legs, props or lettering."
+    }
+  ],
+  "finalCoreRepairPrompt": "Technical alpha repair of this Tavi sprite atlas: keep all artwork shapes, positions, hues and outlines EXACTLY as they are. Make the entire interior of each head, hair, torso, orange tie and two sleeves fully opaque (alpha 255). Currently there are faint translucent triangular/rectangular patches inside the teal shirt that allow a room background to show through: fill those patches with the surrounding teal shirt color, restoring continuous smooth opaque fabric. Remove stray nearly-transparent pixels outside the silhouettes. Do not add any collar, seams, shapes, face or lines. Preserve charcoal outlines and texture. Canvas remains genuinely transparent only outside the four sprite silhouettes. No other visual changes.",
+  "nativeProject": {
+    "id": "ls-tavi-presentation-v2",
+    "stage": [
+      1280,
+      720
+    ],
+    "fps": 12,
+    "frames": 96,
+    "audio": false,
+    "type": "editable FxF raster cutout layers"
+  },
+  "limitations": [
+    "Not an Actor Studio rig",
+    "Not automatic phoneme lip-sync",
+    "Front view only",
+    "Screen is a blank placement guide, not an automatic media mask"
+  ],
+  "sourcePolicy": "Category-local versioned sources are authoritative. Rebuild generated cutouts and stamps only. Existing installed resources are never overwritten."
+}

@@ -1,0 +1,31 @@
+# Monthly dependency update pull requests: at most one per library family, and one for all
+# GitHub Actions. A dependency joins the first group that matches it, so `testing` comes before
+# `androidx` and `other` collects everything the named families don't. Security updates are not
+# held back by this schedule. Review release notes before merging. Updates target `develop`, like
+# every other pull request.
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 4
+    groups:
+      testing:
+        patterns: ["org.junit*", "junit*", "org.robolectric*", "androidx.test*"]
+      androidx:
+        patterns: ["androidx.*", "com.android.*", "com.google.android.material*"]
+      kotlin:
+        patterns: ["org.jetbrains.kotlin*", "org.jetbrains.kotlinx*", "com.google.devtools.ksp*"]
+      other:
+        patterns: ["*"]
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 1
+    groups:
+      github-actions:
+        patterns: ["*"]

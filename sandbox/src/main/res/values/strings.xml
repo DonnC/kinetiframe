@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">KinetiFrame Engine Playground</string>
+    <string name="rigging_title">FABRIK rigging playground</string>
+    <string name="rigging_hint">Drag the target. The product and this playground use the same engine solver.</string>
+    <string name="reset">Reset</string>
+    <string name="record">Record targets</string>
+    <string name="stop_record">Stop recording</string>
+    <string name="replay">Replay targets</string>
+    <string name="stop_replay">Stop replay</string>
+    <string name="sample_count">Captured targets: %1$d · Replay frame: %2$d</string>
+    <string name="rigging_canvas">Rigging canvas. Drag to move the chain target.</string>
+    <string name="preview_mesh">Show mesh deformation</string>
+    <string name="preview_bones">Show bone chain</string>
+</resources>

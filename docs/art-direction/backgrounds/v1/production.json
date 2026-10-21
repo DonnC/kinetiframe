@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "createdOn": "2026-10-08",
+  "generationMode": "built-in image_gen",
+  "purpose": "Bundled starter background plates for KinetiFrame",
+  "format": "PNG; flattened artwork, not separately editable scene objects",
+  "scenes": [
+    {
+      "id": "living-room",
+      "name": "Living room",
+      "category": "indoor",
+      "source": "indoor/living-room.png",
+      "bundledAsset": "backgrounds/v1/indoor/living-room.png",
+      "prompt": "Use case: illustration-story\nAsset type: KinetiFrame starter animation background, version 1.\nPrimary request: Produce ONE complete landscape background plate, 16:9 composition, preferably 1536x864. Full bleed scene, not a collage or framed art.\nStyle: original polished simplified 2D cartoon background with rounded organic drawing, clean dark charcoal outlines thinner than foreground character outlines, restrained flat fills with subtle warm shading. Friendly educational/animatic tone, readable large shapes, not photorealistic, not a crude geometric placeholder. Moderate muted colours so inserted characters remain the focus.\nComposition: eye-level, minimal perspective, useful flat staging area, generous empty character space, no foreground objects obstructing actors. Background alone, NO characters, NO text, no logo, no watermark, no UI, no labels, no decorative outside border.\n\nScene/backdrop: Warm cream living room, back wall with a broad window, muted teal sofa confined to one edge, a small plant at the opposite edge, simple wood floor. Wide central floor and wall left empty. No coffee table blocking characters."
+    },
+    {
+      "id": "kitchen",
+      "name": "Kitchen",
+      "category": "indoor",
+      "source": "indoor/kitchen.png",
+      "bundledAsset": "backgrounds/v1/indoor/kitchen.png",
+      "prompt": "Use case: illustration-story\nAsset type: KinetiFrame starter animation background, version 1.\nPrimary request: Produce ONE complete landscape background plate, 16:9 composition, preferably 1536x864. Full bleed scene, not a collage or framed art.\nStyle: original polished simplified 2D cartoon background with rounded organic drawing, clean dark charcoal outlines thinner than foreground character outlines, restrained flat fills with subtle warm shading. Friendly educational/animatic tone, readable large shapes, not photorealistic, not a crude geometric placeholder. Moderate muted colours so inserted characters remain the focus.\nComposition: eye-level, minimal perspective, useful flat staging area, generous empty character space, no foreground objects obstructing actors. Background alone, NO characters, NO text, no logo, no watermark, no UI, no labels, no decorative outside border.\n\nScene/backdrop: Cozy clean kitchen, warm cream wall, muted teal lower cabinets and simple timber worktop along the back wall, modest sink and stove at outer edges, open central worktop, plenty of empty tiled foreground floor. No freestanding island blocking actors."
+    },
+    {
+      "id": "classroom",
+      "name": "Classroom",
+      "category": "education",
+      "source": "education/classroom.png",
+      "bundledAsset": "backgrounds/v1/education/classroom.png",
+      "prompt": "Use case: illustration-story\nAsset type: KinetiFrame starter animation background, version 1.\nPrimary request: Produce ONE complete landscape background plate, 16:9 composition, preferably 1536x864. Full bleed scene, not a collage or framed art.\nStyle: original polished simplified 2D cartoon background with rounded organic drawing, clean dark charcoal outlines thinner than foreground character outlines, restrained flat fills with subtle warm shading. Friendly educational/animatic tone, readable large shapes, not photorealistic, not a crude geometric placeholder. Moderate muted colours so inserted characters remain the focus.\nComposition: eye-level, minimal perspective, useful flat staging area, generous empty character space, no foreground objects obstructing actors. Background alone, NO characters, NO text, no logo, no watermark, no UI, no labels, no decorative outside border.\n\nScene/backdrop: Friendly classroom, large entirely blank dark teal chalkboard centered on warm cream back wall, narrow bookshelf at one edge and window at other edge, lots of empty floor for presenters. No desks or chairs in foreground, no written formula or letters."
+    },
+    {
+      "id": "quiet-street",
+      "name": "Quiet street",
+      "category": "outdoor",
+      "source": "outdoor/quiet-street.png",
+      "bundledAsset": "backgrounds/v1/outdoor/quiet-street.png",
+      "prompt": "Use case: illustration-story\nAsset type: KinetiFrame starter animation background, version 1.\nPrimary request: Produce ONE complete landscape background plate, 16:9 composition, preferably 1536x864. Full bleed scene, not a collage or framed art.\nStyle: original polished simplified 2D cartoon background with rounded organic drawing, clean dark charcoal outlines thinner than foreground character outlines, restrained flat fills with subtle warm shading. Friendly educational/animatic tone, readable large shapes, not photorealistic, not a crude geometric placeholder. Moderate muted colours so inserted characters remain the focus.\nComposition: eye-level, minimal perspective, useful flat staging area, generous empty character space, no foreground objects obstructing actors. Background alone, NO characters, NO text, no logo, no watermark, no UI, no labels, no decorative outside border.\n\nScene/backdrop: Side-on quiet neighbourhood street, simple low-rise pastel homes and trees behind straight horizontal broad pavement, a clean empty road across lower quarter, level sidewalk for walk and run cycles. No people, parked vehicles, readable signs or road crossings."
+    },
+    {
+      "id": "park",
+      "name": "Open park",
+      "category": "outdoor",
+      "source": "outdoor/park.png",
+      "bundledAsset": "backgrounds/v1/outdoor/park.png",
+      "prompt": "Use case: illustration-story\nAsset type: KinetiFrame starter animation background, version 1.\nPrimary request: Produce ONE complete landscape background plate, 16:9 composition, preferably 1536x864. Full bleed scene, not a collage or framed art.\nStyle: original polished simplified 2D cartoon background with rounded organic drawing, clean dark charcoal outlines thinner than foreground character outlines, restrained flat fills with subtle warm shading. Friendly educational/animatic tone, readable large shapes, not photorealistic, not a crude geometric placeholder. Moderate muted colours so inserted characters remain the focus.\nComposition: eye-level, minimal perspective, useful flat staging area, generous empty character space, no foreground objects obstructing actors. Background alone, NO characters, NO text, no logo, no watermark, no UI, no labels, no decorative outside border.\n\nScene/backdrop: Sunny park, broad clear grassy foreground, soft trees framing the outer edges, distant curved path and bench very small in background. Calm blue sky and a few simple clouds. Central middle and foreground empty for character play."
+    },
+    {
+      "id": "countryside",
+      "name": "Countryside",
+      "category": "outdoor",
+      "source": "outdoor/countryside.png",
+      "bundledAsset": "backgrounds/v1/outdoor/countryside.png",
+      "prompt": "Use case: illustration-story\nAsset type: KinetiFrame starter animation background, version 1.\nPrimary request: Produce ONE complete landscape background plate, 16:9 composition, preferably 1536x864. Full bleed scene, not a collage or framed art.\nStyle: original polished simplified 2D cartoon background with rounded organic drawing, clean dark charcoal outlines thinner than foreground character outlines, restrained flat fills with subtle warm shading. Friendly educational/animatic tone, readable large shapes, not photorealistic, not a crude geometric placeholder. Moderate muted colours so inserted characters remain the focus.\nComposition: eye-level, minimal perspective, useful flat staging area, generous empty character space, no foreground objects obstructing actors. Background alone, NO characters, NO text, no logo, no watermark, no UI, no labels, no decorative outside border.\n\nScene/backdrop: Open pastoral countryside, distant rolling green hills, a slim winding river only in far midground, soft blue sky with simple clouds. Broad nearly level empty grassy foreground, sparse flowers at outer edges only. No buildings or animals."
+    },
+    {
+      "id": "curtain-stage",
+      "name": "Curtain stage",
+      "category": "performance",
+      "source": "performance/curtain-stage.png",
+      "bundledAsset": "backgrounds/v1/performance/curtain-stage.png",
+      "prompt": "Use case: illustration-story\nAsset type: KinetiFrame starter animation background, version 1.\nPrimary request: Produce ONE complete landscape background plate, 16:9 composition, preferably 1536x864. Full bleed scene, not a collage or framed art.\nStyle: original polished simplified 2D cartoon background with rounded organic drawing, clean dark charcoal outlines thinner than foreground character outlines, restrained flat fills with subtle warm shading. Friendly educational/animatic tone, readable large shapes, not photorealistic, not a crude geometric placeholder. Moderate muted colours so inserted characters remain the focus.\nComposition: eye-level, minimal perspective, useful flat staging area, generous empty character space, no foreground objects obstructing actors. Background alone, NO characters, NO text, no logo, no watermark, no UI, no labels, no decorative outside border.\n\nScene/backdrop: Small empty theatre stage viewed straight on, burgundy curtains pulled to the two edges, warm cream plain backdrop, flat wide wooden floor, simple gentle top stage lighting. No microphones, performers, audience, furniture or spotlights on floor. Large open centre."
+    },
+    {
+      "id": "space",
+      "name": "Space",
+      "category": "education",
+      "source": "education/space.png",
+      "bundledAsset": "backgrounds/v1/education/space.png",
+      "prompt": "Use case: illustration-story\nAsset type: KinetiFrame starter animation background, version 1.\nPrimary request: Produce ONE complete landscape background plate, 16:9 composition, preferably 1536x864. Full bleed scene, not a collage or framed art.\nStyle: original polished simplified 2D cartoon background with rounded organic drawing, clean dark charcoal outlines thinner than foreground character outlines, restrained flat fills with subtle warm shading. Friendly educational/animatic tone, readable large shapes, not photorealistic, not a crude geometric placeholder. Moderate muted colours so inserted characters remain the focus.\nComposition: eye-level, minimal perspective, useful flat staging area, generous empty character space, no foreground objects obstructing actors. Background alone, NO characters, NO text, no logo, no watermark, no UI, no labels, no decorative outside border.\n\nScene/backdrop: Simple imaginative outer-space backdrop, deep muted navy, sparse small stars, a large partial softly coloured ringed planet at one edge and a small round planet at other edge. Very broad uncluttered centre for educational animated diagrams or spacecraft. Not a scientific scale map, no implied solar system order."
+    },
+    {
+      "id": "diagram",
+      "name": "Diagram canvas",
+      "category": "generic",
+      "source": "generic/diagram.png",
+      "bundledAsset": "backgrounds/v1/generic/diagram.png",
+      "prompt": "Use case: illustration-story\nAsset type: KinetiFrame starter animation background, version 1.\nPrimary request: Produce ONE complete landscape background plate, 16:9 composition, preferably 1536x864. Full bleed scene, not a collage or framed art.\nStyle: original polished simplified 2D cartoon background with rounded organic drawing, clean dark charcoal outlines thinner than foreground character outlines, restrained flat fills with subtle warm shading. Friendly educational/animatic tone, readable large shapes, not photorealistic, not a crude geometric placeholder. Moderate muted colours so inserted characters remain the focus.\nComposition: eye-level, minimal perspective, useful flat staging area, generous empty character space, no foreground objects obstructing actors. Background alone, NO characters, NO text, no logo, no watermark, no UI, no labels, no decorative outside border.\n\nScene/backdrop: Extremely restrained warm off-white educational diagram canvas, perfectly clean blank central 85 percent, tiny pale teal and ochre abstract organic accents tucked into two outer corners only. No grid, diagrams, writing, frame border, gradients or stationery. No floor; blank scientific explainer surface."
+    },
+    {
+      "id": "colour-studio",
+      "name": "Colour studio",
+      "category": "generic",
+      "source": "generic/colour-studio.png",
+      "bundledAsset": "backgrounds/v1/generic/colour-studio.png",
+      "prompt": "Use case: illustration-story\nAsset type: KinetiFrame starter animation background, version 1.\nPrimary request: Produce ONE complete landscape background plate, 16:9 composition, preferably 1536x864. Full bleed scene, not a collage or framed art.\nStyle: original polished simplified 2D cartoon background with rounded organic drawing, clean dark charcoal outlines thinner than foreground character outlines, restrained flat fills with subtle warm shading. Friendly educational/animatic tone, readable large shapes, not photorealistic, not a crude geometric placeholder. Moderate muted colours so inserted characters remain the focus.\nComposition: eye-level, minimal perspective, useful flat staging area, generous empty character space, no foreground objects obstructing actors. Background alone, NO characters, NO text, no logo, no watermark, no UI, no labels, no decorative outside border.\n\nScene/backdrop: Minimal empty illustrated colour studio, muted warm cream solid wall, one clean horizontal floor line at 73 percent height, pale sage floor below. No furniture, windows, props, patterns or objects. Flat calm colour, almost imperceptible soft floor shading. Vast open area for animation practice."
+    }
+  ]
+}

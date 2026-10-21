@@ -1,0 +1,99 @@
+package com.donnclab.kinetiframe.data.demo
+
+import com.donnclab.kinetiframe.data.actor.ActorFileStore
+import com.donnclab.kinetiframe.data.actor.ActorManifest
+import com.donnclab.kinetiframe.data.actor.ActorPathPolicy
+import com.donnclab.kinetiframe.data.actor.ActorRepository
+import com.donnclab.kinetiframe.data.actor.ActorStoreResult
+import com.donnclab.kinetiframe.data.actor.LibraryItemManifest
+import com.donnclab.kinetiframe.data.actor.validate
+import com.donnclab.kinetiframe.data.storage.DurableFile
+import kotlinx.serialization.json.Json
+import java.io.File
+
+/** Append repaired snapshots only to an untouched bundled cast. Never rewrite a pinned revision.
+ * Asset publication precedes the catalog pointer, making retries safe after an interrupted copy. */
+internal class BundledStarterKitUpgrade(private val source: ActorFileStore, private val destination: ActorFileStore) {
+    private val json = Json { ignoreUnknownKeys = false }
+    fun upgradeActor(id: String) {
+        val target = destination.actorDirectory(id)
+        if (!target.exists()) {
+            require(source.actorDirectory(id).copyRecursively(target))
+            return
+        }
+        val repository = ActorRepository(destination)
+        val old = value(repository.load(id)).first
+        if (!isOriginal(old)) return
+        val original = ActorRepository(source)
+        val repaired = value(original.load(id)).first
+        val revisions = repaired.authoredViews().values.map { value(original.loadRevision(id, it)) }
+        revisions.forEach { revision ->
+            revision.artworkAssetPaths.values.forEach { relative ->
+                val from = ActorPathPolicy.resolveWithin(source.actorDirectory(id), relative, "Starter artwork")
+                val to = ActorPathPolicy.resolveWithin(target, relative, "Starter artwork")
+                // New versioned locations only. An existing different file is not safe to overwrite.
+                if (to.exists()) {
+                    require(from.readBytes().contentEquals(to.readBytes())) { "Conflicting starter artwork" }
+                } else {
+                    DurableFile.write(to) { output -> from.inputStream().use { it.copyTo(output) } }
+                }
+            }
+        }
+        val activeView = old.authoredViews().entries.first { it.value == old.currentRevisionId }.key
+        value(
+            repository.saveViews(
+                repaired.copy(
+                    displayName = old.displayName,
+                    createdAtEpochMs = old.createdAtEpochMs,
+                    updatedAtEpochMs = maxOf(old.updatedAtEpochMs, repaired.updatedAtEpochMs),
+                    currentRevisionId = repaired.authoredViews().getValue(activeView),
+                ),
+                revisions,
+            ),
+        )
+    }
+
+    /** A reusable shipped bundle isn't an edited actor. Archive its prior bytes before replacing
+     * it; preserve user labels/tags. Missing originals stay deleted unless recovering our move. */
+    fun prepareLibraryReplacement(id: String): Boolean {
+        val target = destination.libraryDirectory(id)
+        val archive = File(destination.libraryRoot().parentFile, "archive/starter-kits-v4/library/$id").canonicalFile
+        if (!target.exists()) {
+            if (archive.isDirectory) preserveLibraryMetadata(archive, source.libraryDirectory(id))
+            return archive.exists()
+        }
+        val manifest =
+            runCatching {
+                json.decodeFromString<ActorManifest>(File(target, "payload/actor.json").readText())
+            }.getOrNull()
+                ?: return false
+        if (!isOriginal(manifest)) return false
+        preserveLibraryMetadata(target, source.libraryDirectory(id))
+        require(target.canonicalFile.parentFile == destination.libraryRoot().canonicalFile)
+        require(
+            archive.toPath().startsWith(
+                File(destination.libraryRoot().parentFile, "archive/starter-kits-v4").canonicalFile.toPath(),
+            ),
+        )
+        require(!archive.exists()) { "Prior starter archive already exists" }
+        destination.move(target, archive)
+        return true
+    }
+    private fun preserveLibraryMetadata(old: File, fresh: File) {
+        val previous = json.decodeFromString<LibraryItemManifest>(File(old, "manifest.json").readText()).validate()
+        val next = json.decodeFromString<LibraryItemManifest>(File(fresh, "manifest.json").readText()).validate()
+        source.writeAtomically(
+            File(fresh, "manifest.json"),
+            Json.encodeToString(
+                LibraryItemManifest.serializer(),
+                next.copy(displayName = previous.displayName, tags = previous.tags),
+            ),
+        )
+    }
+    private fun isOriginal(actor: ActorManifest) = actor.updatedAtEpochMs == actor.createdAtEpochMs &&
+        actor.authoredViews().all { (view, revision) -> revision == "${actor.actorId}-${view.name.lowercase()}" }
+    private fun <T> value(result: ActorStoreResult<T>): T = when (result) {
+        is ActorStoreResult.Value -> result.value
+        is ActorStoreResult.Failure -> error(result.message)
+    }
+}

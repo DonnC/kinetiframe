@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <files-path name="diagnostics" path="diagnostics/" />
+    <!-- Exported .kframe archives are written to filesDir/kframe-exports/ (see EditorTopBar's
+         "Share Project" action) - this only exposes that one subfolder, not all of files-dir. -->
+    <files-path name="kframe_exports" path="kframe-exports/" />
+    <!-- Exported .kpack pack archives, written to filesDir/pack-exports/ by PackCreatorRoute's
+         "Bundle & Export" action - same narrow-scope pattern as kframe_exports above. -->
+    <files-path name="pack_exports" path="pack-exports/" />
+    <!-- Exported project videos (MP4), written to filesDir/video-exports/ by ProjectExporter -
+         same narrow-scope pattern as kframe_exports/pack_exports above. -->
+    <files-path name="video_exports" path="video-exports/" />
+</paths>

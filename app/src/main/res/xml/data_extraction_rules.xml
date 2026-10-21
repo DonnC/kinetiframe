@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+ backup and device-transfer rules. No include or exclude rules are set, so the
+     platform's defaults apply to all app data, including saved projects. -->
+<data-extraction-rules>
+    <cloud-backup />
+</data-extraction-rules>

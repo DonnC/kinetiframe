@@ -1,0 +1,19 @@
+<resources>
+
+    <style name="Theme.KinetiFrame" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/brand_teal</item>
+        <item name="colorOnPrimary">@color/brand_ivory</item>
+        <item name="colorSecondary">@color/brand_amber</item>
+        <item name="colorOnSecondary">@color/brand_ink</item>
+        <item name="android:windowBackground">@color/brand_window_background</item>
+        <item name="android:colorBackground">@color/brand_window_background</item>
+        <item name="android:textColorPrimary">@color/brand_on_window</item>
+    </style>
+    <style name="Theme.KinetiFrame.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/brand_teal</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_mark</item>
+        <item name="postSplashScreenTheme">@style/Theme.KinetiFrame</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+</resources>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Auto Backup rules for Android 11 and lower. No include or exclude rules are set, so the
+     platform's defaults apply to all app data, including saved projects. -->
+<full-backup-content />
