@@ -16,16 +16,21 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.input.pointer.pointerInteropFilter
-import com.donnclab.kinetiframe.project.model.DrawingTool
+import com.donnclab.kinetiframe.project.model.BaseNode
 import com.donnclab.kinetiframe.project.model.DocumentCoordinateTransform
+import com.donnclab.kinetiframe.project.model.DrawingTool
 import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.project.model.TextNode
 import com.donnclab.kinetiframe.project.model.TouchPoint
-import com.donnclab.kinetiframe.studio.drawing.RulerStrokeConstraintSession
-import com.donnclab.kinetiframe.studio.drawing.ConstructionShape
+import com.donnclab.kinetiframe.studio.RulerGuide
+import com.donnclab.kinetiframe.studio.SelectionToolType
+import com.donnclab.kinetiframe.studio.StudioIntent
+import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.drawing.ConstructionGesturePolicy
+import com.donnclab.kinetiframe.studio.drawing.ConstructionShape
 import com.donnclab.kinetiframe.studio.drawing.ConstructionShapeSession
-import com.donnclab.kinetiframe.project.model.*
-import com.donnclab.kinetiframe.studio.*
+import com.donnclab.kinetiframe.studio.drawing.FontRegistry
+import com.donnclab.kinetiframe.studio.drawing.RulerStrokeConstraintSession
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -45,36 +50,25 @@ fun CanvasInputLayer(
     constructionShape: ConstructionShape? = null,
     constructionPreviewPending: Boolean = false,
     selectionActive: Boolean,
-    nodes: Map<String, com.donnclab.kinetiframe.project.model.BaseNode>,
+    nodes: Map<String, BaseNode>,
     displayDensity: Float,
-    fontRegistry: com.donnclab.kinetiframe.studio.drawing.FontRegistry?,
+    fontRegistry: FontRegistry?,
     selectionTool: SelectionToolType,
     activeStroke: ActiveStroke,
     selectionPath: Path,
     onSelectionRectChanged: (Rect?) -> Unit,
     onTextNodeSelect: (String?) -> Unit,
-    onSelectionAreaComplete: (Path?, Rect?, Float, com.donnclab.kinetiframe.studio.drawing.FontRegistry?) -> Unit,
+    onSelectionAreaComplete: (Path?, Rect?, Float, FontRegistry?) -> Unit,
     onEraserCursorChange: (Offset?) -> Unit,
     onIntent: (StudioIntent) -> Unit,
     onStrokeSettled: (List<TouchPoint>) -> Unit,
     onStrokeComplete: (List<TouchPoint>) -> Unit,
     onConstructionPreview: (List<List<TouchPoint>>) -> Unit = {},
     onRigJointHit: ((Offset) -> String?)? = null,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    
-    var lastTapTime by remember { mutableStateOf(0L) }
-    var lastTapPoint by remember { mutableStateOf(Offset.Zero) }
-    // Consumes the ACTION_UP after a direct node pick so it cannot begin a lasso.
-    var consumedTextSelection by remember { mutableStateOf(false) }
-    val activePointerSession = remember { ActivePointerSession() }
-    var currentToolType by remember { mutableIntStateOf(MotionEvent.TOOL_TYPE_UNKNOWN) }
-    var rulerSession by remember { mutableStateOf<RulerStrokeConstraintSession?>(null) }
-    var constructionSession by remember { mutableStateOf<ConstructionShapeSession?>(null) }
-    var rigGestureCancelled by remember { mutableStateOf(false) }
-    var draggedBone by remember { mutableStateOf<String?>(null) }
-    var rigDownScreen by remember { mutableStateOf(Offset.Zero) }
-    
+    val gesture = remember { CanvasGestureState() }
+
     val coordinateTransform = remember(stage, canvasMatrixValues) {
         DocumentCoordinateTransform(stage, canvasMatrixValues)
     }
@@ -87,76 +81,88 @@ fun CanvasInputLayer(
                 // Cancellation must be handled even when Android has already removed the pointer.
                 val cancelledUp = (rawAction == MotionEvent.ACTION_UP || rawAction == MotionEvent.ACTION_POINTER_UP) &&
                     event.flags and MotionEvent.FLAG_CANCELED != 0 &&
-                    activePointerSession.isActive(event.getPointerId(event.actionIndex))
+                    gesture.activePointerSession.isActive(event.getPointerId(event.actionIndex))
                 if (rawAction == MotionEvent.ACTION_CANCEL || cancelledUp) {
                     activeStroke.reset()
-                    rulerSession = null
-                    constructionSession = null
+                    gesture.rulerSession = null
+                    gesture.constructionSession = null
                     onConstructionPreview(emptyList())
                     selectionPath.reset()
                     onSelectionRectChanged(null)
                     onEraserCursorChange(null)
-                    if (draggedBone != null) onIntent(StudioIntent.Actor.CancelDrag)
-                    draggedBone = null
-                    consumedTextSelection = false
-                    activePointerSession.clear()
-                    currentToolType = MotionEvent.TOOL_TYPE_UNKNOWN
+                    if (gesture.draggedBone != null) onIntent(StudioIntent.Actor.CancelDrag)
+                    gesture.draggedBone = null
+                    gesture.consumedTextSelection = false
+                    gesture.activePointerSession.clear()
+                    gesture.currentToolType = MotionEvent.TOOL_TYPE_UNKNOWN
                     return@pointerInteropFilter true
                 }
                 val actionTool = event.getToolType(event.actionIndex)
-                val stylusContact = actionTool == MotionEvent.TOOL_TYPE_STYLUS || actionTool == MotionEvent.TOOL_TYPE_ERASER
+                val stylusContact =
+                    actionTool == MotionEvent.TOOL_TYPE_STYLUS || actionTool == MotionEvent.TOOL_TYPE_ERASER
                 val stylusTakesOver = studioMode == StudioMode.RASTER_DRAWING &&
                     rawAction == MotionEvent.ACTION_POINTER_DOWN && stylusContact &&
-                    currentToolType != MotionEvent.TOOL_TYPE_STYLUS && currentToolType != MotionEvent.TOOL_TYPE_ERASER
+                    gesture.currentToolType != MotionEvent.TOOL_TYPE_STYLUS &&
+                    gesture.currentToolType != MotionEvent.TOOL_TYPE_ERASER
                 if (stylusTakesOver) {
                     // Discard the provisional finger/palm mark rather than committing it.
                     activeStroke.reset()
-                    rulerSession = null
-                    activePointerSession.begin(event.getPointerId(event.actionIndex), event.eventTime)
-                    currentToolType = actionTool
+                    gesture.rulerSession = null
+                    gesture.activePointerSession.begin(event.getPointerId(event.actionIndex), event.eventTime)
+                    gesture.currentToolType = actionTool
                 }
                 if (rawAction == MotionEvent.ACTION_DOWN) {
-                    rigGestureCancelled = false
+                    gesture.rigGestureCancelled = false
                     val pointerId = event.getPointerId(event.actionIndex)
-                    activePointerSession.begin(pointerId, event.eventTime)
-                    currentToolType = event.getToolType(event.actionIndex)
+                    gesture.activePointerSession.begin(pointerId, event.eventTime)
+                    gesture.currentToolType = event.getToolType(event.actionIndex)
                 }
 
                 val action = if (stylusTakesOver && rawAction == MotionEvent.ACTION_POINTER_DOWN &&
-                    activePointerSession.isActive(event.getPointerId(event.actionIndex))) MotionEvent.ACTION_DOWN else rawAction
+                    gesture.activePointerSession.isActive(event.getPointerId(event.actionIndex))
+                ) {
+                    MotionEvent.ACTION_DOWN
+                } else {
+                    rawAction
+                }
 
                 if (studioMode != StudioMode.RASTER_DRAWING &&
-                    (event.pointerCount > 1 || action == MotionEvent.ACTION_CANCEL)) {
-                    rigGestureCancelled = true
-                    if (draggedBone != null) onIntent(StudioIntent.Actor.CancelDrag)
-                    draggedBone = null
+                    (event.pointerCount > 1 || action == MotionEvent.ACTION_CANCEL)
+                ) {
+                    gesture.rigGestureCancelled = true
+                    if (gesture.draggedBone != null) onIntent(StudioIntent.Actor.CancelDrag)
+                    gesture.draggedBone = null
                     selectionPath.reset()
                     activeStroke.invalidate()
                 }
-                if (studioMode != StudioMode.RASTER_DRAWING && rigGestureCancelled) return@pointerInteropFilter true
+                if (studioMode != StudioMode.RASTER_DRAWING &&
+                    gesture.rigGestureCancelled
+                ) {
+                    return@pointerInteropFilter true
+                }
 
                 val activePointerIndex = when (action) {
                     MotionEvent.ACTION_DOWN -> event.actionIndex
-                    else -> event.findPointerIndex(activePointerSession.pointerId)
+                    else -> event.findPointerIndex(gesture.activePointerSession.pointerId)
                 }
 
                 if (activePointerIndex < 0) return@pointerInteropFilter true
 
                 // Palm Rejection: If a stylus is active, ignore all finger pointers for drawing
                 val toolType = event.getToolType(activePointerIndex)
-                if (currentToolType == MotionEvent.TOOL_TYPE_STYLUS && toolType == MotionEvent.TOOL_TYPE_FINGER) {
+                if (gesture.currentToolType == MotionEvent.TOOL_TYPE_STYLUS &&
+                    toolType == MotionEvent.TOOL_TYPE_FINGER
+                ) {
                     return@pointerInteropFilter false
                 }
-                
+
                 if (action == MotionEvent.ACTION_POINTER_UP &&
-                    activePointerSession.shouldIgnorePointerUp(event.getPointerId(event.actionIndex))
+                    gesture.activePointerSession.shouldIgnorePointerUp(event.getPointerId(event.actionIndex))
                 ) {
                     return@pointerInteropFilter true
                 }
 
-                
-                fun mapToDocument(x: Float, y: Float): Offset? =
-                    coordinateTransform.toDocument(Offset(x, y))
+                fun mapToDocument(x: Float, y: Float): Offset? = coordinateTransform.toDocument(Offset(x, y))
 
                 val screenX = event.getX(activePointerIndex)
                 val screenY = event.getY(activePointerIndex)
@@ -182,32 +188,42 @@ fun CanvasInputLayer(
                         onIntent(StudioIntent.Rigging.AddBoneAt(mappedX, mappedY))
                     }
                     if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-                        activePointerSession.end(event.getPointerId(activePointerIndex))
+                        gesture.activePointerSession.end(event.getPointerId(activePointerIndex))
                     }
                     return@pointerInteropFilter true
                 }
 
                 val isRiggingTool = activeTool == DrawingTool.RIG_SELECT || activeTool == DrawingTool.BONE
-                
+
                 if (studioMode != StudioMode.RASTER_DRAWING && isRiggingTool) {
                     when (action) {
                         MotionEvent.ACTION_DOWN -> {
-                            draggedBone = onRigJointHit?.invoke(mappedPoint)
-                            rigDownScreen = Offset(screenX, screenY)
-                            onIntent(StudioIntent.Rigging.SelectBone(draggedBone?.removePrefix("origin:")?.removePrefix("artwork:")?.removePrefix("attachment:")))
-                            draggedBone?.takeIf { it.startsWith("artwork:") }?.let {
+                            gesture.draggedBone = onRigJointHit?.invoke(mappedPoint)
+                            gesture.rigDownScreen = Offset(screenX, screenY)
+                            onIntent(
+                                StudioIntent.Rigging.SelectBone(
+                                    gesture.draggedBone?.removePrefix(
+                                        "origin:",
+                                    )?.removePrefix("artwork:")?.removePrefix("attachment:"),
+                                ),
+                            )
+                            gesture.draggedBone?.takeIf { it.startsWith("artwork:") }?.let {
                                 onIntent(StudioIntent.Actor.Drag(it, mappedPoint))
                             }
                         }
-                        MotionEvent.ACTION_MOVE -> draggedBone?.let {
-                            if ((Offset(screenX, screenY) - rigDownScreen).getDistance() > 4f * displayDensity) {
+
+                        MotionEvent.ACTION_MOVE -> gesture.draggedBone?.let {
+                            if ((Offset(screenX, screenY) - gesture.rigDownScreen).getDistance() >
+                                4f * displayDensity
+                            ) {
                                 onIntent(StudioIntent.Actor.Drag(it, mappedPoint))
                             }
                         }
+
                         MotionEvent.ACTION_UP -> {
                             onIntent(StudioIntent.Actor.CommitDrag)
-                            draggedBone = null
-                            activePointerSession.end(event.getPointerId(activePointerIndex))
+                            gesture.draggedBone = null
+                            gesture.activePointerSession.end(event.getPointerId(activePointerIndex))
                         }
                     }
                     return@pointerInteropFilter true
@@ -219,7 +235,7 @@ fun CanvasInputLayer(
                 if (activeTool == DrawingTool.LASSO && selectionActive) {
                     activeStroke.reset()
                     if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-                        activePointerSession.end(event.getPointerId(activePointerIndex))
+                        gesture.activePointerSession.end(event.getPointerId(activePointerIndex))
                     }
                     return@pointerInteropFilter true
                 }
@@ -227,10 +243,10 @@ fun CanvasInputLayer(
                 if (activeTool == DrawingTool.COLOR_FILL) {
                     when (action) {
                         MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
-                            val duration = event.eventTime - activePointerSession.startTime
+                            val duration = event.eventTime - gesture.activePointerSession.startTime
                             if (duration < 250) {
                                 onIntent(StudioIntent.Fill.SetPendingTap(mappedPoint))
-                                activePointerSession.end(event.getPointerId(activePointerIndex))
+                                gesture.activePointerSession.end(event.getPointerId(activePointerIndex))
                                 return@pointerInteropFilter true
                             }
                         }
@@ -241,14 +257,17 @@ fun CanvasInputLayer(
                 if (activeTool == DrawingTool.TEXT) {
                     when (action) {
                         MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
-                            val duration = event.eventTime - activePointerSession.startTime
+                            val duration = event.eventTime - gesture.activePointerSession.startTime
                             if (duration < 200) {
                                 val hitText = nodes.values.filterIsInstance<TextNode>().lastOrNull { node ->
                                     textHit(node, mappedPoint, displayDensity, fontRegistry)
                                 }
-                                if (hitText != null) onIntent(StudioIntent.Text.TriggerEditDialog(hitText.id))
-                                else onIntent(StudioIntent.Text.TriggerAddTextDialog(mappedX, mappedY))
-                                activePointerSession.end(event.getPointerId(activePointerIndex))
+                                if (hitText != null) {
+                                    onIntent(StudioIntent.Text.TriggerEditDialog(hitText.id))
+                                } else {
+                                    onIntent(StudioIntent.Text.TriggerAddTextDialog(mappedX, mappedY))
+                                }
+                                gesture.activePointerSession.end(event.getPointerId(activePointerIndex))
                                 return@pointerInteropFilter true
                             }
                         }
@@ -264,22 +283,31 @@ fun CanvasInputLayer(
                             } else {
                                 onSelectionRectChanged(Rect(mappedX, mappedY, mappedX, mappedY))
                             }
-                            activePointerSession.startX = mappedX
-                            activePointerSession.startY = mappedY
+                            gesture.activePointerSession.startX = mappedX
+                            gesture.activePointerSession.startY = mappedY
                             activeStroke.invalidate()
                             return@pointerInteropFilter true
                         }
+
                         MotionEvent.ACTION_MOVE -> {
                             if (selectionTool == SelectionToolType.LASSO) {
                                 selectionPath.lineTo(mappedX, mappedY)
                             } else {
-                                val startX = activePointerSession.startX
-                                val startY = activePointerSession.startY
-                                onSelectionRectChanged(Rect(minOf(startX, mappedX), minOf(startY, mappedY), maxOf(startX, mappedX), maxOf(startY, mappedY)))
+                                val startX = gesture.activePointerSession.startX
+                                val startY = gesture.activePointerSession.startY
+                                onSelectionRectChanged(
+                                    Rect(
+                                        minOf(startX, mappedX),
+                                        minOf(startY, mappedY),
+                                        maxOf(startX, mappedX),
+                                        maxOf(startY, mappedY),
+                                    ),
+                                )
                             }
                             activeStroke.invalidate()
                             return@pointerInteropFilter true
                         }
+
                         MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
                             if (activeTool == DrawingTool.LASSO_CUT) {
                                 selectionPath.close()
@@ -287,79 +315,116 @@ fun CanvasInputLayer(
                                     onIntent(
                                         StudioIntent.Rigging.PreparePivotPlacement(
                                             sourceFrame = frame,
-                                            lassoPath = Path().apply { addPath(selectionPath) }
-                                        )
+                                            lassoPath = Path().apply { addPath(selectionPath) },
+                                        ),
                                     )
                                 }
                                 selectionPath.reset()
                                 onSelectionRectChanged(null)
-                                activePointerSession.end(event.getPointerId(activePointerIndex))
+                                gesture.activePointerSession.end(event.getPointerId(activePointerIndex))
                                 return@pointerInteropFilter true
                             }
-                            if (consumedTextSelection) {
-                                consumedTextSelection = false
-                                activePointerSession.end(event.getPointerId(activePointerIndex))
+                            if (gesture.consumedTextSelection) {
+                                gesture.consumedTextSelection = false
+                                gesture.activePointerSession.end(event.getPointerId(activePointerIndex))
                                 return@pointerInteropFilter true
                             }
-                            val distance = (mappedPoint - Offset(activePointerSession.startX, activePointerSession.startY)).getDistance()
-                            if (distance < 2f && selectionPath.getBounds().width < 3f && selectionPath.getBounds().height < 3f) {
-                                onSelectionAreaComplete(null, Rect(mappedX - .5f, mappedY - .5f, mappedX + .5f, mappedY + .5f), displayDensity, fontRegistry)
+                            val distance = (
+                                mappedPoint -
+                                    Offset(gesture.activePointerSession.startX, gesture.activePointerSession.startY)
+                                ).getDistance()
+                            if (distance < 2f && selectionPath.getBounds().width < 3f &&
+                                selectionPath.getBounds().height < 3f
+                            ) {
+                                onSelectionAreaComplete(
+                                    null,
+                                    Rect(
+                                        mappedX - .5f,
+                                        mappedY - .5f,
+                                        mappedX + .5f,
+                                        mappedY + .5f,
+                                    ),
+                                    displayDensity,
+                                    fontRegistry,
+                                )
                             } else if (selectionTool == SelectionToolType.LASSO) {
                                 selectionPath.close()
                                 val completedPath = Path().apply { addPath(selectionPath) }
                                 onSelectionAreaComplete(completedPath, null, displayDensity, fontRegistry)
                             } else {
-                                val startX = activePointerSession.startX
-                                val startY = activePointerSession.startY
+                                val startX = gesture.activePointerSession.startX
+                                val startY = gesture.activePointerSession.startY
                                 val rect = Rect(
-                                    minOf(startX, mappedX), minOf(startY, mappedY),
-                                    maxOf(startX, mappedX), maxOf(startY, mappedY)
+                                    minOf(startX, mappedX),
+                                    minOf(startY, mappedY),
+                                    maxOf(startX, mappedX),
+                                    maxOf(startY, mappedY),
                                 )
                                 onSelectionAreaComplete(null, rect, displayDensity, fontRegistry)
                             }
                             selectionPath.reset()
                             onSelectionRectChanged(null)
-                            activePointerSession.end(event.getPointerId(activePointerIndex))
+                            gesture.activePointerSession.end(event.getPointerId(activePointerIndex))
                             return@pointerInteropFilter true
                         }
                     }
                 }
 
-                val canStartConstruction = ConstructionGesturePolicy.canHandle(activeTool, constructionShape, constructionPreviewPending)
-                if (constructionShape != null && constructionPreviewPending && constructionSession == null) {
+                val canStartConstruction = ConstructionGesturePolicy.canHandle(
+                    activeTool,
+                    constructionShape,
+                    constructionPreviewPending,
+                )
+                if (constructionShape != null && constructionPreviewPending && gesture.constructionSession == null) {
                     // A pending construction preview owns the canvas until Check or X;
                     // never fall through to freehand Brush input.
                     if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-                        activePointerSession.end(event.getPointerId(activePointerIndex))
+                        gesture.activePointerSession.end(event.getPointerId(activePointerIndex))
                     }
                     return@pointerInteropFilter true
                 }
-                if (canStartConstruction || constructionSession != null) {
+                if (canStartConstruction || gesture.constructionSession != null) {
                     when (action) {
                         MotionEvent.ACTION_DOWN -> {
                             val session = ConstructionShapeSession(requireNotNull(constructionShape))
-                            session.begin(TouchPoint(mappedX, mappedY, event.getPressure(activePointerIndex), timestamp = event.eventTime))
-                            constructionSession = session
+                            session.begin(
+                                TouchPoint(
+                                    mappedX,
+                                    mappedY,
+                                    event.getPressure(activePointerIndex),
+                                    timestamp = event.eventTime,
+                                ),
+                            )
+                            gesture.constructionSession = session
                             return@pointerInteropFilter true
                         }
+
                         MotionEvent.ACTION_MOVE -> {
-                            constructionSession?.let { session ->
-                                val sample = TouchPoint(mappedX, mappedY, event.getPressure(activePointerIndex), timestamp = event.eventTime)
+                            gesture.constructionSession?.let { session ->
+                                val sample =
+                                    TouchPoint(
+                                        mappedX,
+                                        mappedY,
+                                        event.getPressure(activePointerIndex),
+                                        timestamp = event.eventTime,
+                                    )
                                 session.update(sample)
                                 session.preview()?.let(onConstructionPreview)
                             }
                             return@pointerInteropFilter true
                         }
+
                         MotionEvent.ACTION_UP -> {
-                            constructionSession?.complete()?.let(onConstructionPreview)
-                            constructionSession = null
-                            activePointerSession.end(event.getPointerId(activePointerIndex))
+                            gesture.constructionSession?.complete()?.let(onConstructionPreview)
+                            gesture.constructionSession = null
+                            gesture.activePointerSession.end(event.getPointerId(activePointerIndex))
                             return@pointerInteropFilter true
                         }
+
                         MotionEvent.ACTION_CANCEL -> {
-                            constructionSession = null
+                            gesture.constructionSession = null
                             onConstructionPreview(emptyList())
-                            activePointerSession.clear()
+                            gesture.activePointerSession.clear()
                             return@pointerInteropFilter true
                         }
                     }
@@ -367,173 +432,63 @@ fun CanvasInputLayer(
 
                 if (activeTool == DrawingTool.ERASER) {
                     when (action) {
-                        MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> onEraserCursorChange(Offset(screenX, screenY))
-                        MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_CANCEL -> onEraserCursorChange(null)
+                        MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> onEraserCursorChange(
+                            Offset(screenX, screenY),
+                        )
+
+                        MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_CANCEL ->
+                            onEraserCursorChange(null)
                     }
                 }
 
                 // If lasso or text is active, don't fall through to general stroke handling
-                if (activeTool == DrawingTool.LASSO || activeTool == DrawingTool.LASSO_CUT || activeTool == DrawingTool.TEXT) {
+                if (activeTool == DrawingTool.LASSO || activeTool == DrawingTool.LASSO_CUT ||
+                    activeTool == DrawingTool.TEXT
+                ) {
                     return@pointerInteropFilter true
                 }
 
-                when (action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        val currentTime = System.currentTimeMillis()
-                        val tapPoint = Offset(screenX, screenY)
-                        
-                        // Double tap detection
-                        if (currentTime - lastTapTime < 300L && (tapPoint - lastTapPoint).getDistance() < 50f) {
-                            val hitText = nodes.values.filterIsInstance<TextNode>().lastOrNull { node ->
-                                textHit(node, mappedPoint, displayDensity, fontRegistry)
-                            }
-                            if (hitText != null) {
-                                onIntent(StudioIntent.Text.TriggerEditDialog(hitText.id))
-                                lastTapTime = 0L // Reset to prevent triple tap as double double tap
-                                return@pointerInteropFilter true
-                            }
-                        }
-                        
-                        lastTapTime = currentTime
-                        lastTapPoint = tapPoint
+                if (action == MotionEvent.ACTION_DOWN) {
+                    val currentTime = System.currentTimeMillis()
+                    val tapPoint = Offset(screenX, screenY)
 
-                        activeStroke.reset()
-                        activeStroke.configureInput(displayDensity, pressureSensitive)
-                        activeStroke.isStylusContact = currentToolType == MotionEvent.TOOL_TYPE_STYLUS ||
-                            currentToolType == MotionEvent.TOOL_TYPE_ERASER
-                        if ((activeTool == DrawingTool.BLUR || activeTool == DrawingTool.SMUDGE) && manipulationSource != null) {
-                            activeStroke.beginManipulation(
-                                source = manipulationSource,
-                                tool = activeTool,
-                                baseWidth = manipulationWidth,
-                                strength = manipulationStrength
-                            )
+                    // Double tap detection
+                    if (currentTime - gesture.lastTapTime < 300L &&
+                        (tapPoint - gesture.lastTapPoint).getDistance() < 50f
+                    ) {
+                        val hitText = nodes.values.filterIsInstance<TextNode>().lastOrNull { node ->
+                            textHit(node, mappedPoint, displayDensity, fontRegistry)
                         }
-                        rulerSession = if (activeTool == DrawingTool.BRUSH && rulerGuide != null) {
-                            RulerStrokeConstraintSession(rulerGuide.toConstraintSpec())
-                        } else {
-                            null
+                        if (hitText != null) {
+                            onIntent(StudioIntent.Text.TriggerEditDialog(hitText.id))
+                            gesture.lastTapTime = 0L // Reset to prevent triple tap as double double tap
+                            return@pointerInteropFilter true
                         }
-                        val point = TouchPoint(
-                            mappedX,
-                            mappedY,
-                            event.getPressure(activePointerIndex),
-                            event.getAxisValue(MotionEvent.AXIS_TILT, activePointerIndex),
-                            event.getAxisValue(MotionEvent.AXIS_ORIENTATION, activePointerIndex),
-                            velocity = 0f,
-                            timestamp = event.eventTime
-                        )
-                        activeStroke.appendSample(
-                            sample = point,
-                            screenSample = TouchPoint(screenX, screenY, event.getPressure(activePointerIndex), velocity = 0f, timestamp = event.eventTime),
-                            constraint = rulerSession?.let { session -> session::constrain }
-                        )?.also { constrained ->
-                            if (rulerGuide?.mode == RulerMode.MIRROR) activeStroke.appendMirroredSample(requireNotNull(rulerSession).reflect(constrained))
-                        }
-                        activeStroke.invalidate()
-                        true
                     }
-                    MotionEvent.ACTION_MOVE -> {
-                        val historySize = event.historySize
-                        val previousPointCount = activeStroke.points.size
-                        for (i in 0 until historySize) {
-                            val historical = mapToDocument(event.getHistoricalX(activePointerIndex, i), event.getHistoricalY(activePointerIndex, i))
-                            if (historical != null && coordinateTransform.contains(historical)) {
-                                activeStroke.appendSample(
-                                    sample = TouchPoint(
-                                        historical.x,
-                                        historical.y,
-                                        event.getHistoricalPressure(activePointerIndex, i),
-                                        event.getHistoricalAxisValue(MotionEvent.AXIS_TILT, activePointerIndex, i),
-                                        event.getHistoricalAxisValue(MotionEvent.AXIS_ORIENTATION, activePointerIndex, i),
-                                        velocity = 0f,
-                                        timestamp = event.getHistoricalEventTime(i)
-                                    ),
-                                    screenSample = TouchPoint(
-                                        event.getHistoricalX(activePointerIndex, i),
-                                        event.getHistoricalY(activePointerIndex, i),
-                                        event.getHistoricalPressure(activePointerIndex, i),
-                                        velocity = 0f,
-                                        timestamp = event.getHistoricalEventTime(i)
-                                    ),
-                                    constraint = rulerSession?.let { session -> session::constrain }
-                                )?.also { constrained ->
-                                    if (rulerGuide?.mode == RulerMode.MIRROR) activeStroke.appendMirroredSample(requireNotNull(rulerSession).reflect(constrained))
-                                }
-                            }
-                        }
-                        val point = TouchPoint(
-                            mappedX,
-                            mappedY,
-                            event.getPressure(activePointerIndex),
-                            event.getAxisValue(MotionEvent.AXIS_TILT, activePointerIndex),
-                            event.getAxisValue(MotionEvent.AXIS_ORIENTATION, activePointerIndex),
-                            velocity = 0f,
-                            timestamp = event.eventTime
-                        )
-                        activeStroke.appendSample(
-                            sample = point,
-                            screenSample = TouchPoint(screenX, screenY, event.getPressure(activePointerIndex), velocity = 0f, timestamp = event.eventTime),
-                            constraint = rulerSession?.let { session -> session::constrain }
-                        )?.also { constrained ->
-                            if (rulerGuide?.mode == RulerMode.MIRROR) activeStroke.appendMirroredSample(requireNotNull(rulerSession).reflect(constrained))
-                        }
 
-                        // Raw prediction bypassed conditioning and made a held nib visibly dance.
-                        // Render the latest conditioned contact; prediction is not committed ink.
-                        activeStroke.predictedTouchPoint = null
-                        activeStroke.predictedMirroredTouchPoint = null
-
-                        if (activeStroke.points.size != previousPointCount) activeStroke.invalidate()
-                        true
-                    }
-                    MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
-                        val last = activeStroke.points.lastOrNull()
-                        val manipulationLift = (activeTool == DrawingTool.SMUDGE || activeTool == DrawingTool.BLUR) &&
-                            last?.timestamp != event.eventTime
-                        if (isWithinDocument && (last == null || last.x != mappedX || last.y != mappedY || manipulationLift)) {
-                            activeStroke.flushSample(
-                                TouchPoint(
-                                    mappedX,
-                                    mappedY,
-                                    event.getPressure(activePointerIndex),
-                                    event.getAxisValue(MotionEvent.AXIS_TILT, activePointerIndex),
-                                    event.getAxisValue(MotionEvent.AXIS_ORIENTATION, activePointerIndex),
-                                    velocity = 0f,
-                                    timestamp = event.eventTime
-                                ),
-                                constraint = rulerSession?.let { session -> session::constrain },
-                                screenSample = TouchPoint(screenX, screenY, timestamp = event.eventTime)
-                            ).also { constrained ->
-                                if (rulerGuide?.mode == RulerMode.MIRROR) activeStroke.appendMirroredSample(requireNotNull(rulerSession).reflect(constrained))
-                            }
-                        }
-                        // Commit exactly the stabilized points the live preview showed. Simplifying
-                        // the stroke on release would visibly change its shape and pressure at the
-                        // moment it becomes a bitmap.
-                        activeStroke.predictedTouchPoint = null
-                        val completedPoints = ArrayList(activeStroke.points)
-                        onStrokeSettled(completedPoints)
-                        onStrokeComplete(completedPoints)
-                        activeStroke.reset()
-                        rulerSession = null
-                        activePointerSession.end(event.getPointerId(activePointerIndex))
-                        currentToolType = MotionEvent.TOOL_TYPE_UNKNOWN
-                        true
-                    }
-                    MotionEvent.ACTION_CANCEL -> {
-                        activeStroke.reset()
-                        rulerSession = null
-                        activePointerSession.clear()
-                        currentToolType = MotionEvent.TOOL_TYPE_UNKNOWN
-                        true
-                    }
-                    MotionEvent.ACTION_POINTER_DOWN -> {
-                        true
-                    }
-                    else -> false
+                    gesture.lastTapTime = currentTime
+                    gesture.lastTapPoint = tapPoint
                 }
-            }
+
+                gesture.handleFreehandStroke(
+                    event,
+                    CanvasPointer(action, activePointerIndex, Offset(screenX, screenY), mappedPoint, isWithinDocument),
+                    StrokeTools(
+                        activeTool,
+                        pressureSensitive,
+                        displayDensity,
+                        rulerGuide,
+                        manipulationSource,
+                        manipulationWidth,
+                        manipulationStrength,
+                    ),
+                    activeStroke,
+                    coordinateTransform,
+                ) { points ->
+                    onStrokeSettled(points)
+                    onStrokeComplete(points)
+                }
+            },
     ) {
         content()
     }

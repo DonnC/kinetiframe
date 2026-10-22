@@ -21,7 +21,6 @@ spotless {
             "app/src/main/java/com/donnclab/kinetiframe/studio/drawing/Brushes.kt",
             "app/src/main/java/com/donnclab/kinetiframe/studio/EditorScreen.kt",
             "app/src/main/java/com/donnclab/kinetiframe/studio/StudioViewModel.kt",
-            "app/src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/CanvasInputLayer.kt",
         )
         ktlint(libs.versions.ktlint.get())
     }
