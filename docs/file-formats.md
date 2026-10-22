@@ -27,7 +27,7 @@ hundreds of PNGs on every save would be slow.
 ## `.kframe` project archive
 
 A `.kframe` is created when you share or back up a project
-(`app/.../data/project/KframeArchiver.kt`). It contains:
+(`app/.../project/data/KframeArchiver.kt`). It contains:
 
 ```
 manifest.json          the project manifest
@@ -51,7 +51,7 @@ On import, KinetiFrame:
 ## `.kpack` stamp pack
 
 A `.kpack` holds a pack's drawings and a `meta.json` index at the root of the ZIP
-(`app/.../data/library/PackArchiver.kt`):
+(`app/.../library/data/PackArchiver.kt`):
 
 ```
 meta.json
@@ -91,7 +91,7 @@ never collide.
 
 Actors are stored as folders with a manifest and immutable revisions. Each revision holds the
 rig (`SceneGraph`) and artwork. Performances are JSON documents tied to an actor revision. Their
-models are in `core/.../actor` and `app/.../data/actor/ActorDocuments.kt`.
+models are in `core/.../actor` and `app/.../actors/data/ActorDocuments.kt`.
 
 Some older serialized type names still start with `com.kinetiframe.` (the project's previous
 package name). They are part of the file format and must not be renamed.

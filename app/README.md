@@ -4,11 +4,10 @@ The KinetiFrame Android app. It holds the entry point, navigation, every product
 including the studio, platform adapters for drawing, audio and video, repositories, the Room
 database and the bundled sample assets. It depends on all the other production modules.
 
-Much of the product code still lives here while shared pieces are moved into their target modules.
-Some packages inside `app` are named `engine`, `data` and `domain`; they are folders in this
-module, not the modules of the same name. The
-[architecture overview](../docs/architecture/README.md#where-to-find-things-in-app) has a map of
-where each feature lives.
+Packages are grouped by feature (`studio`, `actors`, `library`, `project`, `audio`, `export` and
+so on), with `ui`, `domain` and `data` subpackages inside a feature where it needs them. See the
+[project architecture](../docs/architecture/decisions/project-architecture.md) decision and the
+[map of where each feature lives](../docs/architecture/README.md#where-to-find-things-in-app).
 
 ## Things to know before changing code here
 

@@ -33,39 +33,39 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.donnclab.kinetiframe.data.actor.ActorArtworkStore
-import com.donnclab.kinetiframe.data.actor.ActorFileStore
-import com.donnclab.kinetiframe.data.actor.ActorRepository
-import com.donnclab.kinetiframe.data.actor.LibraryScope
-import com.donnclab.kinetiframe.data.actor.PerformanceDocument
-import com.donnclab.kinetiframe.data.actor.PerformanceRepository
-import com.donnclab.kinetiframe.data.project.db.AppDatabase
-import com.donnclab.kinetiframe.data.settings.AppPreferencesStore
-import com.donnclab.kinetiframe.data.settings.AppTheme
-import com.donnclab.kinetiframe.data.settings.StudioOrientation
+import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
+import com.donnclab.kinetiframe.actors.data.ActorFileStore
+import com.donnclab.kinetiframe.actors.data.ActorRepository
+import com.donnclab.kinetiframe.actors.data.LibraryScope
+import com.donnclab.kinetiframe.actors.data.PerformanceDocument
+import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.actors.ui.ActorStudioRepositories
+import com.donnclab.kinetiframe.actors.ui.ActorStudioScreen
+import com.donnclab.kinetiframe.actors.ui.ActorStudioTarget
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.ui.EditorScreen
-import com.donnclab.kinetiframe.ui.actors.ActorStudioRepositories
-import com.donnclab.kinetiframe.ui.actors.ActorStudioScreen
-import com.donnclab.kinetiframe.ui.actors.ActorStudioTarget
-import com.donnclab.kinetiframe.ui.color.ScreenColorPickerHost
-import com.donnclab.kinetiframe.ui.components.navigation.BottomNavDestination
-import com.donnclab.kinetiframe.ui.components.navigation.ExitConfirmationDialog
-import com.donnclab.kinetiframe.ui.export.ExportRoute
-import com.donnclab.kinetiframe.ui.home.HomeRoute
-import com.donnclab.kinetiframe.ui.library.LibraryOpenTarget
-import com.donnclab.kinetiframe.ui.library.LibraryRoute
-import com.donnclab.kinetiframe.ui.navigation.ActorStudioKey
-import com.donnclab.kinetiframe.ui.navigation.EditorKey
-import com.donnclab.kinetiframe.ui.navigation.ExportKey
-import com.donnclab.kinetiframe.ui.navigation.LibraryKey
-import com.donnclab.kinetiframe.ui.navigation.PackCreatorKey
-import com.donnclab.kinetiframe.ui.navigation.ProjectGalleryKey
-import com.donnclab.kinetiframe.ui.navigation.SettingsKey
-import com.donnclab.kinetiframe.ui.packs.PackCreatorRoute
-import com.donnclab.kinetiframe.ui.settings.LocalAppPreferences
-import com.donnclab.kinetiframe.ui.settings.SettingsScreen
-import com.donnclab.kinetiframe.ui.settings.SettingsViewModel
+import com.donnclab.kinetiframe.export.ui.ExportRoute
+import com.donnclab.kinetiframe.home.HomeRoute
+import com.donnclab.kinetiframe.library.ui.LibraryOpenTarget
+import com.donnclab.kinetiframe.library.ui.LibraryRoute
+import com.donnclab.kinetiframe.library.ui.packs.PackCreatorRoute
+import com.donnclab.kinetiframe.navigation.ActorStudioKey
+import com.donnclab.kinetiframe.navigation.BottomNavDestination
+import com.donnclab.kinetiframe.navigation.EditorKey
+import com.donnclab.kinetiframe.navigation.ExitConfirmationDialog
+import com.donnclab.kinetiframe.navigation.ExportKey
+import com.donnclab.kinetiframe.navigation.LibraryKey
+import com.donnclab.kinetiframe.navigation.PackCreatorKey
+import com.donnclab.kinetiframe.navigation.ProjectGalleryKey
+import com.donnclab.kinetiframe.navigation.SettingsKey
+import com.donnclab.kinetiframe.project.data.db.AppDatabase
+import com.donnclab.kinetiframe.settings.AppPreferencesStore
+import com.donnclab.kinetiframe.settings.AppTheme
+import com.donnclab.kinetiframe.settings.LocalAppPreferences
+import com.donnclab.kinetiframe.settings.SettingsScreen
+import com.donnclab.kinetiframe.settings.SettingsViewModel
+import com.donnclab.kinetiframe.settings.StudioOrientation
+import com.donnclab.kinetiframe.studio.EditorScreen
+import com.donnclab.kinetiframe.studio.ui.color.ScreenColorPickerHost
 import java.io.File
 
 class MainActivity : ComponentActivity() {
@@ -176,12 +176,12 @@ class MainActivity : ComponentActivity() {
                                 // artifact (lifecycle-viewmodel-navigation3). Without
                                 // rememberViewModelStoreNavEntryDecorator, LocalViewModelStoreOwner inside
                                 // every entry resolves to this *Activity*, so a `viewModel()` call is
-                                // stored process-wide: the TimelineViewModel built for an actor sketch was
+                                // stored process-wide: the StudioViewModel built for an actor sketch was
                                 // handed straight back to the next project opened (same class, same
                                 // default key, same owner -> the factory never even ran, so the project's
                                 // own document and cache directories were silently discarded and the
                                 // actor's canvas persisted until the Activity died -- i.e. until an app
-                                // restart). It also meant TimelineViewModel.onCleared() never fired on
+                                // restart). It also meant StudioViewModel.onCleared() never fired on
                                 // leaving a screen, so the animation engine kept running and pooled
                                 // bitmaps/audio/video handles were never released. Scoping stores to the
                                 // NavEntry gives every destination its own store, cleared on pop.

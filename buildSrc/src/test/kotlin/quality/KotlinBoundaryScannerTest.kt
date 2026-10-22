@@ -45,13 +45,38 @@ class KotlinBoundaryScannerTest {
             import com.donnclab.kinetiframe.engine.rigging.SceneGraph
             import com.donnclab.kinetiframe.data.Repository
             import com.donnclab.kinetiframe.core.document.Stage
-            import com.donnclab.kinetiframe.ui.TimelineState
+            import com.donnclab.kinetiframe.ui.StudioState
             import androidx.lifecycle.ViewModel
             """.trimIndent(),
         )
         val findings = KotlinBoundaryScanner.scan(root, listOf("designsystem"))
         assertEquals(5, findings.size)
         assertTrue(findings.keys.all { it.startsWith("dependency|") })
+    }
+
+    @Test fun `library modules cannot reference app feature packages`() {
+        fixture("engine", "Bad.kt", "import com.donnclab.kinetiframe.studio.StudioState")
+        fixture("core", "Bad.kt", "val x = com.donnclab.kinetiframe.actors.data.ActorRepository()")
+        fixture(
+            "app",
+            "studio/Good.kt",
+            "package com.donnclab.kinetiframe.studio\nimport com.donnclab.kinetiframe.actors.ui.Card",
+        )
+        val findings = KotlinBoundaryScanner.scan(root, listOf("engine", "core", "app"))
+        assertEquals(2, findings.size)
+        assertTrue(findings.keys.all { it.startsWith("dependency|") && !it.contains("app/") })
+    }
+
+    @Test fun `app code cannot live in layer or module named packages`() {
+        fixture("app", "ui/Old.kt", "package com.donnclab.kinetiframe.ui.home")
+        fixture("app", "engine/Old.kt", "package com.donnclab.kinetiframe.engine")
+        fixture("app", "home/New.kt", "package com.donnclab.kinetiframe.home")
+        fixture("app", "Root.kt", "package com.donnclab.kinetiframe")
+        val findings = KotlinBoundaryScanner.scan(root, listOf("app"))
+        assertEquals(
+            setOf("com.donnclab.kinetiframe.ui.home", "com.donnclab.kinetiframe.engine"),
+            findings.keys.map { it.substringAfterLast('|') }.toSet(),
+        )
     }
 
     @Test fun `non UI modules cannot depend on design system types`() {

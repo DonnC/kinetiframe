@@ -10,10 +10,10 @@ or even a device to start.
 | --- | --- |
 | Colors, typography, spacing, shapes | `designsystem/.../designsystem/theme` |
 | A reusable control (dock buttons, sliders, chips) | `designsystem/.../designsystem/component` |
-| Library cards, details sheets, tabs | `app/.../ui/components/catalog`, `app/.../ui/library` |
-| The studio's toolbars, menus and timeline | `app/.../ui/components/dock`, `app/.../ui/components/timeline` |
-| A screen's layout or behavior | its feature package in `app/.../ui` |
-| Navigation, permissions, Activity setup | `app/.../MainActivity.kt`, `app/.../ui/navigation` |
+| Library cards, details sheets, tabs | `app/.../library/ui/catalog`, `app/.../library/ui` |
+| The studio's toolbars, menus and timeline | `app/.../studio/ui/dock`, `app/.../studio/ui/timeline` |
+| A screen's layout or behavior | its feature package in `app`, for example `app/.../home` |
+| Navigation, permissions, Activity setup | `app/.../MainActivity.kt`, `app/.../navigation` |
 
 Most screens still live in `app`. New shared controls go in `designsystem`. When a screen moves out
 of `app`, it goes to `presentation/.../presentation/<feature>` together with its state and

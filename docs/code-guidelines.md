@@ -56,6 +56,17 @@ the change is small enough.
 - Wire implementations together in `app` at lifecycle boundaries. No global service locator or
   singleton that hands out arbitrary services.
 
+## Packages
+
+- Group code by feature first: `studio`, `actors`, `library`, `project`, `audio` and so on.
+  Inside a feature, `ui`, `domain` and `data` subpackages hold the layers it needs. See the
+  [project architecture](architecture/decisions/project-architecture.md) decision.
+- A package name never repeats a module name. `com.donnclab.kinetiframe.engine` belongs only to
+  the `engine` module. `checkArchitecture` rejects `app` files in the old layer packages (`ui`,
+  `domain`, `data`, `engine`, `models`, `core`).
+- Preview fixtures and fake data live in the `preview` package and are used only by previews and
+  tests.
+
 ## Naming
 
 - Follow the [Kotlin coding conventions](https://kotlinlang.org/docs/coding-conventions.html) and
@@ -76,6 +87,9 @@ the change is small enough.
   never save a draft.
 - Do file and media work off the main thread. Never decode images or allocate bitmaps or paths
   inside a Compose draw phase.
+- Take dispatchers as constructor parameters, defaulting to `Dispatchers.IO` or
+  `Dispatchers.Default`, instead of naming them inline. Tests pass a test dispatcher so every
+  coroutine they start also finishes inside the test.
 - Give caches and bitmap pools a size limit and an owner who clears them.
 
 ## Saved files must keep opening

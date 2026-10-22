@@ -12,6 +12,8 @@ Before changing code, read:
 Then:
 
 - Branch from `develop` and open pull requests against it. Only maintainers merge into `main`.
+- Put code in its feature package (`studio`, `actors`, `library` and so on), as described in the
+  [project architecture](docs/architecture/decisions/project-architecture.md) decision.
 - Keep changes scoped to the task. Don't reformat or refactor unrelated code.
 - Keep files under 500 lines. Functions take at most 6 parameters and constructors 7 (data classes
   are exempt; composables count only required parameters). Never add entries to
