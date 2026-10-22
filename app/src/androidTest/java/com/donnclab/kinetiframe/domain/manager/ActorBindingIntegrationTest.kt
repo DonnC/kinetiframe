@@ -11,10 +11,10 @@ import com.donnclab.kinetiframe.engine.rigging.model.ActorTemplate
 import com.donnclab.kinetiframe.engine.rigging.render.PuppetRenderPlan
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
 import com.donnclab.kinetiframe.ui.SceneState
+import com.donnclab.kinetiframe.ui.StudioEffect
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineEffect
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import com.donnclab.kinetiframe.ui.actorDefinition
 import kotlinx.coroutines.delay
@@ -34,15 +34,15 @@ import org.junit.Test
  */
 class ActorBindingIntegrationTest {
     @Test fun extractionBindsSelectedRoleWithoutMovingSourcePixelsAndCancelReleasesTemporaryAsset() = runBlocking {
-        var state = TimelineState(
+        var state = StudioState(
             project = ProjectDocument(stage = StageDimensions(128, 128)),
             scene = SceneState(studioMode = StudioMode.RIG_SETUP),
         )
         val authoring = ActorStudioManager({ state }, { state = it(state) })
-        authoring.handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+        authoring.handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         state = state.copy(scene = state.scene.copy(selectedBoneId = "left_forearm"))
         val assets = RigAssetManager()
-        val failures = mutableListOf<TimelineEffect>()
+        val failures = mutableListOf<StudioEffect>()
         val manager =
             RiggingManager(this, assets, { state }, { state = it(state) }, failures::add, authoring::checkpoint)
         val source = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888)
@@ -69,14 +69,14 @@ class ActorBindingIntegrationTest {
             // The attachment survives a pose transaction, which remains instance-local.
             state = state.copy(scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK))
             val endpoint = RigGeometry.resolve(bound.sceneGraph).getValue("left_forearm").end
-            authoring.handle(TimelineIntent.Actor.Drag("left_forearm", endpoint + Offset(20f, -25f)))
-            authoring.handle(TimelineIntent.Actor.CommitDrag)
+            authoring.handle(StudioIntent.Actor.Drag("left_forearm", endpoint + Offset(20f, -25f)))
+            authoring.handle(StudioIntent.Actor.CommitDrag)
             assertTrue(state.activeActor()!!.pose.isNotEmpty())
-            authoring.handle(TimelineIntent.Actor.Undo)
+            authoring.handle(StudioIntent.Actor.Undo)
             assertTrue(state.activeActor()!!.pose.isEmpty())
-            authoring.handle(TimelineIntent.Actor.Redo)
+            authoring.handle(StudioIntent.Actor.Redo)
             assertTrue(state.activeActor()!!.pose.isNotEmpty())
-            authoring.handle(TimelineIntent.Actor.Undo)
+            authoring.handle(StudioIntent.Actor.Undo)
 
             state = state.copy(scene = state.scene.copy(studioMode = StudioMode.RIG_SETUP))
             manager.preparePivotPlacement(source, path, 0)
@@ -85,7 +85,7 @@ class ActorBindingIntegrationTest {
             manager.cancelPivot()
             assertEquals(1, assets.size())
             assertEquals(1, state.project.assets.size)
-            authoring.handle(TimelineIntent.Actor.Undo)
+            authoring.handle(StudioIntent.Actor.Undo)
             assertEquals(rest, state.actorDefinition())
         } finally {
             source.recycle()
@@ -95,19 +95,19 @@ class ActorBindingIntegrationTest {
 
     /**
      * Detaching or rebinding a texture must not recycle a bitmap an undo snapshot still needs. This exercises
-     * the real Android Bitmap, not a mock, through the exact manager wiring TimelineViewModel
+     * the real Android Bitmap, not a mock, through the exact manager wiring StudioViewModel
      * uses (RiggingManager's rebind reconciles through ActorStudioManager's reachable set).
      */
     @Test fun rebindingATextureRetainsThePreviousBitmapUntilUndoHistoryNoLongerNeedsIt() = runBlocking {
-        var state = TimelineState(
+        var state = StudioState(
             project = ProjectDocument(stage = StageDimensions(128, 128)),
             scene = SceneState(studioMode = StudioMode.RIG_SETUP),
         )
         val assets = RigAssetManager()
         val authoring = ActorStudioManager({ state }, { state = it(state) }, retainRuntimeAssets = assets::retainOnly)
-        authoring.handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+        authoring.handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         state = state.copy(scene = state.scene.copy(selectedBoneId = "left_forearm"))
-        val failures = mutableListOf<TimelineEffect>()
+        val failures = mutableListOf<StudioEffect>()
         val manager = RiggingManager(
             this,
             assets,
@@ -144,7 +144,7 @@ class ActorBindingIntegrationTest {
             // recycled firstBitmap right here, even though Undo is about to need it again.
             assertFalse("previous bitmap must survive while undo history still references it", firstBitmap.isRecycled)
 
-            authoring.handle(TimelineIntent.Actor.Undo)
+            authoring.handle(StudioIntent.Actor.Undo)
             assertEquals(
                 firstAssetId,
                 state.actorDefinition()!!.sceneGraph.bones.getValue("left_forearm").textureBinding!!.assetId,
@@ -157,7 +157,7 @@ class ActorBindingIntegrationTest {
 
             // Move forward again so the live document no longer references the first bitmap,
             // then drop history the way switching workspaces does; only now is it unreachable.
-            authoring.handle(TimelineIntent.Actor.Redo)
+            authoring.handle(StudioIntent.Actor.Redo)
             authoring.clearHistory()
             assertTrue("once no snapshot or live binding needs it, the sweep may recycle it", firstBitmap.isRecycled)
         } finally {

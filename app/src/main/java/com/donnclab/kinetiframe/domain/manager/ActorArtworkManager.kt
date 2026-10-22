@@ -4,10 +4,10 @@ import com.donnclab.kinetiframe.engine.rigging.model.ActorArtwork
 import com.donnclab.kinetiframe.engine.rigging.model.ActorGraphValidation
 import com.donnclab.kinetiframe.engine.rigging.model.ArtworkVariant
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
+import com.donnclab.kinetiframe.ui.StudioEffect
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineEffect
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import com.donnclab.kinetiframe.ui.actorDefinition
 import java.util.UUID
@@ -15,13 +15,13 @@ import java.util.UUID
 /** Attachment and discrete acting authoring. Library pixels are never mutated or referenced live. */
 class ActorArtworkManager(
     private val runtime: RigAssetManager,
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
     private val checkpoint: () -> Unit,
     private val reconcile: () -> Unit,
-    private val sendEffect: (TimelineEffect) -> Unit,
+    private val sendEffect: (StudioEffect) -> Unit,
 ) {
-    private fun canEdit(state: TimelineState) = !state.actor.isPerformanceAuthoring &&
+    private fun canEdit(state: StudioState) = !state.actor.isPerformanceAuthoring &&
         state.scene.studioMode in setOf(StudioMode.RIG_SETUP, StudioMode.RASTER_DRAWING)
 
     fun useDrawing(enabled: Boolean) {
@@ -91,7 +91,7 @@ class ActorArtworkManager(
     }
 
     /** One authoring transaction owns both layers and their bind. No special preview-only rig. */
-    fun commitDrawing(intent: TimelineIntent.Actor.CommitDrawing) {
+    fun commitDrawing(intent: StudioIntent.Actor.CommitDrawing) {
         val state = getState()
         val definition = state.actorDefinition()
         try {
@@ -134,11 +134,11 @@ class ActorArtworkManager(
         } catch (failure: Exception) {
             intent.ink.takeUnless { it.isRecycled }?.recycle()
             intent.colour.takeUnless { it.isRecycled }?.recycle()
-            sendEffect(TimelineEffect.ShowError(failure.message ?: "Could not bind drawing"))
+            sendEffect(StudioEffect.ShowError(failure.message ?: "Could not bind drawing"))
         }
     }
 
-    fun blendAttachment(intent: TimelineIntent.Actor.SetAttachmentBlend) {
+    fun blendAttachment(intent: StudioIntent.Actor.SetAttachmentBlend) {
         val state = getState()
         if (!canEdit(state)) return
         val definition = state.actorDefinition() ?: return
@@ -162,7 +162,7 @@ class ActorArtworkManager(
             }
             // Reuse the standard alignment transaction: checkpoint, validate, and reconcile once.
             commitUpdate(
-                TimelineIntent.Actor.UpdateArtwork(
+                StudioIntent.Actor.UpdateArtwork(
                     bone.id,
                     intent.variantId,
                     bone.artworkVariants[intent.variantId]?.name ?: bone.name,
@@ -171,13 +171,13 @@ class ActorArtworkManager(
                 replaceSkin = true,
             )
         } catch (error: Exception) {
-            sendEffect(TimelineEffect.ShowError(error.message ?: "Could not blend attachment"))
+            sendEffect(StudioEffect.ShowError(error.message ?: "Could not blend attachment"))
         }
     }
 
-    fun update(intent: TimelineIntent.Actor.UpdateArtwork) = commitUpdate(intent)
+    fun update(intent: StudioIntent.Actor.UpdateArtwork) = commitUpdate(intent)
 
-    private fun commitUpdate(intent: TimelineIntent.Actor.UpdateArtwork, replaceSkin: Boolean = false) {
+    private fun commitUpdate(intent: StudioIntent.Actor.UpdateArtwork, replaceSkin: Boolean = false) {
         val state = getState()
         if (!canEdit(state)) return
         val definition = state.actorDefinition() ?: return
@@ -220,11 +220,11 @@ class ActorArtworkManager(
             }
             reconcile()
         } catch (error: Exception) {
-            sendEffect(TimelineEffect.ShowError(error.message ?: "Could not edit artwork"))
+            sendEffect(StudioEffect.ShowError(error.message ?: "Could not edit artwork"))
         }
     }
 
-    fun remove(intent: TimelineIntent.Actor.RemoveArtwork) {
+    fun remove(intent: StudioIntent.Actor.RemoveArtwork) {
         val state = getState()
         if (!canEdit(state)) return
         val definition = state.actorDefinition() ?: return
@@ -281,7 +281,7 @@ class ActorArtworkManager(
         // The source pixels survive while Undo still references them.
         reconcile()
     }
-    fun attach(intent: TimelineIntent.Actor.AttachArtwork) {
+    fun attach(intent: StudioIntent.Actor.AttachArtwork) {
         val state = getState()
         val definition = state.actorDefinition()
         val bone = definition?.sceneGraph?.bones?.get(intent.partId)
@@ -384,7 +384,7 @@ class ActorArtworkManager(
             reconcile()
         } catch (error: Exception) {
             if (!intent.bitmap.isRecycled) intent.bitmap.recycle()
-            sendEffect(TimelineEffect.ShowError(error.message ?: "Could not attach artwork"))
+            sendEffect(StudioEffect.ShowError(error.message ?: "Could not attach artwork"))
         }
     }
 
@@ -398,7 +398,7 @@ class ActorArtworkManager(
         if (instance.artworkKeys.size >= 720 &&
             instance.artworkKeys.none { it.timeMicros == state.actor.previewTimeMicros }
         ) {
-            sendEffect(TimelineEffect.ShowError("This performance already has 720 artwork keys"))
+            sendEffect(StudioEffect.ShowError("This performance already has 720 artwork keys"))
             return
         }
         checkpoint()

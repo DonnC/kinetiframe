@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test
 
 class GridDefaultsTest {
     @Test fun `new workspaces use a uniform thirty pixel grid at eight percent opacity`() {
-        val canvas = TimelineState().canvas
+        val canvas = StudioState().canvas
         assertEquals(30f, canvas.gridSpacingHorizontal)
         assertEquals(30f, canvas.gridSpacingVertical)
         assertEquals(.08f, canvas.gridOpacity)
     }
 
     @Test fun `reset restores the same defaults after custom settings`() {
-        var state = TimelineState()
+        var state = StudioState()
         val manager = ViewManager { transform -> state = transform(state) }
         manager.setGridSpacingVertical(90f)
         manager.setGridSpacingHorizontal(15f)

@@ -11,7 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Rect
 import com.donnclab.kinetiframe.ui.components.canvas.SelectionTransformState
 
-/** UI-session resource, deliberately absent from TimelineState, caches, assets and saved state.
+/** UI-session resource, deliberately absent from StudioState, caches, assets and saved state.
  * Never recycle an exposed bitmap: RenderThread may still be reading the previous display list.
  * Dropping the one bounded reference lets Android reclaim it safely. */
 @Stable

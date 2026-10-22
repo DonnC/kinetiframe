@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.ui.actors
 
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 
 /** Only authored content is dirty; selection, scrubbing and viewport changes are not edits. */
-fun hasActorStudioChanges(initial: TimelineState?, current: TimelineState): Boolean {
+fun hasActorStudioChanges(initial: StudioState?, current: StudioState): Boolean {
     val definition = initial?.project?.puppetDefinitions?.values?.singleOrNull() ?: return false
     val original = initial.project.puppetInstances.values.firstOrNull { it.definitionId == definition.id }
     val edited = current.project.puppetInstances.values.firstOrNull { it.definitionId == definition.id }

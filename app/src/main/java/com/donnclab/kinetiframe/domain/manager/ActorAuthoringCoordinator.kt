@@ -4,18 +4,18 @@ import android.graphics.Bitmap
 import androidx.compose.ui.graphics.Path
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
 import com.donnclab.kinetiframe.ui.PerformanceTakePhase
+import com.donnclab.kinetiframe.ui.StudioEffect
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineEffect
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
-import com.donnclab.kinetiframe.ui.TimelineViewModel
+import com.donnclab.kinetiframe.ui.StudioState
+import com.donnclab.kinetiframe.ui.StudioViewModel
 import com.donnclab.kinetiframe.ui.activeActor
 import com.donnclab.kinetiframe.ui.actorPreviewDuration
 import kotlinx.coroutines.CoroutineScope
 
 /**
  * Facade over every manager involved in actor authoring: rig setup, pose/motion rehearsal,
- * preset auditioning, sample artwork, and pivot placement. [TimelineViewModel] talks to this one
+ * preset auditioning, sample artwork, and pivot placement. [StudioViewModel] talks to this one
  * class instead of wiring five separate managers itself -- that kept ballooning its own
  * constructor and, worse, meant the same "stop whatever the user was mid-gesture on" reset
  * sequence had to be copy-pasted at every call site that could interrupt authoring.
@@ -27,9 +27,9 @@ import kotlinx.coroutines.CoroutineScope
 class ActorAuthoringCoordinator(
     scope: CoroutineScope,
     rigAssetManager: RigAssetManager,
-    private val getState: () -> TimelineState,
-    updateState: ((TimelineState) -> TimelineState) -> Unit,
-    private val sendEffect: (TimelineEffect) -> Unit,
+    private val getState: () -> StudioState,
+    updateState: ((StudioState) -> StudioState) -> Unit,
+    private val sendEffect: (StudioEffect) -> Unit,
 ) {
     private val studio = ActorStudioManager(
         getState = getState,
@@ -91,20 +91,20 @@ class ActorAuthoringCoordinator(
     fun autoBindLayerContent(boneId: String, frameBitmap: android.graphics.Bitmap) =
         rigging.autoBindLayerContent(boneId, frameBitmap)
 
-    fun handleActor(intent: TimelineIntent.Actor) {
-        if (intent is TimelineIntent.Actor.CommitDrawing) {
+    fun handleActor(intent: StudioIntent.Actor) {
+        if (intent is StudioIntent.Actor.CommitDrawing) {
             recorder.cancel()
             motion.stop()
             artwork.commitDrawing(intent)
             return
         }
-        if (intent is TimelineIntent.Actor.UseDrawing) {
+        if (intent is StudioIntent.Actor.UseDrawing) {
             recorder.cancel()
             motion.stop()
             artwork.useDrawing(intent.enabled)
             return
         }
-        if (intent is TimelineIntent.Actor.SetDrawingOverlay) {
+        if (intent is StudioIntent.Actor.SetDrawingOverlay) {
             recorder.cancel()
             motion.stop()
             artwork.setDrawingOverlay(intent.partId, intent.enabled, intent.behind)
@@ -112,7 +112,7 @@ class ActorAuthoringCoordinator(
         }
         if (recorder.active) {
             when (intent) {
-                is TimelineIntent.Actor.Drag -> {
+                is StudioIntent.Actor.Drag -> {
                     if (!recorder.beforeDrag(intent)) {
                         studio.handle(intent)
                         recorder.afterDrag()
@@ -121,17 +121,17 @@ class ActorAuthoringCoordinator(
                     return
                 }
 
-                TimelineIntent.Actor.CommitDrag -> {
+                StudioIntent.Actor.CommitDrag -> {
                     recorder.release()
                     return
                 }
 
-                TimelineIntent.Actor.CancelDrag -> {
+                StudioIntent.Actor.CancelDrag -> {
                     recorder.cancel()
                     return
                 }
 
-                is TimelineIntent.Actor.SelectArtwork -> {
+                is StudioIntent.Actor.SelectArtwork -> {
                     recorder.selectArtwork(intent)
                     return
                 }
@@ -139,57 +139,57 @@ class ActorAuthoringCoordinator(
                 else -> recorder.cancel()
             }
         }
-        if (intent is TimelineIntent.Actor.AttachArtwork) {
+        if (intent is StudioIntent.Actor.AttachArtwork) {
             motion.stop()
             artwork.attach(intent)
             return
         }
-        if (intent is TimelineIntent.Actor.SelectArtwork) {
+        if (intent is StudioIntent.Actor.SelectArtwork) {
             motion.stop()
             artwork.select(intent.partId, intent.variantId)
             return
         }
-        if (intent is TimelineIntent.Actor.UpdateArtwork) {
+        if (intent is StudioIntent.Actor.UpdateArtwork) {
             motion.stop()
             artwork.update(intent)
             return
         }
-        if (intent is TimelineIntent.Actor.SetAttachmentBlend) {
+        if (intent is StudioIntent.Actor.SetAttachmentBlend) {
             motion.stop()
             artwork.blendAttachment(intent)
             return
         }
-        if (intent is TimelineIntent.Actor.RemoveArtwork) {
+        if (intent is StudioIntent.Actor.RemoveArtwork) {
             motion.stop()
             artwork.remove(intent)
             return
         }
-        if (intent is TimelineIntent.Actor.AddSampleArtwork) {
+        if (intent is StudioIntent.Actor.AddSampleArtwork) {
             if (getState().scene.studioMode == StudioMode.RIG_SETUP) sampleArtwork.add(intent.color)
             return
         }
         motion.stop()
-        if (intent is TimelineIntent.Actor.Create || intent == TimelineIntent.Actor.CancelDrag) {
-            preset.handle(TimelineIntent.ActorPreset.Cancel)
+        if (intent is StudioIntent.Actor.Create || intent == StudioIntent.Actor.CancelDrag) {
+            preset.handle(StudioIntent.ActorPreset.Cancel)
         }
-        if ((intent is TimelineIntent.Actor.Drag || intent == TimelineIntent.Actor.ResetPose) &&
+        if ((intent is StudioIntent.Actor.Drag || intent == StudioIntent.Actor.ResetPose) &&
             getState().scene.studioMode == StudioMode.ANIMATE_IK &&
             (getState().activeActor()?.motionPreset != null || getState().actor.presetPreview != null)
         ) {
-            sendEffect(TimelineEffect.ShowError("Remove the motion preset before recording manual poses."))
+            sendEffect(StudioEffect.ShowError("Remove the motion preset before recording manual poses."))
             return
         }
         if (getState().scene.pivotPlacement != null) rigging.cancelPivot()
         studio.handle(intent)
     }
 
-    fun handleMotion(intent: TimelineIntent.ActorMotion) {
+    fun handleMotion(intent: StudioIntent.ActorMotion) {
         val takeIntent =
-            intent == TimelineIntent.ActorMotion.StartTake || intent == TimelineIntent.ActorMotion.StopTake ||
-                intent == TimelineIntent.ActorMotion.KeepTake || intent == TimelineIntent.ActorMotion.Retake ||
-                intent == TimelineIntent.ActorMotion.CancelTake ||
-                intent is TimelineIntent.ActorMotion.SetTakeSmoothness ||
-                intent is TimelineIntent.ActorMotion.SetTakeMoveCharacter
+            intent == StudioIntent.ActorMotion.StartTake || intent == StudioIntent.ActorMotion.StopTake ||
+                intent == StudioIntent.ActorMotion.KeepTake || intent == StudioIntent.ActorMotion.Retake ||
+                intent == StudioIntent.ActorMotion.CancelTake ||
+                intent is StudioIntent.ActorMotion.SetTakeSmoothness ||
+                intent is StudioIntent.ActorMotion.SetTakeMoveCharacter
         if (takeIntent) {
             motion.stop()
             recorder.handle(intent)
@@ -198,7 +198,7 @@ class ActorAuthoringCoordinator(
         if (recorder.active &&
             !(
                 getState().actor.takePhase == PerformanceTakePhase.REVIEW &&
-                    (intent == TimelineIntent.ActorMotion.TogglePlayback || intent is TimelineIntent.ActorMotion.Scrub)
+                    (intent == StudioIntent.ActorMotion.TogglePlayback || intent is StudioIntent.ActorMotion.Scrub)
                 )
         ) {
             recorder.cancel()
@@ -206,19 +206,19 @@ class ActorAuthoringCoordinator(
         motion.handle(intent)
     }
 
-    fun handlePreset(intent: TimelineIntent.ActorPreset) {
+    fun handlePreset(intent: StudioIntent.ActorPreset) {
         recorder.cancel()
-        if (intent is TimelineIntent.ActorPreset.SetSpeed && intent.value.isFinite()) {
+        if (intent is StudioIntent.ActorPreset.SetSpeed && intent.value.isFinite()) {
             val before = getState()
             val fraction = before.actor.previewTimeMicros.toDouble() / before.actorPreviewDuration()
             motion.stop()
             preset.handle(intent)
-            motion.handle(TimelineIntent.ActorMotion.Scrub((fraction * getState().actorPreviewDuration()).toLong()))
-            if (before.actor.previewPlaying) motion.handle(TimelineIntent.ActorMotion.TogglePlayback)
+            motion.handle(StudioIntent.ActorMotion.Scrub((fraction * getState().actorPreviewDuration()).toLong()))
+            if (before.actor.previewPlaying) motion.handle(StudioIntent.ActorMotion.TogglePlayback)
             return
         }
-        if (intent !is TimelineIntent.ActorPreset.SetSpeed &&
-            intent !is TimelineIntent.ActorPreset.SetIntensity
+        if (intent !is StudioIntent.ActorPreset.SetSpeed &&
+            intent !is StudioIntent.ActorPreset.SetIntensity
         ) {
             motion.stop()
         }
@@ -233,9 +233,9 @@ class ActorAuthoringCoordinator(
     fun cancelInFlightAuthoring() {
         recorder.cancel()
         motion.stop()
-        preset.handle(TimelineIntent.ActorPreset.Cancel)
+        preset.handle(StudioIntent.ActorPreset.Cancel)
         rigging.cancelPivot()
-        studio.handle(TimelineIntent.Actor.CancelDrag)
+        studio.handle(StudioIntent.Actor.CancelDrag)
     }
 
     fun clearHistory() = studio.clearHistory()

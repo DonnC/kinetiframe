@@ -14,25 +14,25 @@ import com.composables.icons.lucide.Check
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 
 /** Same confirmation affordance as Fill: preview first, then explicit commit or cancel. */
 @Composable
-fun ConstructionShapeDock(state: TimelineState, onIntent: (TimelineIntent) -> Unit) {
+fun ConstructionShapeDock(state: StudioState, onIntent: (StudioIntent) -> Unit) {
     FloatingDock(
         initialOffset = state.constructionShape.dockOffset,
-        onOffsetChange = { onIntent(TimelineIntent.Construction.SetDockPosition(it)) },
+        onOffsetChange = { onIntent(StudioIntent.Construction.SetDockPosition(it)) },
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            IconButton(onClick = { onIntent(TimelineIntent.Construction.Confirm) }) {
+            IconButton(onClick = { onIntent(StudioIntent.Construction.Confirm) }) {
                 Icon(Lucide.Check, "Confirm shape", modifier = Modifier.size(22.dp), tint = EditorTokens.accent)
             }
-            IconButton(onClick = { onIntent(TimelineIntent.Construction.Cancel) }) {
+            IconButton(onClick = { onIntent(StudioIntent.Construction.Cancel) }) {
                 Icon(Lucide.X, "Cancel shape", modifier = Modifier.size(20.dp))
             }
         }

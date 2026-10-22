@@ -2,7 +2,7 @@ package com.donnclab.kinetiframe.engine.audio
 
 import com.donnclab.kinetiframe.domain.manager.AudioManager
 import com.donnclab.kinetiframe.engine.model.AudioClipPlacement
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -21,7 +21,7 @@ class AudioEnvelopeTest {
 
     @Test fun `splitting preserves fade gain on both sides without restarting envelope`() {
         var state =
-            TimelineState(
+            StudioState(
                 project = com.donnclab.kinetiframe.engine.model.ProjectDocument(
                     fps = 24,
                     audioClips = mapOf("a" to clip),

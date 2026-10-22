@@ -55,7 +55,7 @@ fun CanvasInputLayer(
     onTextNodeSelect: (String?) -> Unit,
     onSelectionAreaComplete: (Path?, Rect?, Float, com.donnclab.kinetiframe.engine.typography.FontRegistry?) -> Unit,
     onEraserCursorChange: (Offset?) -> Unit,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     onStrokeSettled: (List<TouchPoint>) -> Unit,
     onStrokeComplete: (List<TouchPoint>) -> Unit,
     onConstructionPreview: (List<List<TouchPoint>>) -> Unit = {},
@@ -96,7 +96,7 @@ fun CanvasInputLayer(
                     selectionPath.reset()
                     onSelectionRectChanged(null)
                     onEraserCursorChange(null)
-                    if (draggedBone != null) onIntent(TimelineIntent.Actor.CancelDrag)
+                    if (draggedBone != null) onIntent(StudioIntent.Actor.CancelDrag)
                     draggedBone = null
                     consumedTextSelection = false
                     activePointerSession.clear()
@@ -128,7 +128,7 @@ fun CanvasInputLayer(
                 if (studioMode != StudioMode.RASTER_DRAWING &&
                     (event.pointerCount > 1 || action == MotionEvent.ACTION_CANCEL)) {
                     rigGestureCancelled = true
-                    if (draggedBone != null) onIntent(TimelineIntent.Actor.CancelDrag)
+                    if (draggedBone != null) onIntent(StudioIntent.Actor.CancelDrag)
                     draggedBone = null
                     selectionPath.reset()
                     activeStroke.invalidate()
@@ -179,7 +179,7 @@ fun CanvasInputLayer(
 
                 if (studioMode != StudioMode.RASTER_DRAWING && activeTool == DrawingTool.BONE) {
                     if (action == MotionEvent.ACTION_UP && isWithinDocument) {
-                        onIntent(TimelineIntent.Rigging.AddBoneAt(mappedX, mappedY))
+                        onIntent(StudioIntent.Rigging.AddBoneAt(mappedX, mappedY))
                     }
                     if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
                         activePointerSession.end(event.getPointerId(activePointerIndex))
@@ -194,18 +194,18 @@ fun CanvasInputLayer(
                         MotionEvent.ACTION_DOWN -> {
                             draggedBone = onRigJointHit?.invoke(mappedPoint)
                             rigDownScreen = Offset(screenX, screenY)
-                            onIntent(TimelineIntent.Rigging.SelectBone(draggedBone?.removePrefix("origin:")?.removePrefix("artwork:")?.removePrefix("attachment:")))
+                            onIntent(StudioIntent.Rigging.SelectBone(draggedBone?.removePrefix("origin:")?.removePrefix("artwork:")?.removePrefix("attachment:")))
                             draggedBone?.takeIf { it.startsWith("artwork:") }?.let {
-                                onIntent(TimelineIntent.Actor.Drag(it, mappedPoint))
+                                onIntent(StudioIntent.Actor.Drag(it, mappedPoint))
                             }
                         }
                         MotionEvent.ACTION_MOVE -> draggedBone?.let {
                             if ((Offset(screenX, screenY) - rigDownScreen).getDistance() > 4f * displayDensity) {
-                                onIntent(TimelineIntent.Actor.Drag(it, mappedPoint))
+                                onIntent(StudioIntent.Actor.Drag(it, mappedPoint))
                             }
                         }
                         MotionEvent.ACTION_UP -> {
-                            onIntent(TimelineIntent.Actor.CommitDrag)
+                            onIntent(StudioIntent.Actor.CommitDrag)
                             draggedBone = null
                             activePointerSession.end(event.getPointerId(activePointerIndex))
                         }
@@ -229,7 +229,7 @@ fun CanvasInputLayer(
                         MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
                             val duration = event.eventTime - activePointerSession.startTime
                             if (duration < 250) {
-                                onIntent(TimelineIntent.Fill.SetPendingTap(mappedPoint))
+                                onIntent(StudioIntent.Fill.SetPendingTap(mappedPoint))
                                 activePointerSession.end(event.getPointerId(activePointerIndex))
                                 return@pointerInteropFilter true
                             }
@@ -246,8 +246,8 @@ fun CanvasInputLayer(
                                 val hitText = nodes.values.filterIsInstance<TextNode>().lastOrNull { node ->
                                     textHit(node, mappedPoint, displayDensity, fontRegistry)
                                 }
-                                if (hitText != null) onIntent(TimelineIntent.Text.TriggerEditDialog(hitText.id))
-                                else onIntent(TimelineIntent.Text.TriggerAddTextDialog(mappedX, mappedY))
+                                if (hitText != null) onIntent(StudioIntent.Text.TriggerEditDialog(hitText.id))
+                                else onIntent(StudioIntent.Text.TriggerAddTextDialog(mappedX, mappedY))
                                 activePointerSession.end(event.getPointerId(activePointerIndex))
                                 return@pointerInteropFilter true
                             }
@@ -285,7 +285,7 @@ fun CanvasInputLayer(
                                 selectionPath.close()
                                 sourceFrame?.let { frame ->
                                     onIntent(
-                                        TimelineIntent.Rigging.PreparePivotPlacement(
+                                        StudioIntent.Rigging.PreparePivotPlacement(
                                             sourceFrame = frame,
                                             lassoPath = Path().apply { addPath(selectionPath) }
                                         )
@@ -388,7 +388,7 @@ fun CanvasInputLayer(
                                 textHit(node, mappedPoint, displayDensity, fontRegistry)
                             }
                             if (hitText != null) {
-                                onIntent(TimelineIntent.Text.TriggerEditDialog(hitText.id))
+                                onIntent(StudioIntent.Text.TriggerEditDialog(hitText.id))
                                 lastTapTime = 0L // Reset to prevent triple tap as double double tap
                                 return@pointerInteropFilter true
                             }

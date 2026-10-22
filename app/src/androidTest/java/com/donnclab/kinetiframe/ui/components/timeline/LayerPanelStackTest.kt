@@ -5,7 +5,7 @@ import androidx.compose.ui.test.onNodeWithText
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.models.Layer
 import com.donnclab.kinetiframe.ui.LayerState
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import org.junit.Rule
 import org.junit.Test
 
@@ -19,7 +19,7 @@ class LayerPanelStackTest {
         )
         compose.setContent {
             KinetiFrameTheme {
-                LayerPanel(TimelineState(layers = LayerState(layers = layers)), {})
+                LayerPanel(StudioState(layers = LayerState(layers = layers)), {})
             }
         }
         compose.onNodeWithText("Main").assertExists()

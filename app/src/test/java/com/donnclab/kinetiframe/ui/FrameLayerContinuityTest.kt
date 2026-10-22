@@ -22,17 +22,17 @@ class FrameLayerContinuityTest {
             val back = Layer(id = "main", name = "Back", zIndex = 0)
             val front = Layer(id = "ink", name = "Ink", zIndex = 1)
             val stack = listOf(back, front)
-            val editor = TimelineViewModel(
+            val editor = StudioViewModel(
                 cacheDir = directory.toFile(),
                 engineDispatcher = dispatcher,
                 shouldInitialize = false,
-                initialEditorState = TimelineState(
+                initialEditorState = StudioState(
                     project = ProjectDocument(layers = stack),
                     layers = LayerState(layers = stack, frameLayers = mapOf(0 to stack), activeLayerIndex = 1),
                 ),
             )
             // Queue both taps before either asynchronous insertion runs.
-            repeat(2) { editor.handleIntent(TimelineIntent.Frame.AddFrame) }
+            repeat(2) { editor.handleIntent(StudioIntent.Frame.AddFrame) }
             testScheduler.advanceUntilIdle()
             val state = editor.state.value
             assertEquals(2, state.animation.currentFrame)

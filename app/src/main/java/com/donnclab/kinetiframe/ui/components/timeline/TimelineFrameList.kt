@@ -18,13 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 
 @Composable
 fun TimelineFrameList(
-    state: TimelineState,
-    onIntent: (TimelineIntent) -> Unit,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
     listState: LazyListState,
     thumbnails: Map<Int, Bitmap>,
     onContextRequested: (Int) -> Unit,
@@ -39,9 +39,9 @@ fun TimelineFrameList(
         state.animation.totalFrames,
         onStart = {
             onContextDismissed()
-            onIntent(TimelineIntent.Playback.Pause)
+            onIntent(StudioIntent.Playback.Pause)
         },
-        onFrame = { onIntent(TimelineIntent.Playback.SetCurrentFrame(it)) },
+        onFrame = { onIntent(StudioIntent.Playback.SetCurrentFrame(it)) },
     )
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -73,7 +73,7 @@ fun TimelineFrameList(
                                     onContextRequested(index)
                                 } else {
                                     onContextDismissed()
-                                    onIntent(TimelineIntent.Playback.SetCurrentFrame(index))
+                                    onIntent(StudioIntent.Playback.SetCurrentFrame(index))
                                 }
                             },
                         )
@@ -86,7 +86,7 @@ fun TimelineFrameList(
         // outside lazy items so track-to-frame scroll math never includes a fake frame.
         InlineAddFrame {
             onContextDismissed()
-            onAddFrame?.invoke() ?: onIntent(TimelineIntent.Frame.AddFrame)
+            onAddFrame?.invoke() ?: onIntent(StudioIntent.Frame.AddFrame)
         }
     }
 }

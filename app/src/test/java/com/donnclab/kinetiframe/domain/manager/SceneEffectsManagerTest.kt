@@ -6,14 +6,14 @@ import com.donnclab.kinetiframe.engine.model.AudioClipPlacement
 import com.donnclab.kinetiframe.engine.model.AudioTrackSettings
 import com.donnclab.kinetiframe.engine.model.ProjectDocument
 import com.donnclab.kinetiframe.engine.model.VideoClipPlacement
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class SceneEffectsManagerTest {
-    private var state = TimelineState()
+    private var state = StudioState()
     private val manager = SceneEffectsManager({ state }, { state = it(state) })
 
     @Test fun `camera edits undo redo without replacing viewport`() {

@@ -54,13 +54,13 @@ import com.donnclab.kinetiframe.engine.camera.CameraPose
 import com.donnclab.kinetiframe.engine.camera.CameraRanges
 import com.donnclab.kinetiframe.engine.camera.CameraShot
 import com.donnclab.kinetiframe.engine.camera.SceneCamera
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.delay
 
 @Composable
 internal fun CameraShotEditor(
     initial: CameraShot,
-    state: TimelineState,
+    state: StudioState,
     onDismiss: () -> Unit,
     onSave: (CameraShot) -> Unit,
     onRemove: () -> Unit,
@@ -244,7 +244,7 @@ private fun CameraShotEditorPreview() {
     com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme {
         CameraShotEditor(
             SceneCamera.preset("preview", CameraAction.PUSH_IN, 0, 24, CameraPose()),
-            TimelineState(animation = com.donnclab.kinetiframe.ui.AnimationState(totalFrames = 48)),
+            StudioState(animation = com.donnclab.kinetiframe.ui.AnimationState(totalFrames = 48)),
             {
             },
             {},

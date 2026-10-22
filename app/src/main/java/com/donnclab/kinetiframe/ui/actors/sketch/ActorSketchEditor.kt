@@ -34,7 +34,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.engine.model.PuppetDefinition
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 
 /** A draft closes only after the actor document accepts its source IDs; import/budget failures
  * leave the original editable draft open. Discard never modifies the saved actor. */
@@ -45,7 +45,7 @@ fun ActorSketchEditor(
     stageHeight: Int,
     assets: RigAssetManager,
     acceptedInkId: String?,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     onDismiss: () -> Unit,
 ) {
     val drawing = remember { definition.sceneGraph.drawing }
@@ -123,7 +123,7 @@ fun ActorSketchEditor(
                 is ActorSketchEffect.Bound -> {
                     pendingInk = effect.drawing.inkAssetId
                     onIntent(
-                        TimelineIntent.Actor.CommitDrawing(
+                        StudioIntent.Actor.CommitDrawing(
                             definition.id,
                             effect.ink,
                             effect.colour,

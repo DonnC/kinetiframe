@@ -2,13 +2,13 @@ package com.donnclab.kinetiframe.domain.manager
 
 import com.donnclab.kinetiframe.engine.model.ActorPlacementReference
 import com.donnclab.kinetiframe.engine.rigging.model.Transform
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import java.util.UUID
 
 /** Pure project-reference mutations; actor math and files remain outside the FxF editor. */
 class ActorPlacementManager(
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
 ) {
     fun add(reference: ActorPlacementReference) {
         require(reference.placementId !in getState().project.actorPlacements) { "Placement already exists" }

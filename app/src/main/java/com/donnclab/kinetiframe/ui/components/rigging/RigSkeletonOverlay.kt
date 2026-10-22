@@ -16,7 +16,7 @@ import com.donnclab.kinetiframe.engine.rigging.render.toMatrix
 import com.donnclab.kinetiframe.ui.ActorEditTarget
 import com.donnclab.kinetiframe.ui.PerformanceTakePhase
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import com.donnclab.kinetiframe.ui.actorDefinition
 
@@ -24,7 +24,7 @@ private data class RigSegment(val id: String, val start: Offset, val end: Offset
 
 /** Constant screen-size endpoint handles remain usable at every viewport zoom. */
 @Composable
-fun RigSkeletonOverlay(state: TimelineState, modifier: Modifier = Modifier) {
+fun RigSkeletonOverlay(state: StudioState, modifier: Modifier = Modifier) {
     val definition = state.actorDefinition(true)
     val instance = state.activeActor()
     val segments = remember(definition, instance, state.canvas.matrixValues) {
@@ -107,5 +107,5 @@ fun RigSkeletonOverlay(state: TimelineState, modifier: Modifier = Modifier) {
 @Preview(widthDp = 640, heightDp = 360)
 @Composable
 private fun RigSkeletonOverlayPreview() {
-    RigSkeletonOverlay(TimelineState())
+    RigSkeletonOverlay(StudioState())
 }

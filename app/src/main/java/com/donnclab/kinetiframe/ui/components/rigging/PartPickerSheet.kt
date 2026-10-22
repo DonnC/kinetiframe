@@ -24,8 +24,8 @@ import com.composables.icons.lucide.Plus
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.engine.model.PuppetDefinition
 import com.donnclab.kinetiframe.models.LayerType
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.currentFrameLayers
 
 /**
@@ -36,9 +36,9 @@ import com.donnclab.kinetiframe.ui.currentFrameLayers
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PartPickerSheet(
-    state: TimelineState,
+    state: StudioState,
     definition: PuppetDefinition,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     onDismiss: () -> Unit,
     onReferenceClick: (() -> Unit)? = null,
 ) {
@@ -57,7 +57,7 @@ fun PartPickerSheet(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f),
                     )
-                    IconButton(onClick = { onIntent(TimelineIntent.Layer.AddLayer(LayerType.RASTER)) }) {
+                    IconButton(onClick = { onIntent(StudioIntent.Layer.AddLayer(LayerType.RASTER)) }) {
                         Icon(
                             Lucide.Plus,
                             "Add layer",
@@ -94,9 +94,9 @@ fun PartPickerSheet(
                     isActive = actualIndex == state.layers.activeLayerIndex,
                     isVisible = layer.isVisible,
                     modifier = Modifier.padding(horizontal = 20.dp),
-                    onClick = { onIntent(TimelineIntent.Layer.SelectLayer(actualIndex)) },
+                    onClick = { onIntent(StudioIntent.Layer.SelectLayer(actualIndex)) },
                     onVisibilityClick = {
-                        onIntent(TimelineIntent.Layer.SetLayerVisibility(actualIndex, !layer.isVisible))
+                        onIntent(StudioIntent.Layer.SetLayerVisibility(actualIndex, !layer.isVisible))
                     },
                 )
             }
@@ -104,9 +104,9 @@ fun PartPickerSheet(
                 ActorPartTree(
                     graph = definition.sceneGraph,
                     selectedPartId = state.scene.selectedBoneId,
-                    onPartSelected = { onIntent(TimelineIntent.Rigging.SelectBone(it)) },
+                    onPartSelected = { onIntent(StudioIntent.Rigging.SelectBone(it)) },
                     onVisibilityToggle = { boneId, visible ->
-                        onIntent(TimelineIntent.Actor.SetPartVisibility(boneId, visible))
+                        onIntent(StudioIntent.Actor.SetPartVisibility(boneId, visible))
                     },
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
                 )

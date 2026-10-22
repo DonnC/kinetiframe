@@ -54,8 +54,8 @@ import com.composables.icons.lucide.Save
 import com.composables.icons.lucide.Spline
 import com.composables.icons.lucide.Undo
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.actorDefinition
 import com.donnclab.kinetiframe.ui.components.common.ContextIconAction
 import com.donnclab.kinetiframe.ui.components.common.ContextIconButton
@@ -64,8 +64,8 @@ import com.donnclab.kinetiframe.ui.components.rigging.StudioModePill
 
 @Composable
 fun EditorTopBar(
-    state: TimelineState,
-    onIntent: (TimelineIntent) -> Unit,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
     onHomeClick: (() -> Unit)?,
     onStudioClick: () -> Unit,
     onGridSettingsClick: () -> Unit,
@@ -127,7 +127,7 @@ fun EditorTopBar(
                 onHomeClick?.let { home -> ContextIconButton(ContextIconAction(Icons.Filled.Home, "Home", home)) }
                 StudioModePill(
                     current = state.scene.studioMode,
-                    onSelect = { onIntent(TimelineIntent.Rigging.SetStudioMode(it)) },
+                    onSelect = { onIntent(StudioIntent.Rigging.SetStudioMode(it)) },
                     modifier = Modifier.padding(end = 8.dp),
                 )
             }
@@ -145,23 +145,23 @@ fun EditorTopBar(
                         Lucide.Bone,
                         "Edit skeleton joints",
                     ) {
-                        onIntent(TimelineIntent.Rigging.SetStudioMode(com.donnclab.kinetiframe.ui.StudioMode.RIG_SETUP))
+                        onIntent(StudioIntent.Rigging.SetStudioMode(com.donnclab.kinetiframe.ui.StudioMode.RIG_SETUP))
                         onIntent(
-                            TimelineIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.JOINT_END),
+                            StudioIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.JOINT_END),
                         )
                     }
                     com.donnclab.kinetiframe.ui.components.rigging.ActorToolButton(Lucide.Undo, "Undo") {
-                        onIntent(TimelineIntent.Draw.Undo)
+                        onIntent(StudioIntent.Draw.Undo)
                     }
                     com.donnclab.kinetiframe.ui.components.rigging.ActorToolButton(Lucide.Redo, "Redo") {
-                        onIntent(TimelineIntent.Draw.Redo)
+                        onIntent(StudioIntent.Draw.Redo)
                     }
                 } else {
                     IconButton(onClick = {
-                        onIntent(TimelineIntent.Draw.Undo)
+                        onIntent(StudioIntent.Draw.Undo)
                     }) { Icon(Lucide.Undo, "Undo", tint = EditorTokens.dark) }
                     IconButton(onClick = {
-                        onIntent(TimelineIntent.Draw.Redo)
+                        onIntent(StudioIntent.Draw.Redo)
                     }) { Icon(Lucide.Redo, "Redo", tint = EditorTokens.muted) }
                 }
             }
@@ -215,13 +215,13 @@ fun EditorTopBar(
                         add(
                             ContextIconAction(Lucide.Copy, "Copy", {
                                 onOverflowMenuToggle(false)
-                                onIntent(TimelineIntent.Selection.Copy)
+                                onIntent(StudioIntent.Selection.Copy)
                             }),
                         )
                         add(
                             ContextIconAction(Lucide.ClipboardPaste, "Paste", {
                                 onOverflowMenuToggle(false)
-                                onIntent(TimelineIntent.Selection.Paste)
+                                onIntent(StudioIntent.Selection.Paste)
                             }),
                         )
                         add(
@@ -234,7 +234,7 @@ fun EditorTopBar(
                             add(
                                 ContextIconAction(Lucide.Maximize, "Reset view", {
                                     onOverflowMenuToggle(false)
-                                    onIntent(TimelineIntent.View.ResetCanvasTransform)
+                                    onIntent(StudioIntent.View.ResetCanvasTransform)
                                 }),
                             )
                         }
@@ -255,13 +255,13 @@ fun EditorTopBar(
                             add(
                                 ContextIconAction(Lucide.Bone, "Skeleton overlay", {
                                     onOverflowMenuToggle(false)
-                                    onIntent(TimelineIntent.Rigging.ToggleSkeletonOverlay)
+                                    onIntent(StudioIntent.Rigging.ToggleSkeletonOverlay)
                                 }, selected = state.scene.skeletonOverlayVisible),
                             )
                         }
                         add(
                             ContextIconAction(Lucide.Maximize, "Safe frame", {
-                                onIntent(TimelineIntent.View.ToggleSafeFrame)
+                                onIntent(StudioIntent.View.ToggleSafeFrame)
                                 onOverflowMenuToggle(false)
                             }, selected = state.canvas.showSafeFrame),
                         )
@@ -289,9 +289,9 @@ fun EditorTopBar(
                 )
                 EditorAssetMenu(
                     assetsExpanded, { assetsExpanded = false }, state.project.backgroundAssetId != null,
-                    onSetBackgroundClick, { onIntent(TimelineIntent.Background.Remove) },
+                    onSetBackgroundClick, { onIntent(StudioIntent.Background.Remove) },
                     onAddBackgroundToLibraryClick, onAddCurrentFrameToLibraryClick,
-                    state.canvas.backgroundVisible, { onIntent(TimelineIntent.Background.ToggleVisibility) },
+                    state.canvas.backgroundVisible, { onIntent(StudioIntent.Background.ToggleVisibility) },
                 )
             }
         }
@@ -310,7 +310,7 @@ fun EditorTopBar(
 @Composable
 private fun EditorTopBarPreview() {
     EditorTopBar(
-        TimelineState(), {}, {}, {}, {}, {},
+        StudioState(), {}, {}, {}, {}, {},
         showOverflowMenu = false, onOverflowMenuToggle = {}, onFocusCanvas = {},
     )
 }

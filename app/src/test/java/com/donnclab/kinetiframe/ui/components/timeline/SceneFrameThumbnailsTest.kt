@@ -7,7 +7,7 @@ import com.donnclab.kinetiframe.engine.model.ProjectDocument
 import com.donnclab.kinetiframe.engine.model.StageDimensions
 import com.donnclab.kinetiframe.models.Layer
 import com.donnclab.kinetiframe.ui.LayerState
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -44,7 +44,7 @@ class SceneFrameThumbnailsTest {
                 mouth.setPixel(0, 0, Color.BLACK)
                 cache.putFrame("mouth", frame, mouth)
             }
-            val state = TimelineState(
+            val state = StudioState(
                 project = ProjectDocument(stage = StageDimensions(512, 256)),
                 layers = LayerState(
                     layers = listOf(Layer("Body", id = "body"), Layer("Mouth", id = "mouth", zIndex = 1)),

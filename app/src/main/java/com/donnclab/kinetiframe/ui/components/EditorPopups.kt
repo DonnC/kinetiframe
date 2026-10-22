@@ -15,16 +15,16 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.engine.cache.FrameCacheManager
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.dock.GridOptionsContent
 import com.donnclab.kinetiframe.ui.components.timeline.LayerPanel
 import com.donnclab.kinetiframe.ui.components.timeline.OnionOptionsContent
 
 @Composable
 fun LayerPanelPopup(
-    state: TimelineState,
-    onIntent: (TimelineIntent) -> Unit,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
     cacheManager: FrameCacheManager?,
     onDismiss: () -> Unit,
 ) {
@@ -52,7 +52,7 @@ fun LayerPanelPopup(
 }
 
 @Composable
-fun GridOptionsPopup(state: TimelineState, onIntent: (TimelineIntent) -> Unit, onDismiss: () -> Unit) {
+fun GridOptionsPopup(state: StudioState, onIntent: (StudioIntent) -> Unit, onDismiss: () -> Unit) {
     Popup(
         alignment = Alignment.TopEnd,
         offset = IntOffset(-16, 56),
@@ -76,7 +76,7 @@ fun GridOptionsPopup(state: TimelineState, onIntent: (TimelineIntent) -> Unit, o
 }
 
 @Composable
-fun OnionOptionsPopup(state: TimelineState, onIntent: (TimelineIntent) -> Unit, onDismiss: () -> Unit) {
+fun OnionOptionsPopup(state: StudioState, onIntent: (StudioIntent) -> Unit, onDismiss: () -> Unit) {
     Popup(
         alignment = Alignment.TopEnd,
         offset = IntOffset(-16, 56),

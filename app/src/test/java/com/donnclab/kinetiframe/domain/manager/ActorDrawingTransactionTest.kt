@@ -12,9 +12,9 @@ import com.donnclab.kinetiframe.engine.rigging.model.DrawingSource
 import com.donnclab.kinetiframe.engine.rigging.model.SkinSourceSize
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
 import com.donnclab.kinetiframe.ui.SceneState
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.actorDefinition
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -29,11 +29,11 @@ import org.robolectric.annotation.Config
 @Config(sdk = [34], manifest = Config.NONE)
 class ActorDrawingTransactionTest {
     @Test fun `source and fitted joints apply atomically and undo together`() {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         val runtime = RigAssetManager()
         try {
             val studio = ActorStudioManager({ state }, { state = it(state) }, runtime::retainOnly)
-            studio.handle(TimelineIntent.Actor.Create(ActorTemplate.CUSTOM))
+            studio.handle(StudioIntent.Actor.Create(ActorTemplate.CUSTOM))
             val definition = state.actorDefinition()!!
             val rest = com.donnclab.kinetiframe.engine.rigging.math.ActorPoseEditor.moveOrigin(
                 definition.sceneGraph,
@@ -56,7 +56,7 @@ class ActorDrawingTransactionTest {
                     state
                 }, { state = it(state) }, studio::checkpoint, studio::reconcileRuntimeAssets, {})
             manager.commitDrawing(
-                TimelineIntent.Actor.CommitDrawing(
+                StudioIntent.Actor.CommitDrawing(
                     definition.id,
                     Bitmap.createBitmap(16, 16, Bitmap.Config.ARGB_8888),
                     Bitmap.createBitmap(16, 16, Bitmap.Config.ARGB_8888),
@@ -66,7 +66,7 @@ class ActorDrawingTransactionTest {
             )
             assertEquals(rest.bones, state.actorDefinition()!!.sceneGraph.bones)
             assertEquals(drawing, state.actorDefinition()!!.sceneGraph.drawing)
-            studio.handle(TimelineIntent.Actor.Undo)
+            studio.handle(StudioIntent.Actor.Undo)
             assertEquals(definition.sceneGraph, state.actorDefinition()!!.sceneGraph)
         } finally {
             runtime.clear()
@@ -74,11 +74,11 @@ class ActorDrawingTransactionTest {
     }
 
     @Test fun `whole drawing commits as one transaction and undo preserves both sources`() {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         val runtime = RigAssetManager()
         try {
             val studio = ActorStudioManager({ state }, { state = it(state) }, runtime::retainOnly)
-            studio.handle(TimelineIntent.Actor.Create(ActorTemplate.CUSTOM))
+            studio.handle(StudioIntent.Actor.Create(ActorTemplate.CUSTOM))
             val definition = state.actorDefinition()!!
             val manager =
                 ActorArtworkManager(runtime, {
@@ -96,7 +96,7 @@ class ActorDrawingTransactionTest {
                 ),
             )
             manager.commitDrawing(
-                TimelineIntent.Actor.CommitDrawing(
+                StudioIntent.Actor.CommitDrawing(
                     definition.id,
                     Bitmap.createBitmap(16, 16, Bitmap.Config.ARGB_8888),
                     Bitmap.createBitmap(16, 16, Bitmap.Config.ARGB_8888),
@@ -104,12 +104,12 @@ class ActorDrawingTransactionTest {
                 ),
             )
             assertEquals(drawing, state.actorDefinition()!!.sceneGraph.drawing)
-            studio.handle(TimelineIntent.Actor.Undo)
+            studio.handle(StudioIntent.Actor.Undo)
             assertNull(state.actorDefinition()!!.sceneGraph.drawing)
             assertFalse(runtime.getAsset("ink")!!.isRecycled)
-            studio.handle(TimelineIntent.Actor.Redo)
+            studio.handle(StudioIntent.Actor.Redo)
             assertEquals(drawing, state.actorDefinition()!!.sceneGraph.drawing)
-            studio.handle(TimelineIntent.Actor.Drag("origin:root", androidx.compose.ui.geometry.Offset(100f, 200f)))
+            studio.handle(StudioIntent.Actor.Drag("origin:root", androidx.compose.ui.geometry.Offset(100f, 200f)))
             val preview = state.actor.previewGraph!!
             val points = com.donnclab.kinetiframe.engine.rigging.math.ArtworkSkinning.deform(
                 preview.drawing!!.skin,
@@ -127,16 +127,16 @@ class ActorDrawingTransactionTest {
                     .001f,
                 )
             }
-            studio.handle(TimelineIntent.Actor.CommitDrag)
+            studio.handle(StudioIntent.Actor.CommitDrag)
             assertEquals(drawing.inkAssetId, state.actorDefinition()!!.sceneGraph.drawing!!.inkAssetId)
             manager.setDrawingOverlay("root", true)
             assertEquals(setOf("root"), state.actorDefinition()!!.sceneGraph.drawing!!.overlayParts)
             manager.setDrawingOverlay("root", true, behind = true)
             assertTrue(state.actorDefinition()!!.sceneGraph.drawing!!.overlayParts.isEmpty())
             assertEquals(setOf("root"), state.actorDefinition()!!.sceneGraph.drawing!!.underlayParts)
-            studio.handle(TimelineIntent.Actor.Undo)
+            studio.handle(StudioIntent.Actor.Undo)
             assertEquals(setOf("root"), state.actorDefinition()!!.sceneGraph.drawing!!.overlayParts)
-            studio.handle(TimelineIntent.Actor.Undo)
+            studio.handle(StudioIntent.Actor.Undo)
             assertTrue(state.actorDefinition()!!.sceneGraph.drawing!!.overlayParts.isEmpty())
             manager.useDrawing(false)
             assertFalse(state.actorDefinition()!!.sceneGraph.drawing!!.enabled)

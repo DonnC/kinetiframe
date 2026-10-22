@@ -19,11 +19,11 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 
 /** Playback configuration is contextual, not a second permanent timeline row. */
 @Composable
-fun TimelineSpeedMenu(fps: Int, onIntent: (TimelineIntent) -> Unit) {
+fun TimelineSpeedMenu(fps: Int, onIntent: (StudioIntent) -> Unit) {
     var open by remember { mutableStateOf(false) }
     Box {
         TextButton(

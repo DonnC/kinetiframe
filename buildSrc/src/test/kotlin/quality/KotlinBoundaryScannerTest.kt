@@ -45,7 +45,7 @@ class KotlinBoundaryScannerTest {
             import com.donnclab.kinetiframe.engine.rigging.SceneGraph
             import com.donnclab.kinetiframe.data.Repository
             import com.donnclab.kinetiframe.core.document.Stage
-            import com.donnclab.kinetiframe.ui.TimelineState
+            import com.donnclab.kinetiframe.ui.StudioState
             import androidx.lifecycle.ViewModel
             """.trimIndent(),
         )

@@ -3,7 +3,7 @@ package com.donnclab.kinetiframe.domain.manager
 import com.donnclab.kinetiframe.models.Layer
 import com.donnclab.kinetiframe.models.LayerType
 import com.donnclab.kinetiframe.ui.LayerState
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -12,7 +12,7 @@ import org.junit.Test
 class LayerManagerTest {
     @Test
     fun `adding puppet layer creates a definition and scene instance`() {
-        var state = TimelineState(
+        var state = StudioState(
             project = com.donnclab.kinetiframe.engine.model.ProjectDocument(
                 layers = listOf(Layer("Main", id = "main")),
             ),

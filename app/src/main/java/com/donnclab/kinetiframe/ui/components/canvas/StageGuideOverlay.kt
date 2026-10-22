@@ -14,11 +14,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.engine.model.SafeFrameRatio
 import com.donnclab.kinetiframe.engine.model.safeFrame
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 
 /** Non-interactive document-space stage and export-safe guides. */
 @Composable
-fun StageGuideOverlay(state: TimelineState, modifier: Modifier = Modifier) {
+fun StageGuideOverlay(state: StudioState, modifier: Modifier = Modifier) {
     // The paper renderer already supplies a neutral edge. Do not draw a second,
     // coloured stage boundary (which incorrectly looked like a selection outline).
     if (!state.canvas.showSafeFrame) return
@@ -46,4 +46,4 @@ fun StageGuideOverlay(state: TimelineState, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-private fun StageGuideOverlayPreview() = KinetiFrameTheme { StageGuideOverlay(TimelineState()) }
+private fun StageGuideOverlayPreview() = KinetiFrameTheme { StageGuideOverlay(StudioState()) }

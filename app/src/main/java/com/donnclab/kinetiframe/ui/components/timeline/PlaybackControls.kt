@@ -17,12 +17,12 @@ import com.composables.icons.lucide.Play
 import com.composables.icons.lucide.SkipBack
 import com.composables.icons.lucide.SkipForward
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 
 @Composable
 fun PlaybackControls(
     isPlaying: Boolean,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,
     compact: Boolean = false,
 ) {
@@ -33,14 +33,14 @@ fun PlaybackControls(
         ) {
             if (!compact) {
                 IconButton(onClick = {
-                    onIntent(TimelineIntent.Playback.PreviousFrame)
+                    onIntent(StudioIntent.Playback.PreviousFrame)
                 }, modifier = Modifier.size(40.dp, 48.dp)) {
                     Icon(Lucide.SkipBack, "Prev", tint = EditorTokens.dark, modifier = Modifier.size(18.dp))
                 }
             }
             IconButton(
                 onClick = {
-                    if (isPlaying) onIntent(TimelineIntent.Playback.Pause) else onIntent(TimelineIntent.Playback.Play)
+                    if (isPlaying) onIntent(StudioIntent.Playback.Pause) else onIntent(StudioIntent.Playback.Play)
                 },
                 modifier = Modifier.size(40.dp, 48.dp),
             ) {
@@ -53,7 +53,7 @@ fun PlaybackControls(
             }
             if (!compact) {
                 IconButton(onClick = {
-                    onIntent(TimelineIntent.Playback.NextFrame)
+                    onIntent(StudioIntent.Playback.NextFrame)
                 }, modifier = Modifier.size(40.dp, 48.dp)) {
                     Icon(Lucide.SkipForward, "Next", tint = EditorTokens.dark, modifier = Modifier.size(18.dp))
                 }

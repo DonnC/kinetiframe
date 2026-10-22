@@ -21,51 +21,51 @@ import com.composables.icons.lucide.Scissors
 import com.composables.icons.lucide.Trash2
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.ui.SelectionInteractionMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 
 @Composable
 fun SelectionActionMenu(
     expanded: Boolean,
     onDismiss: () -> Unit,
-    state: TimelineState,
-    onIntent: (TimelineIntent) -> Unit,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
 ) {
     DropdownMenu(expanded, onDismissRequest = onDismiss) {
         Row {
             SelectionAction(Lucide.Move, "Move selection", {
                 onDismiss()
-                onIntent(TimelineIntent.Selection.SetInteractionMode(SelectionInteractionMode.MOVE))
+                onIntent(StudioIntent.Selection.SetInteractionMode(SelectionInteractionMode.MOVE))
             }, state.selection.interactionMode == SelectionInteractionMode.MOVE, toggle = true)
             SelectionAction(Icons.Filled.Transform, "Transform selection", {
                 onDismiss()
-                onIntent(TimelineIntent.Selection.SetInteractionMode(SelectionInteractionMode.TRANSFORM))
+                onIntent(StudioIntent.Selection.SetInteractionMode(SelectionInteractionMode.TRANSFORM))
             }, state.selection.interactionMode == SelectionInteractionMode.TRANSFORM, toggle = true)
         }
         Row {
             SelectionAction(Lucide.Copy, "Copy", {
                 onDismiss()
-                onIntent(TimelineIntent.Selection.Copy)
+                onIntent(StudioIntent.Selection.Copy)
             })
             SelectionAction(Lucide.Scissors, "Cut", {
                 onDismiss()
-                onIntent(TimelineIntent.Selection.Cut)
+                onIntent(StudioIntent.Selection.Cut)
             })
             SelectionAction(Lucide.Trash2, "Delete", {
                 onDismiss()
-                onIntent(TimelineIntent.Selection.Delete)
+                onIntent(StudioIntent.Selection.Delete)
             })
         }
         Row {
             SelectionAction(Icons.Filled.AspectRatio, "Lock proportions", {
-                onIntent(TimelineIntent.Selection.SetAspectLock(!state.selection.lockAspectRatio))
+                onIntent(StudioIntent.Selection.SetAspectLock(!state.selection.lockAspectRatio))
             }, state.selection.lockAspectRatio, toggle = true)
             SelectionAction(Icons.Filled.Transform, "Skew side handles", {
-                onIntent(TimelineIntent.Selection.SetSkewMode(!state.selection.skewMode))
+                onIntent(StudioIntent.Selection.SetSkewMode(!state.selection.skewMode))
             }, state.selection.skewMode, toggle = true)
             SelectionAction(Lucide.RotateCcw, "Reset transform", {
                 onDismiss()
-                onIntent(TimelineIntent.Selection.ResetTransform)
+                onIntent(StudioIntent.Selection.ResetTransform)
             })
         }
     }
@@ -93,5 +93,5 @@ private fun SelectionAction(
 @Preview(showBackground = true)
 @Composable
 private fun SelectionActionsPreview() {
-    KinetiFrameTheme { SelectionActionMenu(true, {}, TimelineState(), {}) }
+    KinetiFrameTheme { SelectionActionMenu(true, {}, StudioState(), {}) }
 }

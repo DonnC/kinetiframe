@@ -26,8 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.domain.manager.ActorMotionManager
 import com.donnclab.kinetiframe.ui.PerformanceTakePhase
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import com.donnclab.kinetiframe.ui.actorDefinition
 import com.donnclab.kinetiframe.ui.actorPreviewDuration
@@ -36,8 +36,8 @@ import kotlin.math.roundToLong
 /** Compact gesture timeline: frame-facing controls over a durable, time-based performance. */
 @Composable
 fun ActorPoseTimeline(
-    state: TimelineState,
-    onIntent: (TimelineIntent) -> Unit,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,
     assets: com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager? = null,
 ) {
@@ -90,22 +90,22 @@ fun ActorPoseTimeline(
                         ActorMotionManager.MAX_DURATION_MICROS,
                         frameMicros,
                     ) {
-                        onIntent(TimelineIntent.ActorMotion.SetDuration(it))
+                        onIntent(StudioIntent.ActorMotion.SetDuration(it))
                     }
                     val previous = rulerKeys.lastOrNull { it.timeMicros < state.actor.previewTimeMicros }
                     val next = rulerKeys.firstOrNull { it.timeMicros > state.actor.previewTimeMicros }
                     ActorToolButton(Icons.Default.SkipPrevious, "Previous pose key", previous != null) {
-                        previous?.let { onIntent(TimelineIntent.ActorMotion.Scrub(it.timeMicros)) }
+                        previous?.let { onIntent(StudioIntent.ActorMotion.Scrub(it.timeMicros)) }
                     }
                     ActorToolButton(Icons.Default.SkipNext, "Next pose key", next != null) {
-                        next?.let { onIntent(TimelineIntent.ActorMotion.Scrub(it.timeMicros)) }
+                        next?.let { onIntent(StudioIntent.ActorMotion.Scrub(it.timeMicros)) }
                     }
                     ActorToolButton(
                         if (state.actor.previewPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                         "Play or pause actor preview",
                         rulerKeys.isNotEmpty() || !state.activeActor()?.rotationCurves.isNullOrEmpty() || hasPreset,
                     ) {
-                        onIntent(TimelineIntent.ActorMotion.TogglePlayback)
+                        onIntent(StudioIntent.ActorMotion.TogglePlayback)
                     }
                     ActorMotionTimingMenu(state, onIntent, enabled = !hasPreset)
                     val contact = state.actorDefinition()?.sceneGraph?.let {
@@ -122,21 +122,21 @@ fun ActorPoseTimeline(
                                 state.actor.previewTimeMicros,
                             ),
                     ) {
-                        onIntent(TimelineIntent.ActorMotion.ToggleContact)
+                        onIntent(StudioIntent.ActorMotion.ToggleContact)
                     }
                     ActorToolButton(Icons.Default.Add, "Record pose key", !hasPreset) {
-                        onIntent(TimelineIntent.ActorMotion.RecordKey)
+                        onIntent(StudioIntent.ActorMotion.RecordKey)
                     }
                     ActorToolButton(
                         Icons.Default.DeleteOutline,
                         "Delete pose key",
                         !hasPreset && keys.any { it.timeMicros == state.actor.previewTimeMicros },
                     ) {
-                        onIntent(TimelineIntent.ActorMotion.DeleteKey)
+                        onIntent(StudioIntent.ActorMotion.DeleteKey)
                     }
                     if (artworkKeys.any { it.timeMicros == state.actor.previewTimeMicros }) {
                         ActorToolButton(Icons.Default.DeleteOutline, "Delete artwork key") {
-                            onIntent(TimelineIntent.ActorMotion.DeleteArtworkKey)
+                            onIntent(StudioIntent.ActorMotion.DeleteArtworkKey)
                         }
                     }
                 }
@@ -152,7 +152,7 @@ fun ActorPoseTimeline(
                     if (!taking ||
                         state.actor.takePhase == PerformanceTakePhase.REVIEW
                     ) {
-                        onIntent(TimelineIntent.ActorMotion.Scrub(it))
+                        onIntent(StudioIntent.ActorMotion.Scrub(it))
                     }
                 },
                 modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
@@ -164,5 +164,5 @@ fun ActorPoseTimeline(
 @Preview(widthDp = 500)
 @Composable
 private fun ActorPoseTimelinePreview() {
-    ActorPoseTimeline(TimelineState(), {})
+    ActorPoseTimeline(StudioState(), {})
 }

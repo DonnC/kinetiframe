@@ -18,8 +18,8 @@ import com.donnclab.kinetiframe.engine.rigging.model.Transform
 import com.donnclab.kinetiframe.engine.rigging.texture.JointProcessor
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
 import com.donnclab.kinetiframe.engine.rigging.texture.TextureExtractor
-import com.donnclab.kinetiframe.ui.TimelineEffect
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioEffect
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import com.donnclab.kinetiframe.ui.actorDefinition
 import com.donnclab.kinetiframe.ui.currentFrameLayers
@@ -36,9 +36,9 @@ import kotlin.math.floor
 class RiggingManager(
     private val scope: CoroutineScope,
     private val rigAssetManager: RigAssetManager,
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
-    private val sendEffect: (TimelineEffect) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
+    private val sendEffect: (StudioEffect) -> Unit,
     private val checkpoint: () -> Unit = {},
     /**
      * Sweeps runtime bitmaps down to what the live document plus undo/redo history still need
@@ -53,7 +53,7 @@ class RiggingManager(
         val definition = getState().actorDefinition()
         val targetBoneId = getState().scene.selectedBoneId
         if (definition?.sceneGraph?.bones?.containsKey(targetBoneId) != true) {
-            sendEffect(TimelineEffect.ShowError("Select a named part in the inspector before extracting its artwork."))
+            sendEffect(StudioEffect.ShowError("Select a named part in the inspector before extracting its artwork."))
             return
         }
         val generation = ++extractionGeneration
@@ -110,7 +110,7 @@ class RiggingManager(
             } catch (cancelled: kotlinx.coroutines.CancellationException) {
                 throw cancelled
             } catch (error: Exception) {
-                sendEffect(TimelineEffect.ShowError(error.message ?: "Unable to prepare cutout"))
+                sendEffect(StudioEffect.ShowError(error.message ?: "Unable to prepare cutout"))
             } finally {
                 // Cancellation may happen between worker completion and delivery to the main dispatcher.
                 if (!installed) registeredId?.let(rigAssetManager::releaseAsset)

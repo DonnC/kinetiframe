@@ -39,9 +39,9 @@ class AssetUxControlsTest {
     }
 
     @Test fun compactSelectionActionsPreserveCopyIntent() {
-        var intent: TimelineIntent? = null
-        compose.setContent { KinetiFrameTheme { SelectionActionMenu(true, {}, TimelineState(), { intent = it }) } }
+        var intent: StudioIntent? = null
+        compose.setContent { KinetiFrameTheme { SelectionActionMenu(true, {}, StudioState(), { intent = it }) } }
         compose.onNodeWithContentDescription("Copy").performClick()
-        assertEquals(TimelineIntent.Selection.Copy, intent)
+        assertEquals(StudioIntent.Selection.Copy, intent)
     }
 }

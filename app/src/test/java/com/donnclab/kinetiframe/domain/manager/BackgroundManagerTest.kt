@@ -3,8 +3,8 @@ package com.donnclab.kinetiframe.domain.manager
 import android.graphics.Bitmap
 import com.donnclab.kinetiframe.engine.asset.ProjectAssetManager
 import com.donnclab.kinetiframe.engine.model.AssetKind
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,7 +40,7 @@ class BackgroundManagerTest {
     private val testScope = TestScope(testDispatcher)
     private lateinit var storageDir: File
     private lateinit var assets: ProjectAssetManager
-    private var state = TimelineState()
+    private var state = StudioState()
     private val errors = mutableListOf<String>()
     private lateinit var pendingOperations: PendingOperations
 
@@ -65,7 +65,7 @@ class BackgroundManagerTest {
             mkdir()
         }
         assets = ProjectAssetManager()
-        state = TimelineState()
+        state = StudioState()
         errors.clear()
         pendingOperations = PendingOperations()
     }
@@ -78,7 +78,7 @@ class BackgroundManagerTest {
 
     @Test
     fun `save barrier waits for accepted background import`() {
-        manager().handle(TimelineIntent.Background.SetImage(bitmap()))
+        manager().handle(StudioIntent.Background.SetImage(bitmap()))
         var savedAssetId: String? = null
         testScope.launch {
             pendingOperations.awaitIdle()
@@ -92,7 +92,7 @@ class BackgroundManagerTest {
 
     @Test
     fun `setting an image registers it as the project's background`() {
-        manager().handle(TimelineIntent.Background.SetImage(bitmap(8, 6)))
+        manager().handle(StudioIntent.Background.SetImage(bitmap(8, 6)))
         testScope.advanceUntilIdle()
 
         val assetId = requireNotNull(state.project.backgroundAssetId)
@@ -110,13 +110,13 @@ class BackgroundManagerTest {
     @Test
     fun `replacing the background releases the previous bitmap and drops its project asset entry`() {
         val mgr = manager()
-        mgr.handle(TimelineIntent.Background.SetImage(bitmap()))
+        mgr.handle(StudioIntent.Background.SetImage(bitmap()))
         testScope.advanceUntilIdle()
         val firstAssetId = requireNotNull(state.project.backgroundAssetId)
-        mgr.handle(TimelineIntent.Background.ToggleVisibility)
+        mgr.handle(StudioIntent.Background.ToggleVisibility)
         assertFalse(state.canvas.backgroundVisible)
 
-        mgr.handle(TimelineIntent.Background.SetImage(bitmap()))
+        mgr.handle(StudioIntent.Background.SetImage(bitmap()))
         testScope.advanceUntilIdle()
         val secondAssetId = requireNotNull(state.project.backgroundAssetId)
         assertTrue("a newly replaced background starts visible", state.canvas.backgroundVisible)
@@ -130,11 +130,11 @@ class BackgroundManagerTest {
     @Test
     fun `removing the background clears the reference and releases the bitmap`() {
         val mgr = manager()
-        mgr.handle(TimelineIntent.Background.SetImage(bitmap()))
+        mgr.handle(StudioIntent.Background.SetImage(bitmap()))
         testScope.advanceUntilIdle()
         val assetId = requireNotNull(state.project.backgroundAssetId)
 
-        mgr.handle(TimelineIntent.Background.Remove)
+        mgr.handle(StudioIntent.Background.Remove)
         testScope.advanceUntilIdle()
 
         assertNull(state.project.backgroundAssetId)
@@ -144,14 +144,14 @@ class BackgroundManagerTest {
 
     @Test
     fun `removing when there is no background is a no-op`() {
-        manager().handle(TimelineIntent.Background.Remove)
+        manager().handle(StudioIntent.Background.Remove)
         testScope.advanceUntilIdle()
         assertNull(state.project.backgroundAssetId)
     }
 
     @Test fun `saved background restores into a fresh runtime cache with the same identity and pixels`() {
         val image = bitmap(8, 6).apply { eraseColor(android.graphics.Color.MAGENTA) }
-        manager().handle(TimelineIntent.Background.SetImage(image))
+        manager().handle(StudioIntent.Background.SetImage(image))
         testScope.advanceUntilIdle()
         val id = requireNotNull(state.project.backgroundAssetId)
         val files = com.donnclab.kinetiframe.data.actor.ActorFileStore(File(storageDir, "documents"))
@@ -175,7 +175,7 @@ class BackgroundManagerTest {
         )
         assertTrue(saved is com.donnclab.kinetiframe.data.actor.ActorStoreResult.Value)
         val reopened = repository.load(project.id) as com.donnclab.kinetiframe.data.actor.ActorStoreResult.Value
-        state = TimelineState(project = reopened.value.second.project)
+        state = StudioState(project = reopened.value.second.project)
         assets = ProjectAssetManager()
         val revision = assets.revision.value
         manager().restore()
@@ -190,7 +190,7 @@ class BackgroundManagerTest {
     }
 
     @Test fun `missing or corrupt saved background reports an error without deleting metadata`() {
-        manager().handle(TimelineIntent.Background.SetImage(bitmap()))
+        manager().handle(StudioIntent.Background.SetImage(bitmap()))
         testScope.advanceUntilIdle()
         val id = requireNotNull(state.project.backgroundAssetId)
         val file = File(requireNotNull(state.project.assets[id]?.sourcePath))
@@ -211,14 +211,14 @@ class BackgroundManagerTest {
     @Test fun `failed import cannot publish a background that only exists in memory`() {
         storageDir.deleteRecursively()
         storageDir.writeText("blocks storage directory")
-        manager().handle(TimelineIntent.Background.SetImage(bitmap()))
+        manager().handle(StudioIntent.Background.SetImage(bitmap()))
         testScope.advanceUntilIdle()
         assertNull(state.project.backgroundAssetId)
         assertTrue(errors.single().contains("not saved"))
     }
 
     @Test fun `restore cannot resurrect an image removed while decoding`() {
-        manager().handle(TimelineIntent.Background.SetImage(bitmap()))
+        manager().handle(StudioIntent.Background.SetImage(bitmap()))
         testScope.advanceUntilIdle()
         val id = requireNotNull(state.project.backgroundAssetId)
         assets = ProjectAssetManager()
@@ -232,7 +232,7 @@ class BackgroundManagerTest {
             { state },
             { state = it(state) },
             decode = {
-                restoring.handle(TimelineIntent.Background.Remove)
+                restoring.handle(StudioIntent.Background.Remove)
                 decoded
             },
         )
@@ -257,7 +257,7 @@ class BackgroundManagerTest {
 
     @Test fun `superseded import followed by failed import preserves the previous background`() {
         val original = bitmap()
-        manager().handle(TimelineIntent.Background.SetImage(original))
+        manager().handle(StudioIntent.Background.SetImage(original))
         testScope.advanceUntilIdle()
         val originalId = requireNotNull(state.project.backgroundAssetId)
         val blocked = File(storageDir, "background-blocked.png").apply { mkdirs() }
@@ -273,8 +273,8 @@ class BackgroundManagerTest {
             id = { ids.next() },
             onError = errors::add,
         )
-        importing.handle(TimelineIntent.Background.SetImage(bitmap()))
-        importing.handle(TimelineIntent.Background.SetImage(bitmap()))
+        importing.handle(StudioIntent.Background.SetImage(bitmap()))
+        importing.handle(StudioIntent.Background.SetImage(bitmap()))
         testScope.advanceUntilIdle()
         assertEquals(originalId, state.project.backgroundAssetId)
         assertTrue(assets.getAsset(originalId) === original)
@@ -285,20 +285,20 @@ class BackgroundManagerTest {
 
     @Test fun `replacement and removal retain files still referenced by the last saved document`() {
         val importing = manager()
-        importing.handle(TimelineIntent.Background.SetImage(bitmap()))
+        importing.handle(StudioIntent.Background.SetImage(bitmap()))
         testScope.advanceUntilIdle()
         val savedProject = state.project
         val originalId = requireNotNull(savedProject.backgroundAssetId)
         val originalFile = File(requireNotNull(savedProject.assets[originalId]?.sourcePath))
-        importing.handle(TimelineIntent.Background.SetImage(bitmap()))
+        importing.handle(StudioIntent.Background.SetImage(bitmap()))
         testScope.advanceUntilIdle()
         val secondId = requireNotNull(state.project.backgroundAssetId)
         val secondFile = File(requireNotNull(state.project.assets[secondId]?.sourcePath))
-        importing.handle(TimelineIntent.Background.Remove)
+        importing.handle(StudioIntent.Background.Remove)
         testScope.advanceUntilIdle()
         assertTrue(originalFile.isFile)
         assertTrue(secondFile.isFile)
-        state = TimelineState(project = savedProject)
+        state = StudioState(project = savedProject)
         assets = ProjectAssetManager()
         manager().restore()
         testScope.advanceUntilIdle()

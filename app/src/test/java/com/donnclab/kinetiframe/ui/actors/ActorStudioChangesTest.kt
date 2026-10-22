@@ -6,18 +6,18 @@ import com.donnclab.kinetiframe.engine.rigging.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.engine.rigging.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.engine.rigging.presets.RotationChannel
 import com.donnclab.kinetiframe.ui.SceneState
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class ActorStudioChangesTest {
-    private fun initial(): TimelineState {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
-        ActorStudioManager({ state }, { state = it(state) }).handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+    private fun initial(): StudioState {
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        ActorStudioManager({ state }, { state = it(state) }).handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         return state
     }
 

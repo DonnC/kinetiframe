@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import com.donnclab.kinetiframe.ui.actors.ActorReferenceSession
 
-/** Main-thread UI resources, never part of TimelineState, disk caches or saved-state handles. */
+/** Main-thread UI resources, never part of StudioState, disk caches or saved-state handles. */
 @Stable
 class FrameReferenceSession(heapBytes: Long = Runtime.getRuntime().maxMemory()) {
     private val index = FrameReferenceIndex<ActorReferenceSession>(minOf(16L * 1024 * 1024, heapBytes / 16)) {

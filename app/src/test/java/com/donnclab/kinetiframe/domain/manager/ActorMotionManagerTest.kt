@@ -3,9 +3,9 @@ package com.donnclab.kinetiframe.domain.manager
 import com.donnclab.kinetiframe.engine.rigging.model.ActorTemplate
 import com.donnclab.kinetiframe.ui.PerformanceTakePhase
 import com.donnclab.kinetiframe.ui.SceneState
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import com.donnclab.kinetiframe.ui.actorDefinition
 import com.donnclab.kinetiframe.ui.actorPreviewDuration
@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class ActorMotionManagerTest {
     @Test fun `review loops only the recorded take instead of the whole performance`() = runTest {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
-        ActorStudioManager({ state }, { state = it(state) }).handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        ActorStudioManager({ state }, { state = it(state) }).handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         val actor = state.activeActor()!!
         state = state.copy(
             scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK),
@@ -55,7 +55,7 @@ class ActorMotionManagerTest {
                 testScheduler.currentTime *
                     1000
             })
-        manager.handle(TimelineIntent.ActorMotion.TogglePlayback)
+        manager.handle(StudioIntent.ActorMotion.TogglePlayback)
         advanceTimeBy(1500)
         runCurrent()
         assertTrue(state.actor.previewTimeMicros in 40_480_000L..40_520_000L)
@@ -64,8 +64,8 @@ class ActorMotionManagerTest {
     }
 
     @Test fun `preset rehearsal uses its period and one shots hold then restart on play`() = runTest {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
-        ActorStudioManager({ state }, { state = it(state) }).handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        ActorStudioManager({ state }, { state = it(state) }).handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         val instance = state.activeActor()!!
         val recipe = com.donnclab.kinetiframe.engine.rigging.presets.ActorMotionPreset(
             id = "test",
@@ -100,12 +100,12 @@ class ActorMotionManagerTest {
                     1000
             })
         assertEquals(800_000L, state.actorPreviewDuration())
-        manager.handle(TimelineIntent.ActorMotion.TogglePlayback)
+        manager.handle(StudioIntent.ActorMotion.TogglePlayback)
         advanceTimeBy(1000)
         runCurrent()
         assertFalse(state.actor.previewPlaying)
         assertEquals(800_000L, state.actor.previewTimeMicros)
-        manager.handle(TimelineIntent.ActorMotion.TogglePlayback)
+        manager.handle(StudioIntent.ActorMotion.TogglePlayback)
         runCurrent()
         assertEquals(0L, state.actor.previewTimeMicros)
         manager.stop()
@@ -122,7 +122,7 @@ class ActorMotionManagerTest {
                         ),
             ),
         )
-        manager.handle(TimelineIntent.ActorMotion.TogglePlayback)
+        manager.handle(StudioIntent.ActorMotion.TogglePlayback)
         advanceTimeBy(850)
         runCurrent()
         assertTrue(state.actor.previewPlaying)
@@ -131,9 +131,9 @@ class ActorMotionManagerTest {
     }
 
     @Test fun `performance authoring permits undo redo of duration and recorded poses`() = runTest {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         val authoring = ActorStudioManager({ state }, { state = it(state) })
-        authoring.handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+        authoring.handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         authoring.clearHistory()
         state = state.copy(
             scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK),
@@ -141,41 +141,41 @@ class ActorMotionManagerTest {
         )
         val rest = state.actorDefinition()
         val manager = ActorMotionManager(backgroundScope, { state }, { state = it(state) }, authoring::checkpoint)
-        manager.handle(TimelineIntent.ActorMotion.SetDuration(3_000_000))
-        authoring.handle(TimelineIntent.Actor.Undo)
+        manager.handle(StudioIntent.ActorMotion.SetDuration(3_000_000))
+        authoring.handle(StudioIntent.Actor.Undo)
         assertEquals(2_000_000L, state.actor.performanceDurationMicros)
-        authoring.handle(TimelineIntent.Actor.Redo)
+        authoring.handle(StudioIntent.Actor.Redo)
         assertEquals(3_000_000L, state.actor.performanceDurationMicros)
-        manager.handle(TimelineIntent.ActorMotion.RecordKey)
-        authoring.handle(TimelineIntent.Actor.Undo)
+        manager.handle(StudioIntent.ActorMotion.RecordKey)
+        authoring.handle(StudioIntent.Actor.Undo)
         assertTrue(state.activeActor()!!.poseKeys.isEmpty())
-        authoring.handle(TimelineIntent.Actor.Redo)
+        authoring.handle(StudioIntent.Actor.Redo)
         assertEquals(1, state.activeActor()!!.poseKeys.size)
         assertEquals(rest, state.actorDefinition())
-        authoring.handle(TimelineIntent.Actor.Unbind)
+        authoring.handle(StudioIntent.Actor.Unbind)
         assertEquals(rest, state.actorDefinition())
     }
 
     @Test fun `duration is frame-authorable and cannot discard an existing key`() = runTest {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         val authoring = ActorStudioManager({ state }, { state = it(state) })
-        authoring.handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+        authoring.handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         state = state.copy(scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK))
         val manager = ActorMotionManager(backgroundScope, { state }, { state = it(state) }, authoring::checkpoint)
 
-        manager.handle(TimelineIntent.ActorMotion.SetDuration(3_000_000L))
+        manager.handle(StudioIntent.ActorMotion.SetDuration(3_000_000L))
         assertEquals(3_000_000L, state.actorPreviewDuration())
-        manager.handle(TimelineIntent.ActorMotion.Scrub(3_000_000L))
-        manager.handle(TimelineIntent.ActorMotion.RecordKey)
-        manager.handle(TimelineIntent.ActorMotion.SetDuration(1_000_000L))
+        manager.handle(StudioIntent.ActorMotion.Scrub(3_000_000L))
+        manager.handle(StudioIntent.ActorMotion.RecordKey)
+        manager.handle(StudioIntent.ActorMotion.SetDuration(1_000_000L))
 
         assertEquals(3_000_000L, state.actorPreviewDuration())
     }
 
     @Test fun `record scrub playback and stop use isolated actor time`() = runTest {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         val authoring = ActorStudioManager({ state }, { state = it(state) })
-        authoring.handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+        authoring.handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         state = state.copy(scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK))
         val sceneTime = state.animation
         val manager = ActorMotionManager(
@@ -185,11 +185,11 @@ class ActorMotionManagerTest {
             authoring::checkpoint,
             clockMicros = { testScheduler.currentTime * 1000 },
         )
-        manager.handle(TimelineIntent.ActorMotion.RecordKey)
-        manager.handle(TimelineIntent.ActorMotion.Scrub(1_000_000))
-        manager.handle(TimelineIntent.ActorMotion.RecordKey)
+        manager.handle(StudioIntent.ActorMotion.RecordKey)
+        manager.handle(StudioIntent.ActorMotion.Scrub(1_000_000))
+        manager.handle(StudioIntent.ActorMotion.RecordKey)
         assertEquals(2, state.activeActor()!!.poseKeys.size)
-        manager.handle(TimelineIntent.ActorMotion.TogglePlayback)
+        manager.handle(StudioIntent.ActorMotion.TogglePlayback)
         runCurrent()
         advanceTimeBy(200)
         runCurrent()
@@ -199,8 +199,8 @@ class ActorMotionManagerTest {
         advanceTimeBy(100)
         assertEquals(stopped, state.actor.previewTimeMicros)
         assertEquals(sceneTime, state.animation)
-        manager.handle(TimelineIntent.ActorMotion.Scrub(1_000_000))
-        manager.handle(TimelineIntent.ActorMotion.DeleteKey)
+        manager.handle(StudioIntent.ActorMotion.Scrub(1_000_000))
+        manager.handle(StudioIntent.ActorMotion.DeleteKey)
         assertEquals(1, state.activeActor()!!.poseKeys.size)
     }
 }

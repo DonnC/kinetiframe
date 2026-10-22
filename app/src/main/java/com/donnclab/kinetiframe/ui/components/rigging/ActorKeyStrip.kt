@@ -9,16 +9,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 
 /** Exact key selection avoids guessing a slider position to remove a key. */
 @Composable
-fun ActorKeyStrip(state: TimelineState, onIntent: (TimelineIntent) -> Unit) {
+fun ActorKeyStrip(state: StudioState, onIntent: (StudioIntent) -> Unit) {
     Row(Modifier.horizontalScroll(rememberScrollState())) {
         state.activeActor()?.poseKeys.orEmpty().forEach { key ->
-            TextButton(onClick = { onIntent(TimelineIntent.ActorMotion.Scrub(key.timeMicros)) }) {
+            TextButton(onClick = { onIntent(StudioIntent.ActorMotion.Scrub(key.timeMicros)) }) {
                 Text("◆ ${"%.2f".format(key.timeMicros / 1_000_000.0)}s", style = MaterialTheme.typography.labelSmall)
             }
         }
@@ -28,5 +28,5 @@ fun ActorKeyStrip(state: TimelineState, onIntent: (TimelineIntent) -> Unit) {
 @Preview
 @Composable
 private fun ActorKeyStripPreview() {
-    ActorKeyStrip(TimelineState(), {})
+    ActorKeyStrip(StudioState(), {})
 }

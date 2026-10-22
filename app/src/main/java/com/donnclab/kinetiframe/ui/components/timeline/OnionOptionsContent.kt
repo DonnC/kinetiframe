@@ -37,13 +37,13 @@ import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.StandardSlider
 import com.donnclab.kinetiframe.ui.components.dock.ColorPicker
 
 @Composable
-fun OnionOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit, onDismiss: () -> Unit) {
+fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onDismiss: () -> Unit) {
     val accentColor = EditorTokens.accent
     Column(
         modifier = Modifier
@@ -75,7 +75,7 @@ fun OnionOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
-                    onClick = { onIntent(TimelineIntent.OnionSkin.Reset) },
+                    onClick = { onIntent(StudioIntent.OnionSkin.Reset) },
                     modifier = Modifier.size(28.dp),
                 ) {
                     Icon(
@@ -87,7 +87,7 @@ fun OnionOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit
                 }
                 Switch(
                     checked = state.onionSkin.enabled,
-                    onCheckedChange = { onIntent(TimelineIntent.OnionSkin.SetEnabled(it)) },
+                    onCheckedChange = { onIntent(StudioIntent.OnionSkin.SetEnabled(it)) },
                     modifier = Modifier.scale(0.72f),
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.White,
@@ -161,7 +161,7 @@ fun OnionOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit
             value = state.onionSkin.opacity,
             valueDisplay = "${(state.onionSkin.opacity * 100).toInt()}%",
             range = 0.05f..1f,
-            onValueChange = { onIntent(TimelineIntent.OnionSkin.SetOpacity(it)) },
+            onValueChange = { onIntent(StudioIntent.OnionSkin.SetOpacity(it)) },
         )
 
         Spacer(Modifier.height(12.dp))
@@ -172,7 +172,7 @@ fun OnionOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit
             valueDisplay = "${state.onionSkin.depthBefore}",
             range = 0f..4f,
             steps = 3,
-            onValueChange = { onIntent(TimelineIntent.OnionSkin.SetFramesBefore(it.toInt())) },
+            onValueChange = { onIntent(StudioIntent.OnionSkin.SetFramesBefore(it.toInt())) },
         )
 
         Spacer(Modifier.height(12.dp))
@@ -183,7 +183,7 @@ fun OnionOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit
             valueDisplay = "${state.onionSkin.depthAfter}",
             range = 0f..4f,
             steps = 3,
-            onValueChange = { onIntent(TimelineIntent.OnionSkin.SetFramesAfter(it.toInt())) },
+            onValueChange = { onIntent(StudioIntent.OnionSkin.SetFramesAfter(it.toInt())) },
         )
 
         Spacer(Modifier.height(16.dp))
@@ -200,7 +200,7 @@ fun OnionOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit
                     color = EditorTokens.muted,
                     fontWeight = FontWeight.SemiBold,
                 )
-                ColorPicker(state.onionSkin.colorBefore) { onIntent(TimelineIntent.OnionSkin.SetColorBefore(it)) }
+                ColorPicker(state.onionSkin.colorBefore) { onIntent(StudioIntent.OnionSkin.SetColorBefore(it)) }
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
@@ -209,7 +209,7 @@ fun OnionOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit
                     color = EditorTokens.muted,
                     fontWeight = FontWeight.SemiBold,
                 )
-                ColorPicker(state.onionSkin.colorAfter) { onIntent(TimelineIntent.OnionSkin.SetColorAfter(it)) }
+                ColorPicker(state.onionSkin.colorAfter) { onIntent(StudioIntent.OnionSkin.SetColorAfter(it)) }
             }
         }
     }

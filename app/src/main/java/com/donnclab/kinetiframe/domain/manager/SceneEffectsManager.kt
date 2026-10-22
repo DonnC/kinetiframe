@@ -2,13 +2,13 @@ package com.donnclab.kinetiframe.domain.manager
 
 import com.donnclab.kinetiframe.engine.camera.CameraShot
 import com.donnclab.kinetiframe.engine.model.ProjectDocument
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 
 /** Bounded non-destructive effect history. Retains references, not decoded media or frame pixels.
  * Undo restores only effect/media references; unrelated drawings, actors and viewport survive. */
 class SceneEffectsManager(
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
 ) {
     private data class Snapshot(
         val projectId: String,

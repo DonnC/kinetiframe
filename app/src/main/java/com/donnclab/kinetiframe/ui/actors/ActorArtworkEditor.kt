@@ -5,7 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import com.donnclab.kinetiframe.engine.rigging.model.BoneNode
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.components.rigging.ArtworkAlignmentDialog
 
 /** Borrows owned runtime pixels; dismissing this editor must never recycle actor/undo artwork. */
@@ -15,7 +15,7 @@ fun ActorArtworkEditor(
     variantId: String,
     assets: RigAssetManager,
     onDismiss: () -> Unit,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     graph: com.donnclab.kinetiframe.engine.rigging.model.SceneGraph? = null,
 ) {
     val binding = if (variantId.isEmpty()) bone.textureBinding else bone.artworkVariants[variantId]?.binding
@@ -30,7 +30,7 @@ fun ActorArtworkEditor(
             graph?.let { com.donnclab.kinetiframe.engine.rigging.math.RigGeometry.resolve(it)[bone.id]?.angle } ?: 0f,
             onDismiss,
             onAttach = { name, alignment, _, _ ->
-                onIntent(TimelineIntent.Actor.UpdateArtwork(bone.id, variantId, name, alignment))
+                onIntent(StudioIntent.Actor.UpdateArtwork(bone.id, variantId, name, alignment))
                 onDismiss()
             },
             initialBinding = binding,

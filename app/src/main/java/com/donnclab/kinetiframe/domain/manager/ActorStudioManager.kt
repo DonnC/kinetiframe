@@ -19,8 +19,8 @@ import com.donnclab.kinetiframe.ui.LayerState
 import com.donnclab.kinetiframe.ui.PerformanceTakePhase
 import com.donnclab.kinetiframe.ui.SceneState
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import com.donnclab.kinetiframe.ui.actorDefinition
 import com.donnclab.kinetiframe.ui.currentFrameLayers
@@ -38,8 +38,8 @@ import java.util.UUID
  * times a live edit "unbinds" it.
  */
 class ActorStudioManager(
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
     private val retainRuntimeAssets: (Set<String>) -> Unit = {}
 ) {
     private data class Snapshot(val project: ProjectDocument, val layers: LayerState, val selected: String?, val durationMicros: Long)
@@ -95,27 +95,27 @@ class ActorStudioManager(
         reconcileRuntimeAssets()
     }
 
-    fun handle(intent: TimelineIntent.Actor) {
+    fun handle(intent: StudioIntent.Actor) {
         // The Performance Stage owns gesture data, not its actor revision. Keep this guard at
         // the intent boundary as well as in the UI so an unavailable command cannot mutate a
         // pinned rig through state restoration or accessibility actions.
-        if (getState().actor.isPerformanceAuthoring && intent !is TimelineIntent.Actor.Drag &&
-            intent != TimelineIntent.Actor.CommitDrag && intent != TimelineIntent.Actor.CancelDrag &&
-            intent != TimelineIntent.Actor.ResetPose && intent != TimelineIntent.Actor.Undo &&
-            intent != TimelineIntent.Actor.Redo) return
-        if (getState().scene.studioMode == StudioMode.RASTER_DRAWING && intent !is TimelineIntent.Actor.MovePart) return
+        if (getState().actor.isPerformanceAuthoring && intent !is StudioIntent.Actor.Drag &&
+            intent != StudioIntent.Actor.CommitDrag && intent != StudioIntent.Actor.CancelDrag &&
+            intent != StudioIntent.Actor.ResetPose && intent != StudioIntent.Actor.Undo &&
+            intent != StudioIntent.Actor.Redo) return
+        if (getState().scene.studioMode == StudioMode.RASTER_DRAWING && intent !is StudioIntent.Actor.MovePart) return
         when (intent) {
-            is TimelineIntent.Actor.SetEditTarget -> {
+            is StudioIntent.Actor.SetEditTarget -> {
                 artworkDragStart = null; artworkDragBase = null
                 updateState { it.copy(actor = it.actor.copy(editTarget = intent.target, previewGraph = null),
                     tool = it.tool.copy(activeTool = com.donnclab.kinetiframe.engine.model.DrawingTool.RIG_SELECT, constructionShape = null)) }
             }
-            is TimelineIntent.Actor.AttachArtwork, is TimelineIntent.Actor.SelectArtwork,
-            is TimelineIntent.Actor.UpdateArtwork, is TimelineIntent.Actor.RemoveArtwork,
-            is TimelineIntent.Actor.SetAttachmentBlend, is TimelineIntent.Actor.CommitDrawing,
-            is TimelineIntent.Actor.UseDrawing, is TimelineIntent.Actor.SetDrawingOverlay -> Unit // Dedicated artwork transaction manager.
-            is TimelineIntent.Actor.AddSampleArtwork -> Unit // Bitmap work belongs to ActorSampleArtwork.
-            is TimelineIntent.Actor.Create -> {
+            is StudioIntent.Actor.AttachArtwork, is StudioIntent.Actor.SelectArtwork,
+            is StudioIntent.Actor.UpdateArtwork, is StudioIntent.Actor.RemoveArtwork,
+            is StudioIntent.Actor.SetAttachmentBlend, is StudioIntent.Actor.CommitDrawing,
+            is StudioIntent.Actor.UseDrawing, is StudioIntent.Actor.SetDrawingOverlay -> Unit // Dedicated artwork transaction manager.
+            is StudioIntent.Actor.AddSampleArtwork -> Unit // Bitmap work belongs to ActorSampleArtwork.
+            is StudioIntent.Actor.Create -> {
                 checkpoint()
                 updateState { state ->
                     val id = UUID.randomUUID().toString()
@@ -134,7 +134,7 @@ class ActorStudioManager(
                         tool = state.tool.copy(activeTool = DrawingTool.RIG_SELECT))
                 }
             }
-            is TimelineIntent.Actor.Drag -> updateState { state ->
+            is StudioIntent.Actor.Drag -> updateState { state ->
                 val definition = state.actorDefinition(state.scene.studioMode == StudioMode.ANIMATE_IK) ?: return@updateState state
                 if (state.scene.studioMode == StudioMode.ANIMATE_IK && motionDragBase == null) motionDragBase = definition.sceneGraph
                 val transform = state.activeActor()?.transform ?: return@updateState state
@@ -176,7 +176,7 @@ class ActorStudioManager(
                 } else graph
                 state.copy(actor = state.actor.copy(previewGraph = preview, previewDefinitionId = definition.id))
             }
-            TimelineIntent.Actor.CommitDrag -> {
+            StudioIntent.Actor.CommitDrag -> {
                 artworkDragStart = null; artworkDragBase = null
                 if (getState().scene.studioMode == StudioMode.RIG_SETUP &&
                     getState().actor.previewGraph == getState().actorDefinition()?.sceneGraph) {
@@ -215,13 +215,13 @@ class ActorStudioManager(
                 }
                 motionDragBase = null
             }
-            TimelineIntent.Actor.CancelDrag -> {
+            StudioIntent.Actor.CancelDrag -> {
                 motionDragBase = null
                 artworkDragStart = null; artworkDragBase = null
                 updateState { it.copy(actor = it.actor.copy(previewGraph = null)) }
             }
-            TimelineIntent.Actor.ToggleSource -> updateState { it.copy(actor = it.actor.copy(showSource = !it.actor.showSource)) }
-            TimelineIntent.Actor.ResetPose -> {
+            StudioIntent.Actor.ToggleSource -> updateState { it.copy(actor = it.actor.copy(showSource = !it.actor.showSource)) }
+            StudioIntent.Actor.ResetPose -> {
                 val instance = getState().activeActor() ?: return
                 checkpoint()
                 updateState { state ->
@@ -232,17 +232,17 @@ class ActorStudioManager(
                         actor = state.actor.copy(previewGraph = null))
                 }
             }
-            TimelineIntent.Actor.Undo -> restore(undo, redo)
-            TimelineIntent.Actor.Redo -> restore(redo, undo)
+            StudioIntent.Actor.Undo -> restore(undo, redo)
+            StudioIntent.Actor.Redo -> restore(redo, undo)
             // Display names are editable; stable semantic IDs remain untouched.
-            is TimelineIntent.Actor.RenameBone -> {
+            is StudioIntent.Actor.RenameBone -> {
                 val name = intent.name.trim()
                 if (name.isNotEmpty() && name.length <= 60) editSelected { it.withHierarchy(name = name) }
             }
-            is TimelineIntent.Actor.RenameActor -> renameActor(intent.name)
-            TimelineIntent.Actor.Unbind -> unbindSelected()
-            is TimelineIntent.Actor.SetPartVisibility -> setPartVisibility(intent.boneId, intent.visible)
-            is TimelineIntent.Actor.MovePart -> {
+            is StudioIntent.Actor.RenameActor -> renameActor(intent.name)
+            StudioIntent.Actor.Unbind -> unbindSelected()
+            is StudioIntent.Actor.SetPartVisibility -> setPartVisibility(intent.boneId, intent.visible)
+            is StudioIntent.Actor.MovePart -> {
                 val definition = getState().actorDefinition() ?: return
                 val graph = com.donnclab.kinetiframe.engine.rigging.math.ActorPartStack.move(definition.sceneGraph, intent.boneId, intent.forward)
                 if (graph == definition.sceneGraph) return

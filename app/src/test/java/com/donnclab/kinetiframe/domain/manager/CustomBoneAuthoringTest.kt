@@ -4,9 +4,9 @@ import com.donnclab.kinetiframe.engine.rigging.math.RigGeometry
 import com.donnclab.kinetiframe.engine.rigging.model.ActorTemplate
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
 import com.donnclab.kinetiframe.ui.SceneState
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.actorDefinition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,9 +23,9 @@ import org.robolectric.annotation.Config
 @Config(sdk = [34], manifest = Config.NONE)
 class CustomBoneAuthoringTest {
     @Test fun selectedParentWinsOverNearestEndpointAndAdditionCanUndo() {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         val studio = ActorStudioManager({ state }, { state = it(state) })
-        studio.handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+        studio.handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         state = state.copy(scene = state.scene.copy(selectedBoneId = "head"))
         val before = state.actorDefinition()!!.sceneGraph
         val target = RigGeometry.resolve(before).getValue("left_foot").end
@@ -36,9 +36,9 @@ class CustomBoneAuthoringTest {
             manager.addBoneAt(target.x, target.y)
             val added = (state.actorDefinition()!!.sceneGraph.bones - before.bones.keys).values.single()
             assertEquals("head", added.parentId)
-            studio.handle(TimelineIntent.Actor.Undo)
+            studio.handle(StudioIntent.Actor.Undo)
             assertEquals(before, state.actorDefinition()!!.sceneGraph)
-            studio.handle(TimelineIntent.Actor.Redo)
+            studio.handle(StudioIntent.Actor.Redo)
             assertTrue(added.id in state.actorDefinition()!!.sceneGraph.bones)
             state = state.copy(actor = state.actor.copy(isPerformanceAuthoring = true))
             val pinned = state.project

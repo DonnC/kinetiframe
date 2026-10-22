@@ -20,7 +20,7 @@ import com.composables.icons.lucide.Move
 import com.composables.icons.lucide.Text
 import com.donnclab.kinetiframe.engine.rigging.model.BoneNode
 import com.donnclab.kinetiframe.ui.ActorEditTarget
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.components.rigging.ActorArtworkControls
 
 /** Retained cutouts are opt-in above the sketch. Erase drawn duplicates in the source editor. */
@@ -28,14 +28,14 @@ import com.donnclab.kinetiframe.ui.components.rigging.ActorArtworkControls
 fun ActorSketchArtworkControls(
     bone: BoneNode,
     enabled: Boolean,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     onAttach: (String) -> Unit,
     onEdit: (String) -> Unit,
     behind: Boolean = false,
 ) {
     var layerMenu by remember { mutableStateOf(false) }
     IconButton(
-        { onIntent(TimelineIntent.Actor.SetDrawingOverlay(bone.id, !enabled, behind)) },
+        { onIntent(StudioIntent.Actor.SetDrawingOverlay(bone.id, !enabled, behind)) },
         enabled = bone.textureBinding != null || bone.artworkVariants.isNotEmpty(),
     ) {
         Icon(
@@ -48,12 +48,12 @@ fun ActorSketchArtworkControls(
             IconButton({ layerMenu = true }) { Icon(Lucide.Layers, "Artwork above or behind sketch") }
             DropdownMenu(layerMenu, { layerMenu = false }) {
                 DropdownMenuItem(text = { Text("${if (!behind) "✓ " else ""}Above sketch") }, onClick = {
-                    onIntent(TimelineIntent.Actor.SetDrawingOverlay(bone.id, true))
+                    onIntent(StudioIntent.Actor.SetDrawingOverlay(bone.id, true))
                     layerMenu =
                         false
                 })
                 DropdownMenuItem(text = { Text("${if (behind) "✓ " else ""}Behind sketch") }, onClick = {
-                    onIntent(TimelineIntent.Actor.SetDrawingOverlay(bone.id, true, true))
+                    onIntent(StudioIntent.Actor.SetDrawingOverlay(bone.id, true, true))
                     layerMenu =
                         false
                 })
@@ -63,7 +63,7 @@ fun ActorSketchArtworkControls(
     if (enabled &&
         bone.textureBinding != null
     ) {
-        IconButton({ onIntent(TimelineIntent.Actor.SetEditTarget(ActorEditTarget.ARTWORK)) }) {
+        IconButton({ onIntent(StudioIntent.Actor.SetEditTarget(ActorEditTarget.ARTWORK)) }) {
             Icon(Lucide.Move, "Move artwork above sketch")
         }
     }

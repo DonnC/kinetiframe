@@ -7,7 +7,7 @@ import com.donnclab.kinetiframe.domain.manager.DrawingManager
 import com.donnclab.kinetiframe.domain.manager.HistoryItem
 import com.donnclab.kinetiframe.domain.manager.SelectionEditType
 import com.donnclab.kinetiframe.engine.cache.FrameCacheManager
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.sync.Mutex
@@ -40,7 +40,7 @@ class SelectionHistoryTest {
             cacheManager = cacheManager,
             bakeMutex = bakeMutex,
             frameOperationMutex = frameMutex,
-            getState = { TimelineState() },
+            getState = { StudioState() },
             updateState = { },
             getBaseBitmap = { baseBitmap },
             setBaseBitmap = { baseBitmap = it },

@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.engine.drawing.BrushSnapshot
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.canvas.ActiveStroke
 import com.donnclab.kinetiframe.ui.components.canvas.drawVariableWidthStroke
 import com.donnclab.kinetiframe.ui.showActorSourceArtwork
@@ -26,7 +26,7 @@ import com.donnclab.kinetiframe.ui.showActorSourceArtwork
 /** Source artwork is a reference for extraction; confirmed parts remain separate assets. */
 @Composable
 fun PuppetSourceLayer(
-    state: TimelineState,
+    state: StudioState,
     path: Path,
     stroke: ActiveStroke,
     brush: BrushSnapshot = BrushSnapshot(),
@@ -151,5 +151,5 @@ fun PuppetSourceLayer(
 @Preview(widthDp = 640, heightDp = 360)
 @Composable
 private fun PuppetSourcePreview() {
-    PuppetSourceLayer(TimelineState(), remember { Path() }, remember { ActiveStroke() })
+    PuppetSourceLayer(StudioState(), remember { Path() }, remember { ActiveStroke() })
 }

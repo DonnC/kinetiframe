@@ -29,17 +29,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.ui.ActorStudioState
 import com.donnclab.kinetiframe.ui.PerformanceTakePhase
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 
 /** Record first, timeline second. Only review exposes take processing and confirmation. */
 @Composable
-fun PerformanceTakeControls(state: TimelineState, onIntent: (TimelineIntent) -> Unit) {
+fun PerformanceTakeControls(state: StudioState, onIntent: (StudioIntent) -> Unit) {
     val phase = state.actor.takePhase
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (phase == PerformanceTakePhase.IDLE) {
             ActorToolButton(Icons.Default.FiberManualRecord, "Record movement") {
-                onIntent(TimelineIntent.ActorMotion.StartTake)
+                onIntent(StudioIntent.ActorMotion.StartTake)
             }
         } else {
             Text(
@@ -63,7 +63,7 @@ fun PerformanceTakeControls(state: TimelineState, onIntent: (TimelineIntent) -> 
                     if (state.actor.previewPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                     "Replay take",
                 ) {
-                    onIntent(TimelineIntent.ActorMotion.TogglePlayback)
+                    onIntent(StudioIntent.ActorMotion.TogglePlayback)
                 }
                 var expanded by remember { mutableStateOf(false) }
                 Box {
@@ -81,25 +81,25 @@ fun PerformanceTakeControls(state: TimelineState, onIntent: (TimelineIntent) -> 
                                 },
                                 onClick = {
                                     expanded = false
-                                    onIntent(TimelineIntent.ActorMotion.SetTakeSmoothness(value))
+                                    onIntent(StudioIntent.ActorMotion.SetTakeSmoothness(value))
                                 },
                             )
                         }
                     }
                 }
-                ActorToolButton(Icons.Default.Check, "Keep take") { onIntent(TimelineIntent.ActorMotion.KeepTake) }
-                ActorToolButton(Icons.Default.Replay, "Retake movement") { onIntent(TimelineIntent.ActorMotion.Retake) }
+                ActorToolButton(Icons.Default.Check, "Keep take") { onIntent(StudioIntent.ActorMotion.KeepTake) }
+                ActorToolButton(Icons.Default.Replay, "Retake movement") { onIntent(StudioIntent.ActorMotion.Retake) }
             } else {
                 ActorToolButton(
                     Icons.Default.OpenWith,
                     "Move whole character",
                     selected = state.actor.takeMoveCharacter,
                 ) {
-                    onIntent(TimelineIntent.ActorMotion.SetTakeMoveCharacter(!state.actor.takeMoveCharacter))
+                    onIntent(StudioIntent.ActorMotion.SetTakeMoveCharacter(!state.actor.takeMoveCharacter))
                 }
-                ActorToolButton(Icons.Default.Stop, "Stop recording") { onIntent(TimelineIntent.ActorMotion.StopTake) }
+                ActorToolButton(Icons.Default.Stop, "Stop recording") { onIntent(StudioIntent.ActorMotion.StopTake) }
             }
-            ActorToolButton(Icons.Default.Close, "Discard take") { onIntent(TimelineIntent.ActorMotion.CancelTake) }
+            ActorToolButton(Icons.Default.Close, "Discard take") { onIntent(StudioIntent.ActorMotion.CancelTake) }
         }
     }
 }
@@ -108,6 +108,6 @@ fun PerformanceTakeControls(state: TimelineState, onIntent: (TimelineIntent) -> 
 @Composable
 private fun TakeControlsPreview() {
     MaterialTheme {
-        PerformanceTakeControls(TimelineState(actor = ActorStudioState(takePhase = PerformanceTakePhase.REVIEW)), {})
+        PerformanceTakeControls(StudioState(actor = ActorStudioState(takePhase = PerformanceTakePhase.REVIEW)), {})
     }
 }

@@ -22,8 +22,8 @@ spotless {
             "app/src/main/java/com/donnclab/kinetiframe/domain/manager/DrawingManager.kt",
             "app/src/main/java/com/donnclab/kinetiframe/engine/drawing/Brushes.kt",
             "app/src/main/java/com/donnclab/kinetiframe/ui/EditorScreen.kt",
-            "app/src/main/java/com/donnclab/kinetiframe/ui/TimelineMvi.kt",
-            "app/src/main/java/com/donnclab/kinetiframe/ui/TimelineViewModel.kt",
+            "app/src/main/java/com/donnclab/kinetiframe/ui/StudioMvi.kt",
+            "app/src/main/java/com/donnclab/kinetiframe/ui/StudioViewModel.kt",
             "app/src/main/java/com/donnclab/kinetiframe/ui/components/canvas/CanvasInputLayer.kt",
         )
         ktlint(libs.versions.ktlint.get())

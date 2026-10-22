@@ -13,8 +13,8 @@ import com.donnclab.kinetiframe.engine.camera.CameraAction
 import com.donnclab.kinetiframe.engine.camera.CameraShot
 import com.donnclab.kinetiframe.engine.model.ProjectDocument
 import com.donnclab.kinetiframe.engine.model.StageDimensions
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.canvas.CanvasArea
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -23,13 +23,13 @@ import org.junit.Test
 
 class CameraWorkspaceInteractionTest {
     @get:Rule val rule = createComposeRule()
-    private val intents = mutableListOf<TimelineIntent>()
+    private val intents = mutableListOf<StudioIntent>()
 
     private fun show(preview: Boolean = false, fitted: Boolean = false) {
         rule.setContent {
             KinetiFrameTheme {
                 CanvasArea(
-                    state = TimelineState(
+                    state = StudioState(
                         project = ProjectDocument(
                             stage = StageDimensions(4096, 4096),
                             cameraShots = listOf(CameraShot("test-shot", CameraAction.PAN, 0, 12)),
@@ -64,24 +64,24 @@ class CameraWorkspaceInteractionTest {
             swipe(center - Offset(30f, 0f), center + Offset(30f, 0f))
         }
         rule.waitForIdle()
-        assertTrue(intents.any { it is TimelineIntent.Draw.BakeStroke })
+        assertTrue(intents.any { it is StudioIntent.Draw.BakeStroke })
         intents.clear()
         twoFingerTransform()
-        assertTrue(intents.any { it is TimelineIntent.View.UpdateTransform })
-        assertFalse(intents.any { it is TimelineIntent.Draw.BakeStroke })
+        assertTrue(intents.any { it is StudioIntent.View.UpdateTransform })
+        assertFalse(intents.any { it is StudioIntent.Draw.BakeStroke })
     }
 
     @Test fun explicitCameraPreviewNavigatesWithoutPainting() {
         show(preview = true)
         twoFingerTransform()
-        assertTrue(intents.any { it is TimelineIntent.View.UpdateTransform })
-        assertFalse(intents.any { it is TimelineIntent.Draw.BakeStroke })
+        assertTrue(intents.any { it is StudioIntent.View.UpdateTransform })
+        assertFalse(intents.any { it is StudioIntent.Draw.BakeStroke })
     }
 
     @Test fun fittedCameraDialogNeverChangesMainWorkspace() {
         show(preview = true, fitted = true)
         twoFingerTransform()
-        assertFalse(intents.any { it is TimelineIntent.View.UpdateTransform })
-        assertFalse(intents.any { it is TimelineIntent.Draw.BakeStroke })
+        assertFalse(intents.any { it is StudioIntent.View.UpdateTransform })
+        assertFalse(intents.any { it is StudioIntent.Draw.BakeStroke })
     }
 }

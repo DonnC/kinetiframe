@@ -6,12 +6,12 @@ import com.donnclab.kinetiframe.ui.GridDefaults
 import com.donnclab.kinetiframe.ui.GridSize
 import com.donnclab.kinetiframe.ui.RulerGuide
 import com.donnclab.kinetiframe.ui.RulerMode
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 
 /**
  * Manager for grid, ruler, and canvas transformation.
  */
-class ViewManager(private val updateState: ((TimelineState) -> TimelineState) -> Unit) {
+class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Unit) {
     fun setGridSize(size: GridSize) {
         updateState { state ->
             state.copy(canvas = state.canvas.copy(gridSize = size, gridSpacingDp = size.sizeDp.toFloat()))
@@ -182,7 +182,7 @@ class ViewManager(private val updateState: ((TimelineState) -> TimelineState) ->
         return Offset(pts[0] - viewportWidth / 2f, pts[1] - viewportHeight / 2f)
     }
 
-    private fun updateMatrixInternal(state: TimelineState): TimelineState {
+    private fun updateMatrixInternal(state: StudioState): StudioState {
         val canvas = state.canvas
         if (canvas.viewportWidth <= 0 || canvas.viewportHeight <= 0) return state
 

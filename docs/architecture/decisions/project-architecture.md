@@ -10,8 +10,8 @@ modules: `app` has `com.donnclab.kinetiframe.engine.rigging.math`, and so does t
 module. A reader can't tell from a package name which module a class is in, and the same package
 split across two modules is easy to break.
 
-The editor's main types are named `Timeline*` (`TimelineViewModel`, `TimelineState`,
-`TimelineIntent`), although they cover the whole studio, not just the timeline.
+The editor's main types are named `Timeline*` (`StudioViewModel`, `StudioState`,
+`StudioIntent`), although they cover the whole studio, not just the timeline.
 
 ViewModels call `Dispatchers.IO` directly. Tests can't control that work, and work that outlives a
 test reports its failure in a later test, which makes the host test suite flaky.
@@ -50,7 +50,7 @@ The `app` packages become:
 
 | Package | Holds | Comes from |
 | --- | --- | --- |
-| `studio` | The frame-by-frame editor: `StudioScreen` state, `StudioViewModel`, MVI types | `ui` |
+| `studio` | The frame-by-frame editor: `EditorScreen`, `StudioViewModel` and its MVI types | `ui` |
 | `studio.ui.*` | Canvas, dock, timeline, camera, frame strip and editor dialogs | `ui/components/*` |
 | `studio.domain` | Drawing, frames, layers, selection, history, playback and view managers | `domain/manager` |
 | `studio.render` | Frame composition and caches | `domain/render` |

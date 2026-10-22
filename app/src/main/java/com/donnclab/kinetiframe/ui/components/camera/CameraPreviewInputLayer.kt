@@ -8,7 +8,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.components.canvas.workspaceGestures
 
 /** Block artwork edits in audience coordinates, but retain two-finger workspace navigation.
@@ -16,7 +16,7 @@ import com.donnclab.kinetiframe.ui.components.canvas.workspaceGestures
 @Composable
 internal fun CameraPreviewInputLayer(
     navigationEnabled: Boolean,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val latestIntent by rememberUpdatedState(onIntent)
@@ -27,7 +27,7 @@ internal fun CameraPreviewInputLayer(
                 consumeAllInput = true,
                 onNavigation = {},
                 onTransform = { pan, zoom, rotation, centre ->
-                    latestIntent(TimelineIntent.View.UpdateTransform(pan, zoom, rotation, centre))
+                    latestIntent(StudioIntent.View.UpdateTransform(pan, zoom, rotation, centre))
                 },
             )
         },

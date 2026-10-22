@@ -18,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
-fun TimelineFpsSlider(fps: Int, onIntent: (TimelineIntent) -> Unit, modifier: Modifier = Modifier) {
+fun TimelineFpsSlider(fps: Int, onIntent: (StudioIntent) -> Unit, modifier: Modifier = Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.padding(horizontal = 8.dp),
@@ -30,7 +30,7 @@ fun TimelineFpsSlider(fps: Int, onIntent: (TimelineIntent) -> Unit, modifier: Mo
         Text("FPS", color = EditorTokens.muted, style = MaterialTheme.typography.labelSmall)
         Slider(
             value = fps.toFloat(),
-            onValueChange = { onIntent(TimelineIntent.Playback.SetFps(it.toInt())) },
+            onValueChange = { onIntent(StudioIntent.Playback.SetFps(it.toInt())) },
             valueRange = 1f..30f,
             modifier = Modifier
                 .weight(1f)

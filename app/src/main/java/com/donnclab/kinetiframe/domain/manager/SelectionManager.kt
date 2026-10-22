@@ -12,7 +12,7 @@ import com.donnclab.kinetiframe.engine.typography.MultilineTextRenderer
 import com.donnclab.kinetiframe.models.BaseNode
 import com.donnclab.kinetiframe.models.TextNode
 import com.donnclab.kinetiframe.ui.SelectedContent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.canvas.rotateVector
 import com.donnclab.kinetiframe.ui.currentFrameLayers
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,8 +27,8 @@ class SelectionManager(
     private val scope: CoroutineScope,
     private val dispatcher: CoroutineDispatcher,
     private val frameOperationMutex: Mutex,
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
     private val rebuildCurrentBitmap: suspend () -> Unit,
     private val snapshotActiveLayer: suspend () -> Bitmap?,
     private val setBaseBitmap: (Bitmap?) -> Unit,

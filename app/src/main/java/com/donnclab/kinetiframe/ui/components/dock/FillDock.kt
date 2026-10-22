@@ -14,25 +14,25 @@ import com.composables.icons.lucide.Check
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 
 @Composable
-fun FillDock(modifier: Modifier = Modifier, state: TimelineState, onIntent: (TimelineIntent) -> Unit) {
+fun FillDock(modifier: Modifier = Modifier, state: StudioState, onIntent: (StudioIntent) -> Unit) {
     FloatingDock(
         modifier = modifier,
         initialOffset = state.fill.dockOffset,
-        onOffsetChange = { onIntent(TimelineIntent.Fill.SetDockPosition(it)) },
+        onOffsetChange = { onIntent(StudioIntent.Fill.SetDockPosition(it)) },
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            IconButton(onClick = { onIntent(TimelineIntent.Fill.Confirm) }) {
+            IconButton(onClick = { onIntent(StudioIntent.Fill.Confirm) }) {
                 Icon(Lucide.Check, "Confirm Fill", modifier = Modifier.size(22.dp), tint = EditorTokens.accent)
             }
-            IconButton(onClick = { onIntent(TimelineIntent.Fill.Cancel) }) {
+            IconButton(onClick = { onIntent(StudioIntent.Fill.Cancel) }) {
                 Icon(Lucide.X, "Cancel", modifier = Modifier.size(20.dp))
             }
         }

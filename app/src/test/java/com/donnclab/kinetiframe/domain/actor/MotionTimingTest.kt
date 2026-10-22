@@ -15,9 +15,9 @@ import com.donnclab.kinetiframe.engine.rigging.model.ActorTemplates
 import com.donnclab.kinetiframe.engine.rigging.model.RootTranslation
 import com.donnclab.kinetiframe.engine.rigging.motion.PoseSampling
 import com.donnclab.kinetiframe.ui.SceneState
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -101,16 +101,16 @@ class MotionTimingTest {
     }
 
     @Test fun `timing choice updates authored curves and is undoable`() {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         val author = ActorStudioManager({ state }, { state = it(state) })
-        author.handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+        author.handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         state = state.copy(scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK))
         val before = state.project
         val scope = CoroutineScope(Dispatchers.Unconfined)
         val motion = ActorMotionManager(scope, { state }, { state = it(state) }, author::checkpoint)
-        motion.handle(TimelineIntent.ActorMotion.SetInterpolation(CurveInterpolation.EASE_IN_OUT))
+        motion.handle(StudioIntent.ActorMotion.SetInterpolation(CurveInterpolation.EASE_IN_OUT))
         assertEquals(CurveInterpolation.EASE_IN_OUT, state.activeActor()!!.poseInterpolation)
-        author.handle(TimelineIntent.Actor.Undo)
+        author.handle(StudioIntent.Actor.Undo)
         assertEquals(before, state.project)
         scope.cancel()
     }

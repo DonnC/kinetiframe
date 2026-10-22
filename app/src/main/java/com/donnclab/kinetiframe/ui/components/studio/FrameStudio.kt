@@ -61,15 +61,15 @@ import com.composables.icons.lucide.Undo
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.engine.cache.FrameCacheManager
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun FrameStudio(
-    state: TimelineState,
+    state: StudioState,
     cacheManager: FrameCacheManager,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     onOpenFrame: (Int) -> Unit,
     onDismiss: () -> Unit,
     actorRendererFactory: (() -> com.donnclab.kinetiframe.domain.render.ActorFrameRenderer)? = null,
@@ -118,8 +118,8 @@ fun FrameStudio(
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.weight(1f),
                     )
-                    IconButton(onClick = { onIntent(TimelineIntent.Draw.Undo) }) { Icon(Lucide.Undo, "Undo") }
-                    IconButton(onClick = { onIntent(TimelineIntent.Draw.Redo) }) { Icon(Lucide.Redo, "Redo") }
+                    IconButton(onClick = { onIntent(StudioIntent.Draw.Undo) }) { Icon(Lucide.Undo, "Undo") }
+                    IconButton(onClick = { onIntent(StudioIntent.Draw.Redo) }) { Icon(Lucide.Redo, "Redo") }
 
                     val allSelected = selected.size == state.animation.totalFrames && state.animation.totalFrames > 0
                     IconButton(
@@ -189,20 +189,20 @@ fun FrameStudio(
                                         icon = Lucide.ClipboardPaste,
                                         arrowLeft = true,
                                         label = "PASTE",
-                                        onClick = { onIntent(TimelineIntent.Frame.PasteFrames(minIdx, before = true)) },
+                                        onClick = { onIntent(StudioIntent.Frame.PasteFrames(minIdx, before = true)) },
                                     )
                                     StudioToolbarAction(
                                         icon = Lucide.SquarePlus,
                                         arrowLeft = true,
                                         label = "ADD",
-                                        onClick = { onIntent(TimelineIntent.Frame.AddFrameAt(minIdx)) },
+                                        onClick = { onIntent(StudioIntent.Frame.AddFrameAt(minIdx)) },
                                     )
                                     StudioToolbarAction(
                                         icon = Lucide.Trash2,
                                         label = "ERASE",
                                         onClick = {
                                             if (selected.size < state.animation.totalFrames) {
-                                                onIntent(TimelineIntent.Frame.DeleteFrames(selected.toList()))
+                                                onIntent(StudioIntent.Frame.DeleteFrames(selected.toList()))
                                                 selected.clear()
                                             }
                                         },
@@ -210,20 +210,20 @@ fun FrameStudio(
                                     StudioToolbarAction(
                                         icon = Lucide.Copy,
                                         label = "COPY",
-                                        onClick = { onIntent(TimelineIntent.Frame.CopyFrames(selected.toList())) },
+                                        onClick = { onIntent(StudioIntent.Frame.CopyFrames(selected.toList())) },
                                     )
                                     StudioToolbarAction(
                                         icon = Lucide.SquarePlus,
                                         arrowRight = true,
                                         label = "ADD",
-                                        onClick = { onIntent(TimelineIntent.Frame.AddFrameAt(maxIdx + 1)) },
+                                        onClick = { onIntent(StudioIntent.Frame.AddFrameAt(maxIdx + 1)) },
                                     )
                                     StudioToolbarAction(
                                         icon = Lucide.ClipboardPaste,
                                         arrowRight = true,
                                         label = "PASTE",
                                         onClick = {
-                                            onIntent(TimelineIntent.Frame.PasteFrames(maxIdx, before = false))
+                                            onIntent(StudioIntent.Frame.PasteFrames(maxIdx, before = false))
                                         },
                                     )
                                 }

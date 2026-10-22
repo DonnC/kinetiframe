@@ -3,9 +3,9 @@ package com.donnclab.kinetiframe.domain.manager
 import com.donnclab.kinetiframe.engine.rigging.model.ActorPoseKey
 import com.donnclab.kinetiframe.engine.rigging.model.ActorPoseTrack
 import com.donnclab.kinetiframe.ui.PerformanceTakePhase
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import com.donnclab.kinetiframe.ui.actorDefinition
 import com.donnclab.kinetiframe.ui.actorPreviewDuration
@@ -20,8 +20,8 @@ import kotlinx.coroutines.launch
 /** Local actor rehearsal clock. Scene playback stays paused while a blueprint is being edited. */
 class ActorMotionManager(
     private val scope: CoroutineScope,
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
     private val checkpoint: () -> Unit,
     private val clockMicros: () -> Long = { System.nanoTime() / 1000 },
     private val awaitFrame: suspend () -> Unit = { delay(16) },
@@ -33,16 +33,16 @@ class ActorMotionManager(
         updateState { it.copy(actor = it.actor.copy(previewPlaying = false)) }
     }
 
-    fun handle(intent: TimelineIntent.ActorMotion) {
+    fun handle(intent: StudioIntent.ActorMotion) {
         if (getState().scene.studioMode != StudioMode.ANIMATE_IK || getState().activeActor() == null) return
         when (intent) {
-            TimelineIntent.ActorMotion.StartTake, TimelineIntent.ActorMotion.StopTake,
-            TimelineIntent.ActorMotion.KeepTake, TimelineIntent.ActorMotion.Retake,
-            TimelineIntent.ActorMotion.CancelTake, is TimelineIntent.ActorMotion.SetTakeSmoothness,
-            is TimelineIntent.ActorMotion.SetTakeMoveCharacter,
+            StudioIntent.ActorMotion.StartTake, StudioIntent.ActorMotion.StopTake,
+            StudioIntent.ActorMotion.KeepTake, StudioIntent.ActorMotion.Retake,
+            StudioIntent.ActorMotion.CancelTake, is StudioIntent.ActorMotion.SetTakeSmoothness,
+            is StudioIntent.ActorMotion.SetTakeMoveCharacter,
             -> Unit
 
-            TimelineIntent.ActorMotion.DeleteArtworkKey -> {
+            StudioIntent.ActorMotion.DeleteArtworkKey -> {
                 stop()
                 val state = getState()
                 val instance = state.activeActor() ?: return
@@ -66,7 +66,7 @@ class ActorMotionManager(
                 }
             }
 
-            is TimelineIntent.ActorMotion.SetInterpolation -> {
+            is StudioIntent.ActorMotion.SetInterpolation -> {
                 val instance = getState().activeActor() ?: return
                 if (instance.motionPreset != null || getState().actor.presetPreview != null) return
                 if (instance.poseInterpolation == intent.value &&
@@ -99,7 +99,7 @@ class ActorMotionManager(
                 }
             }
 
-            is TimelineIntent.ActorMotion.Scrub -> {
+            is StudioIntent.ActorMotion.Scrub -> {
                 stop()
                 updateState {
                     it.copy(
@@ -111,7 +111,7 @@ class ActorMotionManager(
                 }
             }
 
-            is TimelineIntent.ActorMotion.SetDuration -> {
+            is StudioIntent.ActorMotion.SetDuration -> {
                 stop()
                 val current = getState()
                 val lastKeyTime = maxOf(
@@ -141,7 +141,7 @@ class ActorMotionManager(
                 }
             }
 
-            TimelineIntent.ActorMotion.TogglePlayback -> {
+            StudioIntent.ActorMotion.TogglePlayback -> {
                 if (getState().actor.previewPlaying) {
                     stop()
                     return
@@ -206,9 +206,9 @@ class ActorMotionManager(
                 }
             }
 
-            TimelineIntent.ActorMotion.RecordKey,
-            TimelineIntent.ActorMotion.DeleteKey,
-            TimelineIntent.ActorMotion.ToggleContact,
+            StudioIntent.ActorMotion.RecordKey,
+            StudioIntent.ActorMotion.DeleteKey,
+            StudioIntent.ActorMotion.ToggleContact,
             -> {
                 stop()
                 val state = getState()
@@ -217,7 +217,7 @@ class ActorMotionManager(
                 val graph = state.actorDefinition(true)?.sceneGraph ?: return
                 val rest = state.actorDefinition()?.sceneGraph ?: return
                 var contacts = ActorPoseTrack.contacts(instance.poseKeys, state.actor.previewTimeMicros)
-                if (intent == TimelineIntent.ActorMotion.ToggleContact) {
+                if (intent == StudioIntent.ActorMotion.ToggleContact) {
                     val id =
                         com.donnclab.kinetiframe.engine.rigging.math.ActorMotionPose.contactBone(
                             graph,
@@ -238,7 +238,7 @@ class ActorMotionManager(
                     }
                 }
                 checkpoint()
-                val keys = if (intent == TimelineIntent.ActorMotion.DeleteKey) {
+                val keys = if (intent == StudioIntent.ActorMotion.DeleteKey) {
                     instance.poseKeys.filterNot { it.timeMicros == state.actor.previewTimeMicros }
                 } else {
                     ActorPoseTrack.put(
@@ -253,7 +253,7 @@ class ActorMotionManager(
                                 (
                                     instance.id to instance.copy(
                                         poseKeys = keys,
-                                        rootMotionCurves = if (intent == TimelineIntent.ActorMotion.DeleteKey) {
+                                        rootMotionCurves = if (intent == StudioIntent.ActorMotion.DeleteKey) {
                                             instance.rootMotionCurves.mapNotNull { curve ->
                                                 curve.points.filterNot {
                                                     it.timeMicros ==
@@ -272,7 +272,7 @@ class ActorMotionManager(
                                                 ),
                                             )
                                         },
-                                        rotationCurves = if (intent == TimelineIntent.ActorMotion.DeleteKey) {
+                                        rotationCurves = if (intent == StudioIntent.ActorMotion.DeleteKey) {
                                             instance.rotationCurves.mapNotNull { curve ->
                                                 curve.points.filterNot {
                                                     it.timeMicros ==

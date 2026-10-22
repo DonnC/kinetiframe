@@ -13,14 +13,14 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Pencil
 import com.composables.icons.lucide.SquarePlus
 import com.composables.icons.lucide.Trash2
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 
 /** Single-frame actions for the compact editor timeline -- built on the same [ContextActionBar]
  *  every other selectable timeline item (audio/video clips, actor placements) uses. */
 @Composable
 fun FrameContextToolbar(
     index: Int,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     onEditDetails: (() -> Unit)? = null,
@@ -35,7 +35,7 @@ fun FrameContextToolbar(
                 badge = androidx.compose.material.icons.Icons.AutoMirrored.Rounded.ArrowBack,
                 badgeAlignment = Alignment.TopStart,
             ) {
-                onIntent(TimelineIntent.Frame.PasteFrame(index, before = true))
+                onIntent(StudioIntent.Frame.PasteFrame(index, before = true))
                 onDismiss()
             },
             ContextAction(
@@ -44,15 +44,15 @@ fun FrameContextToolbar(
                 badge = androidx.compose.material.icons.Icons.AutoMirrored.Rounded.ArrowBack,
                 badgeAlignment = Alignment.TopStart,
             ) {
-                onIntent(TimelineIntent.Frame.AddFrameAt(index))
+                onIntent(StudioIntent.Frame.AddFrameAt(index))
                 onDismiss()
             },
             ContextAction(Lucide.Trash2, "Delete") {
-                onIntent(TimelineIntent.Frame.DeleteFrame(index))
+                onIntent(StudioIntent.Frame.DeleteFrame(index))
                 onDismiss()
             },
             ContextAction(Lucide.Copy, "Copy") {
-                onIntent(TimelineIntent.Frame.CopyFrame(index))
+                onIntent(StudioIntent.Frame.CopyFrame(index))
                 onDismiss()
             },
             ContextAction(
@@ -61,7 +61,7 @@ fun FrameContextToolbar(
                 badge = androidx.compose.material.icons.Icons.AutoMirrored.Rounded.ArrowForward,
                 badgeAlignment = Alignment.TopEnd,
             ) {
-                onIntent(TimelineIntent.Frame.AddFrameAt(index + 1))
+                onIntent(StudioIntent.Frame.AddFrameAt(index + 1))
                 onDismiss()
             },
             ContextAction(
@@ -70,7 +70,7 @@ fun FrameContextToolbar(
                 badge = androidx.compose.material.icons.Icons.AutoMirrored.Rounded.ArrowForward,
                 badgeAlignment = Alignment.TopEnd,
             ) {
-                onIntent(TimelineIntent.Frame.PasteFrame(index, before = false))
+                onIntent(StudioIntent.Frame.PasteFrame(index, before = false))
                 onDismiss()
             },
         ) + listOfNotNull(

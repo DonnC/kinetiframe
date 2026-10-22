@@ -30,12 +30,12 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.ui.SelectionToolType
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.StandardSlider
 
 @Composable
-fun SelectionOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit, onDismiss: () -> Unit) {
+fun SelectionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onDismiss: () -> Unit) {
     Column(Modifier.padding(16.dp).fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -59,12 +59,12 @@ fun SelectionOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> 
             SelectionTypeRow(
                 label = "Lasso",
                 selected = state.selection.toolType == SelectionToolType.LASSO,
-                onClick = { onIntent(TimelineIntent.Selection.SetTool(SelectionToolType.LASSO)) },
+                onClick = { onIntent(StudioIntent.Selection.SetTool(SelectionToolType.LASSO)) },
             )
             SelectionTypeRow(
                 label = "Rectangle",
                 selected = state.selection.toolType == SelectionToolType.RECTANGLE,
-                onClick = { onIntent(TimelineIntent.Selection.SetTool(SelectionToolType.RECTANGLE)) },
+                onClick = { onIntent(StudioIntent.Selection.SetTool(SelectionToolType.RECTANGLE)) },
             )
         }
 
@@ -74,13 +74,13 @@ fun SelectionOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> 
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(8.dp))
-                .clickable { onIntent(TimelineIntent.Selection.SetPartialInclude(!state.selection.partialInclude)) }
+                .clickable { onIntent(StudioIntent.Selection.SetPartialInclude(!state.selection.partialInclude)) }
                 .padding(vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Checkbox(
                 checked = state.selection.partialInclude,
-                onCheckedChange = { onIntent(TimelineIntent.Selection.SetPartialInclude(it)) },
+                onCheckedChange = { onIntent(StudioIntent.Selection.SetPartialInclude(it)) },
                 colors = CheckboxDefaults.colors(
                     checkedColor = EditorTokens.accent,
                     uncheckedColor = EditorTokens.inactive,

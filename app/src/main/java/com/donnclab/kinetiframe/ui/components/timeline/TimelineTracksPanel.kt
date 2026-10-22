@@ -50,16 +50,16 @@ import com.donnclab.kinetiframe.engine.model.AudioClipPlacement
 import com.donnclab.kinetiframe.engine.model.AudioTrackSettings
 import com.donnclab.kinetiframe.engine.model.MAX_AUDIO_TRACKS
 import com.donnclab.kinetiframe.engine.model.VideoClipPlacement
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.timeline.audio.AudioLaneHeader
 
 /** A bounded track workspace. One horizontal viewport owns every asset lane. */
 @Composable
 fun TimelineTracksPanel(
     modifier: Modifier = Modifier,
-    state: TimelineState,
-    onIntent: (TimelineIntent) -> Unit,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
     performanceRepository: PerformanceRepository,
     onEditPlacement: (ActorPlacementReference) -> Unit,
     onAddToLibrary: (ActorPlacementReference) -> Unit,
@@ -117,12 +117,12 @@ fun TimelineTracksPanel(
         ) {
             notice = "Video clips cannot overlap"
         } else {
-            onIntent(TimelineIntent.Video.Trim(clip.clipId, start, end, sourceOffset))
+            onIntent(StudioIntent.Video.Trim(clip.clipId, start, end, sourceOffset))
         }
     }
     fun move(start: Int, lane: Int = sound?.trackIndex ?: 0) {
         when {
-            actor != null -> onIntent(TimelineIntent.ActorPlacement.Move(actor.placementId, start))
+            actor != null -> onIntent(StudioIntent.ActorPlacement.Move(actor.placementId, start))
 
             sound != null -> {
                 if (state.project.videoClips.values.any { it.linkedAudioClipId == sound.clipId }) {
@@ -131,7 +131,7 @@ fun TimelineTracksPanel(
                 } else if (state.project.audioTracks[lane]?.isLocked == true) {
                     notice = "Track A${lane + 1} is locked"
                 } else {
-                    onIntent(TimelineIntent.Audio.Move(sound.clipId, lane, start))
+                    onIntent(StudioIntent.Audio.Move(sound.clipId, lane, start))
                 }
             }
 
@@ -216,8 +216,8 @@ fun TimelineTracksPanel(
                                 AudioLaneHeader(
                                     settings.isMuted,
                                     settings.isLocked,
-                                    { onIntent(TimelineIntent.Audio.SetTrackMuted(lane, !settings.isMuted)) },
-                                    { onIntent(TimelineIntent.Audio.SetTrackLocked(lane, !settings.isLocked)) },
+                                    { onIntent(StudioIntent.Audio.SetTrackMuted(lane, !settings.isMuted)) },
+                                    { onIntent(StudioIntent.Audio.SetTrackLocked(lane, !settings.isLocked)) },
                                 )
                             }
                         }
@@ -229,12 +229,12 @@ fun TimelineTracksPanel(
                         Modifier.weight(1f),
                         currentFrame = state.animation.currentFrame,
                         onScrubFrame = {
-                            onIntent(TimelineIntent.Playback.SetCurrentFrame(it))
+                            onIntent(StudioIntent.Playback.SetCurrentFrame(it))
                         },
                     ) { offsetFrames, visibleFrames ->
                         Column(Modifier.fillMaxWidth()) {
                             TimelineFrameRuler(frameCount, offsetFrames, visibleFrames) {
-                                onIntent(TimelineIntent.Playback.SetCurrentFrame(it))
+                                onIntent(StudioIntent.Playback.SetCurrentFrame(it))
                             }
                             if (camera.isNotEmpty()) {
                                 com.donnclab.kinetiframe.ui.components.camera.CameraTimelineLane(
@@ -252,11 +252,11 @@ fun TimelineTracksPanel(
                                         placement.durationFrames * placement.repeatCount, actor == placement,
                                         onSelect = { select("actor:${placement.placementId}") },
                                         onMove = { start, _ ->
-                                            onIntent(TimelineIntent.ActorPlacement.Move(placement.placementId, start))
+                                            onIntent(StudioIntent.ActorPlacement.Move(placement.placementId, start))
                                         },
                                         onTrim = { start, duration ->
                                             onIntent(
-                                                TimelineIntent.ActorPlacement.Trim(
+                                                StudioIntent.ActorPlacement.Trim(
                                                     placement.placementId,
                                                     start,
                                                     duration,
@@ -320,12 +320,12 @@ fun TimelineTracksPanel(
                                                         notice = "Track A${target + 1} is locked"
                                                     } else {
                                                         onIntent(
-                                                            TimelineIntent.Audio.Move(clip.clipId, target, start),
+                                                            StudioIntent.Audio.Move(clip.clipId, target, start),
                                                         )
                                                     }
                                                 },
                                                 onTrim = { start, duration ->
-                                                    onIntent(TimelineIntent.Audio.Trim(clip.clipId, start, duration))
+                                                    onIntent(StudioIntent.Audio.Trim(clip.clipId, start, duration))
                                                 },
                                                 minStart = (clip.startFrame - clip.trimOffsetFrames).coerceAtLeast(0),
                                                 maxEnd =

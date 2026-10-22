@@ -285,7 +285,7 @@ data class ConstructionShapeState(
 /**
  * Represents the UI state of the animation timeline.
  */
-data class TimelineState(
+data class StudioState(
     val actor: ActorStudioState = ActorStudioState(),
     val project: ProjectDocument = ProjectDocument(),
     val animation: AnimationState = AnimationState(),
@@ -321,20 +321,20 @@ data class TimelineState(
  * [frame] is retained because callers are frame-oriented and because the legacy per-frame map is
  * still honoured as a fallback for documents saved before the stack became authoritative.
  */
-fun TimelineState.layersForFrame(frame: Int = animation.currentFrame): List<Layer> =
+fun StudioState.layersForFrame(frame: Int = animation.currentFrame): List<Layer> =
     layers.layers.ifEmpty { layers.frameLayers[frame].orEmpty() }
 
-fun TimelineState.currentFrameLayers(): List<Layer> = layersForFrame(animation.currentFrame)
+fun StudioState.currentFrameLayers(): List<Layer> = layersForFrame(animation.currentFrame)
 
 /**
  * Represents user intentions/actions on the timeline.
  */
-sealed class TimelineIntent : ViewIntent {
-    sealed class PackItem : TimelineIntent() {
+sealed class StudioIntent : ViewIntent {
+    sealed class PackItem : StudioIntent() {
         data class SetTag(val index: Int, val tag: com.donnclab.kinetiframe.ui.packs.PackFrameTag) : PackItem()
         data class Add(val index: Int, val tag: com.donnclab.kinetiframe.ui.packs.PackFrameTag) : PackItem()
     }
-    sealed class Actor : TimelineIntent() {
+    sealed class Actor : StudioIntent() {
         data class CommitDrawing(val definitionId: String, val ink: Bitmap, val colour: Bitmap,
             val document: com.donnclab.kinetiframe.engine.rigging.model.ActorDrawing,
             val restGraph: com.donnclab.kinetiframe.engine.rigging.model.SceneGraph? = null) : Actor()
@@ -367,7 +367,7 @@ sealed class TimelineIntent : ViewIntent {
         data class SetPartVisibility(val boneId: String, val visible: Boolean) : Actor()
         data class MovePart(val boneId: String, val forward: Boolean) : Actor()
     }
-    sealed class ActorMotion : TimelineIntent() {
+    sealed class ActorMotion : StudioIntent() {
         object StartTake : ActorMotion()
         object StopTake : ActorMotion()
         object KeepTake : ActorMotion()
@@ -385,7 +385,7 @@ sealed class TimelineIntent : ViewIntent {
         /** Holds/releases the selected two-bone endpoint, recording an ordinary undoable key. */
         object ToggleContact : ActorMotion()
     }
-    sealed class ActorPreset : TimelineIntent() {
+    sealed class ActorPreset : StudioIntent() {
         data class Preview(val id: String) : ActorPreset()
         data class SetIntensity(val value: Float) : ActorPreset()
         data class SetSpeed(val value: Float) : ActorPreset()
@@ -393,7 +393,7 @@ sealed class TimelineIntent : ViewIntent {
         object Cancel : ActorPreset()
         object Remove : ActorPreset()
     }
-    sealed class ActorPlacement : TimelineIntent() {
+    sealed class ActorPlacement : StudioIntent() {
         data class Add(val reference: com.donnclab.kinetiframe.engine.model.ActorPlacementReference) : ActorPlacement()
         data class Duplicate(val placementId: String) : ActorPlacement()
         data class Remove(val placementId: String) : ActorPlacement()
@@ -422,10 +422,10 @@ sealed class TimelineIntent : ViewIntent {
         data class Split(val placementId: String, val atFrame: Int) : ActorPlacement()
     }
     /** Main-timeline track-lane UI preferences (collapse state); never touches project state. */
-    sealed class Tracks : TimelineIntent() {
+    sealed class Tracks : StudioIntent() {
         data class ToggleGroup(val group: TrackGroupKind) : Tracks()
     }
-    sealed class Playback : TimelineIntent() {
+    sealed class Playback : StudioIntent() {
         object Play : Playback()
         object Pause : Playback()
         object NextFrame : Playback()
@@ -434,7 +434,7 @@ sealed class TimelineIntent : ViewIntent {
         data class SetCurrentFrame(val frame: Int) : Playback()
     }
 
-    sealed class Draw : TimelineIntent() {
+    sealed class Draw : StudioIntent() {
         data class DrawStroke(val points: List<TouchPoint>) : Draw()
         /**
          * [targetBoneId] is supplied only by Actor Studio's freehand surface. It lets the engine
@@ -460,7 +460,7 @@ sealed class TimelineIntent : ViewIntent {
         object Redo : Draw()
     }
 
-    sealed class Layer : TimelineIntent() {
+    sealed class Layer : StudioIntent() {
         data class SelectLayer(val index: Int) : Layer()
         data class AddLayer(val type: LayerType = LayerType.RASTER) : Layer()
         data class RemoveLayer(val index: Int) : Layer()
@@ -471,7 +471,7 @@ sealed class TimelineIntent : ViewIntent {
         data class RenameLayer(val index: Int, val name: String) : Layer()
     }
 
-    sealed class Frame : TimelineIntent() {
+    sealed class Frame : StudioIntent() {
         object AddFrame : Frame()
         data class DeleteFrame(val index: Int) : Frame()
         data class DuplicateFrame(val index: Int) : Frame()
@@ -486,7 +486,7 @@ sealed class TimelineIntent : ViewIntent {
         data class UnlinkDrawing(val index: Int) : Frame()
     }
 
-    sealed class View : TimelineIntent() {
+    sealed class View : StudioIntent() {
         data class SetGridSize(val size: GridSize) : View()
         data class SetGridSpacing(val spacingDp: Float) : View()
         data class SetGridEnabled(val enabled: Boolean) : View()
@@ -504,7 +504,7 @@ sealed class TimelineIntent : ViewIntent {
         data class SetDockPosition(val edge: DockEdge, val offset: Offset) : View()
     }
 
-    sealed class OnionSkin : TimelineIntent() {
+    sealed class OnionSkin : StudioIntent() {
         data class SetEnabled(val enabled: Boolean) : OnionSkin()
         data class SetFramesBefore(val frames: Int) : OnionSkin()
         data class SetFramesAfter(val frames: Int) : OnionSkin()
@@ -514,7 +514,7 @@ sealed class TimelineIntent : ViewIntent {
         object Reset : OnionSkin()
     }
 
-    sealed class Rigging : TimelineIntent() {
+    sealed class Rigging : StudioIntent() {
         data class SetStudioMode(val mode: StudioMode) : Rigging()
         data class PreparePivotPlacement(
             val sourceFrame: Bitmap,
@@ -529,7 +529,7 @@ sealed class TimelineIntent : ViewIntent {
         object ToggleSkeletonOverlay : Rigging()
     }
 
-    sealed class Text : TimelineIntent() {
+    sealed class Text : StudioIntent() {
         data class AddText(val text: String, val x: Float = 960f, val y: Float = 540f) : Text()
         data class UpdateText(val id: String, val text: String) : Text()
         data class SelectTextNode(val id: String?) : Text()
@@ -540,7 +540,7 @@ sealed class TimelineIntent : ViewIntent {
         data class TriggerAddTextDialog(val x: Float, val y: Float) : Text()
     }
 
-    sealed class Selection : TimelineIntent() {
+    sealed class Selection : StudioIntent() {
         data class SetTool(val type: SelectionToolType) : Selection()
         data class SelectArea(
             val path: androidx.compose.ui.graphics.Path? = null,
@@ -582,7 +582,7 @@ sealed class TimelineIntent : ViewIntent {
         data class SetPartialInclude(val include: Boolean) : Selection()
     }
 
-    sealed class Fill : TimelineIntent() {
+    sealed class Fill : StudioIntent() {
         data class SetPendingTap(val offset: Offset?) : Fill()
         data class SetDockPosition(val offset: Offset) : Fill()
         object Confirm : Fill()
@@ -592,7 +592,7 @@ sealed class TimelineIntent : ViewIntent {
 
     /** The project's single persistent background image. It applies to the whole scene, so it is
      *  neither a layer nor a timeline placement. */
-    sealed class Background : TimelineIntent() {
+    sealed class Background : StudioIntent() {
         /** [bitmap] is already decoded from the picked image by the caller, which has Android
          *  Context/ContentResolver access -- mirrors [Fill.SetPreviewBitmap]'s precedent so this
          *  intent, and the manager that handles it, stay Android-Context-free. */
@@ -606,7 +606,7 @@ sealed class TimelineIntent : ViewIntent {
      *  Context/ContentResolver/MediaRecorder access) has already copied the audio file into the
      *  project's own storage and resolved its duration before this intent is ever dispatched, so
      *  [AudioManager] and this intent stay Android-Context-free. */
-    sealed class Audio : TimelineIntent() {
+    sealed class Audio : StudioIntent() {
         data class VoiceStyle(val clipId: String, val expectedAssetId: String, val effect: com.donnclab.kinetiframe.engine.audio.VoiceEffect,
             val proxy: com.donnclab.kinetiframe.engine.model.ProjectAsset?) : Audio()
         data class Crossfade(val clipId: String, val nextClipId: String, val frames: Int) : Audio()
@@ -623,7 +623,7 @@ sealed class TimelineIntent : ViewIntent {
         /** [atFrame] is a timeline frame, not an offset into the clip. */
         data class Split(val clipId: String, val atFrame: Int) : Audio()
     }
-    sealed class Video : TimelineIntent() {
+    sealed class Video : StudioIntent() {
         data class Framing(val clipId: String, val fit: com.donnclab.kinetiframe.engine.model.VideoFit, val cropX: Float, val cropY: Float) : Video()
         data class Split(val clipId: String, val atFrame: Int) : Video()
         data class Select(val clipId: String) : Video()
@@ -634,13 +634,13 @@ sealed class TimelineIntent : ViewIntent {
         data class Trim(val clipId: String, val timelineStartFrame: Int, val timelineEndFrame: Int, val videoSourceOffsetSeconds: Double) : Video()
         data class SetTrackOpacity(val opacity: Float) : Video()
     }
-    sealed class Camera : TimelineIntent() {
+    sealed class Camera : StudioIntent() {
         data class Put(val shot: com.donnclab.kinetiframe.engine.camera.CameraShot) : Camera()
         data class Remove(val id: String) : Camera()
         object Undo : Camera()
         object Redo : Camera()
     }
-    sealed class Construction : TimelineIntent() {
+    sealed class Construction : StudioIntent() {
         data class SetPreview(val strokes: List<List<TouchPoint>>) : Construction()
         data class SetDockPosition(val offset: Offset) : Construction()
         object Confirm : Construction()
@@ -652,8 +652,8 @@ sealed class TimelineIntent : ViewIntent {
 /**
  * One-time events related to the timeline.
  */
-sealed class TimelineEffect : ViewEffect {
-    data class ShowError(val message: String) : TimelineEffect()
-    data class ShowTextEditDialog(val id: String, val initialText: String) : TimelineEffect()
-    data class ShowTextAddDialog(val x: Float, val y: Float) : TimelineEffect()
+sealed class StudioEffect : ViewEffect {
+    data class ShowError(val message: String) : StudioEffect()
+    data class ShowTextEditDialog(val id: String, val initialText: String) : StudioEffect()
+    data class ShowTextAddDialog(val x: Float, val y: Float) : StudioEffect()
 }

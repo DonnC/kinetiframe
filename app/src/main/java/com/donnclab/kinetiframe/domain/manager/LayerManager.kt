@@ -5,14 +5,14 @@ import com.donnclab.kinetiframe.engine.model.PuppetInstance
 import com.donnclab.kinetiframe.models.Layer
 import com.donnclab.kinetiframe.models.LayerType
 import com.donnclab.kinetiframe.ui.LayerState
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.currentFrameLayers
 
 /**
  * Manager for layer operations.
  */
 class LayerManager(
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
     private val refreshComposite: () -> Unit,
     private val onLayerAdded: (String) -> Unit = {},
 ) {

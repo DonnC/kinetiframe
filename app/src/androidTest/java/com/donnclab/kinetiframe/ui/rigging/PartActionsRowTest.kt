@@ -11,7 +11,7 @@ import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.engine.model.DrawingTool
 import com.donnclab.kinetiframe.engine.rigging.model.BoneNode
 import com.donnclab.kinetiframe.engine.rigging.model.TextureBinding
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.components.rigging.PartActionsRow
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -33,19 +33,19 @@ class PartActionsRowTest {
     )
 
     @Test fun moveArtworkAndAttachmentHaveDifferentIntents() {
-        var intent: TimelineIntent? = null
+        var intent: StudioIntent? = null
         compose.setContent { PartActionsRow(boundArm(), setup = true, onIntent = { intent = it }) }
         compose.onNodeWithContentDescription("Move part artwork").performClick()
         compose.runOnIdle {
             assertEquals(
-                TimelineIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.ARTWORK),
+                StudioIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.ARTWORK),
                 intent,
             )
         }
         compose.onNodeWithContentDescription("Move attachment joint").performClick()
         compose.runOnIdle {
             assertEquals(
-                TimelineIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.JOINT_START),
+                StudioIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.JOINT_START),
                 intent,
             )
         }
@@ -58,13 +58,13 @@ class PartActionsRowTest {
     }
 
     @Test fun attachArtworkSelectsLassoCutWhileInSetup() {
-        var intent: TimelineIntent? = null
+        var intent: StudioIntent? = null
         compose.setContent {
             PartActionsRow(unboundArm(), setup = true, onIntent = { intent = it }, canCaptureSketch = true)
         }
         compose.onNodeWithContentDescription("Capture sketch artwork").performClick()
         compose.runOnIdle {
-            assertEquals(TimelineIntent.Draw.SelectTool(DrawingTool.LASSO_CUT), intent)
+            assertEquals(StudioIntent.Draw.SelectTool(DrawingTool.LASSO_CUT), intent)
         }
     }
 
@@ -80,9 +80,9 @@ class PartActionsRowTest {
     }
 
     @Test fun detachArtworkDispatchesUnbindWhenBoundAndInSetup() {
-        var intent: TimelineIntent? = null
+        var intent: StudioIntent? = null
         compose.setContent { PartActionsRow(boundArm(), setup = true, onIntent = { intent = it }) }
         compose.onNodeWithContentDescription("Detach artwork").assertIsEnabled().performClick()
-        compose.runOnIdle { assertEquals(TimelineIntent.Actor.Unbind, intent) }
+        compose.runOnIdle { assertEquals(StudioIntent.Actor.Unbind, intent) }
     }
 }

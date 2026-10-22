@@ -29,8 +29,8 @@ import com.donnclab.kinetiframe.engine.rigging.math.RigJointHitTester
 import com.donnclab.kinetiframe.engine.rigging.math.RigJointTarget
 import com.donnclab.kinetiframe.engine.rigging.render.toMatrix
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import com.donnclab.kinetiframe.ui.actorDefinition
 import com.donnclab.kinetiframe.ui.components.canvas.ActiveStroke
@@ -45,8 +45,8 @@ import com.donnclab.kinetiframe.ui.currentFrameLayers
  */
 @Composable
 fun PuppetStudioCanvas(
-    state: TimelineState,
-    onIntent: (TimelineIntent) -> Unit,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
     rigAssetManager: RigAssetManager?,
     modifier: Modifier = Modifier,
     referenceUnderlay: ((android.graphics.Canvas) -> Unit)? = null,
@@ -163,17 +163,17 @@ fun PuppetStudioCanvas(
     Column(modifier.fillMaxSize()) {
         Box(
             modifier = Modifier.weight(1f).fillMaxWidth()
-                .onSizeChanged { onIntent(TimelineIntent.View.SetViewportSize(it.width, it.height)) }
+                .onSizeChanged { onIntent(StudioIntent.View.SetViewportSize(it.width, it.height)) }
                 .pointerInput(state.scene.studioMode) {
                     workspaceGestures(
                         touchNavigationEnabled = true,
                         onNavigation = {
                             activeStroke.reset()
                             selectionPath.reset()
-                            currentIntent.value(TimelineIntent.Actor.CancelDrag)
+                            currentIntent.value(StudioIntent.Actor.CancelDrag)
                         },
                         onTransform = { pan, zoom, rotation, centre ->
-                            currentIntent.value(TimelineIntent.View.UpdateTransform(pan, zoom, rotation, centre))
+                            currentIntent.value(StudioIntent.View.UpdateTransform(pan, zoom, rotation, centre))
                         },
                     )
                 },
@@ -220,21 +220,21 @@ fun PuppetStudioCanvas(
                             ),
                             rigAssetManager,
                         )
-                        onIntent(TimelineIntent.Rigging.SelectBone(id))
+                        onIntent(StudioIntent.Rigging.SelectBone(id))
                         if (!state.actor.isPerformanceAuthoring) {
                             onIntent(
-                                TimelineIntent.Rigging.SetStudioMode(com.donnclab.kinetiframe.ui.StudioMode.RIG_SETUP),
+                                StudioIntent.Rigging.SetStudioMode(com.donnclab.kinetiframe.ui.StudioMode.RIG_SETUP),
                             )
                             onIntent(
-                                TimelineIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.ARTWORK),
+                                StudioIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.ARTWORK),
                             )
                         }
-                        onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.RIG_SELECT))
+                        onIntent(StudioIntent.Draw.SelectTool(DrawingTool.RIG_SELECT))
                     }
                     selectionPath.reset()
                 },
                 onEraserCursorChange = {},
-                onConstructionPreview = { onIntent(TimelineIntent.Construction.SetPreview(it)) },
+                onConstructionPreview = { onIntent(StudioIntent.Construction.SetPreview(it)) },
                 onIntent = onIntent,
                 onStrokeSettled = { points ->
                     activeStroke.settle(
@@ -263,7 +263,7 @@ fun PuppetStudioCanvas(
                         null
                     }
                     onIntent(
-                        TimelineIntent.Draw.BakeStroke(
+                        StudioIntent.Draw.BakeStroke(
                             points = points,
                             brush = BrushSnapshot(config.brushId, seed = points.firstOrNull()?.timestamp ?: 0L),
                             targetBoneId = targetBoneId,
@@ -383,9 +383,9 @@ fun PuppetStudioCanvas(
                     bitmap = rigAssetManager?.getAsset(placement.assetId),
                     stage = state.project.stage,
                     canvasMatrixValues = state.canvas.matrixValues,
-                    onPivotMoved = { x, y -> onIntent(TimelineIntent.Rigging.MovePivot(x, y)) },
-                    onConfirmed = { onIntent(TimelineIntent.Rigging.ConfirmPivot) },
-                    onCancelled = { onIntent(TimelineIntent.Rigging.CancelPivot) },
+                    onPivotMoved = { x, y -> onIntent(StudioIntent.Rigging.MovePivot(x, y)) },
+                    onConfirmed = { onIntent(StudioIntent.Rigging.ConfirmPivot) },
+                    onCancelled = { onIntent(StudioIntent.Rigging.CancelPivot) },
                     modifier = Modifier.fillMaxSize(),
                 )
             }
@@ -413,7 +413,7 @@ fun PuppetStudioCanvas(
 private fun PuppetStudioCanvasPreview() {
     KinetiFrameTheme {
         PuppetStudioCanvas(
-            state = TimelineState(),
+            state = StudioState(),
             onIntent = {},
             rigAssetManager = null,
         )

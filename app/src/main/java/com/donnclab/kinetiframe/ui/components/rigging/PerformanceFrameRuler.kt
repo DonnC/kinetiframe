@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.domain.actor.PerformanceRulerTiming
 import com.donnclab.kinetiframe.engine.rigging.model.ActorPoseKey
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 
 /**
  * Frame-facing view of a time-based gesture. The ruler never owns animation data: it simply

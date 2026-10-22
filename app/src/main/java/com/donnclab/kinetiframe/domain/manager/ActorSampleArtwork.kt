@@ -8,9 +8,9 @@ import com.donnclab.kinetiframe.engine.model.ProjectAsset
 import com.donnclab.kinetiframe.engine.model.TextureSlot
 import com.donnclab.kinetiframe.engine.rigging.model.TextureBinding
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
+import com.donnclab.kinetiframe.ui.StudioEffect
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineEffect
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.actorDefinition
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -27,10 +27,10 @@ import kotlin.math.ceil
 class ActorSampleArtwork(
     private val scope: CoroutineScope,
     private val assets: RigAssetManager,
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
     private val checkpoint: () -> Unit,
-    private val sendEffect: (TimelineEffect) -> Unit,
+    private val sendEffect: (StudioEffect) -> Unit,
 ) {
     private var job: Job? = null
     fun add(color: Int) {
@@ -91,7 +91,7 @@ class ActorSampleArtwork(
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (error: Exception) {
-                sendEffect(TimelineEffect.ShowError("Sample artwork could not be created: ${error.message}"))
+                sendEffect(StudioEffect.ShowError("Sample artwork could not be created: ${error.message}"))
             } finally {
                 if (!installed) prepared.values.forEach { assets.releaseAsset(it.first) }
             }

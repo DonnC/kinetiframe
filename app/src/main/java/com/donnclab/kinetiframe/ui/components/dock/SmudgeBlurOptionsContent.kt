@@ -16,14 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.engine.model.DrawingTool
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.ToolConfig
 import com.donnclab.kinetiframe.ui.components.StandardSlider
 
 /** Size is the only user-facing control; transfer/softening are tuned in ManipulationDefaults. */
 @Composable
-fun SmudgeBlurOptionsContent(state: TimelineState, tool: DrawingTool, onIntent: (TimelineIntent) -> Unit) {
+fun SmudgeBlurOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (StudioIntent) -> Unit) {
     val config = state.tool.configs[tool] ?: ToolConfig()
     val toolName = if (tool == DrawingTool.SMUDGE) "Smudge" else "Blur"
 
@@ -41,7 +41,7 @@ fun SmudgeBlurOptionsContent(state: TimelineState, tool: DrawingTool, onIntent: 
         StandardSlider(
             label = "Size",
             value = config.size,
-            onValueChange = { onIntent(TimelineIntent.Draw.SetBrushSize(it)) },
+            onValueChange = { onIntent(StudioIntent.Draw.SetBrushSize(it)) },
             range = 1f..100f,
         )
     }
@@ -50,5 +50,5 @@ fun SmudgeBlurOptionsContent(state: TimelineState, tool: DrawingTool, onIntent: 
 @androidx.compose.ui.tooling.preview.Preview
 @Composable
 private fun SmudgeOptionsPreview() {
-    SmudgeBlurOptionsContent(TimelineState(), DrawingTool.SMUDGE, {})
+    SmudgeBlurOptionsContent(StudioState(), DrawingTool.SMUDGE, {})
 }

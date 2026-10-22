@@ -28,16 +28,16 @@ class SelectionMoveControlsTest {
     @get:Rule val compose = createComposeRule()
 
     @Test fun moveContextActionDispatchesExplicitModeAndDismissesMenu() {
-        var dispatched: TimelineIntent? = null
+        var dispatched: StudioIntent? = null
         var dismissed = false
         compose.setContent {
             KinetiFrameTheme {
-                SelectionActionMenu(true, { dismissed = true }, TimelineState(), { dispatched = it })
+                SelectionActionMenu(true, { dismissed = true }, StudioState(), { dispatched = it })
             }
         }
         compose.onNodeWithContentDescription("Move selection").performClick()
         compose.runOnIdle {
-            assertEquals(TimelineIntent.Selection.SetInteractionMode(SelectionInteractionMode.MOVE), dispatched)
+            assertEquals(StudioIntent.Selection.SetInteractionMode(SelectionInteractionMode.MOVE), dispatched)
             assertEquals(true, dismissed)
         }
     }

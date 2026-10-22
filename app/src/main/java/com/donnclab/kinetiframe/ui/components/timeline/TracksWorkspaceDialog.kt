@@ -21,14 +21,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 
 /** An explicit editing workspace: opening lanes must never remeasure the drawing viewport. */
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun TracksWorkspaceDialog(
     isPlaying: Boolean,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     onDismiss: () -> Unit,
     assetPicker: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit,

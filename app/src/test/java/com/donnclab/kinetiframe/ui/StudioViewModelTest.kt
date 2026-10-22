@@ -18,10 +18,10 @@ import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TimelineViewModelTest {
+class StudioViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
-    private lateinit var viewModel: TimelineViewModel
+    private lateinit var viewModel: StudioViewModel
 
     @Before
     fun setup() {
@@ -30,7 +30,7 @@ class TimelineViewModelTest {
         val tempDir = java.io.File.createTempFile("kinetiframe_test_cache", "")
         tempDir.delete()
         tempDir.mkdir()
-        viewModel = TimelineViewModel(tempDir, testDispatcher, shouldInitialize = false)
+        viewModel = StudioViewModel(tempDir, testDispatcher, shouldInitialize = false)
     }
 
     @After
@@ -52,14 +52,14 @@ class TimelineViewModelTest {
         val head = com.donnclab.kinetiframe.ui.packs.PackFrameTag("Head")
         val hand = com.donnclab.kinetiframe.ui.packs.PackFrameTag("Hand")
         val eye = com.donnclab.kinetiframe.ui.packs.PackFrameTag("Eye")
-        viewModel.handleIntent(TimelineIntent.PackItem.SetTag(0, head))
-        viewModel.handleIntent(TimelineIntent.PackItem.Add(1, hand))
+        viewModel.handleIntent(StudioIntent.PackItem.SetTag(0, head))
+        viewModel.handleIntent(StudioIntent.PackItem.Add(1, hand))
         viewModel.prepareProjectSave()
         assertEquals(mapOf(0 to head, 1 to hand), viewModel.state.value.packTags)
-        viewModel.handleIntent(TimelineIntent.PackItem.Add(0, eye))
+        viewModel.handleIntent(StudioIntent.PackItem.Add(0, eye))
         viewModel.prepareProjectSave()
         assertEquals(mapOf(0 to eye, 1 to head, 2 to hand), viewModel.state.value.packTags)
-        viewModel.handleIntent(TimelineIntent.Frame.DeleteFrame(1))
+        viewModel.handleIntent(StudioIntent.Frame.DeleteFrame(1))
         viewModel.prepareProjectSave()
         assertEquals(mapOf(0 to eye, 1 to hand), viewModel.state.value.packTags)
         assertEquals(2, viewModel.state.value.animation.totalFrames)
@@ -89,32 +89,32 @@ class TimelineViewModelTest {
                 12,
                 zIndex = 7,
             )
-        viewModel.handleIntent(TimelineIntent.ActorPlacement.Add(first))
-        viewModel.handleIntent(TimelineIntent.ActorPlacement.Add(second))
+        viewModel.handleIntent(StudioIntent.ActorPlacement.Add(first))
+        viewModel.handleIntent(StudioIntent.ActorPlacement.Add(second))
 
-        viewModel.handleIntent(TimelineIntent.ActorPlacement.BringToFront("placement-first"))
+        viewModel.handleIntent(StudioIntent.ActorPlacement.BringToFront("placement-first"))
         assertEquals(8, viewModel.state.value.project.actorPlacements.getValue("placement-first").zIndex)
-        viewModel.handleIntent(TimelineIntent.ActorPlacement.SendToBack("placement-second"))
+        viewModel.handleIntent(StudioIntent.ActorPlacement.SendToBack("placement-second"))
         assertEquals(6, viewModel.state.value.project.actorPlacements.getValue("placement-second").zIndex)
     }
 
     @Test
     fun `puppet workspace freezes playback and rejects raster tool changes`() {
-        viewModel.handleIntent(TimelineIntent.Playback.Play)
-        viewModel.handleIntent(TimelineIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
+        viewModel.handleIntent(StudioIntent.Playback.Play)
+        viewModel.handleIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
         assertFalse(viewModel.state.value.animation.isPlaying)
         val before = viewModel.state.value.animation
-        viewModel.handleIntent(TimelineIntent.Playback.Play)
-        viewModel.handleIntent(TimelineIntent.Playback.SetFps(24))
-        viewModel.handleIntent(TimelineIntent.Playback.NextFrame)
-        viewModel.handleIntent(TimelineIntent.Draw.SelectTool(DrawingTool.BRUSH))
+        viewModel.handleIntent(StudioIntent.Playback.Play)
+        viewModel.handleIntent(StudioIntent.Playback.SetFps(24))
+        viewModel.handleIntent(StudioIntent.Playback.NextFrame)
+        viewModel.handleIntent(StudioIntent.Draw.SelectTool(DrawingTool.BRUSH))
         assertEquals(before, viewModel.state.value.animation)
         assertEquals(StudioMode.RIG_SETUP, viewModel.state.value.scene.studioMode)
         assertEquals(DrawingTool.RIG_SELECT, viewModel.state.value.tool.activeTool)
         viewModel.handleIntent(
-            TimelineIntent.Actor.Create(com.donnclab.kinetiframe.engine.rigging.model.ActorTemplate.HUMAN),
+            StudioIntent.Actor.Create(com.donnclab.kinetiframe.engine.rigging.model.ActorTemplate.HUMAN),
         )
-        viewModel.handleIntent(TimelineIntent.Rigging.SetStudioMode(StudioMode.RASTER_DRAWING))
+        viewModel.handleIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RASTER_DRAWING))
         assertEquals(DrawingTool.BRUSH, viewModel.state.value.tool.activeTool)
         val restored = viewModel.state.value
         assertEquals("main", restored.currentFrameLayers()[restored.layers.activeLayerIndex].id)
@@ -124,9 +124,9 @@ class TimelineViewModelTest {
 
     @Test
     fun `Play intent updates state and increments frame`() = runTest {
-        viewModel.handleIntent(TimelineIntent.Frame.AddFrame)
+        viewModel.handleIntent(StudioIntent.Frame.AddFrame)
         testDispatcher.scheduler.advanceUntilIdle()
-        viewModel.handleIntent(TimelineIntent.Playback.Play)
+        viewModel.handleIntent(StudioIntent.Playback.Play)
         assertTrue(viewModel.state.value.animation.isPlaying)
 
         // Advance time to trigger frame ticks
@@ -134,15 +134,15 @@ class TimelineViewModelTest {
 
         assertTrue(viewModel.state.value.animation.currentFrame in 0..1)
 
-        viewModel.handleIntent(TimelineIntent.Playback.Pause)
+        viewModel.handleIntent(StudioIntent.Playback.Pause)
     }
 
     @Test
     fun `Pause intent stops animation`() = runTest {
-        viewModel.handleIntent(TimelineIntent.Playback.Play)
+        viewModel.handleIntent(StudioIntent.Playback.Play)
         assertTrue(viewModel.state.value.animation.isPlaying)
 
-        viewModel.handleIntent(TimelineIntent.Playback.Pause)
+        viewModel.handleIntent(StudioIntent.Playback.Pause)
         assertFalse(viewModel.state.value.animation.isPlaying)
 
         val frameBeforeWait = viewModel.state.value.animation.currentFrame
@@ -152,37 +152,37 @@ class TimelineViewModelTest {
 
     @Test
     fun `NextFrame intent increments frame`() {
-        viewModel.handleIntent(TimelineIntent.Frame.AddFrame)
+        viewModel.handleIntent(StudioIntent.Frame.AddFrame)
         testDispatcher.scheduler.advanceUntilIdle()
-        viewModel.handleIntent(TimelineIntent.Playback.NextFrame)
+        viewModel.handleIntent(StudioIntent.Playback.NextFrame)
         assertEquals(0, viewModel.state.value.animation.currentFrame)
     }
 
     @Test
     fun `PreviousFrame intent wraps to totalFrames minus one at start`() {
-        viewModel.handleIntent(TimelineIntent.Frame.AddFrame)
+        viewModel.handleIntent(StudioIntent.Frame.AddFrame)
         testDispatcher.scheduler.advanceUntilIdle()
-        viewModel.handleIntent(TimelineIntent.Frame.AddFrame)
+        viewModel.handleIntent(StudioIntent.Frame.AddFrame)
         testDispatcher.scheduler.advanceUntilIdle()
-        viewModel.handleIntent(TimelineIntent.Playback.SetCurrentFrame(2))
+        viewModel.handleIntent(StudioIntent.Playback.SetCurrentFrame(2))
         assertEquals(2, viewModel.state.value.animation.currentFrame)
 
-        viewModel.handleIntent(TimelineIntent.Playback.PreviousFrame)
+        viewModel.handleIntent(StudioIntent.Playback.PreviousFrame)
         assertEquals(1, viewModel.state.value.animation.currentFrame)
 
-        viewModel.handleIntent(TimelineIntent.Playback.PreviousFrame)
+        viewModel.handleIntent(StudioIntent.Playback.PreviousFrame)
         assertEquals(0, viewModel.state.value.animation.currentFrame)
 
-        viewModel.handleIntent(TimelineIntent.Playback.PreviousFrame)
+        viewModel.handleIntent(StudioIntent.Playback.PreviousFrame)
         assertEquals(2, viewModel.state.value.animation.currentFrame)
     }
 
     @Test
     fun `SelectTool updates activeTool`() {
-        viewModel.handleIntent(TimelineIntent.Draw.SelectTool(DrawingTool.ERASER))
+        viewModel.handleIntent(StudioIntent.Draw.SelectTool(DrawingTool.ERASER))
         assertEquals(DrawingTool.ERASER, viewModel.state.value.tool.activeTool)
 
-        viewModel.handleIntent(TimelineIntent.Draw.SelectTool(DrawingTool.BRUSH))
+        viewModel.handleIntent(StudioIntent.Draw.SelectTool(DrawingTool.BRUSH))
         assertEquals(DrawingTool.BRUSH, viewModel.state.value.tool.activeTool)
     }
 
@@ -190,7 +190,7 @@ class TimelineViewModelTest {
     fun `UpdateTransform updates pan and zoom`() {
         val newPan = Offset(100f, 200f)
         val newZoom = 2.5f
-        viewModel.handleIntent(TimelineIntent.View.UpdateTransform(newPan, newZoom, 0f, Offset.Zero))
+        viewModel.handleIntent(StudioIntent.View.UpdateTransform(newPan, newZoom, 0f, Offset.Zero))
         assertEquals(newPan, viewModel.state.value.canvas.pan)
         assertEquals(newZoom, viewModel.state.value.canvas.zoom)
     }
@@ -200,7 +200,7 @@ class TimelineViewModelTest {
         val initialTotal = viewModel.state.value.animation.totalFrames
         val initialCurrent = viewModel.state.value.animation.currentFrame
 
-        viewModel.handleIntent(TimelineIntent.Frame.AddFrame)
+        viewModel.handleIntent(StudioIntent.Frame.AddFrame)
 
         // Advance time to allow the coroutine in addFrame to finish
         testDispatcher.scheduler.advanceUntilIdle()
@@ -212,7 +212,7 @@ class TimelineViewModelTest {
     @Test
     fun `AddText intent creates a TextNode in SceneState`() = runTest {
         val text = "Hello World"
-        viewModel.handleIntent(TimelineIntent.Text.AddText(text, 100f, 200f))
+        viewModel.handleIntent(StudioIntent.Text.AddText(text, 100f, 200f))
 
         val nodes = viewModel.state.value.scene.nodes
         assertEquals(1, nodes.size)
@@ -227,7 +227,7 @@ class TimelineViewModelTest {
         assertTrue("overlay defaults to visible", viewModel.state.value.scene.skeletonOverlayVisible)
         val projectBefore = viewModel.state.value.project
 
-        viewModel.handleIntent(TimelineIntent.Rigging.ToggleSkeletonOverlay)
+        viewModel.handleIntent(StudioIntent.Rigging.ToggleSkeletonOverlay)
         assertFalse(viewModel.state.value.scene.skeletonOverlayVisible)
         assertEquals(
             "hiding the overlay is a view preference, not a rig edit",
@@ -235,7 +235,7 @@ class TimelineViewModelTest {
             viewModel.state.value.project,
         )
 
-        viewModel.handleIntent(TimelineIntent.Rigging.ToggleSkeletonOverlay)
+        viewModel.handleIntent(StudioIntent.Rigging.ToggleSkeletonOverlay)
         assertTrue(viewModel.state.value.scene.skeletonOverlayVisible)
     }
 
@@ -243,10 +243,10 @@ class TimelineViewModelTest {
     fun `ToggleGroup on the Actors track collapses and re-expands it, independent of other groups`() = runTest {
         assertTrue("no group starts collapsed", viewModel.state.value.tracks.collapsedGroups.isEmpty())
 
-        viewModel.handleIntent(TimelineIntent.Tracks.ToggleGroup(TrackGroupKind.ACTORS))
+        viewModel.handleIntent(StudioIntent.Tracks.ToggleGroup(TrackGroupKind.ACTORS))
         assertEquals(setOf(TrackGroupKind.ACTORS), viewModel.state.value.tracks.collapsedGroups)
 
-        viewModel.handleIntent(TimelineIntent.Tracks.ToggleGroup(TrackGroupKind.ACTORS))
+        viewModel.handleIntent(StudioIntent.Tracks.ToggleGroup(TrackGroupKind.ACTORS))
         assertTrue(viewModel.state.value.tracks.collapsedGroups.isEmpty())
     }
 }

@@ -15,13 +15,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.data.actor.CurveInterpolation
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 
 /** Timing is a saved authoring choice, not a cosmetic filter on the preview. */
 @Composable
-fun ActorMotionTimingMenu(state: TimelineState, onIntent: (TimelineIntent) -> Unit, enabled: Boolean) {
+fun ActorMotionTimingMenu(state: StudioState, onIntent: (StudioIntent) -> Unit, enabled: Boolean) {
     var expanded by remember { mutableStateOf(false) }
     Box {
         IconButton(onClick = { expanded = true }, enabled = enabled) {
@@ -38,7 +38,7 @@ fun ActorMotionTimingMenu(state: TimelineState, onIntent: (TimelineIntent) -> Un
                     if (state.activeActor()?.poseInterpolation == mode) Text("✓")
                 }, onClick = {
                     expanded = false
-                    onIntent(TimelineIntent.ActorMotion.SetInterpolation(mode))
+                    onIntent(StudioIntent.ActorMotion.SetInterpolation(mode))
                 })
             }
         }
@@ -47,4 +47,4 @@ fun ActorMotionTimingMenu(state: TimelineState, onIntent: (TimelineIntent) -> Un
 
 @Preview
 @Composable
-private fun MotionTimingPreview() = ActorMotionTimingMenu(TimelineState(), {}, true)
+private fun MotionTimingPreview() = ActorMotionTimingMenu(StudioState(), {}, true)

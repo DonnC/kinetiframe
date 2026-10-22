@@ -16,13 +16,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.engine.rigging.model.BoneNode
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 
 /** One compact entry covers the selected part's default and alternate artwork, for any rig. */
 @Composable
 fun ActorArtworkControls(
     bone: BoneNode,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     onAttach: (String) -> Unit,
     onEdit: (String) -> Unit,
 ) {
@@ -102,7 +102,7 @@ fun ActorArtworkControls(
                     onClick = {
                         open = false
                         onIntent(
-                            TimelineIntent.Actor.SetAttachmentBlend(
+                            StudioIntent.Actor.SetAttachmentBlend(
                                 bone.id,
                                 selected,
                                 binding.skin?.attachmentBlend != true,
@@ -117,8 +117,8 @@ fun ActorArtworkControls(
                 bone.textureBinding != null,
                 onClick = {
                     open = false
-                    onIntent(TimelineIntent.Rigging.SetStudioMode(com.donnclab.kinetiframe.ui.StudioMode.RIG_SETUP))
-                    onIntent(TimelineIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.ARTWORK))
+                    onIntent(StudioIntent.Rigging.SetStudioMode(com.donnclab.kinetiframe.ui.StudioMode.RIG_SETUP))
+                    onIntent(StudioIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.ARTWORK))
                 },
             )
             DropdownMenuItem(
@@ -127,7 +127,7 @@ fun ActorArtworkControls(
                 binding != null,
                 onClick = {
                     open = false
-                    onIntent(TimelineIntent.Actor.RemoveArtwork(bone.id, selected))
+                    onIntent(StudioIntent.Actor.RemoveArtwork(bone.id, selected))
                 },
             )
         }

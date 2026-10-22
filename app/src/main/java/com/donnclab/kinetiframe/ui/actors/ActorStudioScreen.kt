@@ -284,7 +284,7 @@ private fun RestoredActorEditor(
     val performance = document.performance
     val runtime = remember(manifest.actorId, revision.revisionId) { RigAssetManager() }
     // A NavEntry outlives view/revision switches. Give only the canvas a disposable store,
-    // otherwise every visited view retains its TimelineViewModel and decoded textures until exit.
+    // otherwise every visited view retains its StudioViewModel and decoded textures until exit.
     val canvasOwner = remember(manifest.actorId, revision.revisionId) {
         object : androidx.lifecycle.ViewModelStoreOwner {
             override val viewModelStore = androidx.lifecycle.ViewModelStore()

@@ -30,7 +30,7 @@ import com.composables.icons.lucide.Scissors
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.engine.model.DrawingTool
 import com.donnclab.kinetiframe.engine.rigging.model.BoneNode
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 
 /** Compact, icon-only rename/attach/detach actions for the part selected in [PartRail], shown as
  *  a small floating pill only while a part is selected so the canvas stays clear otherwise.
@@ -39,7 +39,7 @@ import com.donnclab.kinetiframe.ui.TimelineIntent
 fun PartActionsRow(
     bone: BoneNode,
     setup: Boolean,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,
     onChooseArtwork: (() -> Unit)? = null,
     onEditArtwork: ((String) -> Unit)? = null,
@@ -61,7 +61,7 @@ fun PartActionsRow(
                     "Move part artwork",
                     selected = editTarget == com.donnclab.kinetiframe.ui.ActorEditTarget.ARTWORK,
                 ) {
-                    onIntent(TimelineIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.ARTWORK))
+                    onIntent(StudioIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.ARTWORK))
                 }
             }
             ActorToolButton(
@@ -70,7 +70,7 @@ fun PartActionsRow(
                 enabled = setup,
                 selected = editTarget == com.donnclab.kinetiframe.ui.ActorEditTarget.JOINT_START,
             ) {
-                onIntent(TimelineIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.JOINT_START))
+                onIntent(StudioIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.JOINT_START))
             }
             if (setup && onChooseArtwork != null && onEditArtwork != null) {
                 ActorArtworkControls(bone, onIntent, { id ->
@@ -94,12 +94,12 @@ fun PartActionsRow(
                 }) { Icon(Lucide.Layers, "Part stacking order", modifier = Modifier.size(18.dp)) }
                 DropdownMenu(stackMenu, onDismissRequest = { stackMenu = false }) {
                     DropdownMenuItem(text = { Text("Bring part forward") }, onClick = {
-                        onIntent(TimelineIntent.Actor.MovePart(bone.id, true))
+                        onIntent(StudioIntent.Actor.MovePart(bone.id, true))
                         stackMenu =
                             false
                     })
                     DropdownMenuItem(text = { Text("Send part backward") }, onClick = {
-                        onIntent(TimelineIntent.Actor.MovePart(bone.id, false))
+                        onIntent(StudioIntent.Actor.MovePart(bone.id, false))
                         stackMenu =
                             false
                     })
@@ -116,7 +116,7 @@ fun PartActionsRow(
             if (setup &&
                 canCaptureSketch
             ) {
-                IconButton(onClick = { onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.LASSO_CUT)) }) {
+                IconButton(onClick = { onIntent(StudioIntent.Draw.SelectTool(DrawingTool.LASSO_CUT)) }) {
                     Icon(
                         Lucide.Scissors,
                         "Capture sketch artwork",
@@ -126,7 +126,7 @@ fun PartActionsRow(
                 }
             }
             if (setup && bone.textureBinding != null) {
-                IconButton(onClick = { onIntent(TimelineIntent.Actor.Unbind) }) {
+                IconButton(onClick = { onIntent(StudioIntent.Actor.Unbind) }) {
                     Icon(
                         Lucide.Link2Off,
                         "Detach artwork",
@@ -139,7 +139,7 @@ fun PartActionsRow(
     }
     if (rename) {
         com.donnclab.kinetiframe.ui.actors.ActorNameDialog(bone.name, "Rename part", { rename = false }) { name ->
-            onIntent(TimelineIntent.Actor.RenameBone(name))
+            onIntent(StudioIntent.Actor.RenameBone(name))
             rename = false
         }
     }

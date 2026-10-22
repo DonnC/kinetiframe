@@ -2,12 +2,12 @@ package com.donnclab.kinetiframe.domain.manager
 
 import androidx.compose.ui.graphics.toArgb
 import com.donnclab.kinetiframe.models.TextNode
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 
 /**
  * Manager for text operations.
  */
-class TextManager(private val updateState: ((TimelineState) -> TimelineState) -> Unit) {
+class TextManager(private val updateState: ((StudioState) -> StudioState) -> Unit) {
     fun addText(text: String, x: Float, y: Float) {
         updateState { state ->
             val options = state.tool.textToolOptions
@@ -76,7 +76,7 @@ class TextManager(private val updateState: ((TimelineState) -> TimelineState) ->
         }
     }
 
-    private fun findTextNode(state: TimelineState, id: String): TextNode? =
+    private fun findTextNode(state: StudioState, id: String): TextNode? =
         (state.scene.nodes[id] ?: state.selection.selectedContent?.nodes?.get(id)) as? TextNode
 
     /**
@@ -84,7 +84,7 @@ class TextManager(private val updateState: ((TimelineState) -> TimelineState) ->
      * transform is active. Updates must target that live selection copy so changing a
      * font, colour, or text value never makes the node disappear or revert on commit.
      */
-    private fun replaceTextNode(state: TimelineState, node: TextNode): TimelineState {
+    private fun replaceTextNode(state: StudioState, node: TextNode): StudioState {
         val selectedContent = state.selection.selectedContent
         return if (selectedContent?.nodes?.containsKey(node.id) == true) {
             state.copy(

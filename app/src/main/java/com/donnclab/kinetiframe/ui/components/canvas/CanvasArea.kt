@@ -35,9 +35,9 @@ import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.engine.cache.FrameCacheManager
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
 import com.donnclab.kinetiframe.ui.AnimationState
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.actorDefinition
 import com.donnclab.kinetiframe.ui.components.rigging.ActorWorkflowHint
 import com.donnclab.kinetiframe.ui.components.rigging.ProjectActorRenderLayer
@@ -51,8 +51,8 @@ fun CanvasArea(
     cameraPoseOverride: com.donnclab.kinetiframe.engine.camera.CameraPose? = null,
     fitStage: Boolean = false,
     actorReference: com.donnclab.kinetiframe.ui.actors.ActorReferenceSession? = null,
-    state: TimelineState,
-    onIntent: (TimelineIntent) -> Unit,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,
     cacheManager: FrameCacheManager? = null,
     rigAssetManager: RigAssetManager? = null,
@@ -139,7 +139,7 @@ fun CanvasArea(
             // Preview suppresses editing intents, but the real workspace still needs layout.
             // Never publish the camera dialog's fitted preview size into the project viewport.
             if (!fitStage && it.width > 0 && it.height > 0) {
-                onIntent(TimelineIntent.View.SetViewportSize(it.width, it.height))
+                onIntent(StudioIntent.View.SetViewportSize(it.width, it.height))
             }
         }.background(MaterialTheme.colorScheme.surface),
     ) {
@@ -172,8 +172,8 @@ fun CanvasArea(
 @Composable
 private fun CanvasAreaContents(
     actorReference: com.donnclab.kinetiframe.ui.actors.ActorReferenceSession? = null,
-    state: TimelineState,
-    onIntent: (TimelineIntent) -> Unit,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,
     cacheManager: FrameCacheManager? = null,
     rigAssetManager: RigAssetManager? = null,
@@ -420,14 +420,14 @@ private fun CanvasAreaContents(
                     canvasMatrixValues = state.canvas.matrixValues,
                     docWidth = state.project.stage.width, docHeight = state.project.stage.height,
                     viewportWidth = 0, viewportHeight = 0,
-                    onOutsideSelectionTap = { onIntent(TimelineIntent.Selection.SetActive(false)) },
+                    onOutsideSelectionTap = { onIntent(StudioIntent.Selection.SetActive(false)) },
                     onIntent = onIntent, activeStroke = null,
                     lockAspectRatio = state.selection.lockAspectRatio,
                     skewMode = state.selection.skewMode,
                     interactionMode = state.selection.interactionMode,
                     onDragEnd = {
-                        onIntent(TimelineIntent.Selection.UpdateTransform(selectionTransform.matrix))
-                        onIntent(TimelineIntent.Selection.UpdatePivot(selectionTransform.pivotOffset))
+                        onIntent(StudioIntent.Selection.UpdateTransform(selectionTransform.matrix))
+                        onIntent(StudioIntent.Selection.UpdatePivot(selectionTransform.pivotOffset))
                     },
                     modifier = Modifier.fillMaxSize().zIndex(5f),
                 )
@@ -441,7 +441,7 @@ private fun CanvasAreaContents(
 fun CanvasAreaPreview() {
     KinetiFrameTheme {
         CanvasArea(
-            state = TimelineState(animation = AnimationState(currentFrame = 0)),
+            state = StudioState(animation = AnimationState(currentFrame = 0)),
             onIntent = {},
         )
     }

@@ -50,15 +50,15 @@ class PresetAuditionTest {
     }
 
     @Test fun timingMenuEmitsSavedAuthoringIntent() {
-        var selected: com.donnclab.kinetiframe.ui.TimelineIntent? = null
+        var selected: com.donnclab.kinetiframe.ui.StudioIntent? = null
         compose.setContent {
-            ActorMotionTimingMenu(com.donnclab.kinetiframe.ui.TimelineState(), { selected = it }, true)
+            ActorMotionTimingMenu(com.donnclab.kinetiframe.ui.StudioState(), { selected = it }, true)
         }
         compose.onNodeWithContentDescription("Motion timing").performClick()
         compose.onNodeWithText("Ease · pose to pose").performClick()
         compose.runOnIdle {
             assertEquals(
-                com.donnclab.kinetiframe.ui.TimelineIntent.ActorMotion.SetInterpolation(
+                com.donnclab.kinetiframe.ui.StudioIntent.ActorMotion.SetInterpolation(
                     com.donnclab.kinetiframe.data.actor.CurveInterpolation.EASE_IN_OUT,
                 ),
                 selected,

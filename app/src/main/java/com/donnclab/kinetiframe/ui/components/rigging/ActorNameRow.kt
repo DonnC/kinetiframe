@@ -23,12 +23,12 @@ import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Folder
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.components.common.CompactTextField
 
 /** The actor's name, tap-to-rename. One of the sections composed by [PuppetInspector]. */
 @Composable
-fun ActorNameRow(actorName: String, onIntent: (TimelineIntent) -> Unit) {
+fun ActorNameRow(actorName: String, onIntent: (StudioIntent) -> Unit) {
     var editingName by remember { mutableStateOf(false) }
     var currentName by remember(actorName) { mutableStateOf(actorName) }
 
@@ -61,7 +61,7 @@ fun ActorNameRow(actorName: String, onIntent: (TimelineIntent) -> Unit) {
                 },
                 confirmButton = {
                     TextButton(onClick = {
-                        onIntent(TimelineIntent.Actor.RenameActor(currentName))
+                        onIntent(StudioIntent.Actor.RenameActor(currentName))
                         editingName = false
                     }) { Text("Save") }
                 },

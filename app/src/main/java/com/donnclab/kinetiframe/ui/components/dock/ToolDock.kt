@@ -62,9 +62,9 @@ import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.engine.model.DrawingTool
 import com.donnclab.kinetiframe.ui.CanvasState
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.actorDefinition
 import com.donnclab.kinetiframe.ui.components.StandardSlider
 import kotlin.math.roundToInt
@@ -78,8 +78,8 @@ import kotlin.math.roundToInt
 @Composable
 fun ToolDock(
     modifier: Modifier = Modifier,
-    state: TimelineState,
-    onIntent: (TimelineIntent) -> Unit,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
     onInteraction: () -> Unit = {},
 ) {
     // A pending extraction owns the canvas and its Check/Cancel controls exclusively.
@@ -135,7 +135,7 @@ fun ToolDock(
                         },
                         onDragEnd = { finalOffset ->
                             isDragging = false
-                            onIntent(TimelineIntent.View.SetDockPosition(state.canvas.dockEdge, finalOffset))
+                            onIntent(StudioIntent.View.SetDockPosition(state.canvas.dockEdge, finalOffset))
                         },
                     ),
                 )
@@ -169,7 +169,7 @@ fun ToolDock(
                                 state.scene.studioMode == StudioMode.RIG_SETUP,
                                 onClick = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
+                                    onIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
                                 },
                                 onOpenMenu = {},
                             )
@@ -185,17 +185,17 @@ fun ToolDock(
                                 onClick = {
                                     onInteraction()
                                     if (isPuppetStudio) {
-                                        onIntent(TimelineIntent.Rigging.SetStudioMode(StudioMode.RASTER_DRAWING))
+                                        onIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RASTER_DRAWING))
                                     } else {
-                                        onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.BRUSH))
+                                        onIntent(StudioIntent.Draw.SelectTool(DrawingTool.BRUSH))
                                     }
                                 },
                                 onOpenMenu = {
                                     onInteraction()
                                     if (isPuppetStudio) {
-                                        onIntent(TimelineIntent.Rigging.SetStudioMode(StudioMode.RASTER_DRAWING))
+                                        onIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RASTER_DRAWING))
                                     } else {
-                                        onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.BRUSH))
+                                        onIntent(StudioIntent.Draw.SelectTool(DrawingTool.BRUSH))
                                         menuTool = DrawingTool.BRUSH
                                     }
                                 },
@@ -211,7 +211,7 @@ fun ToolDock(
                                     state.tool.activeTool == DrawingTool.BONE,
                                     onClick = {
                                         onInteraction()
-                                        onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.BONE))
+                                        onIntent(StudioIntent.Draw.SelectTool(DrawingTool.BONE))
                                     },
                                     onOpenMenu = {},
                                 )
@@ -224,7 +224,7 @@ fun ToolDock(
                                 isPosing,
                                 onClick = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Rigging.SetStudioMode(StudioMode.ANIMATE_IK))
+                                    onIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.ANIMATE_IK))
                                 },
                                 onOpenMenu = {},
                             )
@@ -240,7 +240,7 @@ fun ToolDock(
                                 onClick = {
                                     onInteraction()
                                     onIntent(
-                                        TimelineIntent.Draw.SelectConstructionShape(
+                                        StudioIntent.Draw.SelectConstructionShape(
                                             state.tool.constructionShape
                                                 ?: com.donnclab.kinetiframe.engine.shape.ConstructionShape.CAPSULE,
                                         ),
@@ -261,11 +261,11 @@ fun ToolDock(
                                 state.tool.activeTool == DrawingTool.ERASER,
                                 onClick = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.ERASER))
+                                    onIntent(StudioIntent.Draw.SelectTool(DrawingTool.ERASER))
                                 },
                                 onOpenMenu = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.ERASER))
+                                    onIntent(StudioIntent.Draw.SelectTool(DrawingTool.ERASER))
                                     menuTool = DrawingTool.ERASER
                                 },
                             )
@@ -281,7 +281,7 @@ fun ToolDock(
                                     state.tool.activeTool == DrawingTool.LASSO,
                                     onClick = {
                                         onInteraction()
-                                        onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.LASSO))
+                                        onIntent(StudioIntent.Draw.SelectTool(DrawingTool.LASSO))
                                     },
                                     onOpenMenu = {},
                                 )
@@ -295,11 +295,11 @@ fun ToolDock(
                                 state.tool.activeTool == DrawingTool.LASSO,
                                 onClick = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.LASSO))
+                                    onIntent(StudioIntent.Draw.SelectTool(DrawingTool.LASSO))
                                 },
                                 onOpenMenu = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.LASSO))
+                                    onIntent(StudioIntent.Draw.SelectTool(DrawingTool.LASSO))
                                     menuTool = DrawingTool.LASSO
                                 },
                             )
@@ -314,11 +314,11 @@ fun ToolDock(
                                 state.tool.activeTool == DrawingTool.COLOR_FILL,
                                 onClick = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.COLOR_FILL))
+                                    onIntent(StudioIntent.Draw.SelectTool(DrawingTool.COLOR_FILL))
                                 },
                                 onOpenMenu = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.COLOR_FILL))
+                                    onIntent(StudioIntent.Draw.SelectTool(DrawingTool.COLOR_FILL))
                                     menuTool = DrawingTool.COLOR_FILL
                                 },
                             )
@@ -333,11 +333,11 @@ fun ToolDock(
                                 state.tool.activeTool == DrawingTool.TEXT,
                                 onClick = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.TEXT))
+                                    onIntent(StudioIntent.Draw.SelectTool(DrawingTool.TEXT))
                                 },
                                 onOpenMenu = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.TEXT))
+                                    onIntent(StudioIntent.Draw.SelectTool(DrawingTool.TEXT))
                                     menuTool = DrawingTool.TEXT
                                 },
                             )
@@ -349,11 +349,11 @@ fun ToolDock(
                                 state.tool.activeTool == DrawingTool.SMUDGE,
                                 onClick = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.SMUDGE))
+                                    onIntent(StudioIntent.Draw.SelectTool(DrawingTool.SMUDGE))
                                 },
                                 onOpenMenu = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.SMUDGE))
+                                    onIntent(StudioIntent.Draw.SelectTool(DrawingTool.SMUDGE))
                                     menuTool = DrawingTool.SMUDGE
                                 },
                             )
@@ -365,11 +365,11 @@ fun ToolDock(
                                 state.tool.activeTool == DrawingTool.BLUR,
                                 onClick = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.BLUR))
+                                    onIntent(StudioIntent.Draw.SelectTool(DrawingTool.BLUR))
                                 },
                                 onOpenMenu = {
                                     onInteraction()
-                                    onIntent(TimelineIntent.Draw.SelectTool(DrawingTool.BLUR))
+                                    onIntent(StudioIntent.Draw.SelectTool(DrawingTool.BLUR))
                                     menuTool = DrawingTool.BLUR
                                 },
                             )
@@ -418,7 +418,7 @@ fun ToolDock(
 private fun ToolDockPreview() {
     Box(Modifier.fillMaxSize()) {
         ToolDock(
-            state = TimelineState(
+            state = StudioState(
                 canvas = CanvasState(dockOffset = Offset(20f, 100f)),
             ),
             onIntent = {},

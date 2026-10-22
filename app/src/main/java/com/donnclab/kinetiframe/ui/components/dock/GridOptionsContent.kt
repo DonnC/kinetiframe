@@ -36,12 +36,12 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.ui.CanvasState
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.StandardSlider
 
 @Composable
-fun GridOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit, onDismiss: () -> Unit) {
+fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onDismiss: () -> Unit) {
     val gridThemeColor = MaterialTheme.colorScheme.tertiary
     Column(Modifier.padding(16.dp).fillMaxWidth()) {
         // Master Switch at the top
@@ -69,7 +69,7 @@ fun GridOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit,
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
-                    onClick = { onIntent(TimelineIntent.View.ResetGridSettings) },
+                    onClick = { onIntent(StudioIntent.View.ResetGridSettings) },
                     modifier = Modifier.size(28.dp),
                 ) {
                     Icon(
@@ -81,7 +81,7 @@ fun GridOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit,
                 }
                 androidx.compose.material3.Switch(
                     checked = state.canvas.gridEnabled,
-                    onCheckedChange = { onIntent(TimelineIntent.View.SetGridEnabled(it)) },
+                    onCheckedChange = { onIntent(StudioIntent.View.SetGridEnabled(it)) },
                     modifier = Modifier.scale(0.72f),
                     colors = androidx.compose.material3.SwitchDefaults.colors(
                         checkedThumbColor = Color.White,
@@ -141,7 +141,7 @@ fun GridOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit,
             value = state.canvas.gridOpacity,
             valueDisplay = "${(state.canvas.gridOpacity * 100).toInt()}%",
             range = 0.05f..1f,
-            onValueChange = { onIntent(TimelineIntent.View.SetGridOpacity(it)) },
+            onValueChange = { onIntent(StudioIntent.View.SetGridOpacity(it)) },
         )
 
         Spacer(Modifier.height(20.dp))
@@ -151,7 +151,7 @@ fun GridOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit,
             value = state.canvas.gridSpacingVertical,
             valueDisplay = "${state.canvas.gridSpacingVertical.toInt()}px",
             range = 10f..250f,
-            onValueChange = { onIntent(TimelineIntent.View.SetGridSpacingVertical(it)) },
+            onValueChange = { onIntent(StudioIntent.View.SetGridSpacingVertical(it)) },
         )
 
         Spacer(Modifier.height(20.dp))
@@ -161,7 +161,7 @@ fun GridOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit,
             value = state.canvas.gridSpacingHorizontal,
             valueDisplay = "${state.canvas.gridSpacingHorizontal.toInt()}px",
             range = 10f..250f,
-            onValueChange = { onIntent(TimelineIntent.View.SetGridSpacingHorizontal(it)) },
+            onValueChange = { onIntent(StudioIntent.View.SetGridSpacingHorizontal(it)) },
         )
 
         Spacer(Modifier.height(8.dp))
@@ -194,7 +194,7 @@ private fun GridOptionsPreview() {
         shadowElevation = 8.dp,
     ) {
         GridOptionsContent(
-            state = TimelineState(
+            state = StudioState(
                 canvas = CanvasState(
                     gridEnabled = true,
                     gridOpacity = 0.4f,

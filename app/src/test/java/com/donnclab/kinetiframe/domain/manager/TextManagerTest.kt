@@ -4,7 +4,7 @@ import androidx.compose.ui.geometry.Rect
 import com.donnclab.kinetiframe.models.TextNode
 import com.donnclab.kinetiframe.ui.SelectedContent
 import com.donnclab.kinetiframe.ui.SelectionState
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -15,7 +15,7 @@ class TextManagerTest {
     @Test
     fun `editing a selected text node updates the vector selection copy`() {
         val original = TextNode(id = "title", text = "Before", fontSizeSp = 36f)
-        var state = TimelineState(
+        var state = StudioState(
             selection = SelectionState(
                 active = true,
                 selectedContent = SelectedContent(
@@ -36,7 +36,7 @@ class TextManagerTest {
     @Test
     fun `style updates keep a selected text node editable until selection commits`() {
         val original = TextNode(id = "caption", fontFileName = "inter_regular.ttf", fontSizeSp = 24f)
-        var state = TimelineState(
+        var state = StudioState(
             selection = SelectionState(
                 active = true,
                 selectedContent = SelectedContent(nodes = mapOf(original.id to original)),

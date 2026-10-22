@@ -19,7 +19,7 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Play
 import com.composables.icons.lucide.Trash2
 import com.donnclab.kinetiframe.engine.camera.CameraShot
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.components.common.ContextIconAction
 import com.donnclab.kinetiframe.ui.components.common.IconContextMenu
 import com.donnclab.kinetiframe.ui.components.timeline.TRACK_HEIGHT
@@ -31,7 +31,7 @@ internal fun CameraTimelineLane(
     totalFrames: Int,
     offset: Float,
     visible: Float,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
 ) {
     var selected by remember { mutableStateOf<String?>(null) }
     var menu by remember { mutableStateOf(false) }
@@ -47,10 +47,10 @@ internal fun CameraTimelineLane(
                     onMove = { start, _ ->
                         val duration = shot.endFrame - shot.startFrame
                         val from = start.coerceIn(0, (totalFrames - duration).coerceAtLeast(0))
-                        onIntent(TimelineIntent.Camera.Put(shot.copy(startFrame = from, endFrame = from + duration)))
+                        onIntent(StudioIntent.Camera.Put(shot.copy(startFrame = from, endFrame = from + duration)))
                     }, onTrim = { start, duration ->
                         onIntent(
-                            TimelineIntent.Camera.Put(
+                            StudioIntent.Camera.Put(
                                 shot.copy(startFrame = start, endFrame = minOf(totalFrames, start + duration)),
                             ),
                         )
@@ -63,11 +63,11 @@ internal fun CameraTimelineLane(
                             listOf(
                                 ContextIconAction(Lucide.Play, "Preview from start", {
                                     menu = false
-                                    onIntent(TimelineIntent.Playback.SetCurrentFrame(shot.startFrame))
+                                    onIntent(StudioIntent.Playback.SetCurrentFrame(shot.startFrame))
                                 }),
                                 ContextIconAction(Lucide.Trash2, "Remove camera effect", {
                                     menu = false
-                                    onIntent(TimelineIntent.Camera.Remove(shot.id))
+                                    onIntent(StudioIntent.Camera.Remove(shot.id))
                                 }),
                             ),
                         )

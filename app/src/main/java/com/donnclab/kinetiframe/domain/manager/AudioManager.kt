@@ -4,7 +4,7 @@ import com.donnclab.kinetiframe.engine.model.AudioClipPlacement
 import com.donnclab.kinetiframe.engine.model.AudioTrackSettings
 import com.donnclab.kinetiframe.engine.model.MAX_AUDIO_TRACKS
 import com.donnclab.kinetiframe.engine.model.ProjectAsset
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 
 /** Pure project-reference mutations for placed audio clips -- structurally identical to
  *  [ActorPlacementManager], since [AudioClipPlacement] is the audio counterpart to
@@ -12,8 +12,8 @@ import com.donnclab.kinetiframe.ui.TimelineState
  *  audio files happens at the UI layer, which has the Android Context; this class only receives
  *  an already-resolved [ProjectAsset] and placement, never a Uri or a path to copy. */
 class AudioManager(
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
 ) {
     /** [asset] is inserted alongside [placement] in the same state update so a placement can
      *  never exist without its backing asset entry, even momentarily. */

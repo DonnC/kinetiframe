@@ -11,7 +11,7 @@ import androidx.compose.runtime.setValue
 import com.donnclab.kinetiframe.data.library.LibraryRepository
 import com.donnclab.kinetiframe.engine.rigging.math.RigGeometry
 import com.donnclab.kinetiframe.engine.rigging.model.SceneGraph
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.components.rigging.ArtworkAlignmentDialog
 import java.io.File
 
@@ -23,7 +23,7 @@ fun ActorArtworkAttachmentFlow(
     library: LibraryRepository,
     temporaryDirectory: File,
     onDismiss: () -> Unit,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     initialAsVariant: Boolean = false,
     replaceVariantId: String? = null,
     assets: com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager? = null,
@@ -54,7 +54,7 @@ fun ActorArtworkAttachmentFlow(
                 onDismiss = onDismiss, onAttach = { name, alignment, asVariant, child ->
                     transferred = true
                     onIntent(
-                        TimelineIntent.Actor.AttachArtwork(
+                        StudioIntent.Actor.AttachArtwork(
                             partId,
                             name,
                             item.second,

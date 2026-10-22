@@ -3,7 +3,7 @@ package com.donnclab.kinetiframe.domain.manager
 import android.graphics.Bitmap
 import com.donnclab.kinetiframe.data.video.VideoFrameDecoder
 import com.donnclab.kinetiframe.engine.model.ProjectDocument
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /** Decode off the UI thread, serialized by the decoder. */
-class VideoFrameProvider(private val getState: () -> TimelineState) {
+class VideoFrameProvider(private val getState: () -> StudioState) {
     data class DecodedFrame(
         val projectId: String,
         val clipId: String?,

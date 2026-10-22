@@ -9,7 +9,7 @@ import com.donnclab.kinetiframe.engine.model.ProjectAsset
 import com.donnclab.kinetiframe.engine.model.ProjectDocument
 import com.donnclab.kinetiframe.engine.model.StageDimensions
 import com.donnclab.kinetiframe.engine.model.VideoClipPlacement
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -56,7 +56,7 @@ class SceneVideoSelectionTest {
             )
         val sound = AudioClipPlacement("sound", "a", 0, "TV sound", 0, 12)
         var state =
-            TimelineState(
+            StudioState(
                 project = ProjectDocument(
                     stage = StageDimensions(120, 80),
                     videoClips = mapOf("v" to clip),

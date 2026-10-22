@@ -33,14 +33,14 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Paintbrush
 import com.composables.icons.lucide.Save
 import com.donnclab.kinetiframe.ui.ActorEditTarget
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
 import com.donnclab.kinetiframe.ui.components.common.ContextIconAction
 import com.donnclab.kinetiframe.ui.components.common.IconContextMenu
 
 @Composable
 fun PuppetTopBar(
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     onInspectorToggle: () -> Unit,
     studioMode: StudioMode = StudioMode.RIG_SETUP,
     skeletonOverlayVisible: Boolean = true,
@@ -64,11 +64,11 @@ fun PuppetTopBar(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ActorToolButton(Icons.AutoMirrored.Filled.ArrowBack, "Back from Actor Studio") {
-                    onExit?.invoke() ?: onIntent(TimelineIntent.Rigging.SetStudioMode(StudioMode.RASTER_DRAWING))
+                    onExit?.invoke() ?: onIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RASTER_DRAWING))
                 }
                 if (!performanceOnly) {
                     StudioModePill(current = studioMode, onSelect = {
-                        onIntent(TimelineIntent.Rigging.SetStudioMode(it))
+                        onIntent(StudioIntent.Rigging.SetStudioMode(it))
                     })
                 } else {
                     Icon(Icons.AutoMirrored.Filled.DirectionsRun, "Performance", modifier = Modifier.size(18.dp))
@@ -89,16 +89,16 @@ fun PuppetTopBar(
                         selected =
                         studioMode == StudioMode.RIG_SETUP,
                     ) {
-                        onIntent(TimelineIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
-                        onIntent(TimelineIntent.Actor.SetEditTarget(ActorEditTarget.JOINT_END))
+                        onIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
+                        onIntent(StudioIntent.Actor.SetEditTarget(ActorEditTarget.JOINT_END))
                     }
                 }
                 if (!compact) {
                     ActorToolButton(Icons.AutoMirrored.Filled.Undo, "Undo actor edit", canUndo) {
-                        onIntent(TimelineIntent.Actor.Undo)
+                        onIntent(StudioIntent.Actor.Undo)
                     }
                     ActorToolButton(Icons.AutoMirrored.Filled.Redo, "Redo actor edit", canRedo) {
-                        onIntent(TimelineIntent.Actor.Redo)
+                        onIntent(StudioIntent.Actor.Redo)
                     }
                 }
                 ActorToolButton(
@@ -124,22 +124,22 @@ fun PuppetTopBar(
                                 if (!performanceOnly) {
                                     add(
                                         ContextIconAction(Lucide.Bone, "Edit skeleton joints", {
-                                            onIntent(TimelineIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
-                                            onIntent(TimelineIntent.Actor.SetEditTarget(ActorEditTarget.JOINT_END))
+                                            onIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
+                                            onIntent(StudioIntent.Actor.SetEditTarget(ActorEditTarget.JOINT_END))
                                             more = false
                                         }),
                                     )
                                 }
                                 add(
                                     ContextIconAction(Icons.AutoMirrored.Filled.Undo, "Undo actor edit", {
-                                        onIntent(TimelineIntent.Actor.Undo)
+                                        onIntent(StudioIntent.Actor.Undo)
                                         more =
                                             false
                                     }, enabled = canUndo),
                                 )
                                 add(
                                     ContextIconAction(Icons.AutoMirrored.Filled.Redo, "Redo actor edit", {
-                                        onIntent(TimelineIntent.Actor.Redo)
+                                        onIntent(StudioIntent.Actor.Redo)
                                         more =
                                             false
                                     }, enabled = canRedo),
@@ -147,14 +147,14 @@ fun PuppetTopBar(
                             }
                             add(
                                 ContextIconAction(Lucide.Bone, "Skeleton overlay", {
-                                    onIntent(TimelineIntent.Rigging.ToggleSkeletonOverlay)
+                                    onIntent(StudioIntent.Rigging.ToggleSkeletonOverlay)
                                     more =
                                         false
                                 }, selected = skeletonOverlayVisible),
                             )
                             add(
                                 ContextIconAction(Lucide.Focus, "Fit puppet canvas", {
-                                    onIntent(TimelineIntent.View.ResetCanvasTransform)
+                                    onIntent(StudioIntent.View.ResetCanvasTransform)
                                     more =
                                         false
                                 }),

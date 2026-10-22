@@ -5,7 +5,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.donnclab.kinetiframe.ui.SceneState
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.EditorTopBar
 import com.donnclab.kinetiframe.ui.components.rigging.ActorPackAttachmentButton
 import com.donnclab.kinetiframe.ui.components.rigging.PuppetTopBar
@@ -35,7 +35,7 @@ class ActorPackAttachmentButtonTest {
         var variant: Boolean? = null
         compose.setContent {
             EditorTopBar(
-                TimelineState(scene = SceneState(selectedBoneId = "eyes")), {}, {}, {}, {}, {},
+                StudioState(scene = SceneState(selectedBoneId = "eyes")), {}, {}, {}, {}, {},
                 isActorStudio = true, showOverflowMenu = false, onOverflowMenuToggle = {}, onAttachActorArtwork = {
                     variant =
                         it

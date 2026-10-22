@@ -228,11 +228,11 @@ class NaturalActorMotionTest {
             manager::checkpoint,
         )
         state = state.copy(scene = state.scene.copy(selectedBoneId = "left_foot"))
-        motion.handle(com.donnclab.kinetiframe.ui.TimelineIntent.ActorMotion.ToggleContact)
+        motion.handle(com.donnclab.kinetiframe.ui.StudioIntent.ActorMotion.ToggleContact)
         assertEquals(1, state.project.puppetInstances.values.single().poseKeys.first().contacts.size)
         val origin = rest.bones.getValue("torso").localTransform
         manager.handle(
-            com.donnclab.kinetiframe.ui.TimelineIntent.Actor.Drag(
+            com.donnclab.kinetiframe.ui.StudioIntent.Actor.Drag(
                 "origin:torso",
                 Offset(
                     origin.x + 12f,
@@ -240,17 +240,17 @@ class NaturalActorMotionTest {
                 ),
             ),
         )
-        manager.handle(com.donnclab.kinetiframe.ui.TimelineIntent.Actor.CommitDrag)
+        manager.handle(com.donnclab.kinetiframe.ui.StudioIntent.Actor.CommitDrag)
         assertEquals(rest, state.actorDefinition()!!.sceneGraph)
         assertEquals(
             12f,
             state.project.puppetInstances.values.single().poseKeys.first().rootTranslations.getValue("torso").x,
         )
-        motion.handle(com.donnclab.kinetiframe.ui.TimelineIntent.ActorMotion.ToggleContact)
+        motion.handle(com.donnclab.kinetiframe.ui.StudioIntent.ActorMotion.ToggleContact)
         assertTrue(state.project.puppetInstances.values.single().poseKeys.first().contacts.isEmpty())
-        manager.handle(com.donnclab.kinetiframe.ui.TimelineIntent.Actor.Undo)
+        manager.handle(com.donnclab.kinetiframe.ui.StudioIntent.Actor.Undo)
         assertEquals(1, state.project.puppetInstances.values.single().poseKeys.first().contacts.size)
-        manager.handle(com.donnclab.kinetiframe.ui.TimelineIntent.Actor.Undo)
+        manager.handle(com.donnclab.kinetiframe.ui.StudioIntent.Actor.Undo)
         assertEquals(
             0f,
             state.project.puppetInstances.values.single().poseKeys.first().rootTranslations.getValue("torso").x,

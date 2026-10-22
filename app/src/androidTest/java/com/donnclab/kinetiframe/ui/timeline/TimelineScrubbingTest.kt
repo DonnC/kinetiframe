@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.engine.model.AudioClipPlacement
 import com.donnclab.kinetiframe.ui.AnimationState
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.timeline.TimelineFrameList
 import com.donnclab.kinetiframe.ui.components.timeline.audio.ProjectAudioScrubRibbon
 import kotlinx.coroutines.launch
@@ -43,7 +43,7 @@ class TimelineScrubbingTest {
                 val scope = rememberCoroutineScope()
                 scroll = { scope.launch { state.scrollToItem(99) } }
                 TimelineFrameList(
-                    TimelineState(animation = AnimationState(totalFrames = 100)),
+                    StudioState(animation = AnimationState(totalFrames = 100)),
                     {},
                     state,
                     emptyMap(),
@@ -65,13 +65,13 @@ class TimelineScrubbingTest {
     }
 
     @Test fun draggingFilmstripSelectsCrossedFramesAndPausesPlayback() {
-        val intents = mutableListOf<TimelineIntent>()
+        val intents = mutableListOf<StudioIntent>()
         compose.setContent {
             KinetiFrameTheme {
-                var state by remember { mutableStateOf(TimelineState(animation = AnimationState(totalFrames = 100))) }
+                var state by remember { mutableStateOf(StudioState(animation = AnimationState(totalFrames = 100))) }
                 TimelineFrameList(state, { intent ->
                     intents += intent
-                    if (intent is TimelineIntent.Playback.SetCurrentFrame) {
+                    if (intent is StudioIntent.Playback.SetCurrentFrame) {
                         state = state.copy(animation = state.animation.copy(currentFrame = intent.frame))
                     }
                 }, rememberLazyListState(), emptyMap(), {}, {}, Modifier.width(240.dp).testTag("filmstrip"))
@@ -82,13 +82,13 @@ class TimelineScrubbingTest {
         }
         compose.waitForIdle()
         compose.runOnIdle {
-            assertTrue(intents.contains(TimelineIntent.Playback.Pause))
-            assertTrue(intents.filterIsInstance<TimelineIntent.Playback.SetCurrentFrame>().any { it.frame > 0 })
+            assertTrue(intents.contains(StudioIntent.Playback.Pause))
+            assertTrue(intents.filterIsInstance<StudioIntent.Playback.SetCurrentFrame>().any { it.frame > 0 })
         }
     }
 
     @Test fun programmaticScrollDoesNotAuditionOrChangeSelection() {
-        val intents = mutableListOf<TimelineIntent>()
+        val intents = mutableListOf<StudioIntent>()
         var scroll: () -> Unit = {}
         compose.setContent {
             KinetiFrameTheme {
@@ -96,7 +96,7 @@ class TimelineScrubbingTest {
                 val scope = rememberCoroutineScope()
                 scroll = { scope.launch { list.scrollToItem(20) } }
                 TimelineFrameList(
-                    TimelineState(animation = AnimationState(totalFrames = 100)),
+                    StudioState(animation = AnimationState(totalFrames = 100)),
                     { intents += it },
                     list,
                     emptyMap(),

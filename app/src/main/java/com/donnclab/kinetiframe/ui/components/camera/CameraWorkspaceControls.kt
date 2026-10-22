@@ -42,8 +42,8 @@ import com.donnclab.kinetiframe.engine.camera.CameraRecipe
 import com.donnclab.kinetiframe.engine.camera.CameraRecipes
 import com.donnclab.kinetiframe.engine.camera.CameraShot
 import com.donnclab.kinetiframe.engine.camera.SceneCamera
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.launch
 
 internal fun CameraAction.label() = when (this) {
@@ -62,10 +62,10 @@ internal fun CameraAction.label() = when (this) {
 /** Camera edits have their own bounded undo history, separate from drawing strokes. */
 @Composable
 fun CameraWorkspaceControls(
-    state: TimelineState,
+    state: StudioState,
     preview: Boolean,
     onPreview: (Boolean) -> Unit,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable (CameraPose, CameraShot?, Int?) -> Unit,
 ) {
@@ -103,7 +103,7 @@ fun CameraWorkspaceControls(
                     text = { Text(action.label()) },
                     onClick = {
                         menu = false
-                        onIntent(TimelineIntent.Playback.Pause)
+                        onIntent(StudioIntent.Playback.Pause)
                         val range = available ?: return@DropdownMenuItem
                         val from = range.first
                         val to = range.last + 1
@@ -142,7 +142,7 @@ fun CameraWorkspaceControls(
                         text = { Text("${shot.action.label()} · ${shot.startFrame + 1}–${shot.endFrame}") },
                         onClick = {
                             menu = false
-                            onIntent(TimelineIntent.Playback.Pause)
+                            onIntent(StudioIntent.Playback.Pause)
                             draft = shot
                         },
                     )
@@ -151,21 +151,21 @@ fun CameraWorkspaceControls(
             HorizontalDivider()
             DropdownMenuItem(text = { Text("Undo effect edit") }, onClick = {
                 menu = false
-                onIntent(TimelineIntent.Camera.Undo)
+                onIntent(StudioIntent.Camera.Undo)
             })
             DropdownMenuItem(text = { Text("Redo effect edit") }, onClick = {
                 menu = false
-                onIntent(TimelineIntent.Camera.Redo)
+                onIntent(StudioIntent.Camera.Redo)
             })
         }
     }
     draft?.let { shot ->
         CameraShotEditor(shot, state, { draft = null }, { next ->
-            onIntent(TimelineIntent.Camera.Put(next))
+            onIntent(StudioIntent.Camera.Put(next))
             onPreview(true)
             draft = null
         }, {
-            onIntent(TimelineIntent.Camera.Remove(shot.id))
+            onIntent(StudioIntent.Camera.Remove(shot.id))
             draft = null
         }, onSaveRecipe = { name, saved ->
             scope.launch {
@@ -199,7 +199,7 @@ fun CameraWorkspaceControls(
                         TextButton(
                             {
                                 val selected = range ?: return@TextButton
-                                onIntent(TimelineIntent.Playback.Pause)
+                                onIntent(StudioIntent.Playback.Pause)
                                 draft =
                                     recipe.retime(state.project.fps).place(
                                         java.util.UUID.randomUUID().toString(),
@@ -262,5 +262,5 @@ fun CameraWorkspaceControls(
 @Preview
 @Composable
 private fun CameraWorkspacePreview() {
-    KinetiFrameTheme { CameraWorkspaceControls(TimelineState(), false, {}, {}, content = { _, _, _ -> }) }
+    KinetiFrameTheme { CameraWorkspaceControls(StudioState(), false, {}, {}, content = { _, _, _ -> }) }
 }

@@ -12,7 +12,7 @@ import androidx.compose.ui.test.swipe
 import com.donnclab.kinetiframe.engine.rigging.model.TextureBinding
 import com.donnclab.kinetiframe.ui.SceneState
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.dock.ToolDock
 import com.donnclab.kinetiframe.ui.components.rigging.ArtworkAlignmentDialog
 import org.junit.Assert.assertTrue
@@ -25,7 +25,7 @@ class ActorAdaptiveEditingTest {
     @Test fun boneDockOffersSelectionButNotRasterToolsOrDuplicateBindLasso() {
         compose.setContent {
             MaterialTheme {
-                ToolDock(state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP)), onIntent = {})
+                ToolDock(state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP)), onIntent = {})
             }
         }
         compose.onNodeWithContentDescription("Select actor part").assertExists()

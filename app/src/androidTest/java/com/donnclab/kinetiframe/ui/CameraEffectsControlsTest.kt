@@ -30,7 +30,7 @@ class CameraEffectsControlsTest {
             KinetiFrameTheme {
                 com.donnclab.kinetiframe.ui.components.camera.CameraShotEditor(
                     CameraShot("pan", CameraAction.PAN, 0, 24),
-                    TimelineState(animation = AnimationState(totalFrames = 48)),
+                    StudioState(animation = AnimationState(totalFrames = 48)),
                     {},
                     {},
                     {},
@@ -54,7 +54,7 @@ class CameraEffectsControlsTest {
             KinetiFrameTheme {
                 com.donnclab.kinetiframe.ui.components.camera.CameraShotEditor(
                     draft,
-                    TimelineState(
+                    StudioState(
                         project = com.donnclab.kinetiframe.engine.model.ProjectDocument(cameraShots = listOf(occupied)),
                         animation = AnimationState(totalFrames = 96),
                     ),
@@ -71,12 +71,12 @@ class CameraEffectsControlsTest {
     }
 
     @Test fun previewPublishesWorkspaceLayoutButFittedDialogDoesNot() {
-        val intents = mutableListOf<TimelineIntent>()
+        val intents = mutableListOf<StudioIntent>()
         compose.setContent {
             KinetiFrameTheme {
                 com.donnclab.kinetiframe.ui.components.canvas.CanvasArea(
                     cameraPreview = true,
-                    state = TimelineState(
+                    state = StudioState(
                         project = com.donnclab.kinetiframe.engine.model.ProjectDocument(
                             cameraShots =
                             listOf(CameraShot("impact", CameraAction.SHAKE, 8, 21)),
@@ -88,7 +88,7 @@ class CameraEffectsControlsTest {
         }
         compose.runOnIdle {
             assertTrue(
-                intents.filterIsInstance<TimelineIntent.View.SetViewportSize>().any {
+                intents.filterIsInstance<StudioIntent.View.SetViewportSize>().any {
                     it.width > 0 &&
                         it.height > 0
                 },
@@ -97,27 +97,27 @@ class CameraEffectsControlsTest {
     }
 
     @Test fun fittedCameraPreviewDoesNotChangeWorkspaceLayout() {
-        val intents = mutableListOf<TimelineIntent>()
+        val intents = mutableListOf<StudioIntent>()
         compose.setContent {
             KinetiFrameTheme {
                 com.donnclab.kinetiframe.ui.components.canvas.CanvasArea(
                     cameraPreview = true,
                     fitStage = true,
                     cameraPoseOverride = CameraPose(),
-                    state = TimelineState(),
+                    state = StudioState(),
                     onIntent = intents::add,
                 )
             }
         }
-        compose.runOnIdle { assertTrue(intents.filterIsInstance<TimelineIntent.View.SetViewportSize>().isEmpty()) }
+        compose.runOnIdle { assertTrue(intents.filterIsInstance<StudioIntent.View.SetViewportSize>().isEmpty()) }
     }
 
     @Test fun choosingAnActionAndConfirmingEmitsADurableShot() {
-        val intents = mutableListOf<TimelineIntent>()
+        val intents = mutableListOf<StudioIntent>()
         compose.setContent {
             KinetiFrameTheme {
                 CameraWorkspaceControls(
-                    TimelineState(animation = AnimationState(totalFrames = 48)),
+                    StudioState(animation = AnimationState(totalFrames = 48)),
                     false,
                     {},
                     intents::add,
@@ -129,7 +129,7 @@ class CameraEffectsControlsTest {
         compose.onNodeWithText("Push in").performClick()
         compose.onNodeWithContentDescription("Save camera effect").performClick()
         compose.runOnIdle {
-            val shot = intents.filterIsInstance<TimelineIntent.Camera.Put>().single().shot
+            val shot = intents.filterIsInstance<StudioIntent.Camera.Put>().single().shot
             assertEquals(CameraAction.PUSH_IN, shot.action)
             assertTrue(shot.end.zoom > shot.start.zoom)
         }

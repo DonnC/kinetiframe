@@ -5,8 +5,8 @@ import com.donnclab.kinetiframe.engine.model.AssetKind
 import com.donnclab.kinetiframe.engine.model.ProjectAsset
 import com.donnclab.kinetiframe.engine.model.ProjectDocument
 import com.donnclab.kinetiframe.ui.CanvasState
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -26,7 +26,7 @@ class BackgroundVisibilityTest {
                     ProjectAsset("stage", AssetKind.IMPORTED_IMAGE, "retained-stage.png", 100, 100),
             ),
         )
-        var state = TimelineState(project = project)
+        var state = StudioState(project = project)
         val assets = ProjectAssetManager()
         val dispatcher = StandardTestDispatcher()
         val manager = BackgroundManager(
@@ -39,20 +39,20 @@ class BackgroundVisibilityTest {
             decode = { error("Visibility must not decode an image") },
         )
         val revision = assets.revision.value
-        manager.handle(TimelineIntent.Background.ToggleVisibility)
+        manager.handle(StudioIntent.Background.ToggleVisibility)
         assertFalse(state.canvas.backgroundVisible)
         assertSame(project, state.project)
         assertEquals(revision, assets.revision.value)
-        manager.handle(TimelineIntent.Background.ToggleVisibility)
+        manager.handle(StudioIntent.Background.ToggleVisibility)
         assertTrue(state.canvas.backgroundVisible)
         assertSame(project, state.project)
         assertEquals(revision, assets.revision.value)
         // The preference is not part of ProjectDocument; a new editor starts visible.
-        assertTrue(TimelineState(project = state.project).canvas.backgroundVisible)
+        assertTrue(StudioState(project = state.project).canvas.backgroundVisible)
     }
 
     @Test fun `toggle without a background is a no-op`() {
-        var state = TimelineState()
+        var state = StudioState()
         val initial = state
         val dispatcher = StandardTestDispatcher()
         val manager =
@@ -64,7 +64,7 @@ class BackgroundVisibilityTest {
                 { state },
                 { state = it(state) },
             )
-        manager.handle(TimelineIntent.Background.ToggleVisibility)
+        manager.handle(StudioIntent.Background.ToggleVisibility)
         assertSame(initial, state)
     }
 

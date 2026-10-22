@@ -25,12 +25,12 @@ import java.io.File
 /**
  * ViewModel for managing the animation timeline state and processing user intents.
  */
-class TimelineViewModel(
+class StudioViewModel(
     cacheDir: File,
     private val engineDispatcher: CoroutineDispatcher = Dispatchers.Default,
     private val shouldInitialize: Boolean = true,
     private val loadActorPresets: suspend () -> List<com.donnclab.kinetiframe.engine.rigging.presets.ActorMotionPreset> = { emptyList() },
-    initialEditorState: TimelineState? = null,
+    initialEditorState: StudioState? = null,
     runtimeRigAssetManager: RigAssetManager? = null,
     /** App-private, non-cache storage root for durable project-level assets such as the
      *  persistent background image. The app passes Context.filesDir, because the OS may clear a
@@ -39,8 +39,8 @@ class TimelineViewModel(
     filesDir: File = cacheDir,
     /** Separate app-private diagnostics from document storage: reports must not enter exports. */
     diagnosticsDir: File = filesDir
-) : BaseViewModel<TimelineState, TimelineIntent, TimelineEffect>(
-    initialEditorState ?: TimelineState(
+) : BaseViewModel<StudioState, StudioIntent, StudioEffect>(
+    initialEditorState ?: StudioState(
         project = com.donnclab.kinetiframe.engine.model.ProjectDocument(
             layers = listOf(Layer(name = "Main Layer", id = "main"))
         ),
@@ -242,7 +242,7 @@ class TimelineViewModel(
         onPlaybackStateChanged = { playing -> audioPlaybackManager.onPlaybackStateChanged(playing) },
         onPlaybackError = { error ->
             recordPlaybackFailure(error, "Frame playback failed")
-            sendEffect(TimelineEffect.ShowError("Playback stopped: ${error.message ?: error.javaClass.simpleName}"))
+            sendEffect(StudioEffect.ShowError("Playback stopped: ${error.message ?: error.javaClass.simpleName}"))
         }
     )
 
@@ -257,7 +257,7 @@ class TimelineViewModel(
         storageDir = File(filesDir, "project-assets"),
         getState = { currentState },
         updateState = { updateState(it) },
-        onError = { sendEffect(TimelineEffect.ShowError(it)) },
+        onError = { sendEffect(StudioEffect.ShowError(it)) },
         pendingOperations = pendingOperations
     )
 
@@ -282,7 +282,7 @@ class TimelineViewModel(
         viewModelScope.launch {
             runCatching { loadActorPresets() }
                 .onSuccess { presets -> updateState { it.copy(actor = it.actor.copy(presets = presets)) } }
-                .onFailure { sendEffect(TimelineEffect.ShowError("Actor presets could not load: ${it.message}")) }
+                .onFailure { sendEffect(StudioEffect.ShowError("Actor presets could not load: ${it.message}")) }
         }
         if (shouldInitialize) {
             pendingOperations.launch(viewModelScope, engineDispatcher) {
@@ -303,14 +303,14 @@ class TimelineViewModel(
 
     private val sceneEffects = com.donnclab.kinetiframe.domain.manager.SceneEffectsManager({ currentState }, { updateState(it) })
 
-    override fun handleIntent(intent: TimelineIntent) {
-        if (intent is TimelineIntent.Audio && intent !is TimelineIntent.Audio.SetFades && intent !is TimelineIntent.Audio.Crossfade && intent !is TimelineIntent.Audio.VoiceStyle ||
-            intent is TimelineIntent.Video && intent !is TimelineIntent.Video.Split && intent !is TimelineIntent.Video.Framing) sceneEffects.clear()
+    override fun handleIntent(intent: StudioIntent) {
+        if (intent is StudioIntent.Audio && intent !is StudioIntent.Audio.SetFades && intent !is StudioIntent.Audio.Crossfade && intent !is StudioIntent.Audio.VoiceStyle ||
+            intent is StudioIntent.Video && intent !is StudioIntent.Video.Split && intent !is StudioIntent.Video.Framing) sceneEffects.clear()
         // Do not carry floating pixels or detached text into another frame/layer/history session.
         if (currentState.selection.selectedContent != null &&
-            (intent is TimelineIntent.Frame || intent is TimelineIntent.PackItem.Add || intent is TimelineIntent.Layer || intent is TimelineIntent.Playback ||
-                intent is TimelineIntent.Draw || intent is TimelineIntent.ActorPlacement || intent is TimelineIntent.Text ||
-                intent is TimelineIntent.Camera || intent is TimelineIntent.Video || intent is TimelineIntent.Audio)) {
+            (intent is StudioIntent.Frame || intent is StudioIntent.PackItem.Add || intent is StudioIntent.Layer || intent is StudioIntent.Playback ||
+                intent is StudioIntent.Draw || intent is StudioIntent.ActorPlacement || intent is StudioIntent.Text ||
+                intent is StudioIntent.Camera || intent is StudioIntent.Video || intent is StudioIntent.Audio)) {
             viewModelScope.launch {
                 selectionManager.commitSelection().join()
                 handleIntent(intent)
@@ -318,82 +318,82 @@ class TimelineViewModel(
             return
         }
         when (intent) {
-            is TimelineIntent.Camera -> {
+            is StudioIntent.Camera -> {
                 playbackManager.pause(currentState)
                 runCatching {
                     when (intent) {
-                        is TimelineIntent.Camera.Put -> sceneEffects.put(intent.shot)
-                        is TimelineIntent.Camera.Remove -> sceneEffects.remove(intent.id)
-                        TimelineIntent.Camera.Undo -> sceneEffects.undo()
-                        TimelineIntent.Camera.Redo -> sceneEffects.redo()
+                        is StudioIntent.Camera.Put -> sceneEffects.put(intent.shot)
+                        is StudioIntent.Camera.Remove -> sceneEffects.remove(intent.id)
+                        StudioIntent.Camera.Undo -> sceneEffects.undo()
+                        StudioIntent.Camera.Redo -> sceneEffects.redo()
                     }
-                }.onFailure { error -> viewModelScope.launch { sendEffect(TimelineEffect.ShowError(error.message ?: "Could not edit camera")) } }
+                }.onFailure { error -> viewModelScope.launch { sendEffect(StudioEffect.ShowError(error.message ?: "Could not edit camera")) } }
             }
-            is TimelineIntent.PackItem -> when (intent) {
-                is TimelineIntent.PackItem.SetTag -> updateState { it.copy(packTags = it.packTags + (intent.index to intent.tag)) }
-                is TimelineIntent.PackItem.Add -> frameManager.addFrameAt(intent.index, intent.tag)
+            is StudioIntent.PackItem -> when (intent) {
+                is StudioIntent.PackItem.SetTag -> updateState { it.copy(packTags = it.packTags + (intent.index to intent.tag)) }
+                is StudioIntent.PackItem.Add -> frameManager.addFrameAt(intent.index, intent.tag)
             }
-            is TimelineIntent.ActorPlacement -> when (intent) {
-                is TimelineIntent.ActorPlacement.Add -> actorPlacementManager.add(intent.reference)
-                is TimelineIntent.ActorPlacement.Duplicate -> actorPlacementManager.duplicate(intent.placementId)
-                is TimelineIntent.ActorPlacement.Remove -> actorPlacementManager.remove(intent.placementId)
-                is TimelineIntent.ActorPlacement.UpdateTransform -> actorPlacementManager.updateTransform(intent.placementId, intent.transform)
-                is TimelineIntent.ActorPlacement.BringToFront -> actorPlacementManager.bringToFront(intent.placementId)
-                is TimelineIntent.ActorPlacement.SendToBack -> actorPlacementManager.sendToBack(intent.placementId)
-                is TimelineIntent.ActorPlacement.Trim -> actorPlacementManager.trim(intent.placementId, intent.startFrame, intent.durationFrames)
-                is TimelineIntent.ActorPlacement.Move -> actorPlacementManager.move(intent.placementId, intent.startFrame)
-                is TimelineIntent.ActorPlacement.SwitchPerformance -> actorPlacementManager.switchPerformance(
+            is StudioIntent.ActorPlacement -> when (intent) {
+                is StudioIntent.ActorPlacement.Add -> actorPlacementManager.add(intent.reference)
+                is StudioIntent.ActorPlacement.Duplicate -> actorPlacementManager.duplicate(intent.placementId)
+                is StudioIntent.ActorPlacement.Remove -> actorPlacementManager.remove(intent.placementId)
+                is StudioIntent.ActorPlacement.UpdateTransform -> actorPlacementManager.updateTransform(intent.placementId, intent.transform)
+                is StudioIntent.ActorPlacement.BringToFront -> actorPlacementManager.bringToFront(intent.placementId)
+                is StudioIntent.ActorPlacement.SendToBack -> actorPlacementManager.sendToBack(intent.placementId)
+                is StudioIntent.ActorPlacement.Trim -> actorPlacementManager.trim(intent.placementId, intent.startFrame, intent.durationFrames)
+                is StudioIntent.ActorPlacement.Move -> actorPlacementManager.move(intent.placementId, intent.startFrame)
+                is StudioIntent.ActorPlacement.SwitchPerformance -> actorPlacementManager.switchPerformance(
                     intent.placementId, intent.performanceId, intent.actorRevisionId, intent.label, intent.durationFrames)
-                is TimelineIntent.ActorPlacement.Split -> actorPlacementManager.split(intent.placementId, intent.atFrame)
+                is StudioIntent.ActorPlacement.Split -> actorPlacementManager.split(intent.placementId, intent.atFrame)
             }
-            is TimelineIntent.Tracks -> when (intent) {
-                is TimelineIntent.Tracks.ToggleGroup -> updateState { state ->
+            is StudioIntent.Tracks -> when (intent) {
+                is StudioIntent.Tracks.ToggleGroup -> updateState { state ->
                     val collapsed = state.tracks.collapsedGroups
                     state.copy(tracks = state.tracks.copy(collapsedGroups =
                         if (intent.group in collapsed) collapsed - intent.group else collapsed + intent.group))
                 }
             }
-            is TimelineIntent.ActorPreset -> actorAuthoring.handlePreset(intent)
-            is TimelineIntent.ActorMotion -> actorAuthoring.handleMotion(intent)
-            is TimelineIntent.Actor -> actorAuthoring.handleActor(intent)
-            is TimelineIntent.Playback -> handlePlaybackIntent(intent)
-            is TimelineIntent.Draw -> handleDrawIntent(intent)
-            is TimelineIntent.Layer -> handleLayerIntent(intent)
-            is TimelineIntent.Frame -> handleFrameIntent(intent)
-            is TimelineIntent.View -> handleViewIntent(intent)
-            is TimelineIntent.OnionSkin -> handleOnionSkinIntent(intent)
-            is TimelineIntent.Rigging -> handleRiggingIntent(intent)
-            is TimelineIntent.Text -> handleTextIntent(intent)
-            is TimelineIntent.Selection -> handleSelectionIntent(intent)
-            is TimelineIntent.Fill -> handleFillIntent(intent)
-            is TimelineIntent.Construction -> handleConstructionShapeIntent(intent)
-            is TimelineIntent.Background -> backgroundManager.handle(intent)
-            is TimelineIntent.Audio -> when (intent) {
-                is TimelineIntent.Audio.VoiceStyle -> sceneEffects.voiceStyle(intent.clipId, intent.expectedAssetId, intent.effect, intent.proxy)
-                is TimelineIntent.Audio.Crossfade -> sceneEffects.crossfade(intent.clipId, intent.nextClipId, intent.frames)
-                is TimelineIntent.Audio.SetFades -> sceneEffects.fades(intent.clipId, intent.fadeInFrames, intent.fadeOutFrames)
-                is TimelineIntent.Audio.Add -> audioManager.add(intent.placement, intent.asset)
-                is TimelineIntent.Audio.Remove -> audioManager.remove(intent.clipId)
-                is TimelineIntent.Audio.Trim -> audioManager.trim(intent.clipId, intent.startFrame, intent.durationFrames)
-                is TimelineIntent.Audio.Move -> audioManager.move(intent.clipId, intent.trackIndex, intent.startFrame)
-                is TimelineIntent.Audio.SetVolume -> audioManager.setVolume(intent.clipId, intent.volume)
-                is TimelineIntent.Audio.SetTrackMuted -> audioManager.setTrackMuted(intent.trackIndex, intent.muted)
-                is TimelineIntent.Audio.SetTrackLocked -> audioManager.setTrackLocked(intent.trackIndex, intent.locked)
-                is TimelineIntent.Audio.Duplicate -> audioManager.duplicate(intent.clipId)
-                is TimelineIntent.Audio.Split -> audioManager.split(intent.clipId, intent.atFrame)
+            is StudioIntent.ActorPreset -> actorAuthoring.handlePreset(intent)
+            is StudioIntent.ActorMotion -> actorAuthoring.handleMotion(intent)
+            is StudioIntent.Actor -> actorAuthoring.handleActor(intent)
+            is StudioIntent.Playback -> handlePlaybackIntent(intent)
+            is StudioIntent.Draw -> handleDrawIntent(intent)
+            is StudioIntent.Layer -> handleLayerIntent(intent)
+            is StudioIntent.Frame -> handleFrameIntent(intent)
+            is StudioIntent.View -> handleViewIntent(intent)
+            is StudioIntent.OnionSkin -> handleOnionSkinIntent(intent)
+            is StudioIntent.Rigging -> handleRiggingIntent(intent)
+            is StudioIntent.Text -> handleTextIntent(intent)
+            is StudioIntent.Selection -> handleSelectionIntent(intent)
+            is StudioIntent.Fill -> handleFillIntent(intent)
+            is StudioIntent.Construction -> handleConstructionShapeIntent(intent)
+            is StudioIntent.Background -> backgroundManager.handle(intent)
+            is StudioIntent.Audio -> when (intent) {
+                is StudioIntent.Audio.VoiceStyle -> sceneEffects.voiceStyle(intent.clipId, intent.expectedAssetId, intent.effect, intent.proxy)
+                is StudioIntent.Audio.Crossfade -> sceneEffects.crossfade(intent.clipId, intent.nextClipId, intent.frames)
+                is StudioIntent.Audio.SetFades -> sceneEffects.fades(intent.clipId, intent.fadeInFrames, intent.fadeOutFrames)
+                is StudioIntent.Audio.Add -> audioManager.add(intent.placement, intent.asset)
+                is StudioIntent.Audio.Remove -> audioManager.remove(intent.clipId)
+                is StudioIntent.Audio.Trim -> audioManager.trim(intent.clipId, intent.startFrame, intent.durationFrames)
+                is StudioIntent.Audio.Move -> audioManager.move(intent.clipId, intent.trackIndex, intent.startFrame)
+                is StudioIntent.Audio.SetVolume -> audioManager.setVolume(intent.clipId, intent.volume)
+                is StudioIntent.Audio.SetTrackMuted -> audioManager.setTrackMuted(intent.trackIndex, intent.muted)
+                is StudioIntent.Audio.SetTrackLocked -> audioManager.setTrackLocked(intent.trackIndex, intent.locked)
+                is StudioIntent.Audio.Duplicate -> audioManager.duplicate(intent.clipId)
+                is StudioIntent.Audio.Split -> audioManager.split(intent.clipId, intent.atFrame)
             }
-            is TimelineIntent.Video -> when (intent) {
-                is TimelineIntent.Video.Framing -> sceneEffects.videoFraming(intent.clipId, intent.fit, intent.cropX, intent.cropY)
-                is TimelineIntent.Video.Split -> sceneEffects.splitVideo(intent.clipId, intent.atFrame)
-                is TimelineIntent.Video.DetachAudio -> videoTrackManager.detachAudio(intent.clipId)
-                is TimelineIntent.Video.Add -> { videoTrackManager.add(intent.placement, intent.asset, intent.sourceAudio) }
-                is TimelineIntent.Video.Remove -> {
+            is StudioIntent.Video -> when (intent) {
+                is StudioIntent.Video.Framing -> sceneEffects.videoFraming(intent.clipId, intent.fit, intent.cropX, intent.cropY)
+                is StudioIntent.Video.Split -> sceneEffects.splitVideo(intent.clipId, intent.atFrame)
+                is StudioIntent.Video.DetachAudio -> videoTrackManager.detachAudio(intent.clipId)
+                is StudioIntent.Video.Add -> { videoTrackManager.add(intent.placement, intent.asset, intent.sourceAudio) }
+                is StudioIntent.Video.Remove -> {
                     if (intent.clipId in currentState.selection.selectedContent?.videos.orEmpty()) viewModelScope.launch {
                         selectionManager.cancelSelection().join()
                         videoTrackManager.remove(intent.clipId)
                     } else videoTrackManager.remove(intent.clipId)
                 }
-                is TimelineIntent.Video.Select -> {
+                is StudioIntent.Video.Select -> {
                     currentState.project.videoClips[intent.clipId]?.let { clip ->
                         playbackManager.pause(currentState)
                         if (currentState.animation.currentFrame !in clip.timelineStartFrame until clip.timelineEndFrame)
@@ -401,40 +401,40 @@ class TimelineViewModel(
                         selectionManager.selectVideo(intent.clipId)
                     }
                 }
-                is TimelineIntent.Video.Trim -> {
+                is StudioIntent.Video.Trim -> {
                     if (intent.clipId in currentState.selection.selectedContent?.videos.orEmpty()) viewModelScope.launch {
                         selectionManager.commitSelection().join()
                         videoTrackManager.trim(intent.clipId, intent.timelineStartFrame, intent.timelineEndFrame, intent.videoSourceOffsetSeconds)
                     } else videoTrackManager.trim(intent.clipId, intent.timelineStartFrame, intent.timelineEndFrame, intent.videoSourceOffsetSeconds)
                 }
-                is TimelineIntent.Video.SetTrackOpacity -> videoTrackManager.setTrackOpacity(intent.opacity)
+                is StudioIntent.Video.SetTrackOpacity -> videoTrackManager.setTrackOpacity(intent.opacity)
             }
         }
     }
 
-    private fun handlePlaybackIntent(intent: TimelineIntent.Playback) {
+    private fun handlePlaybackIntent(intent: StudioIntent.Playback) {
         if (currentState.scene.studioMode != StudioMode.RASTER_DRAWING) return
         when (intent) {
-            TimelineIntent.Playback.Play -> playbackManager.play(currentState)
-            TimelineIntent.Playback.Pause -> playbackManager.pause(currentState)
-            TimelineIntent.Playback.NextFrame -> playbackManager.incrementFrame(currentState)
-            TimelineIntent.Playback.PreviousFrame -> playbackManager.decrementFrame(currentState)
-            is TimelineIntent.Playback.SetFps -> playbackManager.setFps(intent.fps)
-            is TimelineIntent.Playback.SetCurrentFrame -> {
+            StudioIntent.Playback.Play -> playbackManager.play(currentState)
+            StudioIntent.Playback.Pause -> playbackManager.pause(currentState)
+            StudioIntent.Playback.NextFrame -> playbackManager.incrementFrame(currentState)
+            StudioIntent.Playback.PreviousFrame -> playbackManager.decrementFrame(currentState)
+            is StudioIntent.Playback.SetFps -> playbackManager.setFps(intent.fps)
+            is StudioIntent.Playback.SetCurrentFrame -> {
                 if (currentState.animation.isPlaying) playbackManager.pause(currentState)
                 playbackManager.setCurrentFrame(intent.frame, currentState.animation.totalFrames)
             }
         }
     }
 
-    private fun handleDrawIntent(intent: TimelineIntent.Draw) {
+    private fun handleDrawIntent(intent: StudioIntent.Draw) {
         if (currentState.actor.isPerformanceAuthoring) return
         when (intent) {
-            is TimelineIntent.Draw.BakeStroke -> {
+            is StudioIntent.Draw.BakeStroke -> {
                 val targetLayerId = intent.targetBoneId?.let(::selectActorArtworkLayer)
                 drawingManager.bakeStroke(intent.points, intent.brush, targetLayerId)
             }
-            is TimelineIntent.Draw.SelectTool -> {
+            is StudioIntent.Draw.SelectTool -> {
                 val rigTool = intent.tool in setOf(DrawingTool.LASSO_CUT, DrawingTool.BONE, DrawingTool.RIG_SELECT) ||
                     (intent.tool == DrawingTool.LASSO && currentState.scene.studioMode == StudioMode.RIG_SETUP)
                 if (rigTool != (currentState.scene.studioMode != StudioMode.RASTER_DRAWING)) return
@@ -443,24 +443,24 @@ class TimelineViewModel(
                     fill = it.fill.copy(previewActive = false, pendingTap = null, previewBitmap = null)
                 ) }
             }
-            is TimelineIntent.Draw.SelectConstructionShape -> updateState { state ->
+            is StudioIntent.Draw.SelectConstructionShape -> updateState { state ->
                 state.copy(canvas = state.canvas.copy(rulerMode = RulerMode.NONE, rulerGuide = null), tool = state.tool.copy(
                     activeTool = DrawingTool.BRUSH,
                     constructionShape = intent.shape
                 ))
             }
-            is TimelineIntent.Draw.SetBrushColor -> updateActiveToolConfig { it.copy(color = intent.color) }
-            is TimelineIntent.Draw.SetBrushSize -> updateActiveToolConfig { it.copy(size = intent.size.coerceIn(1f, 100f)) }
-            is TimelineIntent.Draw.SelectBrush -> updateToolConfig(DrawingTool.BRUSH) { it.copy(brushId = intent.brushId) }
-            is TimelineIntent.Draw.SetEraserSize -> updateToolConfig(DrawingTool.ERASER) { it.copy(size = intent.size.coerceIn(1f, 100f)) }
-            is TimelineIntent.Draw.SetEraserType -> updateToolConfig(DrawingTool.ERASER) { it.copy(eraserType = intent.type) }
-            TimelineIntent.Draw.ClearAllHandwriting -> drawingManager.clearAllHandwriting()
-            is TimelineIntent.Draw.SetBrushOpacity -> updateActiveToolConfig { it.copy(opacity = intent.opacity.coerceIn(0f, 1f)) }
-            is TimelineIntent.Draw.SetBrushStrength -> updateActiveToolConfig { it.copy(strength = intent.strength.coerceIn(0f, 1f)) }
-            is TimelineIntent.Draw.SetEraserCursor -> updateState { it.copy(tool = it.tool.copy(eraserCursor = intent.offset)) }
-            TimelineIntent.Draw.Undo -> drawingManager.undo()
-            TimelineIntent.Draw.Redo -> drawingManager.redo()
-            is TimelineIntent.Draw.DrawStroke -> { /* UI handle */ }
+            is StudioIntent.Draw.SetBrushColor -> updateActiveToolConfig { it.copy(color = intent.color) }
+            is StudioIntent.Draw.SetBrushSize -> updateActiveToolConfig { it.copy(size = intent.size.coerceIn(1f, 100f)) }
+            is StudioIntent.Draw.SelectBrush -> updateToolConfig(DrawingTool.BRUSH) { it.copy(brushId = intent.brushId) }
+            is StudioIntent.Draw.SetEraserSize -> updateToolConfig(DrawingTool.ERASER) { it.copy(size = intent.size.coerceIn(1f, 100f)) }
+            is StudioIntent.Draw.SetEraserType -> updateToolConfig(DrawingTool.ERASER) { it.copy(eraserType = intent.type) }
+            StudioIntent.Draw.ClearAllHandwriting -> drawingManager.clearAllHandwriting()
+            is StudioIntent.Draw.SetBrushOpacity -> updateActiveToolConfig { it.copy(opacity = intent.opacity.coerceIn(0f, 1f)) }
+            is StudioIntent.Draw.SetBrushStrength -> updateActiveToolConfig { it.copy(strength = intent.strength.coerceIn(0f, 1f)) }
+            is StudioIntent.Draw.SetEraserCursor -> updateState { it.copy(tool = it.tool.copy(eraserCursor = intent.offset)) }
+            StudioIntent.Draw.Undo -> drawingManager.undo()
+            StudioIntent.Draw.Redo -> drawingManager.redo()
+            is StudioIntent.Draw.DrawStroke -> { /* UI handle */ }
         }
     }
 
@@ -481,9 +481,9 @@ class TimelineViewModel(
         }
     }
 
-    private fun handleLayerIntent(intent: TimelineIntent.Layer) {
+    private fun handleLayerIntent(intent: StudioIntent.Layer) {
         when (intent) {
-            is TimelineIntent.Layer.SelectLayer -> {
+            is StudioIntent.Layer.SelectLayer -> {
                 if (intent.index in currentState.currentFrameLayers().indices) {
                     if (currentState.scene.studioMode != StudioMode.RASTER_DRAWING) {
                         actorAuthoring.cancelInFlightAuthoring()
@@ -492,71 +492,71 @@ class TimelineViewModel(
                     loadFrame(currentState.animation.currentFrame)
                 }
             }
-            is TimelineIntent.Layer.AddLayer -> layerManager.addLayer(intent.type)
-            is TimelineIntent.Layer.RemoveLayer -> layerManager.removeLayer(intent.index)
-            is TimelineIntent.Layer.ReorderLayer -> layerManager.reorderLayer(intent.fromIndex, intent.toIndex)
-            is TimelineIntent.Layer.SetLayerVisibility -> layerManager.setLayerVisibility(intent.index, intent.visible)
-            is TimelineIntent.Layer.ToggleLayerLock -> layerManager.toggleLayerLock(intent.index)
-            is TimelineIntent.Layer.SetLayerOpacity -> layerManager.setLayerOpacity(intent.index, intent.opacity)
-            is TimelineIntent.Layer.RenameLayer -> layerManager.renameLayer(intent.index, intent.name)
+            is StudioIntent.Layer.AddLayer -> layerManager.addLayer(intent.type)
+            is StudioIntent.Layer.RemoveLayer -> layerManager.removeLayer(intent.index)
+            is StudioIntent.Layer.ReorderLayer -> layerManager.reorderLayer(intent.fromIndex, intent.toIndex)
+            is StudioIntent.Layer.SetLayerVisibility -> layerManager.setLayerVisibility(intent.index, intent.visible)
+            is StudioIntent.Layer.ToggleLayerLock -> layerManager.toggleLayerLock(intent.index)
+            is StudioIntent.Layer.SetLayerOpacity -> layerManager.setLayerOpacity(intent.index, intent.opacity)
+            is StudioIntent.Layer.RenameLayer -> layerManager.renameLayer(intent.index, intent.name)
         }
     }
 
-    private fun handleFrameIntent(intent: TimelineIntent.Frame) {
+    private fun handleFrameIntent(intent: StudioIntent.Frame) {
         when (intent) {
-            TimelineIntent.Frame.AddFrame -> frameManager.addFrame()
-            is TimelineIntent.Frame.DeleteFrame -> frameManager.deleteFrame(intent.index)
-            is TimelineIntent.Frame.DuplicateFrame -> frameManager.duplicateFrame(intent.index)
-            is TimelineIntent.Frame.CopyFrame -> frameManager.copyFrame(intent.index)
-            is TimelineIntent.Frame.CopyFrames -> frameManager.copyFrames(intent.indices)
-            is TimelineIntent.Frame.PasteFrame -> frameManager.pasteFrame(intent.index, intent.before)
-            is TimelineIntent.Frame.PasteFrames -> frameManager.pasteFrames(intent.index, intent.before)
-            is TimelineIntent.Frame.DeleteFrames -> frameManager.deleteFrames(intent.indices)
-            is TimelineIntent.Frame.AddFrameAt -> frameManager.addFrameAt(intent.index)
-            is TimelineIntent.Frame.HoldDrawing -> celHoldManager.hold(intent.first, intent.last)
-            is TimelineIntent.Frame.EditDrawingScope -> celHoldManager.editScope(intent.index, intent.allLinked)
-            is TimelineIntent.Frame.UnlinkDrawing -> celHoldManager.unlink(intent.index)
+            StudioIntent.Frame.AddFrame -> frameManager.addFrame()
+            is StudioIntent.Frame.DeleteFrame -> frameManager.deleteFrame(intent.index)
+            is StudioIntent.Frame.DuplicateFrame -> frameManager.duplicateFrame(intent.index)
+            is StudioIntent.Frame.CopyFrame -> frameManager.copyFrame(intent.index)
+            is StudioIntent.Frame.CopyFrames -> frameManager.copyFrames(intent.indices)
+            is StudioIntent.Frame.PasteFrame -> frameManager.pasteFrame(intent.index, intent.before)
+            is StudioIntent.Frame.PasteFrames -> frameManager.pasteFrames(intent.index, intent.before)
+            is StudioIntent.Frame.DeleteFrames -> frameManager.deleteFrames(intent.indices)
+            is StudioIntent.Frame.AddFrameAt -> frameManager.addFrameAt(intent.index)
+            is StudioIntent.Frame.HoldDrawing -> celHoldManager.hold(intent.first, intent.last)
+            is StudioIntent.Frame.EditDrawingScope -> celHoldManager.editScope(intent.index, intent.allLinked)
+            is StudioIntent.Frame.UnlinkDrawing -> celHoldManager.unlink(intent.index)
         }
     }
 
-    private fun handleViewIntent(intent: TimelineIntent.View) {
+    private fun handleViewIntent(intent: StudioIntent.View) {
         when (intent) {
-            is TimelineIntent.View.SetGridSize -> viewManager.setGridSize(intent.size)
-            is TimelineIntent.View.SetGridSpacing -> viewManager.setGridSpacing(intent.spacingDp)
-            is TimelineIntent.View.SetGridEnabled -> viewManager.setGridEnabled(intent.enabled)
-            is TimelineIntent.View.SetGridOpacity -> viewManager.setGridOpacity(intent.opacity)
-            is TimelineIntent.View.SetGridSpacingVertical -> viewManager.setGridSpacingVertical(intent.spacing)
-            is TimelineIntent.View.SetGridSpacingHorizontal -> viewManager.setGridSpacingHorizontal(intent.spacing)
-            TimelineIntent.View.ResetGridSettings -> viewManager.resetGridSettings()
-            is TimelineIntent.View.SetRulerMode -> viewManager.setRulerMode(intent.mode)
-            is TimelineIntent.View.UpdateRulerGuide -> viewManager.updateRulerGuide(intent.guide)
-            is TimelineIntent.View.UpdateCanvasTransform -> viewManager.updateCanvasTransform(intent.matrix)
-            TimelineIntent.View.ResetCanvasTransform -> viewManager.resetCanvasTransform()
-            TimelineIntent.View.ToggleSafeFrame -> viewManager.toggleSafeFrame()
-            is TimelineIntent.View.SetViewportSize -> viewManager.setViewportSize(intent.width, intent.height)
-            is TimelineIntent.View.UpdateTransform -> viewManager.updateTransform(intent.panDelta, intent.zoomDelta, intent.rotationDelta, intent.pivot)
-            is TimelineIntent.View.SetDockPosition -> viewManager.setDockPosition(intent.edge, intent.offset)
+            is StudioIntent.View.SetGridSize -> viewManager.setGridSize(intent.size)
+            is StudioIntent.View.SetGridSpacing -> viewManager.setGridSpacing(intent.spacingDp)
+            is StudioIntent.View.SetGridEnabled -> viewManager.setGridEnabled(intent.enabled)
+            is StudioIntent.View.SetGridOpacity -> viewManager.setGridOpacity(intent.opacity)
+            is StudioIntent.View.SetGridSpacingVertical -> viewManager.setGridSpacingVertical(intent.spacing)
+            is StudioIntent.View.SetGridSpacingHorizontal -> viewManager.setGridSpacingHorizontal(intent.spacing)
+            StudioIntent.View.ResetGridSettings -> viewManager.resetGridSettings()
+            is StudioIntent.View.SetRulerMode -> viewManager.setRulerMode(intent.mode)
+            is StudioIntent.View.UpdateRulerGuide -> viewManager.updateRulerGuide(intent.guide)
+            is StudioIntent.View.UpdateCanvasTransform -> viewManager.updateCanvasTransform(intent.matrix)
+            StudioIntent.View.ResetCanvasTransform -> viewManager.resetCanvasTransform()
+            StudioIntent.View.ToggleSafeFrame -> viewManager.toggleSafeFrame()
+            is StudioIntent.View.SetViewportSize -> viewManager.setViewportSize(intent.width, intent.height)
+            is StudioIntent.View.UpdateTransform -> viewManager.updateTransform(intent.panDelta, intent.zoomDelta, intent.rotationDelta, intent.pivot)
+            is StudioIntent.View.SetDockPosition -> viewManager.setDockPosition(intent.edge, intent.offset)
         }
     }
 
-    private fun handleOnionSkinIntent(intent: TimelineIntent.OnionSkin) {
+    private fun handleOnionSkinIntent(intent: StudioIntent.OnionSkin) {
         when (intent) {
-            is TimelineIntent.OnionSkin.SetEnabled -> updateState { it.copy(onionSkin = it.onionSkin.copy(enabled = intent.enabled)) }
-            is TimelineIntent.OnionSkin.SetFramesBefore -> updateState { it.copy(onionSkin = it.onionSkin.copy(depthBefore = intent.frames.coerceIn(0, 4))) }
-            is TimelineIntent.OnionSkin.SetFramesAfter -> updateState { it.copy(onionSkin = it.onionSkin.copy(depthAfter = intent.frames.coerceIn(0, 4))) }
-            is TimelineIntent.OnionSkin.SetColorBefore -> updateState { it.copy(onionSkin = it.onionSkin.copy(colorBefore = intent.color)) }
-            is TimelineIntent.OnionSkin.SetColorAfter -> updateState { it.copy(onionSkin = it.onionSkin.copy(colorAfter = intent.color)) }
-            is TimelineIntent.OnionSkin.SetOpacity -> updateState { it.copy(onionSkin = it.onionSkin.copy(opacity = intent.opacity.coerceIn(0f, 1f))) }
-            TimelineIntent.OnionSkin.Reset -> updateState { it.copy(onionSkin = OnionSkinState()) }
+            is StudioIntent.OnionSkin.SetEnabled -> updateState { it.copy(onionSkin = it.onionSkin.copy(enabled = intent.enabled)) }
+            is StudioIntent.OnionSkin.SetFramesBefore -> updateState { it.copy(onionSkin = it.onionSkin.copy(depthBefore = intent.frames.coerceIn(0, 4))) }
+            is StudioIntent.OnionSkin.SetFramesAfter -> updateState { it.copy(onionSkin = it.onionSkin.copy(depthAfter = intent.frames.coerceIn(0, 4))) }
+            is StudioIntent.OnionSkin.SetColorBefore -> updateState { it.copy(onionSkin = it.onionSkin.copy(colorBefore = intent.color)) }
+            is StudioIntent.OnionSkin.SetColorAfter -> updateState { it.copy(onionSkin = it.onionSkin.copy(colorAfter = intent.color)) }
+            is StudioIntent.OnionSkin.SetOpacity -> updateState { it.copy(onionSkin = it.onionSkin.copy(opacity = intent.opacity.coerceIn(0f, 1f))) }
+            StudioIntent.OnionSkin.Reset -> updateState { it.copy(onionSkin = OnionSkinState()) }
         }
     }
 
-    private fun handleRiggingIntent(intent: TimelineIntent.Rigging) {
-        if (currentState.actor.isPerformanceAuthoring && intent !is TimelineIntent.Rigging.SelectBone &&
-            intent != TimelineIntent.Rigging.ToggleSkeletonOverlay &&
-            intent != TimelineIntent.Rigging.SetStudioMode(StudioMode.ANIMATE_IK)) return
+    private fun handleRiggingIntent(intent: StudioIntent.Rigging) {
+        if (currentState.actor.isPerformanceAuthoring && intent !is StudioIntent.Rigging.SelectBone &&
+            intent != StudioIntent.Rigging.ToggleSkeletonOverlay &&
+            intent != StudioIntent.Rigging.SetStudioMode(StudioMode.ANIMATE_IK)) return
         when (intent) {
-            is TimelineIntent.Rigging.SetStudioMode -> {
+            is StudioIntent.Rigging.SetStudioMode -> {
                 // A project-launched Performance Stage session may record motion only. The
                 // actor revision it renders is immutable so prior gestures remain reproducible.
                 if (currentState.actor.isPerformanceAuthoring && intent.mode != StudioMode.ANIMATE_IK) return
@@ -585,10 +585,10 @@ class TimelineViewModel(
                 }
                 if (intent.mode == StudioMode.RASTER_DRAWING && shouldInitialize) loadFrame(currentState.animation.currentFrame)
             }
-            is TimelineIntent.Rigging.PreparePivotPlacement -> actorAuthoring.preparePivotPlacement(intent.sourceFrame, intent.lassoPath, intent.dilationRadius)
-            is TimelineIntent.Rigging.MovePivot -> actorAuthoring.updatePivot(intent.x, intent.y)
-            is TimelineIntent.Rigging.AddBoneAt -> actorAuthoring.addBoneAt(intent.x, intent.y)
-            is TimelineIntent.Rigging.SelectBone -> {
+            is StudioIntent.Rigging.PreparePivotPlacement -> actorAuthoring.preparePivotPlacement(intent.sourceFrame, intent.lassoPath, intent.dilationRadius)
+            is StudioIntent.Rigging.MovePivot -> actorAuthoring.updatePivot(intent.x, intent.y)
+            is StudioIntent.Rigging.AddBoneAt -> actorAuthoring.addBoneAt(intent.x, intent.y)
+            is StudioIntent.Rigging.SelectBone -> {
                 if (currentState.scene.pivotPlacement != null && currentState.scene.pivotPlacement?.targetBoneId != intent.id) actorAuthoring.cancelPivot()
                 val boneId = intent.id
                 // WHY this is not gated to RIG_SETUP: RIG_SETUP is the *pivot-adjust* tool state
@@ -605,76 +605,76 @@ class TimelineViewModel(
                 state.copy(scene = state.scene.copy(selectedBoneId = boneId))
                 }
             }
-            TimelineIntent.Rigging.ConfirmPivot -> actorAuthoring.confirmPivot()
-            TimelineIntent.Rigging.CancelPivot -> actorAuthoring.cancelPivot()
-            TimelineIntent.Rigging.ToggleSkeletonOverlay -> updateState { state ->
+            StudioIntent.Rigging.ConfirmPivot -> actorAuthoring.confirmPivot()
+            StudioIntent.Rigging.CancelPivot -> actorAuthoring.cancelPivot()
+            StudioIntent.Rigging.ToggleSkeletonOverlay -> updateState { state ->
                 state.copy(scene = state.scene.copy(skeletonOverlayVisible = !state.scene.skeletonOverlayVisible))
             }
         }
     }
 
-    private fun handleTextIntent(intent: TimelineIntent.Text) {
+    private fun handleTextIntent(intent: StudioIntent.Text) {
         when (intent) {
-            is TimelineIntent.Text.AddText -> textManager.addText(intent.text, intent.x, intent.y)
-            is TimelineIntent.Text.UpdateText -> textManager.updateText(intent.id, intent.text)
-            is TimelineIntent.Text.SelectTextNode -> textManager.selectTextNode(intent.id)
-            is TimelineIntent.Text.DeleteTextNode -> textManager.deleteTextNode(intent.id)
-            is TimelineIntent.Text.SetTextToolOptions -> updateState { it.copy(tool = it.tool.copy(textToolOptions = intent.options)) }
-            is TimelineIntent.Text.UpdateTextNode -> textManager.updateTextNode(intent.node)
-            is TimelineIntent.Text.TriggerEditDialog -> {
+            is StudioIntent.Text.AddText -> textManager.addText(intent.text, intent.x, intent.y)
+            is StudioIntent.Text.UpdateText -> textManager.updateText(intent.id, intent.text)
+            is StudioIntent.Text.SelectTextNode -> textManager.selectTextNode(intent.id)
+            is StudioIntent.Text.DeleteTextNode -> textManager.deleteTextNode(intent.id)
+            is StudioIntent.Text.SetTextToolOptions -> updateState { it.copy(tool = it.tool.copy(textToolOptions = intent.options)) }
+            is StudioIntent.Text.UpdateTextNode -> textManager.updateTextNode(intent.node)
+            is StudioIntent.Text.TriggerEditDialog -> {
                 // The node may be detached from SceneState while SelectionManager owns
                 // it for a transform. Both states represent the same editable node.
                 val node = (currentState.scene.nodes[intent.id]
                     ?: currentState.selection.selectedContent?.nodes?.get(intent.id)) as? TextNode ?: return
-                sendEffect(TimelineEffect.ShowTextEditDialog(intent.id, node.text))
+                sendEffect(StudioEffect.ShowTextEditDialog(intent.id, node.text))
             }
-            is TimelineIntent.Text.TriggerAddTextDialog -> {
-                sendEffect(TimelineEffect.ShowTextAddDialog(intent.x, intent.y))
+            is StudioIntent.Text.TriggerAddTextDialog -> {
+                sendEffect(StudioEffect.ShowTextAddDialog(intent.x, intent.y))
             }
         }
     }
 
-    private fun handleSelectionIntent(intent: TimelineIntent.Selection) {
+    private fun handleSelectionIntent(intent: StudioIntent.Selection) {
         when (intent) {
-            is TimelineIntent.Selection.SetTool -> updateState { it.copy(selection = it.selection.copy(toolType = intent.type)) }
-            is TimelineIntent.Selection.SelectArea -> selectionManager.selectArea(intent.path, intent.rect, intent.density, intent.fontRegistry, intent.actors)
-            is TimelineIntent.Selection.SelectTextNode -> selectionManager.selectTextNode(intent.id, intent.density, intent.fontRegistry)
-            is TimelineIntent.Selection.SetActive -> {
+            is StudioIntent.Selection.SetTool -> updateState { it.copy(selection = it.selection.copy(toolType = intent.type)) }
+            is StudioIntent.Selection.SelectArea -> selectionManager.selectArea(intent.path, intent.rect, intent.density, intent.fontRegistry, intent.actors)
+            is StudioIntent.Selection.SelectTextNode -> selectionManager.selectTextNode(intent.id, intent.density, intent.fontRegistry)
+            is StudioIntent.Selection.SetActive -> {
                 if (!intent.active && currentState.selection.active) {
                     selectionManager.commitSelection()
                 } else {
                     updateState { it.copy(selection = it.selection.copy(active = intent.active, contextMenuVisible = if (intent.active) it.selection.contextMenuVisible else false)) }
                 }
             }
-            is TimelineIntent.Selection.UpdateTransform -> updateState { it.copy(selection = it.selection.copy(transform = intent.matrix)) }
-            is TimelineIntent.Selection.UpdatePivot -> updateState { it.copy(selection = it.selection.copy(pivotOffset = intent.offset)) }
-            is TimelineIntent.Selection.SetContextMenuVisible -> updateState { it.copy(selection = it.selection.copy(contextMenuVisible = intent.visible)) }
-            is TimelineIntent.Selection.SetInteractionMode -> updateState {
+            is StudioIntent.Selection.UpdateTransform -> updateState { it.copy(selection = it.selection.copy(transform = intent.matrix)) }
+            is StudioIntent.Selection.UpdatePivot -> updateState { it.copy(selection = it.selection.copy(pivotOffset = intent.offset)) }
+            is StudioIntent.Selection.SetContextMenuVisible -> updateState { it.copy(selection = it.selection.copy(contextMenuVisible = intent.visible)) }
+            is StudioIntent.Selection.SetInteractionMode -> updateState {
                 it.copy(selection = it.selection.copy(interactionMode = intent.mode, contextMenuVisible = false))
             }
-            TimelineIntent.Selection.Cut -> selectionManager.cutSelection()
-            TimelineIntent.Selection.Copy -> {
+            StudioIntent.Selection.Cut -> selectionManager.cutSelection()
+            StudioIntent.Selection.Copy -> {
                 if (currentState.selection.active) {
                     selectionManager.copySelection()
                 } else {
                     frameManager.copyFrame(currentState.animation.currentFrame)
                 }
             }
-            TimelineIntent.Selection.Paste -> {
+            StudioIntent.Selection.Paste -> {
                 if (selectionManager.hasClipboardContent()) {
                     selectionManager.pasteSelection()
                 } else {
                     frameManager.pasteFrame(currentState.animation.currentFrame, before = false)
                 }
             }
-            is TimelineIntent.Selection.StampBitmap -> selectionManager.pasteBitmap(intent.bitmap, currentState.project.stage.width, currentState.project.stage.height, intent.centerX, intent.centerY)
-            TimelineIntent.Selection.Delete -> selectionManager.deleteSelection()
-            TimelineIntent.Selection.Cancel -> selectionManager.cancelSelection()
-            is TimelineIntent.Selection.SetAspectLock -> updateState { it.copy(selection = it.selection.copy(lockAspectRatio = intent.locked)) }
-            is TimelineIntent.Selection.SetSkewMode -> updateState { it.copy(selection = it.selection.copy(skewMode = intent.enabled)) }
-            TimelineIntent.Selection.ResetTransform -> updateState { it.copy(selection = it.selection.copy(transform = androidx.compose.ui.graphics.Matrix(), pivotOffset = androidx.compose.ui.geometry.Offset.Zero)) }
-            is TimelineIntent.Selection.SetDockPosition -> updateState { it.copy(canvas = it.canvas.copy(selectionDockOffset = intent.offset)) }
-            is TimelineIntent.Selection.SetPartialInclude -> updateState { it.copy(selection = it.selection.copy(partialInclude = intent.include)) }
+            is StudioIntent.Selection.StampBitmap -> selectionManager.pasteBitmap(intent.bitmap, currentState.project.stage.width, currentState.project.stage.height, intent.centerX, intent.centerY)
+            StudioIntent.Selection.Delete -> selectionManager.deleteSelection()
+            StudioIntent.Selection.Cancel -> selectionManager.cancelSelection()
+            is StudioIntent.Selection.SetAspectLock -> updateState { it.copy(selection = it.selection.copy(lockAspectRatio = intent.locked)) }
+            is StudioIntent.Selection.SetSkewMode -> updateState { it.copy(selection = it.selection.copy(skewMode = intent.enabled)) }
+            StudioIntent.Selection.ResetTransform -> updateState { it.copy(selection = it.selection.copy(transform = androidx.compose.ui.graphics.Matrix(), pivotOffset = androidx.compose.ui.geometry.Offset.Zero)) }
+            is StudioIntent.Selection.SetDockPosition -> updateState { it.copy(canvas = it.canvas.copy(selectionDockOffset = intent.offset)) }
+            is StudioIntent.Selection.SetPartialInclude -> updateState { it.copy(selection = it.selection.copy(partialInclude = intent.include)) }
         }
     }
 
@@ -719,41 +719,41 @@ class TimelineViewModel(
         }
     }
 
-    private fun handleFillIntent(intent: TimelineIntent.Fill) {
+    private fun handleFillIntent(intent: StudioIntent.Fill) {
         when (intent) {
-            is TimelineIntent.Fill.SetPendingTap -> {
+            is StudioIntent.Fill.SetPendingTap -> {
                 updateState { it.copy(fill = it.fill.copy(pendingTap = intent.offset, previewActive = intent.offset != null)) }
                 if (intent.offset != null) {
                     generateFillPreview(intent.offset)
                 }
             }
-            is TimelineIntent.Fill.SetDockPosition -> updateState { it.copy(fill = it.fill.copy(dockOffset = intent.offset)) }
-            TimelineIntent.Fill.Confirm -> {
+            is StudioIntent.Fill.SetDockPosition -> updateState { it.copy(fill = it.fill.copy(dockOffset = intent.offset)) }
+            StudioIntent.Fill.Confirm -> {
                 val tap = currentState.fill.pendingTap
                 if (tap != null) {
                     drawingManager.bakeStroke(listOf(TouchPoint(tap.x, tap.y)))
                 }
                 updateState { it.copy(fill = it.fill.copy(previewActive = false, pendingTap = null, previewBitmap = null)) }
             }
-            TimelineIntent.Fill.Cancel -> {
+            StudioIntent.Fill.Cancel -> {
                 updateState { it.copy(fill = it.fill.copy(previewActive = false, pendingTap = null, previewBitmap = null)) }
             }
-            is TimelineIntent.Fill.SetPreviewBitmap -> updateState { it.copy(fill = it.fill.copy(previewBitmap = intent.bitmap)) }
+            is StudioIntent.Fill.SetPreviewBitmap -> updateState { it.copy(fill = it.fill.copy(previewBitmap = intent.bitmap)) }
         }
     }
 
-    private fun handleConstructionShapeIntent(intent: TimelineIntent.Construction) {
+    private fun handleConstructionShapeIntent(intent: StudioIntent.Construction) {
         when (intent) {
-            is TimelineIntent.Construction.SetPreview -> updateState {
+            is StudioIntent.Construction.SetPreview -> updateState {
                 it.copy(constructionShape = it.constructionShape.copy(previewStrokes = intent.strokes, previewActive = intent.strokes.isNotEmpty()))
             }
-            is TimelineIntent.Construction.SetDockPosition -> updateState {
+            is StudioIntent.Construction.SetDockPosition -> updateState {
                 it.copy(constructionShape = it.constructionShape.copy(dockOffset = intent.offset))
             }
-            TimelineIntent.Construction.Cancel -> updateState {
+            StudioIntent.Construction.Cancel -> updateState {
                 it.copy(constructionShape = it.constructionShape.copy(previewStrokes = emptyList(), previewActive = false))
             }
-            TimelineIntent.Construction.Confirm -> {
+            StudioIntent.Construction.Confirm -> {
                 val preview = currentState.constructionShape.previewStrokes
                 drawingManager.bakeConstructionShape(preview)
                 updateState { it.copy(constructionShape = it.constructionShape.copy(previewStrokes = emptyList(), previewActive = false)) }
@@ -765,7 +765,7 @@ class TimelineViewModel(
         pendingOperations.launch(viewModelScope, engineDispatcher) {
             val preview = drawingManager.generateFillPreview(offset)
             withContext(Dispatchers.Main) {
-                handleIntent(TimelineIntent.Fill.SetPreviewBitmap(preview))
+                handleIntent(StudioIntent.Fill.SetPreviewBitmap(preview))
             }
         }
     }

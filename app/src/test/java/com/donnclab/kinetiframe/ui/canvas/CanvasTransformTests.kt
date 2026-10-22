@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.ui.canvas
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineViewModel
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -35,7 +35,7 @@ class CanvasTransformTests {
                 ),
             ),
         )
-        var state = com.donnclab.kinetiframe.ui.TimelineState(project = document)
+        var state = com.donnclab.kinetiframe.ui.StudioState(project = document)
         val manager = com.donnclab.kinetiframe.domain.manager.ViewManager { change -> state = change(state) }
         for ((width, height) in listOf(1080 to 1600, 1600 to 900)) {
             manager.setViewportSize(width, height)
@@ -48,7 +48,7 @@ class CanvasTransformTests {
     }
 
     private val testDispatcher = StandardTestDispatcher()
-    private lateinit var viewModel: TimelineViewModel
+    private lateinit var viewModel: StudioViewModel
 
     @Before
     fun setup() {
@@ -56,7 +56,7 @@ class CanvasTransformTests {
         val tempDir = File.createTempFile("kinetiframe_transform_test", "")
         tempDir.delete()
         tempDir.mkdir()
-        viewModel = TimelineViewModel(tempDir, testDispatcher, shouldInitialize = false)
+        viewModel = StudioViewModel(tempDir, testDispatcher, shouldInitialize = false)
     }
 
     @After
@@ -75,7 +75,7 @@ class CanvasTransformTests {
         val matrix = android.graphics.Matrix().apply {
             postScale(zoomDelta, zoomDelta, pivot.x, pivot.y)
         }
-        viewModel.handleIntent(TimelineIntent.View.UpdateCanvasTransform(matrix))
+        viewModel.handleIntent(StudioIntent.View.UpdateCanvasTransform(matrix))
         testDispatcher.scheduler.advanceUntilIdle()
 
         val currentState = viewModel.state.value
@@ -88,21 +88,21 @@ class CanvasTransformTests {
 
     @Test
     fun frameNavigationDoesNotChangeTheEditorViewport() = runTest {
-        viewModel.handleIntent(TimelineIntent.Frame.AddFrame)
+        viewModel.handleIntent(StudioIntent.Frame.AddFrame)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.handleIntent(TimelineIntent.Playback.SetCurrentFrame(1))
+        viewModel.handleIntent(StudioIntent.Playback.SetCurrentFrame(1))
         testDispatcher.scheduler.advanceUntilIdle()
         val matrix = android.graphics.Matrix().apply {
             postScale(2.0f, 2.0f)
             postTranslate(100f, 100f)
         }
-        viewModel.handleIntent(TimelineIntent.View.UpdateCanvasTransform(matrix))
+        viewModel.handleIntent(StudioIntent.View.UpdateCanvasTransform(matrix))
         testDispatcher.scheduler.advanceUntilIdle()
 
         val expected = viewModel.state.value.canvas
 
-        viewModel.handleIntent(TimelineIntent.Playback.SetCurrentFrame(0))
+        viewModel.handleIntent(StudioIntent.Playback.SetCurrentFrame(0))
         testDispatcher.scheduler.advanceUntilIdle()
 
         val afterFirstSwitch = viewModel.state.value.canvas
@@ -110,7 +110,7 @@ class CanvasTransformTests {
         assertEquals(expected.pan.x, afterFirstSwitch.pan.x, 0.001f)
         assertEquals(expected.pan.y, afterFirstSwitch.pan.y, 0.001f)
 
-        viewModel.handleIntent(TimelineIntent.Playback.SetCurrentFrame(1))
+        viewModel.handleIntent(StudioIntent.Playback.SetCurrentFrame(1))
         testDispatcher.scheduler.advanceUntilIdle()
 
         val afterSecondSwitch = viewModel.state.value.canvas
@@ -121,22 +121,22 @@ class CanvasTransformTests {
 
     @Test
     fun repeatedFrameSelectionPreservesFittedZoomAndPan() = runTest {
-        viewModel.handleIntent(TimelineIntent.View.SetViewportSize(width = 1_000, height = 1_000))
+        viewModel.handleIntent(StudioIntent.View.SetViewportSize(width = 1_000, height = 1_000))
         viewModel.handleIntent(
-            TimelineIntent.View.UpdateTransform(
+            StudioIntent.View.UpdateTransform(
                 panDelta = Offset(48f, -24f),
                 zoomDelta = 1.5f,
                 rotationDelta = 0f,
                 pivot = Offset(500f, 500f),
             ),
         )
-        viewModel.handleIntent(TimelineIntent.Frame.AddFrame)
+        viewModel.handleIntent(StudioIntent.Frame.AddFrame)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val expected = viewModel.state.value.canvas
         repeat(3) {
-            viewModel.handleIntent(TimelineIntent.Playback.SetCurrentFrame(0))
-            viewModel.handleIntent(TimelineIntent.Playback.SetCurrentFrame(1))
+            viewModel.handleIntent(StudioIntent.Playback.SetCurrentFrame(0))
+            viewModel.handleIntent(StudioIntent.Playback.SetCurrentFrame(1))
             testDispatcher.scheduler.advanceUntilIdle()
         }
 
@@ -157,12 +157,12 @@ class CanvasTransformTests {
             postTranslate(-400f, 600f)
             postRotate(45f)
         }
-        viewModel.handleIntent(TimelineIntent.View.UpdateCanvasTransform(matrix))
+        viewModel.handleIntent(StudioIntent.View.UpdateCanvasTransform(matrix))
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertNotEquals(1.0f, viewModel.state.value.canvas.zoom)
 
-        viewModel.handleIntent(TimelineIntent.View.ResetCanvasTransform)
+        viewModel.handleIntent(StudioIntent.View.ResetCanvasTransform)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val stateReset = viewModel.state.value
@@ -173,7 +173,7 @@ class CanvasTransformTests {
 
     @Test
     fun viewportSizeFitsDocumentIntoAvailableEditorSpace() = runTest {
-        viewModel.handleIntent(TimelineIntent.View.SetViewportSize(width = 1_000, height = 1_000))
+        viewModel.handleIntent(StudioIntent.View.SetViewportSize(width = 1_000, height = 1_000))
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.state.value

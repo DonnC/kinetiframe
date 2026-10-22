@@ -20,11 +20,11 @@ class SceneVideoControlsTest {
 
     @Test fun clipContextTransformsVideoRatherThanOpeningImportOrPaintingFrames() {
         val clip = VideoClipPlacement("clip", "asset", "Screen story", 0, 24, isSceneContent = true)
-        val state = TimelineState(
+        val state = StudioState(
             project = ProjectDocument(videoClips = mapOf("clip" to clip)),
             animation = AnimationState(totalFrames = 24),
         )
-        var dispatched: TimelineIntent? = null
+        var dispatched: StudioIntent? = null
         val context = ApplicationProvider.getApplicationContext<android.content.Context>()
         val performances = PerformanceRepository(ActorFileStore(context.filesDir))
         compose.setContent {
@@ -41,6 +41,6 @@ class SceneVideoControlsTest {
         }
         compose.onNodeWithText("Screen story").performClick()
         compose.onNodeWithContentDescription("Transform video").performClick()
-        compose.runOnIdle { assertEquals(TimelineIntent.Video.Select("clip"), dispatched) }
+        compose.runOnIdle { assertEquals(StudioIntent.Video.Select("clip"), dispatched) }
     }
 }

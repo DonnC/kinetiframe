@@ -3,8 +3,8 @@ package com.donnclab.kinetiframe.domain.manager
 import android.graphics.Bitmap
 import com.donnclab.kinetiframe.engine.cache.FrameCacheManager
 import com.donnclab.kinetiframe.models.Layer
-import com.donnclab.kinetiframe.ui.TimelineEffect
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioEffect
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.currentFrameLayers
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -20,14 +20,14 @@ class FrameManager(
     private val dispatcher: CoroutineDispatcher,
     private val cacheManager: FrameCacheManager,
     private val frameOperationMutex: Mutex,
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
-    private val sendEffect: (TimelineEffect) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
+    private val sendEffect: (StudioEffect) -> Unit,
     private val loadFrameInternal: suspend (Int) -> Unit,
     private val finalizeFrame: suspend (Int) -> Unit,
     private val clearHistory: () -> Unit,
     /** UI-only guides must be remapped in the same publication turn as the frame indices. */
-    private val commitFrameStructure: suspend (Int?, List<Int>, (TimelineState) -> TimelineState) -> Unit =
+    private val commitFrameStructure: suspend (Int?, List<Int>, (StudioState) -> StudioState) -> Unit =
         { _, _, change -> updateState(change) },
     private val pendingOperations: PendingOperations = PendingOperations(),
 ) {
@@ -44,7 +44,7 @@ class FrameManager(
                 // the same stale index or shift bitmaps under the wrong metadata.
                 val currentState = getState()
                 if (currentState.animation.totalFrames >= 1000) {
-                    sendEffect(TimelineEffect.ShowError("Maximum frame limit reached"))
+                    sendEffect(StudioEffect.ShowError("Maximum frame limit reached"))
                     return@withLock
                 }
                 val insertIndex = currentState.animation.currentFrame + 1
@@ -327,7 +327,7 @@ class FrameManager(
             frameOperationMutex.withLock {
                 val currentState = getState()
                 if (currentState.animation.totalFrames >= 1000) {
-                    sendEffect(TimelineEffect.ShowError("Maximum frame limit reached"))
+                    sendEffect(StudioEffect.ShowError("Maximum frame limit reached"))
                     return@withLock
                 }
                 if (index !in 0 until currentState.animation.totalFrames) return@withLock

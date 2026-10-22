@@ -12,13 +12,13 @@ import com.composables.icons.lucide.Eye
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Pause
 import com.composables.icons.lucide.Play
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 
 /** Recovery stays reachable even when every drawing toolbar is hidden. */
 @Composable
 fun StudioFocusControls(
     isPlaying: Boolean,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     onRestore: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -29,7 +29,7 @@ fun StudioFocusControls(
     ) {
         Row {
             IconButton(onClick = {
-                onIntent(if (isPlaying) TimelineIntent.Playback.Pause else TimelineIntent.Playback.Play)
+                onIntent(if (isPlaying) StudioIntent.Playback.Pause else StudioIntent.Playback.Play)
             }) { Icon(if (isPlaying) Lucide.Pause else Lucide.Play, if (isPlaying) "Pause" else "Play") }
             IconButton(onClick = onRestore) { Icon(Lucide.Eye, "Restore studio controls") }
         }

@@ -11,7 +11,7 @@ import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.engine.rigging.model.ArtworkVariant
 import com.donnclab.kinetiframe.engine.rigging.model.BoneNode
 import com.donnclab.kinetiframe.engine.rigging.model.TextureBinding
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.components.rigging.ActorArtworkMenu
 import com.donnclab.kinetiframe.ui.components.rigging.PartActionsRow
 import org.junit.Assert.assertEquals
@@ -20,7 +20,7 @@ import org.junit.Test
 
 class ActorArtworkControlsTest {
     @Test fun attachmentBlendUsesGenericPartIntent() {
-        var intent: TimelineIntent? = null
+        var intent: StudioIntent? = null
         val part = BoneNode(
             hierarchy = BoneHierarchy("gear", "Gear", "base"),
             rest = BoneRest(30f),
@@ -31,13 +31,13 @@ class ActorArtworkControlsTest {
         }
         compose.onNodeWithContentDescription("Edit part artwork").performClick()
         compose.onNodeWithText("Blend attachment").performClick()
-        compose.runOnIdle { assertEquals(TimelineIntent.Actor.SetAttachmentBlend("gear", "", true), intent) }
+        compose.runOnIdle { assertEquals(StudioIntent.Actor.SetAttachmentBlend("gear", "", true), intent) }
     }
 
     @get:Rule val compose = createComposeRule()
 
     @Test fun expressionMenuKeysTheChosenVariant() {
-        var intent: TimelineIntent? = null
+        var intent: StudioIntent? = null
         val part = BoneNode(
             hierarchy = BoneHierarchy("mouth", "Mouth", null),
             rest = BoneRest(10f),
@@ -48,7 +48,7 @@ class ActorArtworkControlsTest {
         compose.setContent { ActorArtworkMenu(part) { intent = it } }
         compose.onNodeWithContentDescription("Part artwork").performClick()
         compose.onNodeWithText("Smile").performClick()
-        compose.runOnIdle { assertEquals(TimelineIntent.Actor.SelectArtwork("mouth", "smile"), intent) }
+        compose.runOnIdle { assertEquals(StudioIntent.Actor.SelectArtwork("mouth", "smile"), intent) }
     }
 
     @Test fun artworkCannotChangeWhileAuthoringPinnedPerformance() {
@@ -64,7 +64,7 @@ class ActorArtworkControlsTest {
     }
 
     @Test fun genericArtworkControlsExposeAlignmentAndUndoableRemoval() {
-        var intent: TimelineIntent? = null
+        var intent: StudioIntent? = null
         var editing: String? = null
         val part = BoneNode(
             hierarchy = BoneHierarchy("gear", "Gear", null),
@@ -84,6 +84,6 @@ class ActorArtworkControlsTest {
         compose.runOnIdle { assertEquals("", editing) }
         compose.onNodeWithContentDescription("Edit part artwork").performClick()
         compose.onNodeWithText("Remove artwork").performClick()
-        compose.runOnIdle { assertEquals(TimelineIntent.Actor.RemoveArtwork("gear"), intent) }
+        compose.runOnIdle { assertEquals(StudioIntent.Actor.RemoveArtwork("gear"), intent) }
     }
 }

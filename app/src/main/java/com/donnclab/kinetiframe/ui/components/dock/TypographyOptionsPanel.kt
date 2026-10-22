@@ -52,8 +52,8 @@ import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.engine.typography.FontRegistry
 import com.donnclab.kinetiframe.models.FontItem
 import com.donnclab.kinetiframe.models.TextNode
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.StandardSlider
 import com.donnclab.kinetiframe.ui.components.dialogs.TextInsertionDialog
 
@@ -61,7 +61,7 @@ import com.donnclab.kinetiframe.ui.components.dialogs.TextInsertionDialog
  * The main panel for text tool options, showing Add, Font, Size, and Color.
  */
 @Composable
-fun TypographyOptionsPanel(state: TimelineState, onIntent: (TimelineIntent) -> Unit, onDismiss: () -> Unit) {
+fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit, onDismiss: () -> Unit) {
     var showAddDialog by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
     var currentScreen by remember { mutableStateOf("main") }
@@ -77,7 +77,7 @@ fun TypographyOptionsPanel(state: TimelineState, onIntent: (TimelineIntent) -> U
         TextInsertionDialog(
             onDismiss = { showAddDialog = false },
             onConfirm = { text ->
-                onIntent(TimelineIntent.Text.AddText(text))
+                onIntent(StudioIntent.Text.AddText(text))
                 showAddDialog = false
             },
         )
@@ -87,7 +87,7 @@ fun TypographyOptionsPanel(state: TimelineState, onIntent: (TimelineIntent) -> U
             initialText = selectedNode.text,
             onDismiss = { showEditDialog = false },
             onConfirm = { text ->
-                onIntent(TimelineIntent.Text.UpdateText(selectedNode.id, text))
+                onIntent(StudioIntent.Text.UpdateText(selectedNode.id, text))
                 showEditDialog = false
             },
         )
@@ -156,10 +156,10 @@ fun TypographyOptionsPanel(state: TimelineState, onIntent: (TimelineIntent) -> U
                         value = selectedNode?.fontSizeSp ?: state.tool.textToolOptions.fontSizeSp,
                         onValueChange = { value ->
                             selectedNode?.let { node ->
-                                onIntent(TimelineIntent.Text.UpdateTextNode(node.copy(fontSizeSp = value)))
+                                onIntent(StudioIntent.Text.UpdateTextNode(node.copy(fontSizeSp = value)))
                             }
                                 ?: onIntent(
-                                    TimelineIntent.Text.SetTextToolOptions(
+                                    StudioIntent.Text.SetTextToolOptions(
                                         state.tool.textToolOptions.copy(fontSizeSp = value),
                                     ),
                                 )
@@ -180,13 +180,13 @@ fun TypographyOptionsPanel(state: TimelineState, onIntent: (TimelineIntent) -> U
                     ) {
                         selectedNode?.let { node ->
                             onIntent(
-                                TimelineIntent.Text.UpdateTextNode(
+                                StudioIntent.Text.UpdateTextNode(
                                     node.copy(style = node.style.copy(mainColorHex = it.toArgb())),
                                 ),
                             )
                         }
                             ?: onIntent(
-                                TimelineIntent.Text.SetTextToolOptions(state.tool.textToolOptions.copy(textColor = it)),
+                                StudioIntent.Text.SetTextToolOptions(state.tool.textToolOptions.copy(textColor = it)),
                             )
                     }
                 }
@@ -197,10 +197,10 @@ fun TypographyOptionsPanel(state: TimelineState, onIntent: (TimelineIntent) -> U
                     selectedFontFileName = selectedNode?.fontFileName ?: state.tool.textToolOptions.fontFileName,
                     onFontSelected = { font ->
                         selectedNode?.let { node ->
-                            onIntent(TimelineIntent.Text.UpdateTextNode(node.copy(fontFileName = font.fileName)))
+                            onIntent(StudioIntent.Text.UpdateTextNode(node.copy(fontFileName = font.fileName)))
                         }
                             ?: onIntent(
-                                TimelineIntent.Text.SetTextToolOptions(
+                                StudioIntent.Text.SetTextToolOptions(
                                     state.tool.textToolOptions.copy(fontFileName = font.fileName),
                                 ),
                             )
@@ -303,5 +303,5 @@ private fun FontItemRow(font: FontItem, selected: Boolean, onClick: () -> Unit) 
 @Preview(showBackground = true, widthDp = 220, heightDp = 500)
 @Composable
 private fun TypographyOptionsPanelPreview() {
-    TypographyOptionsPanel(state = TimelineState(), onIntent = {}, onDismiss = {})
+    TypographyOptionsPanel(state = StudioState(), onIntent = {}, onDismiss = {})
 }

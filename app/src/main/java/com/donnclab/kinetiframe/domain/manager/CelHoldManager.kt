@@ -2,8 +2,8 @@ package com.donnclab.kinetiframe.domain.manager
 
 import com.donnclab.kinetiframe.engine.cache.FrameCacheManager
 import com.donnclab.kinetiframe.models.LayerType
-import com.donnclab.kinetiframe.ui.TimelineEffect
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioEffect
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.currentFrameLayers
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -16,9 +16,9 @@ class CelHoldManager(
     private val dispatcher: CoroutineDispatcher,
     private val cache: FrameCacheManager,
     private val frameMutex: Mutex,
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
-    private val sendEffect: (TimelineEffect) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
+    private val sendEffect: (StudioEffect) -> Unit,
     private val finalizeDrawing: suspend () -> Unit,
     private val clearHistory: () -> Unit,
     private val loadFrame: suspend (Int) -> Unit,
@@ -67,7 +67,7 @@ class CelHoldManager(
                 ) {
                     throw cancel
                 } catch (error: Exception) {
-                    sendEffect(TimelineEffect.ShowError(error.message ?: "Could not update held drawing"))
+                    sendEffect(StudioEffect.ShowError(error.message ?: "Could not update held drawing"))
                 }
             }
         }

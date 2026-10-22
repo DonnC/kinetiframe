@@ -33,8 +33,8 @@ import com.donnclab.kinetiframe.data.actor.PerformanceRepository
 import com.donnclab.kinetiframe.engine.model.ActorPlacementReference
 import com.donnclab.kinetiframe.engine.model.AudioClipPlacement
 import com.donnclab.kinetiframe.engine.model.VideoClipPlacement
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.common.ContextIconAction
 import com.donnclab.kinetiframe.ui.components.common.ContextSliderButton
 import com.donnclab.kinetiframe.ui.components.common.IconContextMenu
@@ -44,11 +44,11 @@ import com.donnclab.kinetiframe.ui.components.common.IconContextMenu
 internal fun TrackClipContextMenu(
     expanded: Boolean,
     onDismiss: () -> Unit,
-    state: TimelineState,
+    state: StudioState,
     actor: ActorPlacementReference?,
     sound: AudioClipPlacement?,
     video: VideoClipPlacement?,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     onPosition: () -> Unit,
     performances: PerformanceRepository,
     onEdit: (ActorPlacementReference) -> Unit,
@@ -74,7 +74,7 @@ internal fun TrackClipContextMenu(
                 audio.clipId
         }
     }
-    fun dispatch(intent: TimelineIntent) {
+    fun dispatch(intent: StudioIntent) {
         onDismiss()
         onIntent(intent)
     }
@@ -102,7 +102,7 @@ internal fun TrackClipContextMenu(
                     Lucide.Scissors,
                     "Split at playhead",
                     {
-                        dispatch(TimelineIntent.ActorPlacement.Split(clip.placementId, state.animation.currentFrame))
+                        dispatch(StudioIntent.ActorPlacement.Split(clip.placementId, state.animation.currentFrame))
                     },
                     state.animation.currentFrame > clip.startFrame &&
                         state.animation.currentFrame < clip.startFrame + clip.durationFrames * clip.repeatCount,
@@ -110,17 +110,17 @@ internal fun TrackClipContextMenu(
             )
             add(
                 ContextIconAction(Lucide.Copy, "Duplicate", {
-                    dispatch(TimelineIntent.ActorPlacement.Duplicate(clip.placementId))
+                    dispatch(StudioIntent.ActorPlacement.Duplicate(clip.placementId))
                 }),
             )
             add(
                 ContextIconAction(Lucide.ArrowUpToLine, "Bring to front", {
-                    dispatch(TimelineIntent.ActorPlacement.BringToFront(clip.placementId))
+                    dispatch(StudioIntent.ActorPlacement.BringToFront(clip.placementId))
                 }),
             )
             add(
                 ContextIconAction(Lucide.ArrowDownToLine, "Send to back", {
-                    dispatch(TimelineIntent.ActorPlacement.SendToBack(clip.placementId))
+                    dispatch(StudioIntent.ActorPlacement.SendToBack(clip.placementId))
                 }),
             )
             add(
@@ -131,7 +131,7 @@ internal fun TrackClipContextMenu(
             )
             add(
                 ContextIconAction(Lucide.Trash2, "Delete", {
-                    dispatch(TimelineIntent.ActorPlacement.Remove(clip.placementId))
+                    dispatch(StudioIntent.ActorPlacement.Remove(clip.placementId))
                 }),
             )
         }
@@ -145,7 +145,7 @@ internal fun TrackClipContextMenu(
             linkedVideo?.let { linked ->
                 add(
                     ContextIconAction(Lucide.Unlink, "Detach sound from video", {
-                        dispatch(TimelineIntent.Video.DetachAudio(linked.clipId))
+                        dispatch(StudioIntent.Video.DetachAudio(linked.clipId))
                     }),
                 )
             }
@@ -169,7 +169,7 @@ internal fun TrackClipContextMenu(
             )
             add(
                 ContextIconAction(Lucide.Copy, "Duplicate", {
-                    dispatch(TimelineIntent.Audio.Duplicate(clip.clipId))
+                    dispatch(StudioIntent.Audio.Duplicate(clip.clipId))
                 }, !locked),
             )
             add(
@@ -177,7 +177,7 @@ internal fun TrackClipContextMenu(
                     Lucide.Scissors,
                     "Split at playhead",
                     {
-                        dispatch(TimelineIntent.Audio.Split(clip.clipId, state.animation.currentFrame))
+                        dispatch(StudioIntent.Audio.Split(clip.clipId, state.animation.currentFrame))
                     },
                     !locked && linkedVideo == null && state.animation.currentFrame > clip.startFrame &&
                         state.animation.currentFrame < clip.startFrame + clip.durationFrames,
@@ -193,7 +193,7 @@ internal fun TrackClipContextMenu(
                 ContextIconAction(
                     Lucide.Trash2,
                     "Delete",
-                    { dispatch(TimelineIntent.Audio.Remove(clip.clipId)) },
+                    { dispatch(StudioIntent.Audio.Remove(clip.clipId)) },
                     !locked && linkedVideo == null,
                 ),
             )
@@ -212,7 +212,7 @@ internal fun TrackClipContextMenu(
                     Lucide.Scissors,
                     "Split at playhead",
                     {
-                        dispatch(TimelineIntent.Video.Split(clip.clipId, state.animation.currentFrame))
+                        dispatch(StudioIntent.Video.Split(clip.clipId, state.animation.currentFrame))
                     },
                     !locked && state.animation.currentFrame > clip.timelineStartFrame &&
                         state.animation.currentFrame < clip.timelineEndFrame,
@@ -221,19 +221,19 @@ internal fun TrackClipContextMenu(
             if (clip.isSceneContent) {
                 add(
                     ContextIconAction(Lucide.Scan, "Transform video", {
-                        dispatch(TimelineIntent.Video.Select(clip.clipId))
+                        dispatch(StudioIntent.Video.Select(clip.clipId))
                     }),
                 )
             }
             add(
                 ContextIconAction(Lucide.Trash2, "Delete", {
-                    dispatch(TimelineIntent.Video.Remove(clip.clipId))
+                    dispatch(StudioIntent.Video.Remove(clip.clipId))
                 }, !locked),
             )
         }
         if (sound != null || video != null) {
-            add(ContextIconAction(Lucide.Undo2, "Undo effect edit", { dispatch(TimelineIntent.Camera.Undo) }))
-            add(ContextIconAction(Lucide.Redo2, "Redo effect edit", { dispatch(TimelineIntent.Camera.Redo) }))
+            add(ContextIconAction(Lucide.Undo2, "Undo effect edit", { dispatch(StudioIntent.Camera.Undo) }))
+            add(ContextIconAction(Lucide.Redo2, "Redo effect edit", { dispatch(StudioIntent.Camera.Redo) }))
         }
     }
     IconContextMenu(expanded, onDismiss, actions) {
@@ -241,7 +241,7 @@ internal fun TrackClipContextMenu(
             actor?.let { clip ->
                 SwitchPerformanceButton(clip, state.project.id, performances, { placement, performance ->
                     dispatch(
-                        TimelineIntent.ActorPlacement.SwitchPerformance(
+                        StudioIntent.ActorPlacement.SwitchPerformance(
                             placement.placementId,
                             performance.performanceId,
                             performance.actorRevisionId,
@@ -256,7 +256,7 @@ internal fun TrackClipContextMenu(
                     Lucide.Volume2,
                     "Volume",
                     clip.volume,
-                    { onIntent(TimelineIntent.Audio.SetVolume(clip.clipId, it)) },
+                    { onIntent(StudioIntent.Audio.SetVolume(clip.clipId, it)) },
                     enabled = !locked,
                 )
             }
@@ -265,7 +265,7 @@ internal fun TrackClipContextMenu(
                     Lucide.Blend,
                     "Reference opacity",
                     state.project.videoTrackOpacity,
-                    { onIntent(TimelineIntent.Video.SetTrackOpacity(it)) },
+                    { onIntent(StudioIntent.Video.SetTrackOpacity(it)) },
                 )
             }
         }
@@ -275,7 +275,7 @@ internal fun TrackClipContextMenu(
     ) {
         AudioFadeDialog(sound, state.project.fps, { showFades = false }, { incoming, outgoing ->
             showFades = false
-            onIntent(TimelineIntent.Audio.SetFades(sound.clipId, incoming, outgoing))
+            onIntent(StudioIntent.Audio.SetFades(sound.clipId, incoming, outgoing))
         })
     }
     if (showCrossfade && sound != null && nextAudio != null) {
@@ -286,7 +286,7 @@ internal fun TrackClipContextMenu(
             { showCrossfade = false },
             { frames ->
                 showCrossfade = false
-                onIntent(TimelineIntent.Audio.Crossfade(sound.clipId, nextAudio.clipId, frames))
+                onIntent(StudioIntent.Audio.Crossfade(sound.clipId, nextAudio.clipId, frames))
             },
         )
     }
@@ -298,14 +298,14 @@ internal fun TrackClipContextMenu(
             { showFraming = false },
             { fit, x, y ->
                 showFraming = false
-                onIntent(TimelineIntent.Video.Framing(video.clipId, fit, x, y))
+                onIntent(StudioIntent.Video.Framing(video.clipId, fit, x, y))
             },
         )
     }
     if (showVoice && sound != null) {
         VoiceEffectDialog(sound, state.project, { showVoice = false }, { effect, asset ->
             showVoice = false
-            onIntent(TimelineIntent.Audio.VoiceStyle(sound.clipId, sound.assetId, effect, asset))
+            onIntent(StudioIntent.Audio.VoiceStyle(sound.clipId, sound.assetId, effect, asset))
         })
     }
 }

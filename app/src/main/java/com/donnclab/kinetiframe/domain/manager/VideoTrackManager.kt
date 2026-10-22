@@ -2,7 +2,7 @@ package com.donnclab.kinetiframe.domain.manager
 
 import com.donnclab.kinetiframe.engine.model.ProjectAsset
 import com.donnclab.kinetiframe.engine.model.VideoClipPlacement
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlin.math.roundToInt
 
 /** Pure project-reference mutations for the single video track's clips -- structurally close to
@@ -11,8 +11,8 @@ import kotlin.math.roundToInt
  *  Decoding and copying video files happens at the UI layer, which has the Android Context; this
  *  class only receives an already-resolved [ProjectAsset] and placement. */
 class VideoTrackManager(
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
 ) {
     /** [asset] is inserted alongside [placement] atomically, same as [AudioManager.add]. Throws
      *  if the new clip's timeline range would overlap any existing video clip; existing clips are

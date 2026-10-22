@@ -7,7 +7,7 @@ import com.donnclab.kinetiframe.engine.model.AudioTrackSettings
 import com.donnclab.kinetiframe.engine.model.ProjectAsset
 import com.donnclab.kinetiframe.engine.model.ProjectDocument
 import com.donnclab.kinetiframe.engine.model.VideoClipPlacement
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -17,7 +17,7 @@ class LinkedMediaEffectsTest {
     private val video =
         VideoClipPlacement("v", "source", "Video", 0, 48, sourceDurationFrames = 48, linkedAudioClipId = "a")
     private val source = ProjectAsset("source", AssetKind.VIDEO, "video.mp4", 100, 100)
-    private var state = TimelineState(project = ProjectDocument(fps = 12))
+    private var state = StudioState(project = ProjectDocument(fps = 12))
     private val videos = VideoTrackManager({ state }, { state = it(state) })
     private val effects = SceneEffectsManager({ state }, { state = it(state) })
 

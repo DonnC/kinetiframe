@@ -6,8 +6,8 @@ import com.donnclab.kinetiframe.engine.asset.BackgroundImageDecoder
 import com.donnclab.kinetiframe.engine.asset.ProjectAssetManager
 import com.donnclab.kinetiframe.engine.model.AssetKind
 import com.donnclab.kinetiframe.engine.model.ProjectAsset
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -37,8 +37,8 @@ class BackgroundManager(
     private val dispatcher: CoroutineDispatcher,
     private val assets: ProjectAssetManager,
     private val storageDir: File,
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
     private val id: () -> String = { UUID.randomUUID().toString() },
     private val onError: (String) -> Unit = {},
     private val decode: (File) -> Bitmap = BackgroundImageDecoder::decode,
@@ -80,10 +80,10 @@ class BackgroundManager(
             if (!published) bitmap?.let { if (!it.isRecycled) it.recycle() }
         }
     }
-    fun handle(intent: TimelineIntent.Background) = when (intent) {
-        is TimelineIntent.Background.SetImage -> setImage(intent.bitmap)
+    fun handle(intent: StudioIntent.Background) = when (intent) {
+        is StudioIntent.Background.SetImage -> setImage(intent.bitmap)
 
-        TimelineIntent.Background.ToggleVisibility -> updateState { state ->
+        StudioIntent.Background.ToggleVisibility -> updateState { state ->
             if (state.project.backgroundAssetId == null) {
                 state
             } else {
@@ -91,7 +91,7 @@ class BackgroundManager(
             }
         }
 
-        TimelineIntent.Background.Remove -> remove()
+        StudioIntent.Background.Remove -> remove()
     }
 
     private fun setImage(bitmap: Bitmap) {

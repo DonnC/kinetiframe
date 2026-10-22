@@ -66,19 +66,19 @@ data class ActorStudioState(
  * [ProjectDocument.actorPlacements], never from a layer carrying a
  * puppetInstanceId, so this fallback stays null there and project behaviour is unchanged.
  */
-fun TimelineState.activeActor(): PuppetInstance? {
+fun StudioState.activeActor(): PuppetInstance? {
     val frameLayers = currentFrameLayers()
     val instanceId = frameLayers.getOrNull(layers.activeLayerIndex)?.puppetInstanceId
         ?: frameLayers.firstNotNullOfOrNull { it.puppetInstanceId }
     return instanceId?.let(project.puppetInstances::get)
 }
 
-fun TimelineState.actorPreviewPreset(): AppliedActorPreset? {
+fun StudioState.actorPreviewPreset(): AppliedActorPreset? {
     val instance = activeActor()
     return actor.presetPreview.takeIf { actor.presetPreviewInstanceId == instance?.id } ?: instance?.motionPreset
 }
 
-fun TimelineState.actorPreviewDuration(): Long {
+fun StudioState.actorPreviewDuration(): Long {
     val instance = activeActor()
     val preset = actorPreviewPreset()
     // A repeating recipe owns its period; wrapping a 1.8 s walk at the default 2 s
@@ -102,10 +102,10 @@ fun TimelineState.actorPreviewDuration(): Long {
 }
 
 /** Source drawings help construction; the pose stage must show only the moving puppet skin. */
-fun TimelineState.showActorSourceArtwork(): Boolean = actor.showSource && scene.studioMode != StudioMode.ANIMATE_IK &&
+fun StudioState.showActorSourceArtwork(): Boolean = actor.showSource && scene.studioMode != StudioMode.ANIMATE_IK &&
     actorDefinition()?.sceneGraph?.drawing?.enabled != true
 
-fun TimelineState.actorDefinition(evaluated: Boolean = false): PuppetDefinition? {
+fun StudioState.actorDefinition(evaluated: Boolean = false): PuppetDefinition? {
     val instance = activeActor() ?: return null
     val definition = project.puppetDefinitions[instance.definitionId] ?: return null
     if (!evaluated) return definition

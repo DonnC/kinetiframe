@@ -95,9 +95,9 @@ class ActorStudioCompositionTest {
         assertEquals(instance, source.activeActor())
     }
 
-    private fun state(): TimelineState {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
-        ActorStudioManager({ state }, { state = it(state) }).handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+    private fun state(): StudioState {
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        ActorStudioManager({ state }, { state = it(state) }).handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         return state.copy(scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK))
     }
 

@@ -2,7 +2,7 @@ package com.donnclab.kinetiframe.domain.manager
 
 import android.graphics.Bitmap
 import com.donnclab.kinetiframe.engine.model.DrawingTool
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -23,7 +23,7 @@ import org.robolectric.annotation.Config
 @Config(sdk = [34], manifest = Config.NONE)
 class FrameImagePlacementTest {
     @Test fun imageIsATransformableUndoableStampNotABackground() = runBlocking {
-        var state = TimelineState()
+        var state = StudioState()
         val history = mutableListOf<HistoryItem>()
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)
         val manager = SelectionManager(

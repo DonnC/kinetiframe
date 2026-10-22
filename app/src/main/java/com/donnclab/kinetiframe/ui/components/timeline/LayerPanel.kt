@@ -45,14 +45,14 @@ import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.engine.cache.FrameCacheManager
 import com.donnclab.kinetiframe.models.Layer
 import com.donnclab.kinetiframe.ui.LayerState
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.currentFrameLayers
 
 @Composable
 fun LayerPanel(
-    state: TimelineState,
-    onIntent: (TimelineIntent) -> Unit,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,
     onLayerClick: (Int) -> Unit = {},
     cacheManager: FrameCacheManager? = null,
@@ -122,7 +122,7 @@ fun LayerPanel(
                     DropdownMenuItem(
                         text = { Text("Drawing layer") },
                         onClick = {
-                            onIntent(TimelineIntent.Layer.AddLayer())
+                            onIntent(StudioIntent.Layer.AddLayer())
                             addLayerMenuVisible = false
                         },
                         leadingIcon = { Icon(Lucide.Layers, null, modifier = Modifier.size(18.dp)) },
@@ -161,7 +161,7 @@ fun LayerPanel(
                         editing = editingLayerId == layer.id,
                         onEdit = { editingLayerId = layer.id },
                         onRename = { name: String ->
-                            onIntent(TimelineIntent.Layer.RenameLayer(actualIndex, name))
+                            onIntent(StudioIntent.Layer.RenameLayer(actualIndex, name))
                             editingLayerId = null
                         },
                         dragHandleModifier = Modifier
@@ -185,7 +185,7 @@ fun LayerPanel(
                                             val target = allLayers.indexOfFirst { it.id == layers[targetVisible].id }
                                             if (target != actualIndex) {
                                                 haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                                onIntent(TimelineIntent.Layer.ReorderLayer(actualIndex, target))
+                                                onIntent(StudioIntent.Layer.ReorderLayer(actualIndex, target))
                                             }
                                             distance = 0f
                                         }
@@ -194,13 +194,13 @@ fun LayerPanel(
                             },
                         modifier = Modifier.animateItem(),
                         onClick = {
-                            onIntent(TimelineIntent.Layer.SelectLayer(actualIndex))
+                            onIntent(StudioIntent.Layer.SelectLayer(actualIndex))
                         },
                         onVisibilityClick = {
-                            onIntent(TimelineIntent.Layer.SetLayerVisibility(actualIndex, !layer.isVisible))
+                            onIntent(StudioIntent.Layer.SetLayerVisibility(actualIndex, !layer.isVisible))
                         },
                         onOpacityChange = { value: Float ->
-                            onIntent(TimelineIntent.Layer.SetLayerOpacity(actualIndex, value))
+                            onIntent(StudioIntent.Layer.SetLayerOpacity(actualIndex, value))
                         },
                     )
                 }
@@ -214,7 +214,7 @@ fun LayerPanel(
 fun LayerPanelPreview() {
     KinetiFrameTheme {
         LayerPanel(
-            state = TimelineState(
+            state = StudioState(
                 layers = LayerState(
                     layers = listOf(
                         Layer(name = "Layer 1"),

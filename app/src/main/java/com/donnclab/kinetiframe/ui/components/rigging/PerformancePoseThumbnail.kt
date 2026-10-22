@@ -10,7 +10,7 @@ import androidx.compose.runtime.setValue
 import com.donnclab.kinetiframe.engine.rigging.render.PuppetArtworkRenderer
 import com.donnclab.kinetiframe.engine.rigging.render.PuppetRenderPlan
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import com.donnclab.kinetiframe.ui.actorDefinition
 import com.donnclab.kinetiframe.ui.actorPreviewDuration
@@ -22,7 +22,7 @@ private val thumbnailDispatcher = Dispatchers.Default.limitedParallelism(2)
 
 /** Lazy cells own only their small preview, never stage-sized copies of source textures. */
 @Composable
-internal fun performancePoseThumbnail(state: TimelineState, assets: RigAssetManager?, time: Long): Bitmap? {
+internal fun performancePoseThumbnail(state: StudioState, assets: RigAssetManager?, time: Long): Bitmap? {
     val instance = state.activeActor()
     val definition = state.actorDefinition()
     val preset = state.actorPreviewPreset()

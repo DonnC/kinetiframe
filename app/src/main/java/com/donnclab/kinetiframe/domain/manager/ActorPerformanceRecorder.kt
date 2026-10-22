@@ -18,10 +18,10 @@ import com.donnclab.kinetiframe.engine.rigging.model.ActorPoseTrack
 import com.donnclab.kinetiframe.engine.rigging.model.RootTranslation
 import com.donnclab.kinetiframe.engine.rigging.model.SceneGraph
 import com.donnclab.kinetiframe.ui.PerformanceTakePhase
+import com.donnclab.kinetiframe.ui.StudioEffect
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineEffect
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import com.donnclab.kinetiframe.ui.actorDefinition
 import kotlinx.coroutines.CoroutineScope
@@ -36,10 +36,10 @@ import kotlinx.coroutines.launch
  */
 class ActorPerformanceRecorder(
     private val scope: CoroutineScope,
-    private val getState: () -> TimelineState,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
+    private val getState: () -> StudioState,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
     private val checkpoint: () -> Unit,
-    private val sendEffect: (TimelineEffect) -> Unit,
+    private val sendEffect: (StudioEffect) -> Unit,
     private val clockMicros: () -> Long = { System.nanoTime() / 1000 },
     private val awaitFrame: suspend () -> Unit = { delay(16) },
 ) {
@@ -59,26 +59,26 @@ class ActorPerformanceRecorder(
     private var artwork = emptyList<ActorArtworkKey>()
     val active get() = original != null
 
-    fun handle(intent: TimelineIntent.ActorMotion): Boolean {
+    fun handle(intent: StudioIntent.ActorMotion): Boolean {
         when (intent) {
-            is TimelineIntent.ActorMotion.SetTakeMoveCharacter -> updateState {
+            is StudioIntent.ActorMotion.SetTakeMoveCharacter -> updateState {
                 it.copy(actor = it.actor.copy(takeMoveCharacter = intent.value))
             }
 
-            TimelineIntent.ActorMotion.StartTake -> arm()
+            StudioIntent.ActorMotion.StartTake -> arm()
 
-            TimelineIntent.ActorMotion.StopTake -> finish()
+            StudioIntent.ActorMotion.StopTake -> finish()
 
-            TimelineIntent.ActorMotion.KeepTake -> keep()
+            StudioIntent.ActorMotion.KeepTake -> keep()
 
-            TimelineIntent.ActorMotion.Retake -> {
+            StudioIntent.ActorMotion.Retake -> {
                 cancel()
                 arm()
             }
 
-            TimelineIntent.ActorMotion.CancelTake -> cancel()
+            StudioIntent.ActorMotion.CancelTake -> cancel()
 
-            is TimelineIntent.ActorMotion.SetTakeSmoothness -> {
+            is StudioIntent.ActorMotion.SetTakeSmoothness -> {
                 if (!intent.value.isFinite()) return true
                 updateState { it.copy(actor = it.actor.copy(takeSmoothness = intent.value.coerceIn(0f, 1f))) }
                 if (getState().actor.takePhase == PerformanceTakePhase.REVIEW) publishReview()
@@ -95,12 +95,12 @@ class ActorPerformanceRecorder(
         val actor = state.activeActor() ?: return
         if (state.scene.studioMode != StudioMode.ANIMATE_IK) return
         if (state.actor.presetPreview != null) {
-            sendEffect(TimelineEffect.ShowError("Apply the preset before recording a take."))
+            sendEffect(StudioEffect.ShowError("Apply the preset before recording a take."))
             return
         }
         if (state.actor.previewTimeMicros >= MAX_TIME) {
             sendEffect(
-                TimelineEffect.ShowError("Move the playhead earlier to record. Performances can be up to two minutes."),
+                StudioEffect.ShowError("Move the playhead earlier to record. Performances can be up to two minutes."),
             )
             return
         }
@@ -125,7 +125,7 @@ class ActorPerformanceRecorder(
     }
 
     /** Runs before the normal IK drag; untouched channels are evaluated at the current clock. */
-    fun beforeDrag(intent: TimelineIntent.Actor.Drag): Boolean {
+    fun beforeDrag(intent: StudioIntent.Actor.Drag): Boolean {
         if (!active) return false
         if (getState().actor.takePhase == PerformanceTakePhase.REVIEW) return true
         begin()
@@ -181,7 +181,7 @@ class ActorPerformanceRecorder(
         if (getState().actor.takePhase == PerformanceTakePhase.RECORDING) sample(force = true)
     }
 
-    fun selectArtwork(intent: TimelineIntent.Actor.SelectArtwork) {
+    fun selectArtwork(intent: StudioIntent.Actor.SelectArtwork) {
         if (getState().actor.takePhase == PerformanceTakePhase.REVIEW) return
         val bone = getState().actorDefinition()?.sceneGraph?.bones?.get(intent.partId) ?: return
         if (intent.variantId.isNotEmpty() && intent.variantId !in bone.artworkVariants) return
@@ -189,7 +189,7 @@ class ActorPerformanceRecorder(
         tick()
         val time = getState().actor.previewTimeMicros
         if (artwork.size >= RotationCurve.MAX_POINTS && artwork.none { it.timeMicros == time }) {
-            sendEffect(TimelineEffect.ShowError("This performance has reached its artwork key limit."))
+            sendEffect(StudioEffect.ShowError("This performance has reached its artwork key limit."))
             return
         }
         val previous = artwork
@@ -198,7 +198,7 @@ class ActorPerformanceRecorder(
             mergedArtwork()
         } catch (error: IllegalArgumentException) {
             artwork = previous
-            sendEffect(TimelineEffect.ShowError(error.message ?: "Artwork key limit reached"))
+            sendEffect(StudioEffect.ShowError(error.message ?: "Artwork key limit reached"))
             return
         }
         tick()
@@ -411,7 +411,7 @@ class ActorPerformanceRecorder(
             }
         } catch (error: IllegalArgumentException) {
             cancel()
-            sendEffect(TimelineEffect.ShowError(error.message ?: "This take exceeded the performance limit."))
+            sendEffect(StudioEffect.ShowError(error.message ?: "This take exceeded the performance limit."))
         }
     }
 

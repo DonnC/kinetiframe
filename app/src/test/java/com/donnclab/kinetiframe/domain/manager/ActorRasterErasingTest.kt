@@ -12,9 +12,9 @@ import com.donnclab.kinetiframe.engine.model.TouchPoint
 import com.donnclab.kinetiframe.engine.rigging.model.ActorTemplate
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
 import com.donnclab.kinetiframe.ui.SceneState
+import com.donnclab.kinetiframe.ui.StudioIntent
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.actorDefinition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,13 +34,13 @@ import org.robolectric.annotation.GraphicsMode
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class ActorRasterErasingTest {
     @Test fun `clear eraser removes pixels and empty cel removes its previous bound artwork`() {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         val assets = RigAssetManager()
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)
         val pixels = Bitmap.createBitmap(32, 32, Bitmap.Config.ARGB_8888)
         try {
             val studio = ActorStudioManager({ state }, { state = it(state) })
-            studio.handle(TimelineIntent.Actor.Create(ActorTemplate.CUSTOM))
+            studio.handle(StudioIntent.Actor.Create(ActorTemplate.CUSTOM))
             val manager = RiggingManager(scope, assets, { state }, { state = it(state) }, {})
             pixels.eraseColor(Color.RED)
             manager.autoBindLayerContent("root", pixels)

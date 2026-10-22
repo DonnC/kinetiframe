@@ -14,14 +14,14 @@ import androidx.core.graphics.createBitmap
 import com.donnclab.kinetiframe.domain.render.completedPreviewFrames
 import com.donnclab.kinetiframe.engine.cache.FrameCacheManager
 import com.donnclab.kinetiframe.engine.layer.LayerCompositor
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.displayFrame
 import com.donnclab.kinetiframe.ui.layersForFrame
 
 /** Camera-dialog playback has its own frame clock. Never reuse the editor's stationary raster.
  * Two small buffers bound memory; frame preparation is conflated and finishes before disposal. */
 @Composable
-internal fun cameraRasterFrame(state: TimelineState, cache: FrameCacheManager?, enabled: Boolean): Bitmap? {
+internal fun cameraRasterFrame(state: StudioState, cache: FrameCacheManager?, enabled: Boolean): Bitmap? {
     if (!enabled || cache == null) return null
     val stage = state.project.stage
     var prepared by remember(cache, stage) { mutableStateOf<Bitmap?>(null) }

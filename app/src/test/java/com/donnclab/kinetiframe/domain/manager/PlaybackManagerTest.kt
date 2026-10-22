@@ -3,7 +3,7 @@ package com.donnclab.kinetiframe.domain.manager
 import com.donnclab.kinetiframe.engine.AnimationEngine
 import com.donnclab.kinetiframe.engine.cache.FrameCacheManager
 import com.donnclab.kinetiframe.ui.AnimationState
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -24,7 +24,7 @@ class PlaybackManagerTest {
 
     @Test fun `slow renders cannot accumulate jobs and empty active frames still compose`() = runTest {
         var state =
-            TimelineState(
+            StudioState(
                 project = com.donnclab.kinetiframe.engine.model.ProjectDocument(fps = 24),
                 animation = AnimationState(totalFrames = 144),
             )
@@ -63,7 +63,7 @@ class PlaybackManagerTest {
     }
 
     @Test fun `pause cancels pending frame publication and audio restart`() = runTest {
-        var state = TimelineState(animation = AnimationState(totalFrames = 144))
+        var state = StudioState(animation = AnimationState(totalFrames = 144))
         val gate = CompletableDeferred<Unit>()
         val audioFrames = mutableListOf<Int>()
         val dispatcher = StandardTestDispatcher(testScheduler)
@@ -93,7 +93,7 @@ class PlaybackManagerTest {
     }
 
     @Test fun `render failure stops playback and exposes the error instead of crashing scope`() = runTest {
-        var state = TimelineState(animation = AnimationState(totalFrames = 144))
+        var state = StudioState(animation = AnimationState(totalFrames = 144))
         var reported: Exception? = null
         val dispatcher = StandardTestDispatcher(testScheduler)
         val manager = PlaybackManager(
@@ -115,7 +115,7 @@ class PlaybackManagerTest {
 
     @Test fun `last frame loops to zero without advancing editing frame`() = runTest {
         var state =
-            TimelineState(
+            StudioState(
                 project = com.donnclab.kinetiframe.engine.model.ProjectDocument(fps = 24),
                 animation = AnimationState(totalFrames = 144, currentFrame = 143),
             )

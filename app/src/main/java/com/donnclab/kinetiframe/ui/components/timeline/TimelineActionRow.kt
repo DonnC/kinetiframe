@@ -33,13 +33,13 @@ import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.SquarePlus
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 
 @Composable
 fun TimelineActionRow(
     layerCount: Int,
     toolbarVisible: Boolean,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     onToolbarToggle: () -> Unit,
     onLayerPanelToggle: () -> Unit,
     modifier: Modifier = Modifier,
@@ -79,7 +79,7 @@ fun TimelineActionRow(
     ) {
         // Add Frame
         IconButton(
-            onClick = { onIntent(TimelineIntent.Frame.AddFrame) },
+            onClick = { onIntent(StudioIntent.Frame.AddFrame) },
             modifier = Modifier.size(48.dp),
         ) {
             Icon(

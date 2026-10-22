@@ -45,26 +45,26 @@ class EditorRestartPersistenceTest {
             writer.persistAllToDisk(listOf("main"), 3)
             val main = Layer(name = "Main", id = "main")
             val state =
-                TimelineState(
+                StudioState(
                     project = ProjectDocument(id = "held", stage = StageDimensions(16, 16), layers = listOf(main)),
                     animation = AnimationState(totalFrames = 3),
                     layers = LayerState(layers = listOf(main), frameLayers = (0..2).associateWith { listOf(main) }),
                 )
-            val editor = TimelineViewModel(directory, engineDispatcher = dispatcher, initialEditorState = state)
+            val editor = StudioViewModel(directory, engineDispatcher = dispatcher, initialEditorState = state)
             store.put("editor", editor)
             editor.prepareProjectSave()
-            editor.handleIntent(TimelineIntent.Frame.HoldDrawing(0, 2))
+            editor.handleIntent(StudioIntent.Frame.HoldDrawing(0, 2))
             val saved = editor.prepareProjectSave()
             assertEquals(3, saved.linkedCels.getValue("main").size)
-            editor.handleIntent(TimelineIntent.Frame.EditDrawingScope(0, true))
+            editor.handleIntent(StudioIntent.Frame.EditDrawingScope(0, true))
             editor.prepareProjectSave()
             assertEquals("main" to 0, editor.state.value.layers.linkedEditTarget)
-            editor.handleIntent(TimelineIntent.Playback.SetCurrentFrame(1))
+            editor.handleIntent(StudioIntent.Playback.SetCurrentFrame(1))
             editor.prepareProjectSave()
             assertNull(editor.state.value.layers.linkedEditTarget)
             assertEquals(saved.linkedCels, editor.cacheManager.exposures())
             assertEquals(Color.RED, editor.state.value.currentBitmap!!.getPixel(0, 0))
-            editor.handleIntent(TimelineIntent.Frame.EditDrawingScope(1, false))
+            editor.handleIntent(StudioIntent.Frame.EditDrawingScope(1, false))
             val detached = editor.prepareProjectSave()
             assertEquals(setOf(0, 2), detached.linkedCels.getValue("main").keys)
             assertEquals(Color.RED, editor.cacheManager.getFrame(1)!!.getPixel(0, 0))
@@ -101,7 +101,7 @@ class EditorRestartPersistenceTest {
             writerScope.cancel()
             val main = Layer(name = "Main", id = "main")
             val state =
-                TimelineState(
+                StudioState(
                     project = ProjectDocument(id = "saved", stage = StageDimensions(16, 16), layers = listOf(main)),
                     animation = AnimationState(totalFrames = 2),
                     layers = LayerState(
@@ -109,7 +109,7 @@ class EditorRestartPersistenceTest {
                         frameLayers = mapOf(0 to listOf(main), 1 to listOf(main)),
                     ),
                 )
-            val editor = TimelineViewModel(directory, engineDispatcher = dispatcher, initialEditorState = state)
+            val editor = StudioViewModel(directory, engineDispatcher = dispatcher, initialEditorState = state)
             store.put("editor", editor)
             editor.prepareProjectSave()
             assertEquals(Color.RED, editor.state.value.currentBitmap!!.getPixel(0, 0))
@@ -130,13 +130,13 @@ class EditorRestartPersistenceTest {
         val store = ViewModelStore()
         try {
             val main = Layer(name = "Main", id = "main")
-            val state = TimelineState(
+            val state = StudioState(
                 animation = AnimationState(totalFrames = 500),
                 layers = LayerState(layers = listOf(main), frameLayers = mapOf(0 to listOf(main))),
             )
-            val editor = TimelineViewModel(directory, engineDispatcher = dispatcher, initialEditorState = state)
+            val editor = StudioViewModel(directory, engineDispatcher = dispatcher, initialEditorState = state)
             store.put("editor", editor)
-            editor.handleIntent(TimelineIntent.Layer.AddLayer())
+            editor.handleIntent(StudioIntent.Layer.AddLayer())
             val document = editor.prepareProjectSave()
             assertEquals(2, document.frameLayers.getValue(0).size)
             assertEquals(500, document.totalFrames)

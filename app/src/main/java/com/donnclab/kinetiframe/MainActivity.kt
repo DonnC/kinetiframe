@@ -176,12 +176,12 @@ class MainActivity : ComponentActivity() {
                                 // artifact (lifecycle-viewmodel-navigation3). Without
                                 // rememberViewModelStoreNavEntryDecorator, LocalViewModelStoreOwner inside
                                 // every entry resolves to this *Activity*, so a `viewModel()` call is
-                                // stored process-wide: the TimelineViewModel built for an actor sketch was
+                                // stored process-wide: the StudioViewModel built for an actor sketch was
                                 // handed straight back to the next project opened (same class, same
                                 // default key, same owner -> the factory never even ran, so the project's
                                 // own document and cache directories were silently discarded and the
                                 // actor's canvas persisted until the Activity died -- i.e. until an app
-                                // restart). It also meant TimelineViewModel.onCleared() never fired on
+                                // restart). It also meant StudioViewModel.onCleared() never fired on
                                 // leaving a screen, so the animation engine kept running and pooled
                                 // bitmaps/audio/video handles were never released. Scoping stores to the
                                 // NavEntry gives every destination its own store, cleared on pop.

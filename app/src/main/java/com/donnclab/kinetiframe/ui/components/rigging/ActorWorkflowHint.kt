@@ -11,12 +11,12 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.engine.model.DrawingTool
 import com.donnclab.kinetiframe.ui.ActorEditTarget
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.actorDefinition
 import com.donnclab.kinetiframe.ui.common.strings.FeatureStrings
 
 @Composable
-fun ActorWorkflowHint(state: TimelineState, modifier: Modifier = Modifier) {
+fun ActorWorkflowHint(state: StudioState, modifier: Modifier = Modifier) {
     // Each branch names the single next action for the studio's current state and tool, so the
     // hint always tells the animator what to do next.
     val definition = state.actorDefinition()
@@ -59,5 +59,5 @@ fun ActorWorkflowHint(state: TimelineState, modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun ActorWorkflowHintPreview() {
-    ActorWorkflowHint(TimelineState())
+    ActorWorkflowHint(StudioState())
 }

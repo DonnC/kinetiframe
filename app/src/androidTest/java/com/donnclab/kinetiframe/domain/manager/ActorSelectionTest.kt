@@ -8,7 +8,7 @@ import com.donnclab.kinetiframe.domain.render.ActorSelectionGeometry
 import com.donnclab.kinetiframe.engine.model.ActorPlacementReference
 import com.donnclab.kinetiframe.engine.model.ProjectDocument
 import com.donnclab.kinetiframe.engine.model.StageDimensions
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.test.runTest
@@ -25,7 +25,7 @@ class ActorSelectionTest {
 
     @Test fun rectangleSelectsLiveActorAndCommitsExactShear() = runTest {
         var state =
-            TimelineState(
+            StudioState(
                 project = ProjectDocument(id = "project", actorPlacements = mapOf(actor.placementId to actor)),
             )
         val history = mutableListOf<HistoryItem>()
@@ -61,7 +61,7 @@ class ActorSelectionTest {
 
     @Test fun transformedCopyPastesOnceAndCancelRemovesOnlyTheCopy() = runTest {
         var state =
-            TimelineState(
+            StudioState(
                 project = ProjectDocument(id = "project", actorPlacements = mapOf(actor.placementId to actor)),
             )
         val manager =
@@ -86,7 +86,7 @@ class ActorSelectionTest {
 
     @Test fun staleFrameGeometryCannotSelectAnActor() = runTest {
         var state =
-            TimelineState(
+            StudioState(
                 project = ProjectDocument(id = "project", actorPlacements = mapOf(actor.placementId to actor)),
             )
         val manager =
@@ -109,7 +109,7 @@ class ActorSelectionTest {
     }
 
     @Test fun pixelSelectionCancelDoesNotMutateBaseAndMoveIsOneHistoryStep() = runTest {
-        var state = TimelineState(project = ProjectDocument(stage = StageDimensions(32, 32)))
+        var state = StudioState(project = ProjectDocument(stage = StageDimensions(32, 32)))
         val history = mutableListOf<HistoryItem>()
         val source = Bitmap.createBitmap(32, 32, Bitmap.Config.ARGB_8888).apply {
             eraseColor(android.graphics.Color.RED)

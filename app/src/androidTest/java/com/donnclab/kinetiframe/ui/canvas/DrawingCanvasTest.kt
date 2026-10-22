@@ -8,7 +8,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipe
 import com.donnclab.kinetiframe.engine.model.TouchPoint
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.canvas.BufferedDrawingCanvas
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -24,7 +24,7 @@ class DrawingCanvasTest {
         var points: List<TouchPoint>? = null
         composeTestRule.setContent {
             BufferedDrawingCanvas(
-                TimelineState(),
+                StudioState(),
                 null,
                 { samples, _ -> points = samples },
                 Modifier.testTag("drawing_canvas"),
@@ -39,7 +39,7 @@ class DrawingCanvasTest {
         var commits = 0
         composeTestRule.setContent {
             BufferedDrawingCanvas(
-                TimelineState(),
+                StudioState(),
                 null,
                 { _, _ -> commits++ },
                 Modifier.testTag("drawing_canvas"),
@@ -60,7 +60,7 @@ class DrawingCanvasTest {
 
         composeTestRule.setContent {
             BufferedDrawingCanvas(
-                timelineState = TimelineState(),
+                studioState = StudioState(),
                 currentFrameBitmap = null,
                 onStrokeComplete = { points, _ ->
                     strokePoints = points

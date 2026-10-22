@@ -110,7 +110,7 @@ class CompactColorControlsTest {
         compose.setContent {
             KinetiFrameTheme {
                 EditorTopBar(
-                    TimelineState(), {}, { home = true }, {}, {}, {},
+                    StudioState(), {}, { home = true }, {}, {}, {},
                     showOverflowMenu = false, onOverflowMenuToggle = {},
                     onSaveProjectClick = { saved = "project" }, onSavePackClick = { saved = "pack" },
                 )
@@ -127,7 +127,7 @@ class CompactColorControlsTest {
         compose.setContent {
             KinetiFrameTheme {
                 EditorTopBar(
-                    TimelineState(),
+                    StudioState(),
                     {},
                     {},
                     {},

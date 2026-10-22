@@ -34,13 +34,13 @@ import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.engine.model.DrawingTool
 import com.donnclab.kinetiframe.ui.EraserType
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.ToolConfig
 import com.donnclab.kinetiframe.ui.components.StandardSlider
 
 @Composable
-fun EraserOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Unit, onDismiss: () -> Unit) {
+fun EraserOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onDismiss: () -> Unit) {
     Column(Modifier.padding(16.dp).fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -66,12 +66,12 @@ fun EraserOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Uni
             EraserTypeRow(
                 label = "Stroke eraser",
                 selected = eraserConfig.eraserType == EraserType.STROKE,
-                onClick = { onIntent(TimelineIntent.Draw.SetEraserType(EraserType.STROKE)) },
+                onClick = { onIntent(StudioIntent.Draw.SetEraserType(EraserType.STROKE)) },
             )
             EraserTypeRow(
                 label = "Area eraser",
                 selected = eraserConfig.eraserType == EraserType.AREA,
-                onClick = { onIntent(TimelineIntent.Draw.SetEraserType(EraserType.AREA)) },
+                onClick = { onIntent(StudioIntent.Draw.SetEraserType(EraserType.AREA)) },
             )
         }
 
@@ -80,14 +80,14 @@ fun EraserOptionsContent(state: TimelineState, onIntent: (TimelineIntent) -> Uni
         StandardSlider(
             label = "Size",
             value = eraserConfig.size,
-            onValueChange = { onIntent(TimelineIntent.Draw.SetEraserSize(it)) },
+            onValueChange = { onIntent(StudioIntent.Draw.SetEraserSize(it)) },
             range = 1f..100f,
         )
 
         Spacer(Modifier.height(24.dp))
 
         Button(
-            onClick = { onIntent(TimelineIntent.Draw.ClearAllHandwriting) },
+            onClick = { onIntent(StudioIntent.Draw.ClearAllHandwriting) },
             modifier = Modifier.fillMaxWidth().height(40.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,

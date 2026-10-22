@@ -3,7 +3,7 @@ package com.donnclab.kinetiframe.domain.manager
 import android.graphics.Bitmap
 import com.donnclab.kinetiframe.engine.AnimationEngine
 import com.donnclab.kinetiframe.engine.cache.FrameCacheManager
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +19,7 @@ class PlaybackManager(
     private val engineDispatcher: CoroutineDispatcher,
     private val engine: AnimationEngine,
     private val cacheManager: FrameCacheManager,
-    private val updateState: ((TimelineState) -> TimelineState) -> Unit,
+    private val updateState: ((StudioState) -> StudioState) -> Unit,
     private val loadFrame: (Int) -> Unit,
     private val composeFrame: suspend (Int, Bitmap?) -> Bitmap?,
     private val activeLayerId: () -> String,
@@ -34,7 +34,7 @@ class PlaybackManager(
     private var renderJob: Job? = null
     private var playbackGeneration = 0L
 
-    fun play(state: TimelineState) {
+    fun play(state: StudioState) {
         if (state.animation.isPlaying || state.animation.totalFrames < 1) return
         playbackGeneration++
         clock.start(state.animation.currentFrame, state.project.fps)
@@ -47,7 +47,7 @@ class PlaybackManager(
         onFrameChanged(state.animation.currentFrame)
     }
 
-    fun pause(state: TimelineState) {
+    fun pause(state: StudioState) {
         if (!state.animation.isPlaying) return
         playbackGeneration++
         renderJob?.cancel()
@@ -71,7 +71,7 @@ class PlaybackManager(
         engine.updateFps(validatedFps)
     }
 
-    fun incrementFrame(state: TimelineState) {
+    fun incrementFrame(state: StudioState) {
         if (state.animation.isPlaying) {
             // Backpressure: never queue full-size composites faster than disk decoding/rendering.
             // The owning scope and tick collector run on Main; only pixel work leaves that thread.
@@ -112,7 +112,7 @@ class PlaybackManager(
         onFrameChanged(nextFrame)
     }
 
-    fun decrementFrame(state: TimelineState) {
+    fun decrementFrame(state: StudioState) {
         val prevFrame = if (state.animation.currentFrame > 0) {
             state.animation.currentFrame - 1
         } else {

@@ -19,7 +19,7 @@ import com.donnclab.kinetiframe.engine.typography.MultilineTextRenderer
 import com.donnclab.kinetiframe.models.TextNode
 import com.donnclab.kinetiframe.ui.SelectedContent
 import com.donnclab.kinetiframe.ui.SelectionInteractionMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 
 @Composable
 fun SelectionTransformBox(
@@ -34,7 +34,7 @@ fun SelectionTransformBox(
     viewportWidth: Int,
     viewportHeight: Int,
     onOutsideSelectionTap: () -> Unit,
-    onIntent: (TimelineIntent) -> Unit,
+    onIntent: (StudioIntent) -> Unit,
     activeStroke: ActiveStroke?,
     onDragEnd: () -> Unit = {},
     modifier: Modifier = Modifier,

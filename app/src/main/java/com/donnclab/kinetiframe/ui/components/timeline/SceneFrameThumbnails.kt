@@ -5,7 +5,7 @@ import com.donnclab.kinetiframe.data.image.FrameImageDecoder
 import com.donnclab.kinetiframe.domain.render.ActorFrameRenderer
 import com.donnclab.kinetiframe.domain.render.ProjectFrameCompositor
 import com.donnclab.kinetiframe.engine.cache.FrameCacheManager
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.layersForFrame
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,7 @@ import java.io.IOException
 
 /** One reusable compositor per visible batch, with only small independent outputs retained. */
 suspend fun sceneFrameThumbnails(
-    state: TimelineState,
+    state: StudioState,
     cache: FrameCacheManager,
     frames: Collection<Int>,
     actorRendererFactory: (() -> ActorFrameRenderer)? = null,

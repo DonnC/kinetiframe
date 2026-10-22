@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Test
 
 class ActorStudioStateTest {
     @Test fun `a bound continuous sketch suppresses the old raster reference without affecting cutout mode`() {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
-        ActorStudioManager({ state }, { state = it(state) }).handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        ActorStudioManager({ state }, { state = it(state) }).handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         val definition = state.actorDefinition()!!
         val graph = definition.sceneGraph
         val drawing = com.donnclab.kinetiframe.engine.rigging.model.ActorDrawing(
@@ -54,7 +54,7 @@ class ActorStudioStateTest {
     }
 
     @org.junit.jupiter.api.Test fun `performance stage never shows duplicate source artwork`() {
-        val setup = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        val setup = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         org.junit.jupiter.api.Assertions.assertTrue(setup.showActorSourceArtwork())
         val performance = setup.copy(scene = setup.scene.copy(studioMode = StudioMode.ANIMATE_IK))
         org.junit.jupiter.api.Assertions.assertFalse(performance.showActorSourceArtwork())
@@ -89,9 +89,9 @@ class ActorStudioStateTest {
 
     @Test
     fun `a selected artwork part still resolves its document actor`() {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         val manager = ActorStudioManager({ state }, { state = it(state) })
-        manager.handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+        manager.handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         val actor = requireNotNull(state.activeActor())
         val partLayer = Layer(
             name = "Left Forearm",
@@ -114,14 +114,14 @@ class ActorStudioStateTest {
 
     @Test
     fun `performance authoring rejects structural actor commands`() {
-        var state = TimelineState(scene = SceneState(studioMode = StudioMode.ANIMATE_IK))
+        var state = StudioState(scene = SceneState(studioMode = StudioMode.ANIMATE_IK))
         val manager = ActorStudioManager({ state }, { state = it(state) })
-        manager.handle(TimelineIntent.Actor.Create(ActorTemplate.HUMAN))
+        manager.handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         state = state.copy(actor = state.actor.copy(isPerformanceAuthoring = true))
         val projectBefore = state.project
 
-        manager.handle(TimelineIntent.Actor.Unbind)
-        manager.handle(TimelineIntent.Actor.RenameActor("Different actor"))
+        manager.handle(StudioIntent.Actor.Unbind)
+        manager.handle(StudioIntent.Actor.RenameActor("Different actor"))
 
         assertEquals(projectBefore, state.project)
         assertFalse(state.scene.studioMode == StudioMode.RASTER_DRAWING)

@@ -90,8 +90,8 @@ import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.engine.cache.FrameCacheManager
 import com.donnclab.kinetiframe.ui.AnimationState
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
@@ -100,8 +100,8 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class)
 fun TimelineControls(
     modifier: Modifier = Modifier,
-    state: TimelineState,
-    onIntent: (TimelineIntent) -> Unit,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
     cacheManager: FrameCacheManager? = null,
     onLayerPanelToggle: () -> Unit = {},
     /** Shared with the actor/audio/background track lanes in [com.donnclab.kinetiframe.ui.components.
@@ -129,7 +129,7 @@ fun TimelineControls(
     holdFrame?.let { frame ->
         HoldDrawingDialog(frame, state.animation.totalFrames, { holdFrame = null }, { last ->
             holdFrame = null
-            onIntent(TimelineIntent.Frame.HoldDrawing(frame, last))
+            onIntent(StudioIntent.Frame.HoldDrawing(frame, last))
         })
     }
     scopeFrame?.let { frame ->
@@ -138,11 +138,11 @@ fun TimelineControls(
             { scopeFrame = null },
             {
                 scopeFrame = null
-                onIntent(TimelineIntent.Frame.EditDrawingScope(frame, false))
+                onIntent(StudioIntent.Frame.EditDrawingScope(frame, false))
             },
             {
                 scopeFrame = null
-                onIntent(TimelineIntent.Frame.EditDrawingScope(frame, true))
+                onIntent(StudioIntent.Frame.EditDrawingScope(frame, true))
             },
             {
                 scopeFrame = null
@@ -247,7 +247,7 @@ fun TimelineControls(
                             },
                             totalFrames = state.animation.totalFrames,
                             listState = listState,
-                            onSeek = { onIntent(TimelineIntent.Playback.SetCurrentFrame(it)) },
+                            onSeek = { onIntent(StudioIntent.Playback.SetCurrentFrame(it)) },
                             modifier = Modifier.fillMaxWidth().padding(end = 40.dp),
                         )
                     }
@@ -274,7 +274,7 @@ fun TimelineControls(
 @Composable
 fun TimelineControlsPreview() {
     TimelineControls(
-        state = TimelineState(animation = AnimationState(currentFrame = 12, isPlaying = false)),
+        state = StudioState(animation = AnimationState(currentFrame = 12, isPlaying = false)),
         onIntent = {},
     )
 }

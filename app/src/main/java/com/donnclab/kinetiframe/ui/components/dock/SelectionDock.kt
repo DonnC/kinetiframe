@@ -36,24 +36,24 @@ import com.composables.icons.lucide.RotateCcw
 import com.composables.icons.lucide.Scissors
 import com.composables.icons.lucide.Trash2
 import com.composables.icons.lucide.X
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlin.math.roundToInt
 
 @Composable
-fun SelectionDock(modifier: Modifier = Modifier, state: TimelineState, onIntent: (TimelineIntent) -> Unit) {
+fun SelectionDock(modifier: Modifier = Modifier, state: StudioState, onIntent: (StudioIntent) -> Unit) {
     var optionsVisible by remember { mutableStateOf(false) }
     FloatingDock(
         modifier = modifier,
         initialOffset = state.canvas.selectionDockOffset,
-        onOffsetChange = { onIntent(TimelineIntent.Selection.SetDockPosition(it)) },
+        onOffsetChange = { onIntent(StudioIntent.Selection.SetDockPosition(it)) },
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            IconButton(onClick = { onIntent(TimelineIntent.Selection.SetActive(false)) }) {
+            IconButton(onClick = { onIntent(StudioIntent.Selection.SetActive(false)) }) {
                 Icon(Lucide.Check, "Apply selection", modifier = Modifier.size(20.dp))
             }
             Box {
@@ -62,7 +62,7 @@ fun SelectionDock(modifier: Modifier = Modifier, state: TimelineState, onIntent:
                 }
                 SelectionActionMenu(optionsVisible, { optionsVisible = false }, state, onIntent)
             }
-            IconButton(onClick = { onIntent(TimelineIntent.Selection.Cancel) }) {
+            IconButton(onClick = { onIntent(StudioIntent.Selection.Cancel) }) {
                 Icon(Lucide.X, "Cancel", modifier = Modifier.size(20.dp))
             }
         }
@@ -73,6 +73,6 @@ fun SelectionDock(modifier: Modifier = Modifier, state: TimelineState, onIntent:
 @Composable
 private fun SelectionDockPreview() {
     com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme {
-        SelectionDock(state = TimelineState(), onIntent = {})
+        SelectionDock(state = StudioState(), onIntent = {})
     }
 }

@@ -12,7 +12,7 @@ import com.donnclab.kinetiframe.ui.ActorStudioState
 import com.donnclab.kinetiframe.ui.LayerState
 import com.donnclab.kinetiframe.ui.SceneState
 import com.donnclab.kinetiframe.ui.StudioMode
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.ToolState
 
 /** Adapts one immutable actor revision to the existing reusable canvas/rig engine without a project document. */
@@ -21,7 +21,7 @@ fun actorStudioInitialState(
     revision: ActorRevision,
     performance: PerformanceDocument? = null,
     performanceAuthoring: Boolean = performance != null,
-): TimelineState {
+): StudioState {
     // A performance session is deliberately a different document role from actor setup. It loads
     // the pinned revision as an immutable puppet skin and records only motion against its IDs.
     val instance = PuppetInstance(
@@ -42,7 +42,7 @@ fun actorStudioInitialState(
         type = LayerType.PUPPET,
         puppetInstanceId = instance.id,
     )
-    return TimelineState(
+    return StudioState(
         project = ProjectDocument(
             layers = listOf(layer),
             puppetDefinitions = mapOf(

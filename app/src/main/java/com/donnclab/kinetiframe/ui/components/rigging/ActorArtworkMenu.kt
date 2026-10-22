@@ -14,23 +14,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.engine.rigging.model.BoneNode
-import com.donnclab.kinetiframe.ui.TimelineIntent
+import com.donnclab.kinetiframe.ui.StudioIntent
 
 /** Variant choices key only this part at the selected performance timestamp. */
 @Composable
-fun ActorArtworkMenu(bone: BoneNode, onIntent: (TimelineIntent) -> Unit) {
+fun ActorArtworkMenu(bone: BoneNode, onIntent: (StudioIntent) -> Unit) {
     var open by remember(bone.id) { mutableStateOf(false) }
     Box {
         ActorToolButton(Icons.Default.Collections, "Part artwork", bone.artworkVariants.isNotEmpty()) { open = true }
         DropdownMenu(open, { open = false }) {
             DropdownMenuItem(text = { Text("Default", style = MaterialTheme.typography.labelSmall) }, onClick = {
                 open = false
-                onIntent(TimelineIntent.Actor.SelectArtwork(bone.id, ""))
+                onIntent(StudioIntent.Actor.SelectArtwork(bone.id, ""))
             })
             bone.artworkVariants.forEach { (id, variant) ->
                 DropdownMenuItem(text = { Text(variant.name, style = MaterialTheme.typography.labelSmall) }, onClick = {
                     open = false
-                    onIntent(TimelineIntent.Actor.SelectArtwork(bone.id, id))
+                    onIntent(StudioIntent.Actor.SelectArtwork(bone.id, id))
                 })
             }
         }

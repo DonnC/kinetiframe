@@ -61,7 +61,7 @@ All paths are under `app/src/main/java/com/donnclab/kinetiframe/`.
 | --- | --- |
 | Activity and navigation | `MainActivity.kt`, `ui/navigation` |
 | Home screen | `ui/home`, `ui/projects` |
-| The studio (main editor) | `ui/EditorScreen.kt`, `ui/TimelineViewModel.kt`, `ui/TimelineMvi.kt` |
+| The studio (main editor) | `ui/EditorScreen.kt`, `ui/StudioViewModel.kt`, `ui/StudioMvi.kt` |
 | Canvas input and drawing surface | `ui/components/canvas` |
 | Editor toolbars and menus | `ui/components/dock`, `ui/components/timeline` |
 | Brushes and drawing tools | `engine/drawing`, `engine/ruler`, `engine/shape` |
@@ -94,7 +94,7 @@ flowchart LR
 - The ViewModel is the only place state changes. It handles every intent explicitly.
 - Effects are for things that happen once, such as navigating or showing a message.
 
-The studio's ViewModel is `TimelineViewModel` (the name predates the rest of the editor). It
+The studio's ViewModel is `StudioViewModel`. It
 delegates focused jobs to managers in `domain/manager`, such as `DrawingManager` for strokes and
 undo, and `RiggingManager` for actor editing.
 
@@ -103,7 +103,7 @@ undo, and `RiggingManager` for actor editing.
 ```mermaid
 sequenceDiagram
     participant Input as CanvasInputLayer
-    participant VM as TimelineViewModel
+    participant VM as StudioViewModel
     participant DM as DrawingManager
     participant Brush as BrushRenderers
     participant Cache as FrameCacheManager

@@ -2,7 +2,7 @@ package com.donnclab.kinetiframe.domain.manager
 
 import android.media.MediaPlayer
 import android.util.Log
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -18,7 +18,7 @@ import kotlin.math.abs
  * class owns the only Android-runtime-dependent (MediaPlayer) audio code; everything upstream of
  * it ([AudioTrackSync], [AudioManager]) stays plain and unit-testable.
  *
- * Called from two places, both wired in [com.donnclab.kinetiframe.ui.TimelineViewModel]:
+ * Called from two places, both wired in [com.donnclab.kinetiframe.ui.StudioViewModel]:
  *  - [PlaybackManager] on every real Play frame tick and on Play/Pause, via the `onFrameChanged`/
  *    `onPlaybackStateChanged` callbacks threaded into its constructor.
  *  - Directly on every frame change from scrubbing (`Playback.SetCurrentFrame`/`NextFrame`/
@@ -31,7 +31,7 @@ import kotlin.math.abs
  * cancellation releases the native player even when its source has not finished loading.
  */
 class AudioPlaybackManager(
-    private val getState: () -> TimelineState,
+    private val getState: () -> StudioState,
     private val scope: CoroutineScope,
     private val createPlayer: () -> MediaPlayer = { MediaPlayer() },
     private val onAudioError: (Throwable) -> Unit = {},

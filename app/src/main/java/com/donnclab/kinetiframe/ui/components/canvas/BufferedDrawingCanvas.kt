@@ -64,8 +64,8 @@ import com.donnclab.kinetiframe.models.TextNode
 import com.donnclab.kinetiframe.ui.EraserType
 import com.donnclab.kinetiframe.ui.SelectedContent
 import com.donnclab.kinetiframe.ui.SelectionToolType
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.currentFrameLayers
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -77,7 +77,7 @@ import kotlin.math.absoluteValue
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun BufferedDrawingCanvas(
-    timelineState: TimelineState,
+    studioState: StudioState,
     currentFrameBitmap: Bitmap?,
     onStrokeComplete: (List<TouchPoint>, BrushSnapshot) -> Unit,
     modifier: Modifier = Modifier,
@@ -115,7 +115,7 @@ fun BufferedDrawingCanvas(
     nodes: Map<String, com.donnclab.kinetiframe.models.BaseNode> = emptyMap(),
     onTextNodeUpdate: (TextNode) -> Unit = {},
     onTextNodeSelect: (String?) -> Unit = {},
-    onIntent: (TimelineIntent) -> Unit = {},
+    onIntent: (StudioIntent) -> Unit = {},
     onConstructionPreview: (List<List<TouchPoint>>) -> Unit = {},
     /** The project's persistent background image, already decoded -- see [CanvasDrawingLayer]'s
      *  doc comment on its own parameter of the same name for the full rationale. */
@@ -148,19 +148,19 @@ fun BufferedDrawingCanvas(
 
     var onionSnapshot by remember { mutableStateOf(OnionSnapshot(-1, "")) }
     val onionMatchesFrame = onionSkinEnabled &&
-        onionSnapshot.frameIndex == timelineState.animation.currentFrame &&
+        onionSnapshot.frameIndex == studioState.animation.currentFrame &&
         onionSnapshot.layerId == activeLayerId
     val pastBitmaps = if (onionMatchesFrame) onionSnapshot.past else emptyList()
     val futureBitmaps = if (onionMatchesFrame) onionSnapshot.future else emptyList()
 
-    val documentWidth = timelineState.project.stage.width
-    val documentHeight = timelineState.project.stage.height
+    val documentWidth = studioState.project.stage.width
+    val documentHeight = studioState.project.stage.height
 
     var viewportSize by remember { mutableStateOf(IntSize.Zero) }
     var transformHudVersion by remember { mutableIntStateOf(0) }
 
-    val canvasMatrix = remember(timelineState.canvas.matrixValues) {
-        android.graphics.Matrix().apply { setValues(timelineState.canvas.matrixValues) }
+    val canvasMatrix = remember(studioState.canvas.matrixValues) {
+        android.graphics.Matrix().apply { setValues(studioState.canvas.matrixValues) }
     }
 
     val scope = rememberCoroutineScope()
@@ -190,8 +190,8 @@ fun BufferedDrawingCanvas(
     }
 
     LaunchedEffect(
-        timelineState.animation.currentFrame,
-        timelineState.animation.totalFrames,
+        studioState.animation.currentFrame,
+        studioState.animation.totalFrames,
         currentFrameBitmap,
         onionSkinEnabled,
         onionSkinFramesBefore,
@@ -202,19 +202,19 @@ fun BufferedDrawingCanvas(
         if (onionSkinEnabled && cacheManager != null) {
             val past = mutableListOf<OnionFrame>()
             for (i in 1..onionSkinFramesBefore) {
-                val idx = timelineState.animation.currentFrame - i
+                val idx = studioState.animation.currentFrame - i
                 if (idx >= 0) cacheManager.getFrame(activeLayerId, idx)?.let { past.add(OnionFrame(it, i)) }
             }
             val future = mutableListOf<OnionFrame>()
             for (i in 1..onionSkinFramesAfter) {
-                val idx = timelineState.animation.currentFrame + i
+                val idx = studioState.animation.currentFrame + i
                 if (idx <
-                    timelineState.animation.totalFrames
+                    studioState.animation.totalFrames
                 ) {
                     cacheManager.getFrame(activeLayerId, idx)?.let { future.add(OnionFrame(it, i)) }
                 }
             }
-            onionSnapshot = OnionSnapshot(timelineState.animation.currentFrame, activeLayerId, past, future)
+            onionSnapshot = OnionSnapshot(studioState.animation.currentFrame, activeLayerId, past, future)
         } else {
             onionSnapshot = OnionSnapshot(-1, "")
         }
@@ -225,11 +225,11 @@ fun BufferedDrawingCanvas(
     // manipulation. Sampling currentFrameBitmap here would bake neighbouring layers into it.
     var activeLayerBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var manipulationLayers by remember { mutableStateOf<List<Pair<Layer, Bitmap>>>(emptyList()) }
-    val frameLayers = timelineState.currentFrameLayers()
+    val frameLayers = studioState.currentFrameLayers()
     LaunchedEffect(
         cacheManager,
         activeLayerId,
-        timelineState.animation.currentFrame,
+        studioState.animation.currentFrame,
         currentFrameBitmap,
         frameLayers,
         activeTool,
@@ -238,7 +238,7 @@ fun BufferedDrawingCanvas(
         manipulationLayers = emptyList()
         if (activeTool == DrawingTool.SMUDGE || activeTool == DrawingTool.BLUR) {
             val loaded = frameLayers.sortedBy { it.zIndex }.mapNotNull { layer ->
-                cacheManager?.getFrame(layer.id, timelineState.animation.currentFrame)?.let { layer to it }
+                cacheManager?.getFrame(layer.id, studioState.animation.currentFrame)?.let { layer to it }
             }
             manipulationLayers = loaded
             activeLayerBitmap =
@@ -250,21 +250,21 @@ fun BufferedDrawingCanvas(
 
     // Use a stable state holder for selection transforms to avoid parent recomposition.
     val selectionTransformState = remember(selectionActive, selectionBounds) {
-        SelectionTransformState(selectionTransform, timelineState.selection.pivotOffset)
+        SelectionTransformState(selectionTransform, studioState.selection.pivotOffset)
     }
 
-    // Keep the stable state in sync with the TimelineState (e.g. for Reset logic)
-    LaunchedEffect(selectionTransform, timelineState.selection.pivotOffset) {
+    // Keep the stable state in sync with the StudioState (e.g. for Reset logic)
+    LaunchedEffect(selectionTransform, studioState.selection.pivotOffset) {
         selectionTransformState.matrix = selectionTransform
-        selectionTransformState.pivotOffset = timelineState.selection.pivotOffset
+        selectionTransformState.pivotOffset = studioState.selection.pivotOffset
     }
 
     // Explicit receipts survive conflated bakes and unrelated bitmap refreshes. Drawing also
     // checks them immediately, before this effect, so translucent ink never deposits twice.
-    LaunchedEffect(timelineState.bakedStrokeSeeds) {
-        activeStroke.acknowledgeSettledStrokes(timelineState.bakedStrokeSeeds)
+    LaunchedEffect(studioState.bakedStrokeSeeds) {
+        activeStroke.acknowledgeSettledStrokes(studioState.bakedStrokeSeeds)
     }
-    LaunchedEffect(timelineState.animation.currentFrame, activeLayerId) {
+    LaunchedEffect(studioState.animation.currentFrame, activeLayerId) {
         activeStroke.reset()
         activeStroke.clearSettledStrokes()
     }
@@ -274,7 +274,7 @@ fun BufferedDrawingCanvas(
             .fillMaxSize()
             .onSizeChanged {
                 viewportSize = it
-                onIntent(TimelineIntent.View.SetViewportSize(it.width, it.height))
+                onIntent(StudioIntent.View.SetViewportSize(it.width, it.height))
             }
             .pointerInput(Unit) {
                 workspaceGestures(
@@ -282,23 +282,23 @@ fun BufferedDrawingCanvas(
                     onNavigation = { activeStroke.reset() },
                     onTransform = { pan, zoom, rotation, centre ->
                         transformHudVersion++
-                        onIntent(TimelineIntent.View.UpdateTransform(pan, zoom, rotation, centre))
+                        onIntent(StudioIntent.View.UpdateTransform(pan, zoom, rotation, centre))
                     },
                 )
             },
     ) {
         CanvasInputLayer(
-            stage = timelineState.project.stage,
-            canvasMatrixValues = timelineState.canvas.matrixValues,
+            stage = studioState.project.stage,
+            canvasMatrixValues = studioState.canvas.matrixValues,
             sourceFrame = currentFrameBitmap,
             manipulationSource = activeLayerBitmap,
             manipulationWidth = strokeWidth,
             manipulationStrength = strength,
-            studioMode = timelineState.scene.studioMode,
+            studioMode = studioState.scene.studioMode,
             activeTool = activeTool,
             pressureSensitive =
             activeTool == DrawingTool.BRUSH && brushId != com.donnclab.kinetiframe.engine.drawing.BrushId.PEN,
-            rulerGuide = timelineState.canvas.rulerGuide,
+            rulerGuide = studioState.canvas.rulerGuide,
             constructionShape = constructionShape,
             constructionPreviewPending = constructionPreviewPending,
             selectionActive = selectionActive,
@@ -362,11 +362,11 @@ fun BufferedDrawingCanvas(
                 selectionPaint = selectionPaint,
                 selectionRect = selectionRect,
                 useSaveLayer = activeTool == DrawingTool.ERASER,
-                fillPreviewBitmap = timelineState.fill.previewBitmap,
-                fillPreviewActive = timelineState.fill.previewActive,
+                fillPreviewBitmap = studioState.fill.previewBitmap,
+                fillPreviewActive = studioState.fill.previewActive,
                 manipulationLayers = manipulationLayers,
                 activeLayerId = activeLayerId,
-                bakedStrokeSeeds = timelineState.bakedStrokeSeeds,
+                bakedStrokeSeeds = studioState.bakedStrokeSeeds,
             )
         }
 
@@ -377,22 +377,22 @@ fun BufferedDrawingCanvas(
                 transformState = selectionTransformState,
                 fontRegistry = fontRegistry,
                 displayDensity = displayDensity,
-                canvasMatrixValues = timelineState.canvas.matrixValues,
+                canvasMatrixValues = studioState.canvas.matrixValues,
                 docWidth = documentWidth,
                 docHeight = documentHeight,
                 viewportWidth = viewportSize.width,
                 viewportHeight = viewportSize.height,
                 onDragEnd = {
                     onSelectionTransformChanged(selectionTransformState.matrix)
-                    onIntent(TimelineIntent.Selection.UpdatePivot(selectionTransformState.pivotOffset))
+                    onIntent(StudioIntent.Selection.UpdatePivot(selectionTransformState.pivotOffset))
                 },
                 onOutsideSelectionTap = {
-                    onIntent(TimelineIntent.Selection.SetActive(false))
+                    onIntent(StudioIntent.Selection.SetActive(false))
                 },
                 activeStroke = activeStroke,
-                lockAspectRatio = timelineState.selection.lockAspectRatio,
-                skewMode = timelineState.selection.skewMode,
-                interactionMode = timelineState.selection.interactionMode,
+                lockAspectRatio = studioState.selection.lockAspectRatio,
+                skewMode = studioState.selection.skewMode,
+                interactionMode = studioState.selection.interactionMode,
                 onIntent = onIntent,
             )
         }
@@ -400,8 +400,8 @@ fun BufferedDrawingCanvas(
         // Eraser Cursor Overlay
         eraserCursor?.let { cursor ->
             if (activeTool == DrawingTool.ERASER) {
-                val docWidth = timelineState.project.stage.width
-                val docHeight = timelineState.project.stage.height
+                val docWidth = studioState.project.stage.width
+                val docHeight = studioState.project.stage.height
                 val fitScale =
                     minOf(viewportSize.width.toFloat() / docWidth, viewportSize.height.toFloat() / docHeight).takeIf {
                         it >
@@ -429,9 +429,9 @@ fun BufferedDrawingCanvas(
         }
 
         TransformationOverlay(
-            zoom = timelineState.canvas.zoom,
-            offset = timelineState.canvas.pan,
-            rotation = timelineState.canvas.rotation,
+            zoom = studioState.canvas.zoom,
+            offset = studioState.canvas.pan,
+            rotation = studioState.canvas.rotation,
             visible = overlayVisible,
         )
     }

@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import com.donnclab.kinetiframe.engine.rigging.render.PuppetArtworkRenderer
 import com.donnclab.kinetiframe.engine.rigging.render.PuppetRenderPlan
 import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.activeActor
 import com.donnclab.kinetiframe.ui.actorDefinition
 
@@ -25,7 +25,7 @@ import com.donnclab.kinetiframe.ui.actorDefinition
  */
 @Composable
 fun SkeletalRenderLayer(
-    state: TimelineState,
+    state: StudioState,
     rigAssetManager: RigAssetManager,
     modifier: Modifier = Modifier,
     eraseSelectedArtwork: ((android.graphics.Canvas) -> Unit)? = null,

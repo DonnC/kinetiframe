@@ -45,7 +45,7 @@ names are shown in `monospace` where they differ from the word used in the app.
 
 ## Code terms
 
-- **Studio**: The main editing screen. Much of its state still lives in classes named `Timeline*`, such as `TimelineViewModel`, `TimelineState` and `TimelineIntent`, which cover the whole editor, not only the timeline strip.
+- **Studio**: The main editing screen. Much of its state still lives in classes named `Timeline*`, such as `StudioViewModel`, `StudioState` and `StudioIntent`, which cover the whole editor, not only the timeline strip.
 - **Actor Studio**: The editor for building rigs, attaching artwork and recording performances.
 - **MVI**: Model-View-Intent. Screens send *intents* (user actions) to a ViewModel, which publishes an immutable *state* and one-off *effects*. See [architecture](architecture/README.md).
 - **Loose Signal**: The name of the bundled sample art set, including the Tavi, Mira and Kuda characters. Its sources and build scripts are under `docs/art-direction/loose-signal` and `tools/loose_signal`.

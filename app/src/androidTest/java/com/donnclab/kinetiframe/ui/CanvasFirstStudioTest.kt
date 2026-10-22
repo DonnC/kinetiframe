@@ -45,7 +45,7 @@ class CanvasFirstStudioTest {
     private fun TestAppBar(onTracksOpen: () -> Unit = {}) {
         var overflow by remember { mutableStateOf(false) }
         EditorTopBar(
-            state = TimelineState(), onIntent = {}, onHomeClick = {},
+            state = StudioState(), onIntent = {}, onHomeClick = {},
             onStudioClick = {}, onGridSettingsClick = {}, onOnionSettingsClick = {},
             showOverflowMenu = overflow, onOverflowMenuToggle = { overflow = it },
             onTracksOpen = onTracksOpen,
@@ -56,7 +56,7 @@ class CanvasFirstStudioTest {
         compose.setContent {
             KinetiFrameTheme {
                 TimelineControls(
-                    state = TimelineState(animation = AnimationState(isPlaying = true)),
+                    state = StudioState(animation = AnimationState(isPlaying = true)),
                     onIntent = {},
                     modifier = Modifier.width(700.dp).testTag("dock"),
                 )
@@ -91,12 +91,12 @@ class CanvasFirstStudioTest {
 
     @Test fun focusRetainsTransportAndRecovery() {
         var restored = false
-        var intent: TimelineIntent? = null
+        var intent: StudioIntent? = null
         compose.setContent {
             KinetiFrameTheme { StudioFocusControls(false, { intent = it }, { restored = true }) }
         }
         compose.onNodeWithContentDescription("Play").performClick()
-        assertEquals(TimelineIntent.Playback.Play, intent)
+        assertEquals(StudioIntent.Playback.Play, intent)
         compose.onNodeWithContentDescription("Restore studio controls").performClick()
         assertTrue(restored)
     }
@@ -122,11 +122,11 @@ class CanvasFirstStudioTest {
     }
 
     @Test fun narrowDockKeepsInlineFrameCreationReachable() {
-        var intent: TimelineIntent? = null
+        var intent: StudioIntent? = null
         compose.setContent {
             KinetiFrameTheme {
                 TimelineControls(
-                    state = TimelineState(),
+                    state = StudioState(),
                     onIntent = { intent = it },
                     modifier = Modifier.width(360.dp).testTag("dock"),
                 )
@@ -134,7 +134,7 @@ class CanvasFirstStudioTest {
         }
         compose.onNodeWithTag("dock").assertHeightIsEqualTo(56.dp)
         compose.onNodeWithContentDescription("Add Frame").performClick()
-        assertEquals(TimelineIntent.Frame.AddFrame, intent)
+        assertEquals(StudioIntent.Frame.AddFrame, intent)
         compose.onNodeWithContentDescription("Layers").assertExists()
         compose.onNodeWithContentDescription("Focus canvas").assertDoesNotExist()
     }

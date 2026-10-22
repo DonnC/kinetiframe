@@ -71,7 +71,7 @@ import java.io.File
 @Composable
 fun EditorScreen(
     actorReference: com.donnclab.kinetiframe.ui.actors.ActorReferenceSession? = null,
-    initialEditorState: TimelineState? = null,
+    initialEditorState: StudioState? = null,
     /** Non-null only when opened from the project gallery (see MainActivity's EditorKey route);
      *  null for the embedded Actor Studio canvas and for Pack Creator's own scratch drafts. */
     projectId: String? = null,
@@ -184,7 +184,7 @@ fun EditorScreen(
     // Only the structural, content-bearing part of a saved project round-trips here -- transient
     // view state (zoom/pan, tool selection, onion-skin/grid settings) resets to defaults on load.
     val effectiveInitialState = initialEditorState ?: loadedProjectDocument?.let { doc ->
-        TimelineState(
+        StudioState(
             project = doc.project,
             scene = SceneState(nodes = doc.project.nodes),
             animation = AnimationState(totalFrames = doc.totalFrames, fps = doc.project.fps),
@@ -196,7 +196,7 @@ fun EditorScreen(
 
     // WHY an explicit key: `viewModel()` without one resolves against the default key for the
     // ViewModel *class*, so every EditorScreen in the app -- a real project, a pack draft, Actor
-    // Studio's embedded sketch canvas -- competed for a single TimelineViewModel slot and whoever
+    // Studio's embedded sketch canvas -- competed for a single StudioViewModel slot and whoever
     // asked second silently inherited the first one's canvas (the factory is not called on a cache
     // hit, so `effectiveInitialState`, [editorCacheDir] and [editorFilesDir] were all thrown away).
     // MainActivity's rememberViewModelStoreNavEntryDecorator now scopes stores per NavEntry, which
@@ -207,12 +207,12 @@ fun EditorScreen(
     val documentKey = remember(projectId, cacheNamespace) {
         "editor-${projectId ?: cacheNamespace ?: fallbackCacheNamespace}"
     }
-    val viewModel: TimelineViewModel = viewModel(
+    val viewModel: StudioViewModel = viewModel(
         key = documentKey,
         factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return TimelineViewModel(editorCacheDir,
+                return StudioViewModel(editorCacheDir,
                     loadActorPresets = com.donnclab.kinetiframe.data.ActorPresetRepository(context.assets)::load,
                     initialEditorState = effectiveInitialState?.copy(packTags = packCreatorConfig?.tags.orEmpty()),
                     runtimeRigAssetManager = runtimeRigAssetManager,
@@ -233,7 +233,7 @@ fun EditorScreen(
         val project = state.project
         placementScope.launch {
             runCatching { withContext(Dispatchers.IO) { placementPreparation.prepare(reference, project) } }
-                .onSuccess { if (viewModel.state.value.project.id == project.id) viewModel.handleIntent(TimelineIntent.ActorPlacement.Add(it)) }
+                .onSuccess { if (viewModel.state.value.project.id == project.id) viewModel.handleIntent(StudioIntent.ActorPlacement.Add(it)) }
                 .onFailure { if (it is kotlinx.coroutines.CancellationException) throw it
                     placementError = it.message ?: "Could not place performance" }
         }
@@ -248,14 +248,14 @@ fun EditorScreen(
         project.actorPlacements.values.forEach { reference ->
             runCatching { withContext(Dispatchers.IO) { placementPreparation.prepare(reference, project, repairOnly = true) } }
                 .onSuccess { repaired -> if (repaired.transform != reference.transform)
-                    viewModel.handleIntent(TimelineIntent.ActorPlacement.UpdateTransform(reference.placementId, repaired.transform)) }
+                    viewModel.handleIntent(StudioIntent.ActorPlacement.UpdateTransform(reference.placementId, repaired.transform)) }
                 .onFailure { if (it is kotlinx.coroutines.CancellationException) throw it }
         }
     }
     androidx.lifecycle.compose.LifecycleEventEffect(androidx.lifecycle.Lifecycle.Event.ON_STOP) {
-        viewModel.handleIntent(TimelineIntent.ActorMotion.CancelTake)
+        viewModel.handleIntent(StudioIntent.ActorMotion.CancelTake)
     }
-    DisposableEffect(viewModel) { onDispose { viewModel.handleIntent(TimelineIntent.ActorMotion.CancelTake) } }
+    DisposableEffect(viewModel) { onDispose { viewModel.handleIntent(StudioIntent.ActorMotion.CancelTake) } }
     val actorStudioDirty = com.donnclab.kinetiframe.ui.actors.hasActorStudioChanges(initialEditorState, state)
     LaunchedEffect(actorStudioDirty) { onActorStudioDirtyChanged?.invoke(actorStudioDirty) }
     LaunchedEffect(returnedPerformance?.performanceId) {
@@ -315,9 +315,9 @@ fun EditorScreen(
     // Keep engine errors observed while the source workspace replaces the main canvas.
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect -> when (effect) {
-            is TimelineEffect.ShowError -> timelineError = effect.message
-            is TimelineEffect.ShowTextAddDialog -> textAddDialogState = effect.x to effect.y
-            is TimelineEffect.ShowTextEditDialog -> textEditDialogState = effect.id to effect.initialText
+            is StudioEffect.ShowError -> timelineError = effect.message
+            is StudioEffect.ShowTextAddDialog -> textAddDialogState = effect.x to effect.y
+            is StudioEffect.ShowTextEditDialog -> textEditDialogState = effect.id to effect.initialText
         } }
     }
 
@@ -445,8 +445,8 @@ fun EditorScreen(
     val actorExitSave by androidx.compose.runtime.rememberUpdatedState<() -> Unit>({
         viewModel.launchSave {
             try {
-                viewModel.handleIntent(TimelineIntent.ActorMotion.StopTake)
-                viewModel.handleIntent(TimelineIntent.ActorMotion.KeepTake)
+                viewModel.handleIntent(StudioIntent.ActorMotion.StopTake)
+                viewModel.handleIntent(StudioIntent.ActorMotion.KeepTake)
                 viewModel.prepareProjectSave()
                 val current = viewModel.state.value
                 if (current.actor.isPerformanceAuthoring) {
@@ -465,11 +465,11 @@ fun EditorScreen(
         onDispose { onActorSaveActionAvailable?.invoke(null) }
     }
     fun requestExit(destination: () -> Unit) {
-        viewModel.handleIntent(TimelineIntent.Playback.Pause)
+        viewModel.handleIntent(StudioIntent.Playback.Pause)
         if (isActorStudioSession) viewModel.launchSave {
             try {
-                viewModel.handleIntent(TimelineIntent.ActorMotion.StopTake)
-                viewModel.handleIntent(TimelineIntent.ActorMotion.KeepTake)
+                viewModel.handleIntent(StudioIntent.ActorMotion.StopTake)
+                viewModel.handleIntent(StudioIntent.ActorMotion.KeepTake)
                 viewModel.prepareProjectSave()
                 onActorStudioDirtyChanged?.invoke(com.donnclab.kinetiframe.ui.actors.hasActorStudioChanges(initialEditorState, viewModel.state.value))
                 onExitActorStudio?.invoke()
@@ -519,7 +519,7 @@ fun EditorScreen(
                 }.getOrNull()
             }
             if (bitmap != null) {
-                viewModel.handleIntent(TimelineIntent.Background.SetImage(bitmap))
+                viewModel.handleIntent(StudioIntent.Background.SetImage(bitmap))
             } else {
                 backgroundImageError = "Could not read that image. Try picking a different one."
             }
@@ -536,7 +536,7 @@ fun EditorScreen(
                 } }.getOrNull()
             }
             if (bitmap == null) backgroundImageError = "Could not read that image. Try another file."
-            else viewModel.handleIntent(TimelineIntent.Selection.StampBitmap(bitmap))
+            else viewModel.handleIntent(StudioIntent.Selection.StampBitmap(bitmap))
         }
     }
     val thumbnailActorFactory = remember(actorRepository, performanceRepository, actorStore) {
@@ -589,7 +589,7 @@ fun EditorScreen(
             // -- recording it anyway means the trim editor can widen it back later.
             sourceDurationMicros = durationMicros
         )
-        viewModel.handleIntent(TimelineIntent.Audio.Add(placement, asset))
+        viewModel.handleIntent(StudioIntent.Audio.Add(placement, asset))
     }
 
     /**
@@ -622,7 +622,7 @@ fun EditorScreen(
             waveformPeaks = selection.slice(com.donnclab.kinetiframe.engine.audio.Waveform(sourcePeaks)).peaks,
             sourceDurationMicros = selection.sourceDurationMicros
         )
-        viewModel.handleIntent(TimelineIntent.Audio.Add(placement, asset))
+        viewModel.handleIntent(StudioIntent.Audio.Add(placement, asset))
     }
 
     val audioImportPicker = rememberLauncherForActivityResult(
@@ -730,9 +730,9 @@ fun EditorScreen(
                         x = (state.project.stage.width - width) / 2f, y = (state.project.stage.height - height) / 2f,
                         width = width, height = height, fit = com.donnclab.kinetiframe.engine.model.VideoFit.FIT, linkedAudioClipId = audio?.clipId
                     )
-                    viewModel.handleIntent(TimelineIntent.Video.Add(placement, asset, audio))
+                    viewModel.handleIntent(StudioIntent.Video.Add(placement, asset, audio))
                     if (metadata.hasAudio && audio == null) videoError = "Video added without sound because all audio lanes are locked. Unlock a lane and import again to include sound."
-                    viewModel.handleIntent(TimelineIntent.Video.Select(placement.clipId))
+                    viewModel.handleIntent(StudioIntent.Video.Select(placement.clipId))
                 },
                 onFailure = { videoError = it.message ?: "Could not import that video file." }
             )
@@ -755,11 +755,11 @@ fun EditorScreen(
         viewModel.launchSave {
             try {
                 viewModel.prepareProjectSave()
-                viewModel.handleIntent(TimelineIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
+                viewModel.handleIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
                 showActorSketch = true
             } catch (failure: Exception) {
                 if (failure is kotlinx.coroutines.CancellationException) throw failure
-                viewModel.handleIntent(TimelineIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
+                viewModel.handleIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
                 projectSaveMessage = failure.message ?: "Could not open drawing"
             } finally { openingActorSketch = false }
         }
@@ -788,7 +788,7 @@ fun EditorScreen(
     val chooseActorArtwork: (Boolean) -> Unit = { asVariant ->
         replacementArtwork = null
         state.scene.selectedBoneId?.let { part ->
-            viewModel.handleIntent(TimelineIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
+            viewModel.handleIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
             artworkAsVariant = asVariant
             artworkPartId = part
         }
@@ -865,14 +865,14 @@ fun EditorScreen(
         val stageX = points[0]
         val stageY = points[1]
         if (stageX < 0f || stageY < 0f || stageX > state.project.stage.width || stageY > state.project.stage.height) return
-        viewModel.handleIntent(TimelineIntent.Selection.StampBitmap(item.thumbnail, stageX, stageY))
+        viewModel.handleIntent(StudioIntent.Selection.StampBitmap(item.thumbnail, stageX, stageY))
     }
 
     /** What the in-editor Add menu's "From Library" item can pick from.
      *  PROJECT is deliberately excluded -- importing a whole other project while one is already
      *  open doesn't make sense, that only belongs on the gallery's own import action. BUNDLE is
      *  excluded too: no screen creates BUNDLE items yet, so offering them would lead nowhere. FRAME stamps its
-     *  picked drawing onto the current frame via [TimelineIntent.Selection.StampBitmap], centered,
+     *  picked drawing onto the current frame via [StudioIntent.Selection.StampBitmap], centered,
      *  the moment it's tapped. PACK never reaches [applyLibraryPick] at all -- tapping one opens
      *  [com.donnclab.kinetiframe.ui.packs.PackTray] instead (see [packTrayManifest] below), since a pack's
      *  own usage model is "drag any item out onto the canvas, repeatedly," not "tap once and
@@ -906,7 +906,7 @@ fun EditorScreen(
     /** Routes a picked library item to the right track by its kind -- the manifest
      *  itself says where it belongs, so this is a single smart-routing Add path. Every branch
      *  below reuses the exact same import machinery an
-     *  ordinary import/record already uses (addAudioClip, TimelineIntent.Background.SetImage,
+     *  ordinary import/record already uses (addAudioClip, StudioIntent.Background.SetImage,
      *  ActorBundleRepository) rather than a second, parallel path. */
     fun applyLibraryPick(manifest: com.donnclab.kinetiframe.data.actor.LibraryItemManifest) {
         showLibraryPicker = false
@@ -962,8 +962,8 @@ fun EditorScreen(
                             val (path, durationMicros, label) = payload as Triple<String, Long, String>
                             addAudioClip("audio-${java.util.UUID.randomUUID()}", path, durationMicros, label)
                         }
-                        "background" -> viewModel.handleIntent(TimelineIntent.Background.SetImage(payload as android.graphics.Bitmap))
-                        "stamp" -> viewModel.handleIntent(TimelineIntent.Selection.StampBitmap(payload as android.graphics.Bitmap))
+                        "background" -> viewModel.handleIntent(StudioIntent.Background.SetImage(payload as android.graphics.Bitmap))
+                        "stamp" -> viewModel.handleIntent(StudioIntent.Selection.StampBitmap(payload as android.graphics.Bitmap))
                         "actor" -> libraryMessage = "Added \"$payload\" to your actors"
                         "performance" -> {
                             val performance = payload as com.donnclab.kinetiframe.data.actor.PerformanceDocument
@@ -986,7 +986,7 @@ fun EditorScreen(
         TextInsertionDialog(
             onDismiss = { textAddDialogState = null },
             onConfirm = { text ->
-                viewModel.handleIntent(TimelineIntent.Text.AddText(text, x, y))
+                viewModel.handleIntent(StudioIntent.Text.AddText(text, x, y))
                 textAddDialogState = null
             }
         )
@@ -998,7 +998,7 @@ fun EditorScreen(
             initialText = initialText,
             onDismiss = { textEditDialogState = null },
             onConfirm = { text ->
-                viewModel.handleIntent(TimelineIntent.Text.UpdateText(id, text))
+                viewModel.handleIntent(StudioIntent.Text.UpdateText(id, text))
                 textEditDialogState = null
             }
         )
@@ -1208,7 +1208,7 @@ fun EditorScreen(
             cacheManager = viewModel.cacheManager,
             onIntent = viewModel::handleIntent,
             onOpenFrame = { frame ->
-                viewModel.handleIntent(TimelineIntent.Playback.SetCurrentFrame(frame))
+                viewModel.handleIntent(StudioIntent.Playback.SetCurrentFrame(frame))
                 frameStudioVisible = false
             },
             onDismiss = { frameStudioVisible = false }
@@ -1262,7 +1262,7 @@ fun EditorScreen(
                     if (creating && state.animation.totalFrames >= 1000) {
                         timelineError = "Maximum item limit reached"
                     } else {
-                        viewModel.handleIntent(if (creating) TimelineIntent.PackItem.Add(index, tag) else TimelineIntent.PackItem.SetTag(index, tag))
+                        viewModel.handleIntent(if (creating) StudioIntent.PackItem.Add(index, tag) else StudioIntent.PackItem.SetTag(index, tag))
                     }
                     packItemDetails = null
                 })
@@ -1488,8 +1488,8 @@ fun EditorScreen(
                             state = state,
                             onIntent = { intent ->
                                 when {
-                                    packCreatorConfig != null && intent is TimelineIntent.Frame.AddFrameAt -> packItemDetails = intent.index to true
-                                    packCreatorConfig != null && intent == TimelineIntent.Frame.AddFrame -> packItemDetails = (state.animation.currentFrame + 1) to true
+                                    packCreatorConfig != null && intent is StudioIntent.Frame.AddFrameAt -> packItemDetails = intent.index to true
+                                    packCreatorConfig != null && intent == StudioIntent.Frame.AddFrame -> packItemDetails = (state.animation.currentFrame + 1) to true
                                     else -> viewModel.handleIntent(intent)
                                 }
                             },
@@ -1606,7 +1606,7 @@ fun EditorScreen(
                                 definition.sceneGraph.drawing != null,
                                 definition.sceneGraph.drawing?.enabled == true,
                                 onSketch = ::openActorSketch,
-                                onMode = { viewModel.handleIntent(TimelineIntent.Actor.UseDrawing(it)) }
+                                onMode = { viewModel.handleIntent(StudioIntent.Actor.UseDrawing(it)) }
                             )
                         }
                     }
@@ -1618,7 +1618,7 @@ fun EditorScreen(
                         ) {
                             if (selectedBone != null && definition?.sceneGraph?.drawing?.enabled == true) {
                                 com.donnclab.kinetiframe.ui.actors.sketch.ActorSketchJointControls(
-                                    { viewModel.handleIntent(TimelineIntent.Actor.SetEditTarget(it)) },
+                                    { viewModel.handleIntent(StudioIntent.Actor.SetEditTarget(it)) },
                                     ::openActorSketch
                                 ) {
                                     com.donnclab.kinetiframe.ui.actors.sketch.ActorSketchArtworkControls(selectedBone,
@@ -1649,7 +1649,7 @@ fun EditorScreen(
                                 PartRail(
                                     graph = definition.sceneGraph,
                                     selectedPartId = state.scene.selectedBoneId,
-                                    onPartSelected = { partId -> viewModel.handleIntent(TimelineIntent.Rigging.SelectBone(partId)) }
+                                    onPartSelected = { partId -> viewModel.handleIntent(StudioIntent.Rigging.SelectBone(partId)) }
                                 )
                             }
                         }
@@ -1684,35 +1684,35 @@ fun EditorScreen(
                         },
                         previewingId = state.actor.presetPreview?.recipe?.id,
                         onPreview = {
-                            if (state.actor.previewPlaying) viewModel.handleIntent(TimelineIntent.ActorMotion.TogglePlayback)
-                            viewModel.handleIntent(TimelineIntent.ActorPreset.Preview(it))
-                            viewModel.handleIntent(TimelineIntent.ActorMotion.TogglePlayback)
+                            if (state.actor.previewPlaying) viewModel.handleIntent(StudioIntent.ActorMotion.TogglePlayback)
+                            viewModel.handleIntent(StudioIntent.ActorPreset.Preview(it))
+                            viewModel.handleIntent(StudioIntent.ActorMotion.TogglePlayback)
                         },
                         onApply = {
-                            if (state.actor.previewPlaying) viewModel.handleIntent(TimelineIntent.ActorMotion.TogglePlayback)
-                            viewModel.handleIntent(TimelineIntent.ActorPreset.Apply)
+                            if (state.actor.previewPlaying) viewModel.handleIntent(StudioIntent.ActorMotion.TogglePlayback)
+                            viewModel.handleIntent(StudioIntent.ActorPreset.Apply)
                             showPresetLibrary = false
                         },
                         canApply = state.actor.presetPreview != null,
                         preview = state.actor.presetPreview,
                         playing = state.actor.previewPlaying,
                         replacesKeys = !state.activeActor()?.poseKeys.isNullOrEmpty() || !state.activeActor()?.rotationCurves.isNullOrEmpty(),
-                        onPlay = { viewModel.handleIntent(TimelineIntent.ActorMotion.TogglePlayback) },
-                        onIntensity = { viewModel.handleIntent(TimelineIntent.ActorPreset.SetIntensity(it)) },
+                        onPlay = { viewModel.handleIntent(StudioIntent.ActorMotion.TogglePlayback) },
+                        onIntensity = { viewModel.handleIntent(StudioIntent.ActorPreset.SetIntensity(it)) },
                         onSpeed = {
-                            if (state.actor.previewPlaying) viewModel.handleIntent(TimelineIntent.ActorMotion.TogglePlayback)
-                            viewModel.handleIntent(TimelineIntent.ActorPreset.SetSpeed(it))
-                            viewModel.handleIntent(TimelineIntent.ActorMotion.Scrub(0))
-                            viewModel.handleIntent(TimelineIntent.ActorMotion.TogglePlayback)
+                            if (state.actor.previewPlaying) viewModel.handleIntent(StudioIntent.ActorMotion.TogglePlayback)
+                            viewModel.handleIntent(StudioIntent.ActorPreset.SetSpeed(it))
+                            viewModel.handleIntent(StudioIntent.ActorMotion.Scrub(0))
+                            viewModel.handleIntent(StudioIntent.ActorMotion.TogglePlayback)
                         },
                         onRemove = if (state.activeActor()?.motionPreset != null) ({
-                            if (state.actor.previewPlaying) viewModel.handleIntent(TimelineIntent.ActorMotion.TogglePlayback)
-                            viewModel.handleIntent(TimelineIntent.ActorPreset.Remove)
+                            if (state.actor.previewPlaying) viewModel.handleIntent(StudioIntent.ActorMotion.TogglePlayback)
+                            viewModel.handleIntent(StudioIntent.ActorPreset.Remove)
                             showPresetLibrary = false
                         }) else null,
                         onDismiss = {
-                            if (state.actor.previewPlaying) viewModel.handleIntent(TimelineIntent.ActorMotion.TogglePlayback)
-                            viewModel.handleIntent(TimelineIntent.ActorPreset.Cancel)
+                            if (state.actor.previewPlaying) viewModel.handleIntent(StudioIntent.ActorMotion.TogglePlayback)
+                            viewModel.handleIntent(StudioIntent.ActorPreset.Cancel)
                             showPresetLibrary = false
                         }
                     )
@@ -1726,7 +1726,7 @@ fun EditorScreen(
                         onIntent = { intent ->
                             if (com.donnclab.kinetiframe.ui.components.camera.CameraWorkspacePolicy.selectsArtwork(intent)) {
                                 cameraPreview = false
-                                if (state.animation.isPlaying) viewModel.handleIntent(TimelineIntent.Playback.Pause)
+                                if (state.animation.isPlaying) viewModel.handleIntent(StudioIntent.Playback.Pause)
                             }
                             viewModel.handleIntent(intent)
                         },

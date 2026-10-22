@@ -9,15 +9,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.engine.cache.FrameCacheManager
 import com.donnclab.kinetiframe.engine.model.DrawingTool
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.currentFrameLayers
 
 /** The FxF workspace: raster editing, selection, construction, ruler, and onion-skin surfaces. */
 @Composable
 fun RasterWorkspaceCanvas(
-    state: TimelineState,
-    onIntent: (TimelineIntent) -> Unit,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
     cacheManager: FrameCacheManager?,
     /** The project's persistent background image, already decoded -- see [CanvasDrawingLayer]'s
      *  doc comment on its own parameter of the same name for the full rationale. */
@@ -37,13 +37,13 @@ fun RasterWorkspaceCanvas(
     Box(modifier = modifier.fillMaxSize()) {
         BufferedDrawingCanvas(
             referenceUnderlay = referenceUnderlay,
-            timelineState = state,
+            studioState = state,
             paperDecoration = paperDecoration,
             currentFrameBitmap = state.currentBitmap,
             backgroundBitmap = backgroundBitmap,
             videoFrameBitmap = videoFrameBitmap,
             videoOpacity = videoOpacity,
-            onStrokeComplete = { points, brush -> onIntent(TimelineIntent.Draw.BakeStroke(points, brush)) },
+            onStrokeComplete = { points, brush -> onIntent(StudioIntent.Draw.BakeStroke(points, brush)) },
             modifier = Modifier.fillMaxSize(),
             strokeColor = config.color.toArgb(),
             strokeWidth = config.size,
@@ -63,10 +63,10 @@ fun RasterWorkspaceCanvas(
             externalSelectionOverlay = externalSelectionOverlay,
             sharedFontRegistry = sharedFontRegistry,
             onSelectionAreaComplete = { path, rect, density, registry ->
-                onIntent(TimelineIntent.Selection.SelectArea(path, rect, density, registry, actorGeometry))
+                onIntent(StudioIntent.Selection.SelectArea(path, rect, density, registry, actorGeometry))
             },
-            onSelectionTransformChanged = { onIntent(TimelineIntent.Selection.UpdateTransform(it)) },
-            onEraserCursorChange = { offset -> onIntent(TimelineIntent.Draw.SetEraserCursor(offset)) },
+            onSelectionTransformChanged = { onIntent(StudioIntent.Selection.UpdateTransform(it)) },
+            onEraserCursorChange = { offset -> onIntent(StudioIntent.Draw.SetEraserCursor(offset)) },
             onionSkinEnabled = state.onionSkin.enabled && !state.animation.isPlaying,
             onionSkinFramesBefore = state.onionSkin.depthBefore,
             onionSkinFramesAfter = state.onionSkin.depthAfter,
@@ -76,10 +76,10 @@ fun RasterWorkspaceCanvas(
             cacheManager = cacheManager,
             activeLayerId = state.currentFrameLayers().getOrNull(state.layers.activeLayerIndex)?.id ?: "main",
             nodes = state.scene.nodes,
-            onTextNodeUpdate = { onIntent(TimelineIntent.Text.UpdateTextNode(it)) },
-            onTextNodeSelect = { onIntent(TimelineIntent.Text.SelectTextNode(it)) },
+            onTextNodeUpdate = { onIntent(StudioIntent.Text.UpdateTextNode(it)) },
+            onTextNodeSelect = { onIntent(StudioIntent.Text.SelectTextNode(it)) },
             onIntent = onIntent,
-            onConstructionPreview = { strokes -> onIntent(TimelineIntent.Construction.SetPreview(strokes)) },
+            onConstructionPreview = { strokes -> onIntent(StudioIntent.Construction.SetPreview(strokes)) },
         )
 
         if (state.constructionShape.previewActive) {
@@ -100,7 +100,7 @@ fun RasterWorkspaceCanvas(
                     stage = state.project.stage,
                     canvasMatrix = android.graphics.Matrix().apply { setValues(state.canvas.matrixValues) },
                     canvasMatrixValues = state.canvas.matrixValues,
-                    onGuideCommitted = { onIntent(TimelineIntent.View.UpdateRulerGuide(it)) },
+                    onGuideCommitted = { onIntent(StudioIntent.View.UpdateRulerGuide(it)) },
                 )
             }
         }
@@ -112,7 +112,7 @@ fun RasterWorkspaceCanvas(
 private fun RasterWorkspaceCanvasPreview() {
     KinetiFrameTheme {
         RasterWorkspaceCanvas(
-            state = TimelineState(),
+            state = StudioState(),
             onIntent = {},
             cacheManager = null,
         )

@@ -15,7 +15,7 @@ matching issue or open one.
 
 - **Translations.** Move user-facing text from Kotlin into Android string resources, then open the
   app to translators.
-- **Smaller editor files.** Split `EditorScreen`, `TimelineViewModel` and `DrawingManager` into
+- **Smaller editor files.** Split `EditorScreen`, `StudioViewModel` and `DrawingManager` into
   focused classes, and rename the editor's `Timeline*` types to `Studio*` to match what they do.
 - **Clearer packages.** The `app` module contains packages named `engine`, `data` and `domain`
   that share names with modules. Move drawing and brush code into the `engine` module, storage

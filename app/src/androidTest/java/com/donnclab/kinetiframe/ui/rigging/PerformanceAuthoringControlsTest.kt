@@ -6,8 +6,8 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.engine.rigging.model.ActorPoseKey
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.components.EditorTopBar
 import com.donnclab.kinetiframe.ui.components.rigging.PerformanceDurationMenu
 import com.donnclab.kinetiframe.ui.components.rigging.PerformanceFrameRuler
@@ -21,11 +21,11 @@ class PerformanceAuthoringControlsTest {
     @get:Rule val compose = createComposeRule()
 
     @Test fun drawingToolbarOpensSkeletonEditing() {
-        val intents = mutableListOf<TimelineIntent>()
+        val intents = mutableListOf<StudioIntent>()
         compose.setContent {
             KinetiFrameTheme {
                 EditorTopBar(
-                    state = TimelineState(), onIntent = { intents += it }, onHomeClick = {}, onStudioClick = {},
+                    state = StudioState(), onIntent = { intents += it }, onHomeClick = {}, onStudioClick = {},
                     onGridSettingsClick = {}, onOnionSettingsClick = {}, isActorStudio = true,
                     showOverflowMenu = false, onOverflowMenuToggle = {},
                 )
@@ -35,8 +35,8 @@ class PerformanceAuthoringControlsTest {
         compose.runOnIdle {
             assertEquals(
                 listOf(
-                    TimelineIntent.Rigging.SetStudioMode(com.donnclab.kinetiframe.ui.StudioMode.RIG_SETUP),
-                    TimelineIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.JOINT_END),
+                    StudioIntent.Rigging.SetStudioMode(com.donnclab.kinetiframe.ui.StudioMode.RIG_SETUP),
+                    StudioIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.ui.ActorEditTarget.JOINT_END),
                 ),
                 intents,
             )
@@ -48,7 +48,7 @@ class PerformanceAuthoringControlsTest {
         compose.setContent {
             KinetiFrameTheme {
                 EditorTopBar(
-                    state = TimelineState(), onIntent = {}, onHomeClick = {}, onStudioClick = {},
+                    state = StudioState(), onIntent = {}, onHomeClick = {}, onStudioClick = {},
                     onGridSettingsClick = {}, onOnionSettingsClick = {}, isActorStudio = true,
                     showOverflowMenu = false, onOverflowMenuToggle = {}, onSaveActorClick = { saved = true },
                 )
@@ -59,14 +59,14 @@ class PerformanceAuthoringControlsTest {
     }
 
     @Test fun performanceToolbarExposesActorUndo() {
-        var intent: TimelineIntent? = null
+        var intent: StudioIntent? = null
         compose.setContent {
             KinetiFrameTheme {
                 PuppetTopBar({ intent = it }, {}, performanceOnly = true, canUndo = true)
             }
         }
         compose.onNodeWithContentDescription("Undo actor edit").performClick()
-        compose.runOnIdle { assertEquals(TimelineIntent.Actor.Undo, intent) }
+        compose.runOnIdle { assertEquals(StudioIntent.Actor.Undo, intent) }
     }
 
     @Test fun diamondSelectsExactSavedTime() {

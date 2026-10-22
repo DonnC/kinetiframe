@@ -2,7 +2,7 @@ package com.donnclab.kinetiframe.domain.manager
 
 import com.donnclab.kinetiframe.engine.model.ActorPlacementReference
 import com.donnclab.kinetiframe.engine.rigging.model.Transform
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class ActorPlacementManagerTest {
-    private var state = TimelineState()
+    private var state = StudioState()
     private val manager = ActorPlacementManager({ state }, { state = it(state) })
 
     @Test fun `placing repeated performance extends timeline without touching drawn layers`() {

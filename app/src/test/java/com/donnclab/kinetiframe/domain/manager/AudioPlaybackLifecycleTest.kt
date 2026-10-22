@@ -6,7 +6,7 @@ import com.donnclab.kinetiframe.engine.model.AudioClipPlacement
 import com.donnclab.kinetiframe.engine.model.ProjectAsset
 import com.donnclab.kinetiframe.engine.model.ProjectDocument
 import com.donnclab.kinetiframe.ui.AnimationState
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
@@ -95,7 +95,7 @@ class AudioPlaybackLifecycleTest {
         }
     }
 
-    private fun state() = TimelineState(
+    private fun state() = StudioState(
         project = ProjectDocument(
             fps = 24,
             assets = mapOf("sfx" to ProjectAsset("sfx", AssetKind.AUDIO, "demo.wav", 0, 0)),

@@ -50,13 +50,13 @@ import com.donnclab.kinetiframe.engine.drawing.BrushId
 import com.donnclab.kinetiframe.engine.model.DrawingTool
 import com.donnclab.kinetiframe.engine.shape.ConstructionShape
 import com.donnclab.kinetiframe.ui.RulerMode
-import com.donnclab.kinetiframe.ui.TimelineIntent
-import com.donnclab.kinetiframe.ui.TimelineState
+import com.donnclab.kinetiframe.ui.StudioIntent
+import com.donnclab.kinetiframe.ui.StudioState
 import com.donnclab.kinetiframe.ui.ToolConfig
 import com.donnclab.kinetiframe.ui.components.StandardSlider
 
 @Composable
-fun BrushOptionsContent(state: TimelineState, tool: DrawingTool, onIntent: (TimelineIntent) -> Unit) {
+fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (StudioIntent) -> Unit) {
     val config = if (state.tool.constructionShape !=
         null
     ) {
@@ -77,7 +77,7 @@ fun BrushOptionsContent(state: TimelineState, tool: DrawingTool, onIntent: (Time
                 else -> "Tool"
             }
             Text(title, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
-            ColorPicker(config.color) { onIntent(TimelineIntent.Draw.SetBrushColor(it)) }
+            ColorPicker(config.color) { onIntent(StudioIntent.Draw.SetBrushColor(it)) }
         }
 
         if (tool == DrawingTool.BRUSH) {
@@ -87,7 +87,7 @@ fun BrushOptionsContent(state: TimelineState, tool: DrawingTool, onIntent: (Time
                 expanded = brushPickerExpanded,
                 onClick = { brushPickerExpanded = true },
                 onSelect = {
-                    onIntent(TimelineIntent.Draw.SelectBrush(it))
+                    onIntent(StudioIntent.Draw.SelectBrush(it))
                     brushPickerExpanded = false
                 },
                 onDismiss = { brushPickerExpanded = false },
@@ -100,7 +100,7 @@ fun BrushOptionsContent(state: TimelineState, tool: DrawingTool, onIntent: (Time
             label = if (tool == DrawingTool.COLOR_FILL) "Tolerance" else "Size",
             value = config.size,
             onValueChange = {
-                onIntent(TimelineIntent.Draw.SetBrushSize(it))
+                onIntent(StudioIntent.Draw.SetBrushSize(it))
             },
             range = 1f..100f,
         )
@@ -111,7 +111,7 @@ fun BrushOptionsContent(state: TimelineState, tool: DrawingTool, onIntent: (Time
             label = "Opacity",
             value = config.opacity,
             onValueChange = {
-                onIntent(TimelineIntent.Draw.SetBrushOpacity(it))
+                onIntent(StudioIntent.Draw.SetBrushOpacity(it))
             },
             range = 0.01f..1f,
             valueDisplay = { "${(it * 100).toInt()}%" },
@@ -122,47 +122,47 @@ fun BrushOptionsContent(state: TimelineState, tool: DrawingTool, onIntent: (Time
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 ToolIconButton(Lucide.Minus, "Line", state.canvas.rulerMode == RulerMode.LINE) {
-                    onIntent(TimelineIntent.View.SetRulerMode(RulerMode.LINE))
+                    onIntent(StudioIntent.View.SetRulerMode(RulerMode.LINE))
                 }
                 ToolIconButton(Lucide.Circle, "Circle", state.canvas.rulerMode == RulerMode.CIRCLE) {
-                    onIntent(TimelineIntent.View.SetRulerMode(RulerMode.CIRCLE))
+                    onIntent(StudioIntent.View.SetRulerMode(RulerMode.CIRCLE))
                 }
                 ToolIconButton(Lucide.Square, "Box", state.canvas.rulerMode == RulerMode.BOX) {
-                    onIntent(TimelineIntent.View.SetRulerMode(RulerMode.BOX))
+                    onIntent(StudioIntent.View.SetRulerMode(RulerMode.BOX))
                 }
                 ToolIconButton(Lucide.FlipHorizontal, "Mirror", state.canvas.rulerMode == RulerMode.MIRROR) {
-                    onIntent(TimelineIntent.View.SetRulerMode(RulerMode.MIRROR))
+                    onIntent(StudioIntent.View.SetRulerMode(RulerMode.MIRROR))
                 }
                 ToolIconButton(Lucide.X, "Off", state.canvas.rulerMode == RulerMode.NONE) {
-                    onIntent(TimelineIntent.View.SetRulerMode(RulerMode.NONE))
+                    onIntent(StudioIntent.View.SetRulerMode(RulerMode.NONE))
                 }
             }
         } else if (state.tool.constructionShape != null) {
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 ToolIconButton(Lucide.Pill, "Capsule", state.tool.constructionShape == ConstructionShape.CAPSULE) {
-                    onIntent(TimelineIntent.Draw.SelectConstructionShape(ConstructionShape.CAPSULE))
+                    onIntent(StudioIntent.Draw.SelectConstructionShape(ConstructionShape.CAPSULE))
                 }
                 ToolIconButton(
                     Lucide.Triangle,
                     "Triangle",
                     state.tool.constructionShape == ConstructionShape.TRIANGLE,
                 ) {
-                    onIntent(TimelineIntent.Draw.SelectConstructionShape(ConstructionShape.TRIANGLE))
+                    onIntent(StudioIntent.Draw.SelectConstructionShape(ConstructionShape.TRIANGLE))
                 }
                 ToolIconButton(
                     Lucide.CirclePlus,
                     "Head guide",
                     state.tool.constructionShape == ConstructionShape.HEAD_GUIDE,
                 ) {
-                    onIntent(TimelineIntent.Draw.SelectConstructionShape(ConstructionShape.HEAD_GUIDE))
+                    onIntent(StudioIntent.Draw.SelectConstructionShape(ConstructionShape.HEAD_GUIDE))
                 }
                 ToolIconButton(
                     Lucide.Spline,
                     "Three-point arc",
                     state.tool.constructionShape == ConstructionShape.THREE_POINT_ARC,
                 ) {
-                    onIntent(TimelineIntent.Draw.SelectConstructionShape(ConstructionShape.THREE_POINT_ARC))
+                    onIntent(StudioIntent.Draw.SelectConstructionShape(ConstructionShape.THREE_POINT_ARC))
                 }
             }
         }
@@ -257,6 +257,6 @@ private fun brushPreviewResource(brush: BrushId): Int = when (brush) {
 @Composable
 private fun BrushOptionsContentPreview() {
     com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme {
-        BrushOptionsContent(TimelineState(), DrawingTool.BRUSH, {})
+        BrushOptionsContent(StudioState(), DrawingTool.BRUSH, {})
     }
 }
