@@ -59,7 +59,7 @@ All paths are under `app/src/main/java/com/donnclab/kinetiframe/`.
 | --- | --- |
 | Activity and navigation | `MainActivity.kt`, `navigation` |
 | Home screen | `home`, `project/ui` |
-| The studio (main editor) | `studio/EditorScreen.kt`, `studio/StudioViewModel.kt`, `studio/StudioMvi.kt` |
+| The studio (main editor) | `studio/EditorScreen.kt`, `studio/StudioViewModel.kt`, `studio/StudioState.kt`, `studio/StudioIntent.kt` |
 | Canvas input and drawing surface | `studio/ui/canvas` |
 | Editor toolbars and menus | `studio/ui/dock`, `studio/ui/timeline` |
 | Brushes and drawing tools | `studio/drawing` |
