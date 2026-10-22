@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.ui.library
 
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.ui.BaseViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -10,8 +11,10 @@ import kotlinx.coroutines.withContext
 /**
  * Real disk-backed Library; callers seed bundled resources before dispatching Reload.
  */
-class LibraryViewModel(private val catalog: LocalLibraryCatalog) :
-    BaseViewModel<LibraryState, LibraryIntent, LibraryEffect>(LibraryState()) {
+class LibraryViewModel(
+    private val catalog: LocalLibraryCatalog,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+) : BaseViewModel<LibraryState, LibraryIntent, LibraryEffect>(LibraryState()) {
     private var items = emptyMap<String, com.donnclab.kinetiframe.data.actor.LibraryItemManifest>()
     private var loadJob: Job? = null
     private var packJob: Job? = null
@@ -34,7 +37,7 @@ class LibraryViewModel(private val catalog: LocalLibraryCatalog) :
                 viewModelScope.launch {
                     organizationWrites.lock()
                     try {
-                        withContext(Dispatchers.IO) {
+                        withContext(ioDispatcher) {
                             catalog.organizationStore().rememberBrowser("packs", intent.position)
                         }
                     } catch (
@@ -67,7 +70,7 @@ class LibraryViewModel(private val catalog: LocalLibraryCatalog) :
                 packJob = viewModelScope.launch {
                     try {
                         val item = requireNotNull(items[intent.pack.id])
-                        val (contents, organization) = withContext(Dispatchers.IO) {
+                        val (contents, organization) = withContext(ioDispatcher) {
                             catalog.packContents(item) to catalog.organizationStore().updateItem(
                                 com.donnclab.kinetiframe.ui.packs.PackBrowserIndex.key(item),
                                 com.donnclab.kinetiframe.ui.packs.PackBrowserIndex.defaults(item),
@@ -125,7 +128,7 @@ class LibraryViewModel(private val catalog: LocalLibraryCatalog) :
         loadJob = viewModelScope.launch {
             updateState { it.copy(loading = true) }
             try {
-                val loaded = withContext(Dispatchers.IO) { catalog.load() }
+                val loaded = withContext(ioDispatcher) { catalog.load() }
                 items = loaded.items
                 updateState {
                     it.copy(

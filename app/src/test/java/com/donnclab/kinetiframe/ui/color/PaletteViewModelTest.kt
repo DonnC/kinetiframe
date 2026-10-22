@@ -31,7 +31,7 @@ class PaletteViewModelTest {
     }
 
     @Test fun `load installs real palettes and selection is an MVI intent`() = runTest(dispatcher) {
-        val model = PaletteViewModel(PaletteRepository(ActorFileStore(root)))
+        val model = PaletteViewModel(PaletteRepository(ActorFileStore(root)), ioDispatcher = dispatcher)
         val loaded = model.state.first { !it.loading }
         assertNull(loaded.error)
         assertEquals(8, loaded.palettes.size)

@@ -56,7 +56,7 @@ fun ActorStudioScreen(
             factory = object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                    ActorStudioDocumentViewModel(actorId, repository, performances, projectId, performanceId) as T
+                    ActorStudioDocumentViewModel(target, repository, performances) as T
             },
         )
     val state by model.state.collectAsStateWithLifecycle()

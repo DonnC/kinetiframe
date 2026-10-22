@@ -11,6 +11,7 @@ import com.donnclab.kinetiframe.engine.model.StageDimensions
 import com.donnclab.kinetiframe.engine.rigging.model.ActorTemplate
 import com.donnclab.kinetiframe.engine.rigging.model.ActorTemplates
 import com.donnclab.kinetiframe.ui.BaseViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,6 +24,7 @@ class ActorManagerViewModel(
     private val bundles: ActorBundleRepository,
     private val now: () -> Long = System::currentTimeMillis,
     private val id: () -> String = { UUID.randomUUID().toString() },
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<ActorManagerState, ActorManagerIntent, ActorManagerEffect>(ActorManagerState()) {
     init {
         reload()
@@ -46,7 +48,7 @@ class ActorManagerViewModel(
         is ActorManagerIntent.OpenView -> {
             viewModelScope.launch {
                 when (
-                    val result = withContext(Dispatchers.IO) {
+                    val result = withContext(ioDispatcher) {
                         repository.selectView(intent.actorId, intent.view, now())
                     }
                 ) {
@@ -136,10 +138,10 @@ class ActorManagerViewModel(
             // A warm index answers this in one Room read with each actor's thumbnail already
             // attached -- no per-actor artwork-file walk on every dashboard open, unlike before
             // this repository had a Room-backed index.
-            when (val result = withContext(Dispatchers.IO) { repository.listWithThumbnails() }) {
+            when (val result = withContext(ioDispatcher) { repository.listWithThumbnails() }) {
                 is ActorStoreResult.Value -> {
                     val actors = result.value.map { it.first }
-                    val thumbnails = withContext(Dispatchers.IO) {
+                    val thumbnails = withContext(ioDispatcher) {
                         actors.mapNotNull { actor ->
                             when (val preview = repository.characterPreview(actor.actorId)) {
                                 is ActorStoreResult.Value -> preview.value?.let { actor.actorId to it }
@@ -147,7 +149,7 @@ class ActorManagerViewModel(
                             }
                         }.toMap()
                     }
-                    val performances = withContext(Dispatchers.IO) { repository.relatedPerformances() }
+                    val performances = withContext(ioDispatcher) { repository.relatedPerformances() }
                     updateState {
                         it.copy(
                             loading = false,
@@ -166,7 +168,7 @@ class ActorManagerViewModel(
     private fun mutate(action: () -> ActorStoreResult<*>) {
         viewModelScope.launch {
             when (
-                val result = withContext(Dispatchers.IO) {
+                val result = withContext(ioDispatcher) {
                     try {
                         action()
                     } catch (

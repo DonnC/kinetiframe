@@ -8,6 +8,7 @@ import com.donnclab.kinetiframe.data.actor.LibraryScope
 import com.donnclab.kinetiframe.data.library.LibraryRepository
 import com.donnclab.kinetiframe.data.library.PackItemEntry
 import com.donnclab.kinetiframe.ui.BaseViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,6 +24,7 @@ class PacksTabViewModel(
     private val libraryRepository: LibraryRepository,
     private val scope: LibraryScope = LibraryScope.PERSONAL,
     private val projectId: String? = null,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<PacksTabState, PacksTabIntent, PacksTabEffect>(PacksTabState()) {
     private val organizationStore = libraryRepository.organizationStore()
     private var reloadJob: kotlinx.coroutines.Job? = null
@@ -70,7 +72,7 @@ class PacksTabViewModel(
         viewModelScope.launch {
             mutations.lock()
             try {
-                val saved = withContext(Dispatchers.IO) { write() }
+                val saved = withContext(ioDispatcher) { write() }
                 updateState { it.copy(organization = saved) }
             } catch (
                 cancelled: kotlinx.coroutines.CancellationException,
@@ -90,14 +92,14 @@ class PacksTabViewModel(
         updateState { it.copy(loading = true, error = null) }
         reloadJob = viewModelScope.launch {
             try {
-                when (val result = withContext(Dispatchers.IO) { libraryRepository.list(scope, projectId) }) {
+                when (val result = withContext(ioDispatcher) { libraryRepository.list(scope, projectId) }) {
                     is ActorStoreResult.Value -> {
                         val packs = result.value.filter { it.kind == LibraryItemKind.PACK }
                         val counts = mutableMapOf<String, Int>()
                         val previews = mutableMapOf<String, List<PackItemEntry>>()
                         val names = mutableMapOf<String, List<String>>()
-                        val organization = withContext(Dispatchers.IO) { organizationStore.load() }
-                        withContext(Dispatchers.IO) {
+                        val organization = withContext(ioDispatcher) { organizationStore.load() }
+                        withContext(ioDispatcher) {
                             packs.forEach { pack ->
                                 when (
                                     val loaded = libraryRepository.loadPack(
@@ -158,7 +160,7 @@ class PacksTabViewModel(
     private fun delete(libraryItemId: String) {
         viewModelScope.launch {
             when (
-                val result = withContext(Dispatchers.IO) {
+                val result = withContext(ioDispatcher) {
                     libraryRepository.delete(libraryItemId, scope, projectId)
                 }
             ) {
@@ -183,7 +185,7 @@ class PacksTabViewModel(
         viewModelScope.launch {
             when (
                 val loaded =
-                    withContext(Dispatchers.IO) {
+                    withContext(ioDispatcher) {
                         libraryRepository.loadPack(pack.libraryItemId, pack.scope, pack.sourceProjectId)
                     }
             ) {

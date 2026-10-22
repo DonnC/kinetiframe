@@ -14,6 +14,7 @@ import com.donnclab.kinetiframe.domain.actor.PerformanceAuthoring
 import com.donnclab.kinetiframe.domain.actor.PerformanceCompatibility
 import com.donnclab.kinetiframe.engine.rigging.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.ui.BaseViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,16 +22,19 @@ import java.util.UUID
 
 /** Owns only a persistent actor revision; canvas mechanics stay in the shared engine adapter. */
 class ActorStudioDocumentViewModel(
-    private val actorId: String,
+    target: ActorStudioTarget,
     private val repository: ActorRepository,
     private val performances: PerformanceRepository? = null,
-    private val projectId: String? = null,
-    private val performanceId: String? = null,
     private val now: () -> Long = System::currentTimeMillis,
     private val id: () -> String = { UUID.randomUUID().toString() },
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<ActorStudioDocumentState, ActorStudioDocumentIntent, ActorStudioDocumentEffect>(
     ActorStudioDocumentState(),
 ) {
+    private val actorId = target.actorId
+    private val projectId = target.projectId
+    private val performanceId = target.performanceId
+
     init {
         reload()
     }
@@ -80,10 +84,10 @@ class ActorStudioDocumentViewModel(
     private fun reload() {
         updateState { it.copy(loading = true, error = null) }
         viewModelScope.launch {
-            when (val result = withContext(Dispatchers.IO) { repository.load(actorId) }) {
+            when (val result = withContext(ioDispatcher) { repository.load(actorId) }) {
                 is ActorStoreResult.Value -> {
                     val performanceResult =
-                        withContext(Dispatchers.IO) {
+                        withContext(ioDispatcher) {
                             performanceId?.let { id -> projectId?.let { project -> performances?.load(project, id) } }
                         }
                     if (performanceResult is ActorStoreResult.Failure) {
@@ -98,7 +102,7 @@ class ActorStudioDocumentViewModel(
                     } else {
                         when (
                             val pinned =
-                                withContext(Dispatchers.IO) {
+                                withContext(ioDispatcher) {
                                     repository.loadRevision(actorId, performance.actorRevisionId)
                                 }
                         ) {
@@ -155,7 +159,7 @@ class ActorStudioDocumentViewModel(
         updateState { it.copy(loading = true) }
         viewModelScope.launch {
             when (
-                val result = withContext(Dispatchers.IO) {
+                val result = withContext(ioDispatcher) {
                     if (create) {
                         repository.createView(actorId, view, "revision-${id()}", now())
                     } else {
@@ -192,7 +196,7 @@ class ActorStudioDocumentViewModel(
         viewModelScope.launch {
             when (
                 val result =
-                    withContext(Dispatchers.IO) {
+                    withContext(ioDispatcher) {
                         repository.saveRevision(actorId, graph, revisionId, now(), artwork, view)
                     }
             ) {
@@ -265,7 +269,7 @@ class ActorStudioDocumentViewModel(
             }
             val existing = currentState.performance
             when (
-                val result = withContext(Dispatchers.IO) {
+                val result = withContext(ioDispatcher) {
                     storeOperation {
                         val document = PerformanceDocument(
                             performanceId = existing?.performanceId ?: "performance-${id()}",
@@ -312,7 +316,7 @@ class ActorStudioDocumentViewModel(
         val destination = projectId ?: return
         viewModelScope.launch {
             when (
-                val result = withContext(Dispatchers.IO) {
+                val result = withContext(ioDispatcher) {
                     storeOperation {
                         val copy = existing.copy(
                             performanceId = "performance-${id()}",
@@ -336,7 +340,7 @@ class ActorStudioDocumentViewModel(
         viewModelScope.launch {
             when (
                 val result =
-                    withContext(Dispatchers.IO) {
+                    withContext(ioDispatcher) {
                         requireNotNull(performances).archive(destination, existing.performanceId)
                     }
             ) {

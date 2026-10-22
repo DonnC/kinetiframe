@@ -68,7 +68,7 @@ class PackEditFlowTest {
         val files = ActorFileStore(root)
         val repository = LibraryRepository(files)
         val original = save(repository, "Faces", "Happy")
-        val model = LibraryViewModel(LocalLibraryCatalog(files, repository))
+        val model = LibraryViewModel(LocalLibraryCatalog(files, repository), ioDispatcher = dispatcher)
         model.handleIntent(LibraryIntent.Reload)
         val loaded = model.state.first { !it.loading }
         model.handleIntent(LibraryIntent.OpenPackContents(loaded.packs.single()))

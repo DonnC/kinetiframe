@@ -36,7 +36,7 @@ class HierarchyBrowserViewModelTest {
 
     @Test fun `actor and project organisation persist without affecting pack preferences`() = runTest(dispatcher) {
         store().rememberBrowser("packs", BrowserPosition(BrowseMode.FAVOURITES))
-        val model = HierarchyBrowserViewModel(store())
+        val model = HierarchyBrowserViewModel(store(), ioDispatcher = dispatcher)
         model.handleIntent(HierarchyBrowserIntent.Organise("actor:tavi", AssetOrganization("Loose Signal")))
         model.handleIntent(HierarchyBrowserIntent.Favourite("actor:tavi"))
         model.handleIntent(HierarchyBrowserIntent.Organise("project:episode", AssetOrganization("Loose Signal")))
@@ -44,7 +44,7 @@ class HierarchyBrowserViewModelTest {
             HierarchyBrowserIntent.Browse("projects", BrowserPosition(BrowseMode.COLLECTIONS, "Loose Signal")),
         )
         model.state.first { it.organization.browsers["projects"]?.collection == "Loose Signal" }
-        val reopened = HierarchyBrowserViewModel(store())
+        val reopened = HierarchyBrowserViewModel(store(), ioDispatcher = dispatcher)
         val state = reopened.state.first { it.organization.items.size == 2 }
         assertTrue(state.organization.items["actor:tavi"]!!.favourite)
         assertEquals("Loose Signal", state.organization.items["project:episode"]!!.collection)
@@ -53,7 +53,7 @@ class HierarchyBrowserViewModelTest {
 
     @Test fun `invalid private metadata surfaces error and remains intact`() = runTest(dispatcher) {
         val file = File(root, "organisation.json").apply { writeText("invalid") }
-        val model = HierarchyBrowserViewModel(store())
+        val model = HierarchyBrowserViewModel(store(), ioDispatcher = dispatcher)
         model.state.first { it.error != null }
         model.handleIntent(HierarchyBrowserIntent.Favourite("actor:tavi"))
         advanceUntilIdle()

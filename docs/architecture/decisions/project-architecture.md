@@ -98,3 +98,5 @@ every coroutine a test starts also finishes inside it.
 - `checkArchitecture` rejects new files in the retired `app` packages (`ui`, `domain`, `data`,
   `engine`, `models` and `core`), so the layout can't drift back.
 - Moving code from `app` into modules continues one workflow at a time, as before.
+- Some composables still load and save files themselves. That work moves into each screen's
+  ViewModel as the screen is reworked, so routes only collect state and send intents.

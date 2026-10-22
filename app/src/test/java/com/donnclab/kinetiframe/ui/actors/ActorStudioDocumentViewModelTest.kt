@@ -20,7 +20,7 @@ class ActorStudioDocumentViewModelTest {
     @TempDir lateinit var root: File
 
     @Test fun `studio exit always offers a save choice even for a clean session`() = runBlocking {
-        val model = ActorStudioDocumentViewModel("sample", actorWithViews())
+        val model = ActorStudioDocumentViewModel(ActorStudioTarget("sample"), actorWithViews())
         model.state.first { !it.loading }
         model.handleIntent(ActorStudioDocumentIntent.RequestExit)
         assertEquals(ActorStudioDocumentEffect.ConfirmDiscard, model.effect.first())
@@ -28,7 +28,7 @@ class ActorStudioDocumentViewModelTest {
 
     @Test fun `save and exit only exits after revision is committed`() = runBlocking {
         val repository = actorWithViews()
-        val model = ActorStudioDocumentViewModel("sample", repository)
+        val model = ActorStudioDocumentViewModel(ActorStudioTarget("sample"), repository)
         val revision = model.state.first { !it.loading }.revision!!
         model.handleIntent(ActorStudioDocumentIntent.SetDirty(true))
         model.handleIntent(
@@ -41,7 +41,7 @@ class ActorStudioDocumentViewModelTest {
 
     @Test fun `failed save and exit leaves studio dirty and reports failure instead of exiting`() = runBlocking {
         val repository = actorWithViews()
-        val model = ActorStudioDocumentViewModel("sample", repository)
+        val model = ActorStudioDocumentViewModel(ActorStudioTarget("sample"), repository)
         val revision = model.state.first { !it.loading }.revision!!
         File(root, "actors/sample/revisions/blocked.json").mkdirs()
         model.handleIntent(ActorStudioDocumentIntent.SetDirty(true))
@@ -54,7 +54,11 @@ class ActorStudioDocumentViewModelTest {
     @Test fun `invalid performance save preserves dirty live canvas and pinned revision`() = runBlocking {
         val repository = actorWithViews()
         val model =
-            ActorStudioDocumentViewModel("sample", repository, PerformanceRepository(ActorFileStore(root)), "film")
+            ActorStudioDocumentViewModel(
+                ActorStudioTarget("sample", "film"),
+                repository,
+                PerformanceRepository(ActorFileStore(root)),
+            )
         val revision = model.state.first { !it.loading }.revision
         model.handleIntent(ActorStudioDocumentIntent.SetDirty(true))
         model.handleIntent(ActorStudioDocumentIntent.SavePerformance("", emptyList()))
@@ -68,7 +72,7 @@ class ActorStudioDocumentViewModelTest {
 
     @Test fun `failed actor write preserves dirty canvas without triggering reload`() = runBlocking {
         val repository = actorWithViews()
-        val model = ActorStudioDocumentViewModel("sample", repository)
+        val model = ActorStudioDocumentViewModel(ActorStudioTarget("sample"), repository)
         val revision = model.state.first { !it.loading }.revision!!
         File(root, "actors/sample/revisions/blocked.json").mkdirs()
         model.handleIntent(ActorStudioDocumentIntent.SetDirty(true))
@@ -106,12 +110,11 @@ class ActorStudioDocumentViewModelTest {
         val repository = actorWithViews()
         val model =
             ActorStudioDocumentViewModel(
-                "sample",
+                ActorStudioTarget("sample", "film"),
                 repository,
                 PerformanceRepository(
                     ActorFileStore(root),
                 ),
-                "film",
                 now = {
                     3
                 },
@@ -149,7 +152,10 @@ class ActorStudioDocumentViewModelTest {
                 updatedAtEpochMs = 1,
             ),
         )
-        val model = ActorStudioDocumentViewModel("sample", repository, performances, "film", "talk", now = { 3 })
+        val model =
+            ActorStudioDocumentViewModel(ActorStudioTarget("sample", "film", "talk"), repository, performances, now = {
+                3
+            })
         val state = model.state.first { !it.loading }
         assertEquals("profile", state.manifest?.currentRevisionId)
         assertEquals("original", state.revision?.revisionId)
@@ -176,9 +182,18 @@ class ActorStudioDocumentViewModelTest {
             ActorRevision(revisionId = "revision-1", actorId = "actor-alice", sceneGraph = graph, createdAtEpochMs = 1),
         )
         val model =
-            ActorStudioDocumentViewModel("actor-alice", actor, PerformanceRepository(store), "project-film", now = {
-                2
-            }, id = { "wave" })
+            ActorStudioDocumentViewModel(
+                ActorStudioTarget(
+                    "actor-alice",
+                    "project-film",
+                ),
+                actor,
+                PerformanceRepository(store),
+                now = {
+                    2
+                },
+                id = { "wave" },
+            )
         model.state.first { !it.loading }
         model.handleIntent(ActorStudioDocumentIntent.SavePerformance("Wave", emptyList(), durationMicros = 2_500_000L))
         val effect = model.effect.first {
@@ -206,9 +221,18 @@ class ActorStudioDocumentViewModelTest {
             ActorRevision(revisionId = "revision-1", actorId = "actor-alice", sceneGraph = graph, createdAtEpochMs = 1),
         )
         val model =
-            ActorStudioDocumentViewModel("actor-alice", actor, PerformanceRepository(store), "project-film", now = {
-                2
-            }, id = { "cheer" })
+            ActorStudioDocumentViewModel(
+                ActorStudioTarget(
+                    "actor-alice",
+                    "project-film",
+                ),
+                actor,
+                PerformanceRepository(store),
+                now = {
+                    2
+                },
+                id = { "cheer" },
+            )
         model.state.first { !it.loading }
         val preset = com.donnclab.kinetiframe.engine.rigging.presets.AppliedActorPreset(
             com.donnclab.kinetiframe.engine.rigging.presets.ActorMotionPreset(
@@ -240,7 +264,8 @@ class ActorStudioDocumentViewModelTest {
     }
 
     @Test fun `dirty actor studio asks before exit and exits after discard`() = runBlocking {
-        val model = ActorStudioDocumentViewModel("actor-alice", ActorRepository(ActorFileStore(root)))
+        val model =
+            ActorStudioDocumentViewModel(ActorStudioTarget("actor-alice"), ActorRepository(ActorFileStore(root)))
         model.handleIntent(ActorStudioDocumentIntent.SetDirty(true))
         model.handleIntent(ActorStudioDocumentIntent.RequestExit)
         assertEquals(ActorStudioDocumentEffect.ConfirmDiscard, model.effect.first())
@@ -279,11 +304,9 @@ class ActorStudioDocumentViewModelTest {
         performanceRepository.save(original)
         val model =
             ActorStudioDocumentViewModel(
-                "actor-alice",
+                ActorStudioTarget("actor-alice", "project-film", "performance-wave"),
                 actor,
                 performanceRepository,
-                "project-film",
-                "performance-wave",
                 now = { 2 },
                 id = { "copy" },
             )

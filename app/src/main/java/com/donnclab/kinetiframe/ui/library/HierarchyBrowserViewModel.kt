@@ -10,6 +10,7 @@ import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
 import com.donnclab.kinetiframe.ui.ViewState
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -29,8 +30,10 @@ sealed interface HierarchyBrowserIntent : ViewIntent {
 sealed interface HierarchyBrowserEffect : ViewEffect
 
 /** Organisation never changes actor IDs, project paths, revisions or exported documents. */
-class HierarchyBrowserViewModel(private val store: LibraryOrganizationStore) :
-    BaseViewModel<HierarchyBrowserState, HierarchyBrowserIntent, HierarchyBrowserEffect>(HierarchyBrowserState()) {
+class HierarchyBrowserViewModel(
+    private val store: LibraryOrganizationStore,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+) : BaseViewModel<HierarchyBrowserState, HierarchyBrowserIntent, HierarchyBrowserEffect>(HierarchyBrowserState()) {
     private val writes = Mutex()
     init {
         change { store.load() }
@@ -56,7 +59,7 @@ class HierarchyBrowserViewModel(private val store: LibraryOrganizationStore) :
         viewModelScope.launch {
             writes.withLock {
                 try {
-                    val next = withContext(Dispatchers.IO) { action() }
+                    val next = withContext(ioDispatcher) { action() }
                     updateState { it.copy(organization = next, error = null) }
                 } catch (
                     cancel: kotlinx.coroutines.CancellationException,

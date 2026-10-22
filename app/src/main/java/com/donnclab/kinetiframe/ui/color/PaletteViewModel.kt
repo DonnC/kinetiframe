@@ -7,6 +7,7 @@ import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
 import com.donnclab.kinetiframe.ui.ViewState
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,8 +24,10 @@ sealed interface PaletteIntent : ViewIntent {
 }
 sealed interface PaletteEffect : ViewEffect
 
-class PaletteViewModel(private val repository: PaletteRepository) :
-    BaseViewModel<PaletteState, PaletteIntent, PaletteEffect>(PaletteState()) {
+class PaletteViewModel(
+    private val repository: PaletteRepository,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+) : BaseViewModel<PaletteState, PaletteIntent, PaletteEffect>(PaletteState()) {
     init {
         handleIntent(PaletteIntent.Load)
     }
@@ -35,7 +38,7 @@ class PaletteViewModel(private val repository: PaletteRepository) :
             PaletteIntent.Load -> viewModelScope.launch {
                 updateState { it.copy(loading = true, error = null) }
                 try {
-                    val palettes = withContext(Dispatchers.IO) {
+                    val palettes = withContext(ioDispatcher) {
                         repository.installStarters()
                         repository.list()
                     }

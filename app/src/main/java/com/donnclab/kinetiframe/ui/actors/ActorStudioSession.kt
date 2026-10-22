@@ -13,11 +13,10 @@ import com.donnclab.kinetiframe.engine.rigging.texture.RigAssetManager
 /**
  * Which document an Actor Studio session is opened against.
  *
- * These four identifiers travel together everywhere -- they are jointly what makes a session
- * unique (the same actor opened for rig setup, and opened again to author a performance inside a
- * project, are genuinely different documents and must never share engine state). Grouping them
- * keeps that invariant visible in one place instead of re-threading four positional strings
- * through every layer, and keeps the screen inside the 4-parameter budget.
+ * Together these identifiers make a session unique. The same actor opened for rig setup and
+ * opened to author a performance inside a project are different documents and must never share
+ * engine state. Grouping them keeps that rule in one place instead of passing four positional
+ * strings through the screen and its ViewModel.
  */
 data class ActorStudioTarget(
     val actorId: String,

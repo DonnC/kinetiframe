@@ -11,6 +11,7 @@ import com.donnclab.kinetiframe.engine.model.ProjectDocument
 import com.donnclab.kinetiframe.engine.model.StageDimensions
 import com.donnclab.kinetiframe.models.Layer
 import com.donnclab.kinetiframe.ui.BaseViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,6 +27,7 @@ class ProjectManagerViewModel(
     private val projectDao: ProjectDao? = null,
     private val now: () -> Long = System::currentTimeMillis,
     private val id: () -> String = { "project-${UUID.randomUUID()}" },
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<ProjectManagerState, ProjectManagerIntent, ProjectManagerEffect>(ProjectManagerState()) {
     init {
         reload()
@@ -43,7 +45,7 @@ class ProjectManagerViewModel(
         val projectId = id()
         val time = now()
         viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
+            val result = withContext(ioDispatcher) {
                 runCatching {
                     requireNameAvailable(name, null)
                     val mainLayer = Layer(name = "Main Layer", id = "main")
@@ -85,7 +87,7 @@ class ProjectManagerViewModel(
     private fun rename(projectId: String, name: String) {
         viewModelScope.launch {
             when (
-                val result = withContext(Dispatchers.IO) {
+                val result = withContext(ioDispatcher) {
                     requireNameAvailable(name, projectId)
                     repository.rename(projectId, name, now()).also {
                         if (it is ActorStoreResult.Value) indexInRoom(it.value)
@@ -101,7 +103,7 @@ class ProjectManagerViewModel(
     private fun delete(projectId: String) {
         viewModelScope.launch {
             when (
-                val result = withContext(Dispatchers.IO) {
+                val result = withContext(ioDispatcher) {
                     repository.delete(projectId).also {
                         if (it is ActorStoreResult.Value) runCatching { projectDao?.deleteById(projectId) }
                     }
@@ -130,11 +132,11 @@ class ProjectManagerViewModel(
     private fun reload() {
         updateState { it.copy(loading = true, error = null) }
         viewModelScope.launch {
-            when (val result = withContext(Dispatchers.IO) { repository.list() }) {
+            when (val result = withContext(ioDispatcher) { repository.list() }) {
                 is ActorStoreResult.Value -> {
                     updateState { it.copy(loading = false, projects = result.value) }
                     result.value.forEach { manifest -> indexInRoom(manifest) }
-                    withContext(Dispatchers.IO) {
+                    withContext(ioDispatcher) {
                         runCatching {
                             projectDao?.getAll()?.filter { row ->
                                 result.value.none {
@@ -171,7 +173,7 @@ class ProjectManagerViewModel(
      *  after, and a just-written project could be missing from the next gallery read. */
     private suspend fun indexInRoom(manifest: ProjectManifest) {
         val dao = projectDao ?: return
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             runCatching {
                 // ProjectRepository.list() has already checked thumbnailPath against disk, so it is
                 // stored as-is without re-checking the file.

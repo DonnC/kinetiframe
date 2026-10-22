@@ -57,7 +57,7 @@ class PacksBrowserViewModelTest {
 
     @Test fun `pack item index favourites and filters survive model restart`() = runTest(dispatcher) {
         val repository = repository()
-        val model = PacksTabViewModel(repository)
+        val model = PacksTabViewModel(repository, ioDispatcher = dispatcher)
         val loaded = model.state.first { !it.loading }
         assertEquals(listOf("Pointing hand "), loaded.itemNames["ls-hands"])
         model.handleIntent(PacksTabIntent.ToggleFavourite(loaded.packs.single()))
@@ -65,7 +65,7 @@ class PacksBrowserViewModelTest {
         val position = BrowserPosition(BrowseMode.COLLECTIONS, "Loose Signal", AssetCategory.GESTURES)
         model.handleIntent(PacksTabIntent.Browse(position))
         model.state.first { it.organization.browsers["packs"] == position }
-        val reopened = PacksTabViewModel(repository)
+        val reopened = PacksTabViewModel(repository, ioDispatcher = dispatcher)
         val state = reopened.state.first { !it.loading }
         assertEquals(position, state.browser)
         assertTrue(state.organization.items["ls-hands"]!!.favourite)
@@ -75,7 +75,7 @@ class PacksBrowserViewModelTest {
     @Test fun `bad private metadata is reported instead of crashing or destroying saved packs`() = runTest(dispatcher) {
         val repository = repository()
         File(root, "library-organisation.json").writeText("corrupt")
-        val model = PacksTabViewModel(repository)
+        val model = PacksTabViewModel(repository, ioDispatcher = dispatcher)
         val state = model.state.first { !it.loading }
         assertNotNull(state.error)
         assertTrue(repository.loadPack("ls-hands") is ActorStoreResult.Value)

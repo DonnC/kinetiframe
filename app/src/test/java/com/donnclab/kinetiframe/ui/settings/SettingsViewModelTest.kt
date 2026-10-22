@@ -33,13 +33,13 @@ class SettingsViewModelTest {
 
     @Test fun `rapid choices preserve all preferences across reopening`() = runTest(dispatcher) {
         val file = File(root, "settings.json")
-        val model = SettingsViewModel(AppPreferencesStore(file))
+        val model = SettingsViewModel(AppPreferencesStore(file, dispatcher))
         model.state.first { !it.loading }
         model.handleIntent(SettingsIntent.Theme(AppTheme.DARK))
         model.handleIntent(SettingsIntent.SystemBars(true))
         model.handleIntent(SettingsIntent.Orientation(StudioOrientation.DEVICE))
         model.state.first { it.preferences.orientation == StudioOrientation.DEVICE }
-        val saved = AppPreferencesStore(file).load()
+        val saved = AppPreferencesStore(file, dispatcher).load()
         assertEquals(AppTheme.DARK, saved.theme)
         assertTrue(saved.hideSystemBars)
         assertEquals(StudioOrientation.DEVICE, saved.orientation)
