@@ -184,6 +184,7 @@ flowchart LR
 
 Important choices are recorded as architecture decision records:
 
+- [Project architecture](decisions/project-architecture.md)
 - [Design system boundary](decisions/design-system-boundary.md)
 - [Library-only sharing](decisions/library-only-sharing.md)
 - [Standard parameter limits](decisions/parameter-limits.md)
