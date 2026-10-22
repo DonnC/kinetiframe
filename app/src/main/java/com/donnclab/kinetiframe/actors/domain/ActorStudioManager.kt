@@ -9,7 +9,6 @@ import com.donnclab.kinetiframe.actors.rig.math.ArtworkSkinRestBinding
 import com.donnclab.kinetiframe.actors.rig.math.ArtworkSkinning
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.math.TwoBoneSolver
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.actors.rig.model.BoneNode
@@ -18,14 +17,10 @@ import com.donnclab.kinetiframe.engine.rigging.math.CompiledMotionCurve
 import com.donnclab.kinetiframe.project.model.DrawingTool
 import com.donnclab.kinetiframe.project.model.Layer
 import com.donnclab.kinetiframe.project.model.LayerType
-import com.donnclab.kinetiframe.project.model.ProjectDocument
 import com.donnclab.kinetiframe.project.model.PuppetDefinition
 import com.donnclab.kinetiframe.project.model.PuppetInstance
-import com.donnclab.kinetiframe.project.model.referencedAssetIds
 import com.donnclab.kinetiframe.project.model.unbindTextureFromBone
-import com.donnclab.kinetiframe.studio.LayerState
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
-import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState

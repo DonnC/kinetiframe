@@ -1,30 +1,10 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.rig.math.ActorPoseEditor
-import com.donnclab.kinetiframe.actors.rig.math.ArtworkSkinRestBinding
-import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
-import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.project.model.DrawingTool
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.LayerType
 import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
-import com.donnclab.kinetiframe.project.model.PuppetInstance
 import com.donnclab.kinetiframe.project.model.referencedAssetIds
-import com.donnclab.kinetiframe.project.model.unbindTextureFromBone
 import com.donnclab.kinetiframe.studio.LayerState
-import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.SceneState
-import com.donnclab.kinetiframe.studio.StudioIntent
-import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
-import com.donnclab.kinetiframe.studio.activeActor
-import com.donnclab.kinetiframe.studio.actorDefinition
-import com.donnclab.kinetiframe.studio.currentFrameLayers
-import java.util.UUID
 
 /**
  * Undo and redo for actor edits. History holds immutable document snapshots, never copies of
