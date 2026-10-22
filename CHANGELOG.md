@@ -40,5 +40,9 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - Dependabot, CODEOWNERS, an `.editorconfig`, and issue templates for artwork contributions.
 - The shared design system now holds the Compose theme, visual tokens and dock controls.
 - Working notes go in a Git-ignored `notes/` folder.
+- `app` is organised by feature (`studio`, `actors`, `library`, `project`, `audio`, `video`,
+  `export` and others) instead of by layer, and the editor's main types are named `Studio*`. See
+  the [project architecture](docs/architecture/decisions/project-architecture.md) decision.
+- ViewModels take their IO dispatcher as a parameter, so tests control all the work they start.
 
 No release history has been reconstructed from earlier development commits.

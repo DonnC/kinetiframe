@@ -7,8 +7,8 @@
         errorLine1="                    event.flags and MotionEvent.FLAG_CANCELED != 0 &amp;&amp;"
         errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/CanvasInputLayer.kt"
-            line="89"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/CanvasInputLayer.kt"
+            line="90"
             column="37"/>
     </issue>
 
@@ -18,8 +18,8 @@
         errorLine1="                    info.set(0, size, extractor.sampleTime, extractor.sampleFlags)"
         errorLine2="                                                            ~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/data/export/ProjectExporter.kt"
-            line="198"
+            file="src/main/java/com/donnclab/kinetiframe/export/data/ProjectExporter.kt"
+            line="228"
             column="61"/>
     </issue>
 
@@ -29,8 +29,8 @@
         errorLine1="            Text(String.format(Locale.getDefault(), &quot;%.2f s&quot;, durationMicros / 1_000_000.0))"
         errorLine2="                               ~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/rigging/PerformanceDurationMenu.kt"
-            line="16"
+            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/PerformanceDurationMenu.kt"
+            line="29"
             column="32"/>
     </issue>
 
@@ -40,8 +40,8 @@
         errorLine1="                    text = { Text(String.format(Locale.getDefault(), &quot;%.1f seconds&quot;, duration / 1_000_000.0)) },"
         errorLine2="                                                ~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/rigging/PerformanceDurationMenu.kt"
-            line="21"
+            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/PerformanceDurationMenu.kt"
+            line="34"
             column="49"/>
     </issue>
 
@@ -62,8 +62,8 @@
         errorLine1="        modifier = Modifier.heightIn(max = (configuration.screenHeightDp - 32).coerceAtLeast(100).dp)"
         errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/dock/ColorPicker.kt"
-            line="99"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/dock/ColorPicker.kt"
+            line="93"
             column="45"/>
     </issue>
 
@@ -73,8 +73,8 @@
         errorLine1="    LaunchedEffect(configuration.screenWidthDp, configuration.screenHeightDp) {"
         errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/color/ScreenColorPickerHost.kt"
-            line="49"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/color/ScreenColorPickerHost.kt"
+            line="70"
             column="49"/>
     </issue>
 
@@ -84,31 +84,31 @@
         errorLine1="    LaunchedEffect(configuration.screenWidthDp, configuration.screenHeightDp) {"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/color/ScreenColorPickerHost.kt"
-            line="49"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/color/ScreenColorPickerHost.kt"
+            line="70"
             column="20"/>
     </issue>
 
     <issue
         id="ConfigurationScreenWidthHeight"
         message="Using Configuration.screenHeightDp instead of LocalWindowInfo.current.containerSize"
-        errorLine1="    val laneHeight = if (workspaceMode) (LocalConfiguration.current.screenHeightDp.dp - 120.dp).coerceAtLeast(48.dp)"
-        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="        (LocalConfiguration.current.screenHeightDp.dp - 120.dp).coerceAtLeast(48.dp)"
+        errorLine2="         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/timeline/TimelineTracksPanel.kt"
-            line="48"
-            column="42"/>
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/timeline/TimelineTracksPanel.kt"
+            line="83"
+            column="10"/>
     </issue>
 
     <issue
         id="ConfigurationScreenWidthHeight"
         message="Using Configuration.screenHeightDp instead of LocalWindowInfo.current.containerSize"
-        errorLine1="        else (LocalConfiguration.current.screenHeightDp.dp * .24f).coerceIn(48.dp, 168.dp)"
-        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="        (LocalConfiguration.current.screenHeightDp.dp * .24f).coerceIn(48.dp, 168.dp)"
+        errorLine2="         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/timeline/TimelineTracksPanel.kt"
-            line="49"
-            column="15"/>
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/timeline/TimelineTracksPanel.kt"
+            line="85"
+            column="10"/>
     </issue>
 
     <issue
@@ -117,7 +117,7 @@
         errorLine1="                val document = try { viewModel.prepareProjectSave(context.resources.displayMetrics.density) } catch (error: Exception) {"
         errorLine2="                                                                  ~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/EditorScreen.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/EditorScreen.kt"
             line="336"
             column="67"/>
     </issue>
@@ -125,11 +125,11 @@
     <issue
         id="ModifierParameter"
         message="Modifier parameter should be the first optional parameter"
-        errorLine1="    modifier: Modifier = Modifier"
+        errorLine1="    modifier: Modifier = Modifier,"
         errorLine2="    ~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/timeline/ActorPerformancePicker.kt"
-            line="44"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/timeline/ActorPerformancePicker.kt"
+            line="60"
             column="5"/>
     </issue>
 
@@ -139,8 +139,8 @@
         errorLine1="    modifier: Modifier = Modifier,"
         errorLine2="    ~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/CanvasArea.kt"
-            line="52"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/CanvasArea.kt"
+            line="56"
             column="5"/>
     </issue>
 
@@ -150,8 +150,8 @@
         errorLine1="    modifier: Modifier = Modifier,"
         errorLine2="    ~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/CanvasArea.kt"
-            line="116"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/CanvasArea.kt"
+            line="177"
             column="5"/>
     </issue>
 
@@ -161,8 +161,8 @@
         errorLine1="    modifier: Modifier = Modifier,"
         errorLine2="    ~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/EditorTopBar.kt"
-            line="99"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/EditorTopBar.kt"
+            line="101"
             column="5"/>
     </issue>
 
@@ -172,7 +172,7 @@
         errorLine1="private fun HomeChip(text: String, icon: ImageVector? = null, modifier: Modifier = Modifier) {"
         errorLine2="                                                              ~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/home/HomeCards.kt"
+            file="src/main/java/com/donnclab/kinetiframe/home/HomeCards.kt"
             line="68"
             column="63"/>
     </issue>
@@ -183,7 +183,7 @@
         errorLine1="fun PreviewBadge(label: String, icon: ImageVector = Icons.Filled.PlayArrow, modifier: Modifier = Modifier) {"
         errorLine2="                                                                            ~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/catalog/PreviewBadge.kt"
+            file="src/main/java/com/donnclab/kinetiframe/library/ui/catalog/PreviewBadge.kt"
             line="29"
             column="77"/>
     </issue>
@@ -194,7 +194,7 @@
         errorLine1="    modifier: Modifier = Modifier,"
         errorLine2="    ~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/RasterWorkspaceCanvas.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/RasterWorkspaceCanvas.kt"
             line="29"
             column="5"/>
     </issue>
@@ -205,8 +205,8 @@
         errorLine1="    modifier: Modifier = Modifier,"
         errorLine2="    ~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/SelectionTransformBox.kt"
-            line="36"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/SelectionTransformBox.kt"
+            line="40"
             column="5"/>
     </issue>
 
@@ -216,8 +216,8 @@
         errorLine1="        val edgePadding = listState.layoutInfo.beforeContentPadding"
         errorLine2="                                    ~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/timeline/audio/ProjectAudioScrubRibbon.kt"
-            line="44"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/timeline/audio/ProjectAudioScrubRibbon.kt"
+            line="64"
             column="37"/>
     </issue>
 
@@ -227,8 +227,8 @@
         errorLine1="    var importGeneration by remember(session) { mutableStateOf(session.importGeneration) }"
         errorLine2="                                                ~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/actors/ActorReferenceControls.kt"
-            line="31"
+            file="src/main/java/com/donnclab/kinetiframe/actors/ui/ActorReferenceControls.kt"
+            line="69"
             column="49"/>
     </issue>
 
@@ -238,8 +238,8 @@
         errorLine1="    var drawTrigger by mutableStateOf(0L)"
         errorLine2="                       ~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/CanvasDrawingUtils.kt"
-            line="176"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/CanvasDrawingUtils.kt"
+            line="174"
             column="24"/>
     </issue>
 
@@ -249,8 +249,8 @@
         errorLine1="    var lastTapTime by remember { mutableStateOf(0L) }"
         errorLine2="                                  ~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/CanvasInputLayer.kt"
-            line="66"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/CanvasInputLayer.kt"
+            line="67"
             column="35"/>
     </issue>
 
@@ -260,8 +260,8 @@
         errorLine1="    var progress by remember { mutableStateOf(0f) }"
         errorLine2="                               ~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/export/ExportRoute.kt"
-            line="81"
+            file="src/main/java/com/donnclab/kinetiframe/export/ui/ExportRoute.kt"
+            line="82"
             column="32"/>
     </issue>
 
@@ -271,20 +271,20 @@
         errorLine1="    var selectedTab by remember { mutableStateOf(0) }"
         errorLine2="                                  ~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/home/HomeScreen.kt"
-            line="113"
+            file="src/main/java/com/donnclab/kinetiframe/home/HomeScreen.kt"
+            line="117"
             column="35"/>
     </issue>
 
     <issue
         id="AutoboxingStateCreation"
         message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
-        errorLine1="                    var homeRefreshToken by remember { mutableStateOf(0) }"
-        errorLine2="                                                       ~~~~~~~~~~~~~~">
+        errorLine1="                            var homeRefreshToken by remember { mutableStateOf(0) }"
+        errorLine2="                                                               ~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/MainActivity.kt"
-            line="93"
-            column="56"/>
+            line="124"
+            column="64"/>
     </issue>
 
     <issue
@@ -293,7 +293,7 @@
         errorLine1="    var rotationStartDegrees by remember { mutableStateOf(0f) }"
         errorLine2="                                           ~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/RulerGuideOverlay.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/RulerGuideOverlay.kt"
             line="47"
             column="44"/>
     </issue>
@@ -304,7 +304,7 @@
         errorLine1="    var rotationStartPointerAngle by remember { mutableStateOf(0f) }"
         errorLine2="                                                ~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/RulerGuideOverlay.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/RulerGuideOverlay.kt"
             line="48"
             column="49"/>
     </issue>
@@ -348,11 +348,11 @@
     <issue
         id="UsableSpace"
         message="Consider also using `StorageManager#getAllocatableBytes` and `allocateBytes` which will consider clearable cached data"
-        errorLine1="        require(output.parentFile?.usableSpace ?: 0L > dataBytes + 16L * 1024 * 1024) { &quot;Not enough storage for this voice effect&quot; }"
+        errorLine1="        require(output.parentFile?.usableSpace ?: 0L > dataBytes + 16L * 1024 * 1024) {"
         errorLine2="                                   ~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/data/audio/VoiceEffectProxy.kt"
-            line="22"
+            file="src/main/java/com/donnclab/kinetiframe/audio/data/VoiceEffectProxy.kt"
+            line="25"
             column="36"/>
     </issue>
 
@@ -495,8 +495,8 @@
         errorLine1="            canvas.save()"
         errorLine2="            ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/domain/render/ActorFrameRenderer.kt"
-            line="72"
+            file="src/main/java/com/donnclab/kinetiframe/actors/render/ActorFrameRenderer.kt"
+            line="98"
             column="13"/>
     </issue>
 
@@ -506,8 +506,8 @@
         errorLine1="                        val bitmap = Bitmap.createBitmap(width, 48, Bitmap.Config.ARGB_8888)"
         errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/domain/manager/ActorSampleArtwork.kt"
-            line="34"
+            file="src/main/java/com/donnclab/kinetiframe/actors/domain/ActorSampleArtwork.kt"
+            line="47"
             column="38"/>
     </issue>
 
@@ -517,20 +517,20 @@
         errorLine1="        val result = Bitmap.createBitmap(320, 320, Bitmap.Config.ARGB_8888)"
         errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/domain/render/ActorThumbnailMaker.kt"
-            line="34"
+            file="src/main/java/com/donnclab/kinetiframe/actors/render/ActorThumbnailMaker.kt"
+            line="48"
             column="22"/>
     </issue>
 
     <issue
         id="UseKtx"
         message="Use the KTX function `createBitmap` instead?"
-        errorLine1="    val bitmap = remember { Bitmap.createBitmap(32, 32, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.CYAN) } }"
-        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="            Bitmap.createBitmap(32, 32, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.CYAN) }"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/rigging/ArtworkAlignmentDialog.kt"
-            line="62"
-            column="29"/>
+            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/ArtworkAlignmentDialog.kt"
+            line="166"
+            column="13"/>
     </issue>
 
     <issue
@@ -539,20 +539,20 @@
         errorLine1="            val save = native.save()"
         errorLine2="                       ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/rigging/ArtworkPlacementPreview.kt"
-            line="83"
+            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/ArtworkPlacementPreview.kt"
+            line="125"
             column="24"/>
     </issue>
 
     <issue
         id="UseKtx"
         message="Use the KTX function `createBitmap` instead?"
-        errorLine1="    val bitmap = remember { Bitmap.createBitmap(32, 48, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.CYAN) } }"
-        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="            Bitmap.createBitmap(32, 48, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.CYAN) }"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/rigging/ArtworkPlacementPreview.kt"
-            line="100"
-            column="29"/>
+            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/ArtworkPlacementPreview.kt"
+            line="147"
+            column="13"/>
     </issue>
 
     <issue
@@ -561,8 +561,8 @@
         errorLine1="            color = android.graphics.Color.parseColor(&quot;#4285F4&quot;)"
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/BufferedDrawingCanvas.kt"
-            line="150"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/BufferedDrawingCanvas.kt"
+            line="173"
             column="21"/>
     </issue>
 
@@ -572,8 +572,8 @@
         errorLine1="            color = android.graphics.Color.parseColor(&quot;#4285F4&quot;)"
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/BufferedDrawingCanvas.kt"
-            line="150"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/BufferedDrawingCanvas.kt"
+            line="173"
             column="21"/>
     </issue>
 
@@ -583,8 +583,8 @@
         errorLine1="        preferences.edit().putString(&quot;recipes&quot;, json.encodeToString(recipes)).commit()"
         errorLine2="        ~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/data/camera/CameraRecipeStore.kt"
-            line="21"
+            file="src/main/java/com/donnclab/kinetiframe/studio/camera/CameraRecipeStore.kt"
+            line="23"
             column="9"/>
     </issue>
 
@@ -594,8 +594,8 @@
         errorLine1="        preferences.edit().putString(&quot;recipes&quot;, json.encodeToString(load().filterNot { it.name == name })).commit()"
         errorLine2="        ~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/data/camera/CameraRecipeStore.kt"
-            line="24"
+            file="src/main/java/com/donnclab/kinetiframe/studio/camera/CameraRecipeStore.kt"
+            line="26"
             column="9"/>
     </issue>
 
@@ -605,18 +605,18 @@
         errorLine1="    canvas.save()"
         errorLine2="    ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/CanvasDrawingUtils.kt"
-            line="59"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/CanvasDrawingUtils.kt"
+            line="54"
             column="5"/>
     </issue>
 
     <issue
         id="UseKtx"
         message="Use the KTX extension function `Canvas.withMatrix` instead?"
-        errorLine1="            canvas.save(); canvas.concat(canvasMatrix)"
+        errorLine1="            canvas.save()"
         errorLine2="            ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/ConstructionShapePreviewOverlay.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/ConstructionShapePreviewOverlay.kt"
             line="38"
             column="13"/>
     </issue>
@@ -627,8 +627,8 @@
         errorLine1="                    canvas.save()"
         errorLine2="                    ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/domain/manager/DrawingManager.kt"
-            line="309"
+            file="src/main/java/com/donnclab/kinetiframe/studio/domain/DrawingManager.kt"
+            line="311"
             column="21"/>
     </issue>
 
@@ -638,8 +638,8 @@
         errorLine1="            canvas.save()"
         errorLine2="            ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/domain/manager/DrawingManager.kt"
-            line="330"
+            file="src/main/java/com/donnclab/kinetiframe/studio/domain/DrawingManager.kt"
+            line="332"
             column="13"/>
     </issue>
 
@@ -649,8 +649,8 @@
         errorLine1="                                canvas.save()"
         errorLine2="                                ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/domain/manager/DrawingManager.kt"
-            line="371"
+            file="src/main/java/com/donnclab/kinetiframe/studio/domain/DrawingManager.kt"
+            line="373"
             column="33"/>
     </issue>
 
@@ -660,8 +660,8 @@
         errorLine1="        val startColor = source.getPixel(x, y)"
         errorLine2="                         ~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/domain/manager/DrawingManager.kt"
-            line="592"
+            file="src/main/java/com/donnclab/kinetiframe/studio/domain/DrawingManager.kt"
+            line="594"
             column="26"/>
     </issue>
 
@@ -671,7 +671,7 @@
         errorLine1="    val bitmap: Bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)"
         errorLine2="                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/engine/buffer/FrameBitmapBuffer.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/FrameBitmapBuffer.kt"
             line="18"
             column="26"/>
     </issue>
@@ -679,12 +679,12 @@
     <issue
         id="UseKtx"
         message="Use the KTX function `createBitmap` instead?"
-        errorLine1="            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)"
-        errorLine2="                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="                val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)"
+        errorLine2="                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/engine/cache/FrameCacheManager.kt"
-            line="208"
-            column="26"/>
+            file="src/main/java/com/donnclab/kinetiframe/studio/render/FrameCacheManager.kt"
+            line="223"
+            column="30"/>
     </issue>
 
     <issue
@@ -693,7 +693,7 @@
         errorLine1="        val output = Bitmap.createBitmap("
         errorLine2="                     ^">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/engine/rigging/texture/JointProcessor.kt"
+            file="src/main/java/com/donnclab/kinetiframe/actors/rig/texture/JointProcessor.kt"
             line="16"
             column="22"/>
     </issue>
@@ -704,8 +704,8 @@
         errorLine1="        val next = Bitmap.createBitmap(nr - nl, nb - nt, Bitmap.Config.ARGB_8888)"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/engine/drawing/ManipulationStrokeSession.kt"
-            line="64"
+            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/ManipulationStrokeSession.kt"
+            line="85"
             column="20"/>
     </issue>
 
@@ -715,8 +715,8 @@
         errorLine1="            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also { patch = it }"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/engine/drawing/ManipulationTools.kt"
-            line="43"
+            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/ManipulationTools.kt"
+            line="54"
             column="13"/>
     </issue>
 
@@ -726,8 +726,8 @@
         errorLine1="        canvas.save()"
         errorLine2="        ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/engine/typography/MultilineTextRenderer.kt"
-            line="20"
+            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/MultilineTextRenderer.kt"
+            line="24"
             column="9"/>
     </issue>
 
@@ -737,8 +737,8 @@
         errorLine1="            color = Color.parseColor(&quot;#00E5FF&quot;)"
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/engine/typography/MultilineTextRenderer.kt"
-            line="90"
+            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/MultilineTextRenderer.kt"
+            line="99"
             column="21"/>
     </issue>
 
@@ -748,8 +748,8 @@
         errorLine1="            color = Color.parseColor(&quot;#00E5FF&quot;)"
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/engine/typography/MultilineTextRenderer.kt"
-            line="90"
+            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/MultilineTextRenderer.kt"
+            line="99"
             column="21"/>
     </issue>
 
@@ -759,8 +759,8 @@
         errorLine1="                Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888).also { result ->"
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/rigging/PerformancePoseThumbnail.kt"
-            line="40"
+            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/PerformancePoseThumbnail.kt"
+            line="52"
             column="17"/>
     </issue>
 
@@ -770,7 +770,7 @@
         errorLine1="            native.save()"
         errorLine2="            ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/PivotPlacementOverlay.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/PivotPlacementOverlay.kt"
             line="99"
             column="13"/>
     </issue>
@@ -778,34 +778,34 @@
     <issue
         id="UseKtx"
         message="Use the KTX function `createBitmap` instead?"
-        errorLine1="            letterboxScratch = if (needsLetterbox) Bitmap.createBitmap(outputDimensions.width, outputDimensions.height, Bitmap.Config.ARGB_8888) else null"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="                    Bitmap.createBitmap("
+        errorLine2="                    ^">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/data/export/ProjectExporter.kt"
-            line="153"
-            column="52"/>
+            file="src/main/java/com/donnclab/kinetiframe/export/data/ProjectExporter.kt"
+            line="171"
+            column="21"/>
     </issue>
 
     <issue
         id="UseKtx"
         message="Use the KTX extension function `Canvas.withSave` instead?"
-        errorLine1="                canvas.save()"
-        errorLine2="                ~~~~~~~~~~~~~">
+        errorLine1="                    canvas.save()"
+        errorLine2="                    ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/domain/render/ProjectFrameCompositor.kt"
-            line="105"
-            column="17"/>
+            file="src/main/java/com/donnclab/kinetiframe/studio/render/ProjectFrameCompositor.kt"
+            line="139"
+            column="21"/>
     </issue>
 
     <issue
         id="UseKtx"
         message="Use the KTX extension function `Bitmap.get` instead?"
-        errorLine1="                x in 0 until bitmap.width &amp;&amp; y in 0 until bitmap.height &amp;&amp; android.graphics.Color.alpha(bitmap.getPixel(x, y)) > 24"
-        errorLine2="                                                                                                        ~~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="                        android.graphics.Color.alpha(bitmap.getPixel(x, y)) > 24"
+        errorLine2="                                                     ~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/engine/rigging/render/PuppetArtworkHitTester.kt"
-            line="36"
-            column="105"/>
+            file="src/main/java/com/donnclab/kinetiframe/actors/render/PuppetArtworkHitTester.kt"
+            line="58"
+            column="54"/>
     </issue>
 
     <issue
@@ -814,8 +814,8 @@
         errorLine1="            return android.graphics.Color.alpha(bitmap.getPixel(sx, sy)) > 24"
         errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/engine/rigging/render/PuppetArtworkHitTester.kt"
-            line="59"
+            file="src/main/java/com/donnclab/kinetiframe/actors/render/PuppetArtworkHitTester.kt"
+            line="86"
             column="49"/>
     </issue>
 
@@ -825,8 +825,8 @@
         errorLine1="            native.save()"
         errorLine2="            ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/rigging/PuppetSourceLayer.kt"
-            line="72"
+            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/PuppetSourceLayer.kt"
+            line="81"
             column="13"/>
     </issue>
 
@@ -836,20 +836,20 @@
         errorLine1="            canvas.save()"
         errorLine2="            ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/RulerGuideOverlay.kt"
-            line="93"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/RulerGuideOverlay.kt"
+            line="120"
             column="13"/>
     </issue>
 
     <issue
         id="UseKtx"
         message="Use the KTX function `createBitmap` instead?"
-        errorLine1="    val bitmap = remember { Bitmap.createBitmap(160, 90, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.rgb(32, 147, 154)) } }"
-        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="            Bitmap.createBitmap(160, 90, Bitmap.Config.ARGB_8888).apply {"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/canvas/SceneVideoCanvas.kt"
-            line="37"
-            column="29"/>
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/SceneVideoCanvas.kt"
+            line="47"
+            column="13"/>
     </issue>
 
     <issue
@@ -858,8 +858,8 @@
         errorLine1="        canvas.save()"
         errorLine2="        ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/domain/render/SceneVideoRenderer.kt"
-            line="23"
+            file="src/main/java/com/donnclab/kinetiframe/video/SceneVideoRenderer.kt"
+            line="30"
             column="9"/>
     </issue>
 
@@ -869,7 +869,7 @@
         errorLine1="        val masked = Bitmap.createBitmap(right - left, bottom - top, Bitmap.Config.ARGB_8888)"
         errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/domain/manager/SelectionRaster.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/domain/SelectionRaster.kt"
             line="23"
             column="22"/>
     </issue>
@@ -880,7 +880,7 @@
         errorLine1="        canvas.save()"
         errorLine2="        ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/domain/manager/SelectionRaster.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/domain/SelectionRaster.kt"
             line="25"
             column="9"/>
     </issue>
@@ -891,8 +891,19 @@
         errorLine1="            nativeCanvas.save()"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/components/rigging/SkeletalRenderLayer.kt"
-            line="47"
+            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/SkeletalRenderLayer.kt"
+            line="51"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/donnclab/kinetiframe/studio/StudioViewModel.kt"
+            line="105"
             column="13"/>
     </issue>
 
@@ -902,20 +913,9 @@
         errorLine1="        val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)"
         errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/engine/rigging/texture/TextureExtractor.kt"
-            line="70"
+            file="src/main/java/com/donnclab/kinetiframe/actors/rig/texture/TextureExtractor.kt"
+            line="82"
             column="22"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/TimelineViewModel.kt"
-            line="104"
-            column="13"/>
     </issue>
 
     <issue
@@ -924,7 +924,7 @@
         errorLine1="        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)"
         errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/color/WindowColorSource.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/color/WindowColorSource.kt"
             line="21"
             column="22"/>
     </issue>
@@ -935,8 +935,8 @@
         errorLine1="    override fun pixel(x: Int, y: Int): Int = bitmap.getPixel(x, y)"
         errorLine2="                                              ~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/ui/color/WindowColorSource.kt"
-            line="44"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/color/WindowColorSource.kt"
+            line="55"
             column="47"/>
     </issue>
 

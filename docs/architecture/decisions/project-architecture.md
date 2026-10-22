@@ -51,7 +51,7 @@ The `app` packages become:
 | Package | Holds | Comes from |
 | --- | --- | --- |
 | `studio` | The frame-by-frame editor: `EditorScreen`, `StudioViewModel` and its MVI types | `ui` |
-| `studio.ui.*` | Canvas, dock, timeline, camera, frame strip and editor dialogs | `ui/components/*` |
+| `studio.ui.*` | Canvas, dock, timeline, camera, colour picker, frame strip and editor dialogs | `ui/components/*`, `ui/color` |
 | `studio.domain` | Drawing, frames, layers, selection, history, playback and view managers | `domain/manager` |
 | `studio.render` | Frame composition and caches | `domain/render` |
 | `studio.drawing` | Brushes, shapes, rulers, stroke input math, text, bitmap buffers | `engine/*` |
@@ -68,9 +68,10 @@ The `app` packages become:
 | `audio` | Audio decoding, effects, recording, playback and audio UI | `engine/audio`, `data/audio`, `ui/audio` |
 | `video` | Imported video clips | `engine/video`, `data/video`, `domain/manager` |
 | `media` | Background images and image decoding | `engine/asset`, `data/image` |
-| `library` | Library, packs, palettes and bundled content | `ui/library`, `ui/packs`, `ui/color`, `data/library`, `data/color`, `data/demo` |
+| `library` | Library, packs, palettes and bundled content | `ui/library`, `ui/packs`, `data/library`, `data/color`, `data/demo` |
 | `export` | Video export | `data/export`, `ui/export` |
 | `home`, `settings`, `diagnostics` | Those screens and their storage | `ui/*`, `data/*` |
+| `navigation` | Navigation keys and the bottom bar | `ui/navigation`, `ui/components/navigation` |
 | `common` | Shared app UI, strings, coroutine helpers and JSON setup | `ui/common`, `ui/components/common`, `core/coroutines` |
 | `preview` | Preview fixtures and fake data, used only by previews and tests | `ui/common/model/PreviewCatalog.kt` |
 

@@ -46,12 +46,10 @@ across a boundary it shouldn't, for example Android types in `core` or Compose i
 
 ### Work in progress
 
-The modules above are the target layout, and the move is not finished. Most product code still
-lives in `app`, including some packages named `engine`, `data` and `domain`. These are folders
-inside `app`, not the modules of the same name. For example,
-`com.donnclab.kinetiframe.engine.drawing` (brushes) lives in `app`, while
-`com.donnclab.kinetiframe.engine.rigging.math` lives in the `engine` module. Moving that code
-into the right module is on the [roadmap](../../ROADMAP.md).
+Most product code still lives in `app`, organised by feature as described in the
+[project architecture](decisions/project-architecture.md) decision. Code moves from `app` into a
+library module when everything it depends on can move with it. Package names never repeat a
+module name, so `com.donnclab.kinetiframe.engine` is always the `engine` module.
 
 ## Where to find things in `app`
 
@@ -59,23 +57,26 @@ All paths are under `app/src/main/java/com/donnclab/kinetiframe/`.
 
 | Area | Package |
 | --- | --- |
-| Activity and navigation | `MainActivity.kt`, `ui/navigation` |
-| Home screen | `ui/home`, `ui/projects` |
-| The studio (main editor) | `ui/EditorScreen.kt`, `ui/StudioViewModel.kt`, `ui/StudioMvi.kt` |
-| Canvas input and drawing surface | `ui/components/canvas` |
-| Editor toolbars and menus | `ui/components/dock`, `ui/components/timeline` |
-| Brushes and drawing tools | `engine/drawing`, `engine/ruler`, `engine/shape` |
-| Frame and bitmap caches | `engine/cache`, `engine/buffer` |
-| Stroke, undo, layer and rig coordination | `domain/manager` |
-| Actor Studio | `ui/actors`, `ui/components/rigging` |
-| Rendering actors | `engine/rigging/render`, `engine/rigging/texture` |
-| Camera effects | `engine/camera` |
-| Library | `ui/library`, `ui/components/catalog`, `data/library` |
-| Stamp packs | `ui/packs`, `data/library/PackArchiver.kt` |
-| Projects on disk | `data/project` |
-| Actors and performances on disk | `data/actor` |
-| Video export | `data/export`, `ui/export` |
-| Audio | `domain/manager/AudioManager.kt`, `ui/audio`, `data/audio` |
+| Activity and navigation | `MainActivity.kt`, `navigation` |
+| Home screen | `home`, `project/ui` |
+| The studio (main editor) | `studio/EditorScreen.kt`, `studio/StudioViewModel.kt`, `studio/StudioMvi.kt` |
+| Canvas input and drawing surface | `studio/ui/canvas` |
+| Editor toolbars and menus | `studio/ui/dock`, `studio/ui/timeline` |
+| Brushes and drawing tools | `studio/drawing` |
+| Frame and bitmap caches | `studio/render`, `studio/drawing` |
+| Stroke, undo, layer and selection coordination | `studio/domain` |
+| Actor Studio | `actors/ui`, `actors/ui/rigging` |
+| Actor posing, placements and performances | `actors/domain` |
+| Rendering actors | `actors/render`, `actors/rig/texture` |
+| Camera effects | `studio/camera` |
+| Library | `library/ui`, `library/ui/catalog`, `library/data` |
+| Stamp packs | `library/ui/packs`, `library/data/PackArchiver.kt` |
+| Projects on disk | `project/data` |
+| Actors and performances on disk | `actors/data` |
+| Video export | `export/data`, `export/ui` |
+| Audio | `audio` |
+| Imported video clips | `video` |
+| Shared app UI and strings | `common` |
 
 ## How the app is structured
 
@@ -95,8 +96,8 @@ flowchart LR
 - Effects are for things that happen once, such as navigating or showing a message.
 
 The studio's ViewModel is `StudioViewModel`. It
-delegates focused jobs to managers in `domain/manager`, such as `DrawingManager` for strokes and
-undo, and `RiggingManager` for actor editing.
+delegates focused jobs to managers, such as `DrawingManager` in `studio/domain` for strokes and
+undo, and `RiggingManager` in `actors/domain` for actor editing.
 
 ## Drawing a stroke
 

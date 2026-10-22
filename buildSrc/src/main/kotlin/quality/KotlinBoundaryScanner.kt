@@ -47,6 +47,10 @@ internal object KotlinBoundaryScanner {
                     val lines = text.lines().size
                     if (lines > MAX_LINES) violations["lines|$path"] = lines
                     val parsed = factory.createFile(source.name, text.replace("\r\n", "\n").replace('\r', '\n'))
+                    val pkg = parsed.packageFqName.asString()
+                    if (module == "app" && RETIRED_APP_PACKAGES.any { pkg == it || pkg.startsWith("$it.") }) {
+                        violations["package|$path|$pkg"] = 1
+                    }
                     parsed.accept(object : KtTreeVisitorVoid() {
                         override fun visitNamedFunction(function: KtNamedFunction) {
                             val composable = function.annotationEntries.any { it.shortName?.asString() == "Composable" }
@@ -142,7 +146,10 @@ internal object KotlinBoundaryScanner {
         return violations
     }
 
-    private fun forbiddenPrefixes(module: String, path: String): List<String> {
+    private fun forbiddenPrefixes(module: String, path: String): List<String> =
+        if (module == "app") emptyList() else moduleRules(module, path) + APP_PACKAGES
+
+    private fun moduleRules(module: String, path: String): List<String> {
         val sdk = listOf("com.google.firebase.", "com.android.billingclient.", "io.appwrite.")
         return when (module) {
             "core" ->
@@ -200,6 +207,18 @@ internal object KotlinBoundaryScanner {
             else -> emptyList()
         }
     }
+
+    // Feature packages of the app module. Library modules sit below app and never reference them.
+    private val APP_PACKAGES = listOf(
+        "actors", "audio", "common", "diagnostics", "export", "home", "library", "media", "navigation",
+        "preview", "project", "settings", "studio", "video",
+    ).map { "com.donnclab.kinetiframe.$it." }
+
+    // Layer-named packages the app module no longer uses. `engine`, `data` and `core` are module
+    // names, and `ui`, `domain` and `models` group by layer instead of by feature.
+    private val RETIRED_APP_PACKAGES = listOf("core", "data", "domain", "engine", "models", "ui")
+        .map { "com.donnclab.kinetiframe.$it" }
+
     private const val MAX_LINES = 500
     const val MAX_FUNCTION_PARAMETERS = 6
     const val MAX_CONSTRUCTOR_PARAMETERS = 7

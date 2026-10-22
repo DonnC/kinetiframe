@@ -66,7 +66,7 @@ New contributors often ask where something lives. The short version:
 | If you are changing... | Look in |
 | --- | --- |
 | Colors, spacing, typography or a reusable control | [`designsystem`](designsystem/README.md) |
-| A screen, editor tool or app workflow | `app` (most product code still lives here) |
+| A screen, editor tool or app workflow | `app`, in its feature package such as `studio`, `actors` or `library` |
 | Rigging, IK, deformation or motion math | [`engine`](engine/README.md) |
 | Saved document models and their JSON codecs | [`core`](core/README.md) |
 | Durable file writes | [`data`](data/README.md) |

@@ -15,12 +15,10 @@ matching issue or open one.
 
 - **Translations.** Move user-facing text from Kotlin into Android string resources, then open the
   app to translators.
-- **Smaller editor files.** Split `EditorScreen`, `StudioViewModel` and `DrawingManager` into
-  focused classes, and rename the editor's `Timeline*` types to `Studio*` to match what they do.
-- **Clearer packages.** The `app` module contains packages named `engine`, `data` and `domain`
-  that share names with modules. Move drawing and brush code into the `engine` module, storage
-  code into `data`, and organize the rest of `app` by feature (`studio`, `actors`, `library`,
-  `export`, `home`).
+- **Smaller editor files.** Split `EditorScreen`, `StudioViewModel`, `StudioMvi`, `DrawingManager`
+  and the other files over 500 lines into focused classes.
+- **Code into modules.** Move drawing and brush code from `app` into the `engine` module, and
+  storage code into `data`, one workflow at a time.
 - **Public API docs** for `core` and `engine`, generated with Dokka.
 - **Cross-platform asset tools.** Port the PowerShell asset builders in `tools/loose_signal` to
   Python so they run on Linux and macOS too.
