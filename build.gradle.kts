@@ -17,7 +17,6 @@ spotless {
         // Formatting these would take them past the 500-line limit or their cap in
         // .architecture/legacy-baseline.properties. Each one is formatted when it is split.
         targetExclude(
-            "app/src/main/java/com/donnclab/kinetiframe/studio/domain/DrawingManager.kt",
             "app/src/main/java/com/donnclab/kinetiframe/studio/EditorScreen.kt",
             "app/src/main/java/com/donnclab/kinetiframe/studio/StudioViewModel.kt",
         )
