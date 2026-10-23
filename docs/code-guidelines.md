@@ -35,6 +35,12 @@ that breaks these rules is listed in `.architecture/legacy-baseline.properties`.
 only shrink. If you touch a file on it, don't add new violations, and fix the existing one if
 the change is small enough.
 
+The same check counts inline UI values per file outside `designsystem`, tests and previews:
+colors built from literals such as `Color(0xFF6750A4)`, non-zero `.dp` literals, and string
+literals passed to `Text(...)` or `contentDescription`. Existing counts are in
+`.architecture/ui-values-baseline.properties`. A file's count may only go down, and a file
+that isn't listed may have none.
+
 ## Modules and dependencies
 
 | Module | May depend on |
