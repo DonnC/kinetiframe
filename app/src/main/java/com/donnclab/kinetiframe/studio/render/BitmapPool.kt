@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.studio.render
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import androidx.core.graphics.createBitmap
 import java.util.concurrent.ConcurrentLinkedQueue
 
 /** Reuses stage-sized bitmaps for drawing and frame composition. The owner calls [clear] once. */
@@ -15,7 +16,7 @@ internal class BitmapPool {
             pooled.eraseColor(Color.TRANSPARENT)
             pooled
         } else {
-            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            createBitmap(width, height)
         }
     }
 
