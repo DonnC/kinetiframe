@@ -14,11 +14,6 @@ plugins {
 spotless {
     kotlin {
         target("**/src/**/*.kt")
-        // Formatting these would take them past the 500-line limit or their cap in
-        // .architecture/legacy-baseline.properties. Each one is formatted when it is split.
-        targetExclude(
-            "app/src/main/java/com/donnclab/kinetiframe/studio/EditorScreen.kt",
-        )
         ktlint(libs.versions.ktlint.get())
     }
     kotlinGradle {
