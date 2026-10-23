@@ -2,7 +2,6 @@ package com.donnclab.kinetiframe.studio.drawing
 
 import android.content.Context
 import android.graphics.Typeface
-import com.donnclab.kinetiframe.project.model.FontItem
 import java.util.Locale
 
 class FontRegistry(private val context: Context) {

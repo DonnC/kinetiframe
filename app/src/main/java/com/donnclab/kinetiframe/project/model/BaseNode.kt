@@ -1,16 +1,19 @@
 package com.donnclab.kinetiframe.project.model
 
-import android.graphics.Color
 import kotlinx.serialization.Serializable
+
+/** Opaque black and fully transparent, as packed ARGB. Saved node styles use these defaults. */
+const val ARGB_BLACK: Int = 0xFF000000.toInt()
+const val ARGB_TRANSPARENT: Int = 0
 
 @Serializable
 data class NodeStyle(
-    val mainColorHex: Int = Color.BLACK,
+    val mainColorHex: Int = ARGB_BLACK,
     val alpha: Float = 1f,
     val blurRadius: Float = 0f,
     val glowColorHex: Int? = null,
     val glowRadius: Float = 0f,
-    val strokeColorHex: Int = Color.TRANSPARENT,
+    val strokeColorHex: Int = ARGB_TRANSPARENT,
     val strokeWidthPx: Float = 0f,
 )
 

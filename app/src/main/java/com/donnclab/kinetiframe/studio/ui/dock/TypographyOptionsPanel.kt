@@ -50,10 +50,10 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Plus
 import com.donnclab.kinetiframe.common.ui.StandardSlider
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
-import com.donnclab.kinetiframe.project.model.FontItem
 import com.donnclab.kinetiframe.project.model.TextNode
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
+import com.donnclab.kinetiframe.studio.drawing.FontItem
 import com.donnclab.kinetiframe.studio.drawing.FontRegistry
 import com.donnclab.kinetiframe.studio.ui.dialogs.TextInsertionDialog
 

@@ -10,14 +10,11 @@ import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
 import com.donnclab.kinetiframe.actors.rig.model.Transform
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.audio.VoiceEffect
-import com.donnclab.kinetiframe.audio.WaveformExtractor
 import com.donnclab.kinetiframe.project.model.BaseNode
 import com.donnclab.kinetiframe.project.model.Layer
 import com.donnclab.kinetiframe.studio.camera.CameraShot
 import com.donnclab.kinetiframe.studio.camera.SceneCamera
 import com.donnclab.kinetiframe.studio.drawing.Affine2D
-import com.donnclab.kinetiframe.video.VideoFrameProvider
-import com.donnclab.kinetiframe.video.VideoTrackManager
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
@@ -141,7 +138,7 @@ data class AudioClipPlacement(
      * placement so a lane can render without decoding audio on every recomposition.
      *
      * Captured for free while recording (the live meter's own peaks) and decoded once on import
-     * (see [WaveformExtractor]). Empty is a valid, non-fatal state --
+     * by the waveform extractor. Empty is a valid, non-fatal state --
      * a clip whose source could not be decoded still places and still plays; its lane just draws
      * a flat bar instead of an outline.
      */
@@ -197,14 +194,13 @@ data class AudioClipSourceWindow(val inMicros: Long, val durationFrames: Int, va
  * deliberately built to avoid splitting an imported video into hundreds of individual frame
  * images. The source video file is copied into the project once and never re-encoded or cut;
  * [videoSourceOffsetSeconds] is the only trim mechanism, an in-point into that one file. Playback
- * decodes on demand for whichever frame is current (see
- * [VideoFrameProvider]) rather than pre-splitting.
+ * decodes on demand for whichever frame is current rather than pre-splitting.
  *
  * There is only ever one video track (unlike audio's [MAX_AUDIO_TRACKS] lanes) -- a deliberate
  * "single-track, multi-clip" compromise for Android hardware decoder concurrency limits (a
  * low-end phone may only decode ~2 video streams at once). Multiple clips may exist end to end on
- * that one track, but must never overlap in time; [VideoTrackManager] enforces that at add/trim
- * time.
+ * that one track, but must never overlap in time; the video track manager enforces that when
+ * clips are added or trimmed.
  */
 @Serializable
 data class VideoClipPlacement(
@@ -272,7 +268,7 @@ data class ProjectDocument(
      *  see [AudioTrackSettings]. */
     val audioTracks: Map<Int, AudioTrackSettings> = emptyMap(),
     /** Clips on the single video lane -- see [VideoClipPlacement]. Sequential and
-     *  non-overlapping by construction (enforced in [VideoTrackManager]). */
+     *  non-overlapping by construction. */
     val videoClips: Map<String, VideoClipPlacement> = emptyMap(),
     /** Track-wide "rotoscope" opacity for the video reference layer, so the artist can trace over
      *  the video while it plays back faintly beneath their strokes. This is a single
