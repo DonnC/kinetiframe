@@ -8,7 +8,7 @@
         errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/CanvasInputLayer.kt"
-            line="90"
+            line="78"
             column="37"/>
     </issue>
 
@@ -241,17 +241,6 @@
             file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/CanvasDrawingUtils.kt"
             line="174"
             column="24"/>
-    </issue>
-
-    <issue
-        id="AutoboxingStateCreation"
-        message="Prefer `mutableLongStateOf` instead of `mutableStateOf`"
-        errorLine1="    var lastTapTime by remember { mutableStateOf(0L) }"
-        errorLine2="                                  ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/CanvasInputLayer.kt"
-            line="67"
-            column="35"/>
     </issue>
 
     <issue
@@ -623,45 +612,12 @@
 
     <issue
         id="UseKtx"
-        message="Use the KTX extension function `Canvas.withMatrix` instead?"
-        errorLine1="                    canvas.save()"
-        errorLine2="                    ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/domain/DrawingManager.kt"
-            line="311"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Canvas.withMatrix` instead?"
-        errorLine1="            canvas.save()"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/domain/DrawingManager.kt"
-            line="332"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Canvas.withMatrix` instead?"
-        errorLine1="                                canvas.save()"
-        errorLine2="                                ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/domain/DrawingManager.kt"
-            line="373"
-            column="33"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
         message="Use the KTX extension function `Bitmap.get` instead?"
         errorLine1="        val startColor = source.getPixel(x, y)"
         errorLine2="                         ~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/domain/DrawingManager.kt"
-            line="594"
+            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/FloodFill.kt"
+            line="17"
             column="26"/>
     </issue>
 
@@ -685,6 +641,28 @@
             file="src/main/java/com/donnclab/kinetiframe/studio/render/FrameCacheManager.kt"
             line="223"
             column="30"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withMatrix` instead?"
+        errorLine1="        canvas.save()"
+        errorLine2="        ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/donnclab/kinetiframe/studio/domain/HistoryItemPainter.kt"
+            line="38"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withMatrix` instead?"
+        errorLine1="                canvas.save()"
+        errorLine2="                ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/donnclab/kinetiframe/studio/domain/HistoryItemPainter.kt"
+            line="49"
+            column="17"/>
     </issue>
 
     <issue
