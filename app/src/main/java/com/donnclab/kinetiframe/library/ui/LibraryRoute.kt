@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
 import com.donnclab.kinetiframe.navigation.BottomNavDestination
 import kotlinx.coroutines.launch
 

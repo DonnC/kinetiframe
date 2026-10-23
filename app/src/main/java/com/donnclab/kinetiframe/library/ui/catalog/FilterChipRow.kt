@@ -12,9 +12,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 
@@ -24,13 +25,13 @@ import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
  * to scan.
  */
 @Composable
-fun FilterChipRow(filters: List<String>, selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier) {
+fun FilterChipRow(filters: List<Int>, selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier.horizontalScroll(rememberScrollState()).padding(horizontal = Dimens.spaceXl, vertical = Dimens.spaceS),
         horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
     ) {
         filters.forEachIndexed { index, label ->
-            FilterChip(label, active = index == selectedIndex, onClick = { onSelect(index) })
+            FilterChip(stringResource(label), active = index == selectedIndex, onClick = { onSelect(index) })
         }
     }
 }
@@ -60,9 +61,9 @@ private fun FilterChipRowPreview() {
     KinetiFrameTheme {
         FilterChipRow(
             filters = listOf(
-                FeatureStrings.Library.FILTER_FULL_PROJECTS,
-                FeatureStrings.Library.FILTER_BACKGROUND_IMAGES,
-                FeatureStrings.Library.FILTER_STATIC_OVERLAYS,
+                R.string.library_filter_full_projects,
+                R.string.library_filter_background_images,
+                R.string.library_filter_static_overlays,
             ),
             selectedIndex = 0,
             onSelect = {},

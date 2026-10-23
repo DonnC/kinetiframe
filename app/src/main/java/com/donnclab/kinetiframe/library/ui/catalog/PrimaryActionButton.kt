@@ -17,10 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.ClipboardPlus
 import com.composables.icons.lucide.Lucide
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.DisabledContent
 import com.donnclab.kinetiframe.designsystem.theme.DisabledSurface
@@ -74,7 +75,7 @@ fun PrimaryActionButton(
 private fun PrimaryActionButtonPreview() {
     KinetiFrameTheme {
         PrimaryActionButton(
-            content = ActionButtonContent(FeatureStrings.PackContents.ADD_PACK_TO_LIBRARY, Lucide.ClipboardPlus),
+            content = ActionButtonContent(stringResource(R.string.pack_add_to_library), Lucide.ClipboardPlus),
             state = ActionButtonState.ENABLED,
             onClick = {},
         )

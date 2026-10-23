@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lock
@@ -16,7 +17,7 @@ import com.composables.icons.lucide.LockOpen
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Volume2
 import com.composables.icons.lucide.VolumeX
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 
 /**
@@ -48,7 +49,13 @@ fun AudioLaneHeader(
         IconButton(onClick = onToggleMute, modifier = Modifier.size(CONTROL_SIZE.dp)) {
             Icon(
                 imageVector = if (isMuted) Lucide.VolumeX else Lucide.Volume2,
-                contentDescription = if (isMuted) FeatureStrings.Audio.UNMUTE_LANE else FeatureStrings.Audio.MUTE_LANE,
+                contentDescription = if (isMuted) {
+                    stringResource(
+                        R.string.audio_unmute_lane,
+                    )
+                } else {
+                    stringResource(R.string.audio_mute_lane)
+                },
                 tint = if (isMuted) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(GLYPH_SIZE.dp),
             )
@@ -56,7 +63,13 @@ fun AudioLaneHeader(
         IconButton(onClick = onToggleLock, modifier = Modifier.size(CONTROL_SIZE.dp)) {
             Icon(
                 imageVector = if (isLocked) Lucide.Lock else Lucide.LockOpen,
-                contentDescription = if (isLocked) FeatureStrings.Audio.UNLOCK_LANE else FeatureStrings.Audio.LOCK_LANE,
+                contentDescription = if (isLocked) {
+                    stringResource(
+                        R.string.audio_unlock_lane,
+                    )
+                } else {
+                    stringResource(R.string.audio_lock_lane)
+                },
                 tint = if (isLocked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(GLYPH_SIZE.dp),
             )

@@ -24,8 +24,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.common.ui.CompactTextField
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
@@ -117,7 +118,7 @@ private fun LibraryTopBar(query: String, onIntent: (LibraryIntent) -> Unit, onPa
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(FeatureStrings.Library.TITLE, style = MaterialTheme.typography.headlineSmall)
+            Text(stringResource(R.string.library_title), style = MaterialTheme.typography.headlineSmall)
             Row {
                 IconButton(onClick = onPalettes) { Icon(Icons.Filled.Palette, "Palettes") }
                 IconButton(onClick = {
@@ -136,7 +137,7 @@ private fun LibraryTopBar(query: String, onIntent: (LibraryIntent) -> Unit, onPa
             modifier = Modifier.fillMaxWidth().padding(horizontal = Dimens.spaceXl),
         )
         Text(
-            FeatureStrings.Library.SUBTITLE,
+            stringResource(R.string.library_subtitle),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = Dimens.spaceXl).padding(bottom = Dimens.spaceS),

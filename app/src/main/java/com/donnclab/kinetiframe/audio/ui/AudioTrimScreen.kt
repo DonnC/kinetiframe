@@ -21,14 +21,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Pause
 import com.composables.icons.lucide.Play
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.audio.AudioTrimSelection
 import com.donnclab.kinetiframe.audio.Waveform
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 
@@ -77,10 +78,10 @@ fun AudioTrimScreen(state: AudioTrimState, actions: AudioTrimActions, modifier: 
     ) {
         Column(Modifier.padding(Dimens.spaceL)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(FeatureStrings.Audio.TRIM_TITLE, style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.audio_trim_title), style = MaterialTheme.typography.titleMedium)
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     IconButton(onClick = actions.onCancel) {
-                        Icon(Lucide.X, contentDescription = FeatureStrings.Audio.CLOSE)
+                        Icon(Lucide.X, contentDescription = stringResource(R.string.action_close))
                     }
                 }
             }
@@ -99,22 +100,22 @@ fun AudioTrimScreen(state: AudioTrimState, actions: AudioTrimActions, modifier: 
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TrimReadout(FeatureStrings.Audio.TRIM_IN, state.selection.inMicros) { preciseTrim = true }
+                TrimReadout(stringResource(R.string.audio_trim_in), state.selection.inMicros) { preciseTrim = true }
                 IconButton(onClick = actions.onTogglePreview) {
                     Icon(
                         imageVector = if (state.isPreviewing) Lucide.Pause else Lucide.Play,
                         contentDescription = if (state.isPreviewing) {
-                            FeatureStrings.Audio.STOP_PREVIEW
+                            stringResource(R.string.audio_stop_preview)
                         } else {
-                            FeatureStrings.Audio.PREVIEW
+                            stringResource(R.string.audio_preview_selection)
                         },
                     )
                 }
-                TrimReadout(FeatureStrings.Audio.TRIM_OUT, state.selection.outMicros) { preciseTrim = true }
+                TrimReadout(stringResource(R.string.audio_trim_out), state.selection.outMicros) { preciseTrim = true }
             }
 
             Text(
-                "${FeatureStrings.Audio.TRIM_LENGTH}  ${formatTimestamp(state.selection.selectedDurationMicros)}",
+                stringResource(R.string.audio_trim_length, formatTimestamp(state.selection.selectedDurationMicros)),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = Dimens.spaceXs),
@@ -123,7 +124,7 @@ fun AudioTrimScreen(state: AudioTrimState, actions: AudioTrimActions, modifier: 
             Button(
                 onClick = actions.onConfirm,
                 modifier = Modifier.fillMaxWidth().padding(top = Dimens.spaceL),
-            ) { Text(FeatureStrings.Audio.ADD_TO_TIMELINE) }
+            ) { Text(stringResource(R.string.audio_add_to_timeline)) }
         }
     }
 }
