@@ -43,7 +43,9 @@ that isn't listed may have none.
 
 It also checks that `app` features only use the features below them, in the order the
 [feature modules](architecture/decisions/feature-modules.md) decision sets out. Existing upward
-references are in `.architecture/layering-baseline.properties`, under the same rule.
+references are in `.architecture/layering-baseline.properties`, under the same rule. The same
+file records Compose imports in `domain`, `data`, `render`, `rig`, `math` and `model` packages,
+and UI code that imports a `data` package instead of going through its ViewModel.
 
 ## Modules and dependencies
 
