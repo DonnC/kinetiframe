@@ -1,8 +1,10 @@
 package com.donnclab.kinetiframe.actors.rig.presets
 
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
-import com.donnclab.kinetiframe.actors.rig.model.RootTranslation
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
+import com.donnclab.kinetiframe.core.actor.presets.RootMotionChannel
+import com.donnclab.kinetiframe.core.actor.presets.RootMotionPoint
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.engine.rigging.presets.PresetCurve
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

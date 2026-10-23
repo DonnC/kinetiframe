@@ -1,8 +1,15 @@
 package com.donnclab.kinetiframe.studio.ui.canvas
 
+import android.graphics.Matrix
 import androidx.compose.ui.geometry.Offset
+import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.project.model.ProjectDocument
 import com.donnclab.kinetiframe.studio.StudioIntent
+import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.StudioViewModel
+import com.donnclab.kinetiframe.studio.camera.CameraAction
+import com.donnclab.kinetiframe.studio.camera.CameraShot
+import com.donnclab.kinetiframe.studio.domain.ViewManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -24,23 +31,23 @@ import java.io.File
 @Config(sdk = [34], manifest = Config.NONE)
 class CanvasTransformTests {
     @Test fun reopenedCameraProjectCentersStageInBothPortraitAndLandscapeWorkspaces() {
-        val document = com.donnclab.kinetiframe.project.model.ProjectDocument(
-            stage = com.donnclab.kinetiframe.project.model.StageDimensions(1280, 720),
+        val document = ProjectDocument(
+            stage = StageDimensions(1280, 720),
             cameraShots = listOf(
-                com.donnclab.kinetiframe.studio.camera.CameraShot(
+                CameraShot(
                     "fade",
-                    com.donnclab.kinetiframe.studio.camera.CameraAction.FADE_IN,
+                    CameraAction.FADE_IN,
                     0,
                     12,
                 ),
             ),
         )
-        var state = com.donnclab.kinetiframe.studio.StudioState(project = document)
-        val manager = com.donnclab.kinetiframe.studio.domain.ViewManager { change -> state = change(state) }
+        var state = StudioState(project = document)
+        val manager = ViewManager { change -> state = change(state) }
         for ((width, height) in listOf(1080 to 1600, 1600 to 900)) {
             manager.setViewportSize(width, height)
             val center = floatArrayOf(640f, 360f)
-            android.graphics.Matrix().apply { setValues(state.canvas.matrixValues) }.mapPoints(center)
+            Matrix().apply { setValues(state.canvas.matrixValues) }.mapPoints(center)
             assertEquals(width / 2f, center[0], .001f)
             assertEquals(height / 2f, center[1], .001f)
             assertEquals(document.cameraShots, state.project.cameraShots)
@@ -72,7 +79,7 @@ class CanvasTransformTests {
 
         val expectedOffset = pivot - (pivot - initialOffset) * zoomDelta
 
-        val matrix = android.graphics.Matrix().apply {
+        val matrix = Matrix().apply {
             postScale(zoomDelta, zoomDelta, pivot.x, pivot.y)
         }
         viewModel.handleIntent(StudioIntent.View.UpdateCanvasTransform(matrix))
@@ -81,9 +88,9 @@ class CanvasTransformTests {
         val currentState = viewModel.state.value
         val values = currentState.canvas.matrixValues
 
-        assertEquals(2.0f, values[android.graphics.Matrix.MSCALE_X], 0.001f)
-        assertEquals(expectedOffset.x, values[android.graphics.Matrix.MTRANS_X], 0.001f)
-        assertEquals(expectedOffset.y, values[android.graphics.Matrix.MTRANS_Y], 0.001f)
+        assertEquals(2.0f, values[Matrix.MSCALE_X], 0.001f)
+        assertEquals(expectedOffset.x, values[Matrix.MTRANS_X], 0.001f)
+        assertEquals(expectedOffset.y, values[Matrix.MTRANS_Y], 0.001f)
     }
 
     @Test
@@ -93,7 +100,7 @@ class CanvasTransformTests {
 
         viewModel.handleIntent(StudioIntent.Playback.SetCurrentFrame(1))
         testDispatcher.scheduler.advanceUntilIdle()
-        val matrix = android.graphics.Matrix().apply {
+        val matrix = Matrix().apply {
             postScale(2.0f, 2.0f)
             postTranslate(100f, 100f)
         }
@@ -152,7 +159,7 @@ class CanvasTransformTests {
 
     @Test
     fun resetReliabilityTest() = runTest {
-        val matrix = android.graphics.Matrix().apply {
+        val matrix = Matrix().apply {
             postScale(3.5f, 3.5f)
             postTranslate(-400f, 600f)
             postRotate(45f)
@@ -177,7 +184,7 @@ class CanvasTransformTests {
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.state.value
-        val matrix = android.graphics.Matrix().apply { setValues(state.canvas.matrixValues) }
+        val matrix = Matrix().apply { setValues(state.canvas.matrixValues) }
         val documentCorners = floatArrayOf(0f, 0f, 1_920f, 1_080f)
         matrix.mapPoints(documentCorners)
 

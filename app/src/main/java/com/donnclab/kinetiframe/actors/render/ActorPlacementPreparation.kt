@@ -4,7 +4,7 @@ import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.domain.ActorStageFraming
-import com.donnclab.kinetiframe.actors.rig.model.Transform
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import com.donnclab.kinetiframe.project.model.ActorPlacementReference
 import com.donnclab.kinetiframe.project.model.ProjectDocument
 

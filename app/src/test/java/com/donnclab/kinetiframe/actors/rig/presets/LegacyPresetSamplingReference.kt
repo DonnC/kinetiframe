@@ -1,7 +1,8 @@
 package com.donnclab.kinetiframe.actors.rig.presets
 
-import com.donnclab.kinetiframe.actors.rig.model.RootTranslation
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
+import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.engine.rigging.math.CompiledMotionCurve
 
 internal object LegacyPresetSamplingReference {

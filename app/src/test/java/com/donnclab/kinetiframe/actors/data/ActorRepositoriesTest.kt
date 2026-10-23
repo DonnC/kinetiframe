@@ -1,10 +1,17 @@
 package com.donnclab.kinetiframe.actors.data
 
+import com.donnclab.kinetiframe.actors.data.db.ActorDao
+import com.donnclab.kinetiframe.actors.data.db.ActorEntity
+import com.donnclab.kinetiframe.actors.data.db.PerformanceDao
+import com.donnclab.kinetiframe.actors.data.db.PerformanceEntity
 import com.donnclab.kinetiframe.actors.domain.PerformanceCompatibility
 import com.donnclab.kinetiframe.actors.domain.ResolveActorRenderUseCase
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -119,7 +126,7 @@ class ActorRepositoriesTest {
         val document = performance("performance-wave", "actor-alice").copy(
             actorRevisionId = "rev-alice-1",
             poseKeys = listOf(
-                com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey(0, mapOf("missing-part" to 10f)),
+                ActorPoseKey(0, mapOf("missing-part" to 10f)),
             ),
         )
         assertThrows(IllegalArgumentException::class.java) { PerformanceCompatibility.validate(document, revision) }
@@ -181,20 +188,20 @@ class ActorRepositoriesTest {
     @Test fun `performance keys must be ordered and within duration`() {
         val invalid = performance("perf-alice", "actor-alice").copy(
             poseKeys = listOf(
-                com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey(100, emptyMap()),
-                com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey(100, emptyMap()),
+                ActorPoseKey(100, emptyMap()),
+                ActorPoseKey(100, emptyMap()),
             ),
         )
         assertTrue(runCatching { invalid.validate() }.exceptionOrNull() != null)
     }
 
     @Test fun `performance curve payloads have bounded deterministic limits`() {
-        val excessivePoints = List(com.donnclab.kinetiframe.actors.data.RotationCurve.MAX_POINTS + 1) { index ->
-            com.donnclab.kinetiframe.actors.data.RotationCurvePoint(index.toLong(), 0f)
+        val excessivePoints = List(RotationCurve.MAX_POINTS + 1) { index ->
+            RotationCurvePoint(index.toLong(), 0f)
         }
         val invalid = performance("performance-wave", "actor-alice").copy(
             rotationCurves = listOf(
-                com.donnclab.kinetiframe.actors.data.RotationCurve("head", points = excessivePoints),
+                RotationCurve("head", points = excessivePoints),
             ),
         )
         assertThrows(IllegalArgumentException::class.java) { invalid.validate() }
@@ -354,10 +361,10 @@ class ActorRepositoriesTest {
     )
 
     @Test fun `a populated actor index recovers actors whose indexing write was missed`() {
-        val rows = mutableMapOf<String, com.donnclab.kinetiframe.actors.data.db.ActorEntity>()
-        val dao = object : com.donnclab.kinetiframe.actors.data.db.ActorDao {
+        val rows = mutableMapOf<String, ActorEntity>()
+        val dao = object : ActorDao {
             override fun getAll() = rows.values.toList()
-            override fun upsert(entity: com.donnclab.kinetiframe.actors.data.db.ActorEntity) {
+            override fun upsert(entity: ActorEntity) {
                 rows[entity.actorId] =
                     entity
             }
@@ -378,10 +385,10 @@ class ActorRepositoriesTest {
     }
 
     @Test fun `a populated performance index cannot hide saved gestures or lose pose payloads`() {
-        val rows = mutableMapOf<String, com.donnclab.kinetiframe.actors.data.db.PerformanceEntity>()
-        val dao = object : com.donnclab.kinetiframe.actors.data.db.PerformanceDao {
+        val rows = mutableMapOf<String, PerformanceEntity>()
+        val dao = object : PerformanceDao {
             override fun getForProject(projectId: String) = rows.values.filter { it.projectId == projectId }
-            override fun upsert(entity: com.donnclab.kinetiframe.actors.data.db.PerformanceEntity) {
+            override fun upsert(entity: PerformanceEntity) {
                 rows[entity.performanceId] =
                     entity
             }
@@ -392,8 +399,8 @@ class ActorRepositoriesTest {
         val files = ActorFileStore(root)
         val first = performance("wave", "actor-alice").copy(
             poseKeys = listOf(
-                com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey(0, mapOf("head" to 25f)),
-                com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey(500_000, mapOf("head" to 45f)),
+                ActorPoseKey(0, mapOf("head" to 25f)),
+                ActorPoseKey(500_000, mapOf("head" to 45f)),
             ),
         )
         val second = performance("jump", "actor-alice")

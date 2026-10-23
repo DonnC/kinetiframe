@@ -11,6 +11,7 @@ import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.project.data.ProjectManifest
 import com.donnclab.kinetiframe.project.data.ProjectRepository
 import com.donnclab.kinetiframe.project.data.ProjectSaveDocument
@@ -19,7 +20,6 @@ import com.donnclab.kinetiframe.project.model.AudioClipPlacement
 import com.donnclab.kinetiframe.project.model.Layer
 import com.donnclab.kinetiframe.project.model.ProjectAsset
 import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.project.model.StageDimensions
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

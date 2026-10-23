@@ -2,8 +2,8 @@ package com.donnclab.kinetiframe.studio.render
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.project.model.StageDimensions
 import com.donnclab.kinetiframe.project.model.VideoClipPlacement
 import com.donnclab.kinetiframe.project.model.VideoFit
 import com.donnclab.kinetiframe.studio.camera.CameraAction

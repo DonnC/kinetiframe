@@ -2,8 +2,8 @@ package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
 import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
-import com.donnclab.kinetiframe.actors.rig.model.ArtworkVariant
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.actor.artwork.ArtworkVariant
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode

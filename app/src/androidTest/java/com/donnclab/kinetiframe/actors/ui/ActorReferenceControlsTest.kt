@@ -1,17 +1,26 @@
 package com.donnclab.kinetiframe.actors.ui
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.test.center
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.width
+import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
+import com.donnclab.kinetiframe.actors.data.ActorFileStore
+import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneArtwork
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -19,31 +28,33 @@ import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import java.io.File
+import java.nio.file.Files
 
 class ActorReferenceControlsTest {
     @get:Rule val compose = createComposeRule()
 
     @Test fun visibleReferenceCannotEnterSavedPartArtwork() {
-        val directory = java.nio.file.Files.createTempDirectory("actor-reference-test").toFile()
+        val directory = Files.createTempDirectory("actor-reference-test").toFile()
         val reference = Bitmap.createBitmap(100, 50, Bitmap.Config.ARGB_8888).apply {
-            eraseColor(android.graphics.Color.MAGENTA)
+            eraseColor(Color.MAGENTA)
         }
         val ink = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888).apply {
-            eraseColor(android.graphics.Color.BLACK)
+            eraseColor(Color.BLACK)
         }
         try {
             val session = ActorReferenceSession().apply { replace(reference, 200, 200) }
-            val runtime = com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager()
+            val runtime = RigAssetManager()
             val id = runtime.registerAsset(ink)
-            val graph = com.donnclab.kinetiframe.actors.rig.model.SceneGraph(
+            val graph = SceneGraph(
                 listOf("part"),
                 mapOf(
                     "part" to
-                        com.donnclab.kinetiframe.actors.rig.model.BoneNode(
+                        BoneNode(
                             hierarchy = BoneHierarchy("part", "Part", null),
                             rest = BoneRest(10f),
                             artwork = BoneArtwork(
-                                textureBinding = com.donnclab.kinetiframe.actors.rig.model.TextureBinding(
+                                textureBinding = TextureBinding(
                                     id,
                                     0f,
                                     0f,
@@ -52,16 +63,16 @@ class ActorReferenceControlsTest {
                         ),
                 ),
             )
-            val files = com.donnclab.kinetiframe.actors.data.ActorFileStore(directory)
-            val paths = com.donnclab.kinetiframe.actors.data.ActorArtworkStore(
+            val files = ActorFileStore(directory)
+            val paths = ActorArtworkStore(
                 files,
             ).save("actor", "revision", graph, runtime)
             assertEquals(setOf("part"), paths.keys)
-            val saved = android.graphics.BitmapFactory.decodeFile(
-                java.io.File(files.actorDirectory("actor"), paths.getValue("part")).path,
+            val saved = BitmapFactory.decodeFile(
+                File(files.actorDirectory("actor"), paths.getValue("part")).path,
             )
             assertEquals(10, saved.width)
-            assertEquals(android.graphics.Color.BLACK, saved.getPixel(0, 0))
+            assertEquals(Color.BLACK, saved.getPixel(0, 0))
             assertEquals(1, directory.walkTopDown().count { it.isFile })
             assertTrue(session.visible)
             saved.recycle()
@@ -100,7 +111,7 @@ class ActorReferenceControlsTest {
         compose.setContent { MaterialTheme { ActorReferenceControls(session, 200, 200) } }
         compose.runOnIdle {
             session.replace(first, 200, 200)
-            session.transform.matrix = androidx.compose.ui.graphics.Matrix().apply { translate(123f, 456f) }
+            session.transform.matrix = Matrix().apply { translate(123f, 456f) }
             session.replace(second, 200, 200)
             assertSame(second, session.bitmap)
             assertEquals(Offset(100f, 100f), session.transform.matrix.map(session.bounds.center))

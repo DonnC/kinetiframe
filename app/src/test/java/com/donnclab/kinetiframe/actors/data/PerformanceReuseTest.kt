@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.actors.data
 
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
@@ -15,7 +16,7 @@ class PerformanceReuseTest {
         val source = PerformanceDocument(
             performanceId = "wave", projectId = "first", actorId = "mira",
             actorRevisionId = "revision-front", displayName = "Wave", durationMicros = 1_000_000,
-            poseKeys = listOf(com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey(0, mapOf("hand" to 30f))),
+            poseKeys = listOf(ActorPoseKey(0, mapOf("hand" to 30f))),
             createdAtEpochMs = 0, updatedAtEpochMs = 0,
         )
         fun <T> value(result: ActorStoreResult<T>): T = (result as ActorStoreResult.Value).value

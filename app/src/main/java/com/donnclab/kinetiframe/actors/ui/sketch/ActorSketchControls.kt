@@ -34,6 +34,8 @@ import com.composables.icons.lucide.Redo
 import com.composables.icons.lucide.Redo2
 import com.composables.icons.lucide.Undo
 import com.composables.icons.lucide.Undo2
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 
 @Composable
 internal fun ActorSketchControls(
@@ -42,7 +44,7 @@ internal fun ActorSketchControls(
     showBones: Boolean,
     onBones: () -> Unit,
     onClose: () -> Unit,
-    graph: com.donnclab.kinetiframe.actors.rig.model.SceneGraph? = null,
+    graph: SceneGraph? = null,
 ) {
     var palette by remember { mutableStateOf(false) }
     Row(Modifier.fillMaxWidth()) {
@@ -110,7 +112,7 @@ internal fun ActorSketchControls(
 @Preview(widthDp = 900)
 @Composable
 private fun SketchControlsPreview() {
-    com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme {
+    KinetiFrameTheme {
         ActorSketchControls(ActorSketchState(busy = false), {}, true, {}, {})
     }
 }

@@ -3,6 +3,9 @@ package com.donnclab.kinetiframe.actors.ui
 import com.donnclab.kinetiframe.actors.data.ActorManifest
 import com.donnclab.kinetiframe.actors.data.ActorRevision
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
+import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
+import com.donnclab.kinetiframe.project.model.DrawingTool
 import com.donnclab.kinetiframe.project.model.Layer
 import com.donnclab.kinetiframe.project.model.LayerType
 import com.donnclab.kinetiframe.project.model.ProjectDocument
@@ -32,8 +35,8 @@ fun actorStudioInitialState(
         rotationCurves = performance?.rotationCurves.orEmpty(),
         rootMotionCurves = performance?.rootMotionCurves.orEmpty(),
         poseInterpolation =
-        performance?.poseInterpolation ?: com.donnclab.kinetiframe.actors.data.CurveInterpolation.SMOOTH,
-        motionPlayback = performance?.playback ?: com.donnclab.kinetiframe.actors.data.PerformancePlayback.LOOP,
+        performance?.poseInterpolation ?: CurveInterpolation.SMOOTH,
+        motionPlayback = performance?.playback ?: PerformancePlayback.LOOP,
         artworkKeys = performance?.artworkKeys.orEmpty(),
     )
     val layer = Layer(
@@ -61,6 +64,6 @@ fun actorStudioInitialState(
             studioMode = if (performanceAuthoring) StudioMode.ANIMATE_IK else StudioMode.RIG_SETUP,
             selectedBoneId = revision.sceneGraph.rootBoneIds.firstOrNull(),
         ),
-        tool = ToolState(activeTool = com.donnclab.kinetiframe.project.model.DrawingTool.RIG_SELECT),
+        tool = ToolState(activeTool = DrawingTool.RIG_SELECT),
     )
 }

@@ -18,8 +18,8 @@ import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Move
 import com.composables.icons.lucide.Text
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
 import com.donnclab.kinetiframe.actors.ui.rigging.ActorArtworkControls
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.studio.ActorEditTarget
 import com.donnclab.kinetiframe.studio.StudioIntent
 

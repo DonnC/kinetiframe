@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 
 /** Attachment pins use the same visible endpoint, but preserve their tiny structural length. */
 object ActorJointHandle {

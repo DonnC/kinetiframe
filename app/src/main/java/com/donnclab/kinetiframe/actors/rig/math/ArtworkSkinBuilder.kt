@@ -1,14 +1,14 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
-import com.donnclab.kinetiframe.actors.rig.model.ArtworkSkin
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
-import com.donnclab.kinetiframe.actors.rig.model.SkinBone
-import com.donnclab.kinetiframe.actors.rig.model.SkinGrid
-import com.donnclab.kinetiframe.actors.rig.model.SkinMesh
-import com.donnclab.kinetiframe.actors.rig.model.SkinSourceSize
-import com.donnclab.kinetiframe.actors.rig.model.SkinVertex
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
+import com.donnclab.kinetiframe.core.actor.artwork.ArtworkSkin
+import com.donnclab.kinetiframe.core.actor.artwork.SkinBone
+import com.donnclab.kinetiframe.core.actor.artwork.SkinGrid
+import com.donnclab.kinetiframe.core.actor.artwork.SkinMesh
+import com.donnclab.kinetiframe.core.actor.artwork.SkinSourceSize
+import com.donnclab.kinetiframe.core.actor.artwork.SkinVertex
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.min

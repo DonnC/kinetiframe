@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.actors.data
 
+import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File

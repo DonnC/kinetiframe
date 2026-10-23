@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.export.data
 
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.document.StageDimensions
 
 /**
  * A platform target chosen at export time, independent of the project's own working canvas.

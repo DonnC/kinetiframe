@@ -18,9 +18,6 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.up
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
-import com.donnclab.kinetiframe.actors.rig.model.Transform
 import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchBindingMenu
 import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchCanvas
 import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchControls
@@ -29,7 +26,10 @@ import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchState
 import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchToolDock
 import com.donnclab.kinetiframe.actors.ui.sketch.SketchTool
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

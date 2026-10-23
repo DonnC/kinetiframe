@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.document.StageDimensions
 
 /** Draw the actual starter graph, not unrelated character art. Geometry is compiled off draw. */
 @Composable

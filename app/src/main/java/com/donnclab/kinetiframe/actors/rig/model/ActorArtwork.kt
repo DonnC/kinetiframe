@@ -1,11 +1,10 @@
 package com.donnclab.kinetiframe.actors.rig.model
 
+import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.artwork.SceneArtwork
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.engine.rigging.artwork.ArtworkTimeline
-
-typealias ArtworkVariant = com.donnclab.kinetiframe.core.actor.artwork.ArtworkVariant
-
-typealias ActorArtworkKey = com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 
 /** Stable addresses preserve legacy part-keyed artwork paths while adding actor-owned variants. */
 object ActorArtwork {

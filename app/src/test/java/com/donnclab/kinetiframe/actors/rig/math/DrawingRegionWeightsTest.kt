@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import com.donnclab.kinetiframe.actors.rig.model.ActorDrawingRegion
-import com.donnclab.kinetiframe.actors.rig.model.DrawingPoint
+import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawingRegion
+import com.donnclab.kinetiframe.core.actor.artwork.DrawingPoint
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

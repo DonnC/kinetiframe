@@ -1,9 +1,11 @@
 package com.donnclab.kinetiframe.actors.rig.presets
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorView
-import com.donnclab.kinetiframe.actors.rig.model.RootTranslation
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
 import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
+import com.donnclab.kinetiframe.core.actor.presets.RootMotionChannel
+import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.engine.rigging.presets.AppliedPresetProgram
 import com.donnclab.kinetiframe.engine.rigging.presets.PresetCurve
 import com.donnclab.kinetiframe.engine.rigging.presets.PresetDuration
@@ -56,8 +58,6 @@ data class RotationChannel(
     /** Subtract these evaluated local parent offsets to preserve a descendant's world angle. */
     val counterRotationBones: List<String> = emptyList(),
 )
-
-typealias RotationPoint = com.donnclab.kinetiframe.core.actor.presets.RotationPoint
 
 /**
  * Store the recipe snapshot so future asset-pack updates cannot change an existing animation.

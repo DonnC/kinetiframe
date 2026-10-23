@@ -1,20 +1,24 @@
 package com.donnclab.kinetiframe.actors.domain
 
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
+import com.donnclab.kinetiframe.actors.rig.math.ForwardKinematicsSolver
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
-import com.donnclab.kinetiframe.actors.rig.model.ArtworkAlignment
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
 import com.donnclab.kinetiframe.actors.rig.model.PivotPlacement
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
-import com.donnclab.kinetiframe.actors.rig.model.Transform
 import com.donnclab.kinetiframe.actors.rig.texture.JointProcessor
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.actors.rig.texture.TextureExtractor
+import com.donnclab.kinetiframe.core.actor.artwork.ArtworkAlignment
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.project.model.AssetKind
+import com.donnclab.kinetiframe.project.model.Layer
 import com.donnclab.kinetiframe.project.model.ProjectAsset
 import com.donnclab.kinetiframe.project.model.TextureSlot
 import com.donnclab.kinetiframe.project.model.bindTextureToBone
@@ -23,6 +27,7 @@ import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.activeActor
 import com.donnclab.kinetiframe.studio.actorDefinition
 import com.donnclab.kinetiframe.studio.currentFrameLayers
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -107,7 +112,7 @@ class RiggingManager(
                     )
                 }
                 installed = true
-            } catch (cancelled: kotlinx.coroutines.CancellationException) {
+            } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (error: Exception) {
                 sendEffect(StudioEffect.ShowError(error.message ?: "Unable to prepare cutout"))
@@ -149,7 +154,7 @@ class RiggingManager(
             val definition = state.project.puppetDefinitions[instance.definitionId] ?: return@updateState state
             val graph = definition.sceneGraph
             val id = "bone-${UUID.randomUUID().toString().take(8)}"
-            val computed = com.donnclab.kinetiframe.actors.rig.math.ForwardKinematicsSolver.resolveWorldStates(
+            val computed = ForwardKinematicsSolver.resolveWorldStates(
                 graph,
             )
             val parent = computed[state.scene.selectedBoneId] ?: computed.values.minByOrNull { bone ->
@@ -164,7 +169,7 @@ class RiggingManager(
                 )
             } else {
                 val parentNode = graph.bones.getValue(parent.id)
-                val inverse = android.graphics.Matrix()
+                val inverse = Matrix()
                 parent.worldMatrix.invert(inverse)
                 val target = floatArrayOf(x, y)
                 inverse.mapPoints(target)
@@ -225,9 +230,9 @@ class RiggingManager(
                 textureSlotId = textureSlotId,
                 textureBinding = TextureBinding(
                     assetId = placement.assetId,
-                    pivot = com.donnclab.kinetiframe.core.geometry.Point2(placement.pivotX, placement.pivotY),
+                    pivot = Point2(placement.pivotX, placement.pivotY),
                     alignment = ArtworkAlignment(
-                        com.donnclab.kinetiframe.core.geometry.Point2(offset.x, offset.y),
+                        Point2(offset.x, offset.y),
                         -world.angle,
                     ),
                 ),
@@ -253,7 +258,7 @@ class RiggingManager(
 
     /**
      * "Tap a bone, then sketch" binding: whenever a stroke settles on a layer armed to a bone
-     * (see [com.donnclab.kinetiframe.project.model.Layer.boundBoneId]), the whole layer's drawn content -- auto
+     * (see [Layer.boundBoneId]), the whole layer's drawn content -- auto
      * -cropped to its opaque bounds -- becomes that bone's texture, with the bone's own joint as
      * the pivot. No manual lasso-cut or pivot-drag needed; [preparePivotPlacement] +
      * [confirmPivot] still exist for pixel-precise manual control.
@@ -297,7 +302,7 @@ class RiggingManager(
         val world = RigGeometry.resolve(graph).getValue(boneId)
         val binding = TextureBinding(
             assetId = assetId,
-            pivot = com.donnclab.kinetiframe.core.geometry.Point2(
+            pivot = Point2(
                 world.start.x - bounds.left,
                 world.start.y - bounds.top,
             ),

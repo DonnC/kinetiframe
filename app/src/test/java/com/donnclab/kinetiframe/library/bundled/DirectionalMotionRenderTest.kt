@@ -1,6 +1,7 @@
 package com.donnclab.kinetiframe.library.bundled
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
@@ -12,11 +13,14 @@ import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.data.validate
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
-import com.donnclab.kinetiframe.actors.rig.model.ActorArtworkKey
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey
-import com.donnclab.kinetiframe.actors.rig.model.Transform
+import com.donnclab.kinetiframe.actors.rig.math.ArtworkAttachmentBlend
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures
 import com.donnclab.kinetiframe.project.data.KframeArchiver
 import com.donnclab.kinetiframe.project.model.ActorPlacementReference
 import kotlinx.serialization.json.Json
@@ -31,6 +35,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import java.io.File
+import java.util.zip.ZipFile
 
 /** Visual acceptance uses the same resolver, pose math and artwork renderer as editor/export. */
 @RunWith(RobolectricTestRunner::class)
@@ -39,8 +44,8 @@ import java.io.File
 class DirectionalMotionRenderTest {
     @Test fun joinedStarterHeadsAndHandsRenderAllViewsAndNativeBindsMatch() {
         withCast { actors, performances, renderer ->
-            java.util.zip.ZipFile(
-                com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures.file(
+            ZipFile(
+                DemoAssetFixtures.file(
                     assets,
                     BundledActorSourceReader.ASSET_PATH,
                 ),
@@ -56,10 +61,10 @@ class DirectionalMotionRenderTest {
                         assertTrue(stored.attachmentBlend)
                         val path = "dependencies/actors/$actorId/" + revision.artworkAssetPaths.getValue("head")
                         val pixels = archive.getInputStream(archive.getEntry(path)).use {
-                            android.graphics.BitmapFactory.decodeStream(it)
+                            BitmapFactory.decodeStream(it)
                         }!!
                         val native = try {
-                            com.donnclab.kinetiframe.actors.rig.math.ArtworkAttachmentBlend.bind(
+                            ArtworkAttachmentBlend.bind(
                                 revision.sceneGraph,
                                 "head",
                                 binding,
@@ -160,7 +165,7 @@ class DirectionalMotionRenderTest {
                 val revision = value(actors.loadRevision(actorId, "$actorId-profile-joined-v4"))
                 listOf("walk", "run").forEachIndexed { index, motion ->
                     val recipe = json.decodeFromString<ActorMotionPreset>(
-                        com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures.file(
+                        DemoAssetFixtures.file(
                             assets,
                             "actor/presets/views/profile-$motion.json",
                         ).readText(),
@@ -230,9 +235,9 @@ class DirectionalMotionRenderTest {
                 startFrame = 0,
                 durationFrames = 240,
                 transform = Transform(
-                    translation = com.donnclab.kinetiframe.core.geometry.Point2(-464f, -145f),
+                    translation = Point2(-464f, -145f),
                     rotationDegrees = 0f,
-                    stretch = com.donnclab.kinetiframe.core.geometry.Point2(.65f, .65f),
+                    stretch = Point2(.65f, .65f),
                 ),
             )
         val resolution = renderer.resolveAll(listOf(placement), "review", (time * 24 / 1_000_000).toInt(), 24).single()

@@ -32,11 +32,11 @@ import com.composables.icons.lucide.FolderOpen
 import com.composables.icons.lucide.Link2
 import com.composables.icons.lucide.Link2Off
 import com.composables.icons.lucide.Lucide
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.BoneDisplay
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 
 /**

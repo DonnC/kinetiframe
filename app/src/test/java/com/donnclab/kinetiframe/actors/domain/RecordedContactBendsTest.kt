@@ -1,8 +1,6 @@
 package com.donnclab.kinetiframe.actors.domain
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.data.RotationCurve
-import com.donnclab.kinetiframe.actors.data.RotationCurvePoint
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.math.ActorPoseEditor
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
@@ -10,7 +8,9 @@ import com.donnclab.kinetiframe.actors.rig.math.TwoBoneSolver
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

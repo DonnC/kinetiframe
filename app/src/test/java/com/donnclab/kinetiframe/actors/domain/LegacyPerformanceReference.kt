@@ -1,12 +1,12 @@
 package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
-import com.donnclab.kinetiframe.actors.data.PerformancePlayback
-import com.donnclab.kinetiframe.actors.data.RotationCurve
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.engine.rigging.motion.BeforeTake
 import com.donnclab.kinetiframe.engine.rigging.motion.CurveSampling
 import com.donnclab.kinetiframe.engine.rigging.motion.MotionCurveSampler

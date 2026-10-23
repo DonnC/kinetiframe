@@ -1,10 +1,10 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.RotationCurve
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 
 /** Planted endpoints must not erase a deliberately recorded opposite knee/elbow bend.
  * Store only discrete direction changes in the existing contact track; keep anchor positions,

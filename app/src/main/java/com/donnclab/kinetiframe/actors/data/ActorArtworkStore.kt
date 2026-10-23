@@ -2,8 +2,8 @@ package com.donnclab.kinetiframe.actors.data
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import java.io.File
 
 /** Persists revision artwork by stable texture asset ID; only bound parts are stored. */

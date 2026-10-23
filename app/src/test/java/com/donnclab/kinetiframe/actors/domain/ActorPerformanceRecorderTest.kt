@@ -1,9 +1,15 @@
 package com.donnclab.kinetiframe.actors.domain
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.data.RotationCurve
-import com.donnclab.kinetiframe.actors.data.RotationCurvePoint
+import com.donnclab.kinetiframe.actors.domain.LegacyActorMigration
+import com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
+import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
+import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
+import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -55,7 +61,7 @@ class ActorPerformanceRecorderTest {
         assertTrue(state.activeActor()!!.rootMotionCurves.isNotEmpty())
         recorder.handle(StudioIntent.ActorMotion.KeepTake)
         val actor = state.activeActor()!!
-        val document = com.donnclab.kinetiframe.actors.domain.LegacyActorMigration.performance(
+        val document = LegacyActorMigration.performance(
             actor,
             "project",
             "actor",
@@ -66,7 +72,7 @@ class ActorPerformanceRecorderTest {
         )!!
         val time = 65_000_000L
         val expected = state.copy(actor = state.actor.copy(previewTimeMicros = time)).actorDefinition(true)!!.sceneGraph
-        val saved = com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator.pose(document, time, rest)
+        val saved = PerformanceEvaluator.pose(document, time, rest)
         assertEquals(expected.bones.getValue(root).localTransform, saved.bones.getValue(root).localTransform)
     }
 
@@ -74,17 +80,17 @@ class ActorPerformanceRecorderTest {
         var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         ActorStudioManager({ state }, { state = it(state) }).handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         val actor = state.activeActor()!!
-        val recipe = com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset(
+        val recipe = ActorMotionPreset(
             id = "idle",
             name = "Idle",
             description = "",
             durationSeconds = 2f,
             requiredBones = listOf("head"),
             channels = listOf(
-                com.donnclab.kinetiframe.actors.rig.presets.RotationChannel("head", amplitudeDegrees = 12f),
+                RotationChannel("head", amplitudeDegrees = 12f),
             ),
         )
-        val preset = com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset(recipe)
+        val preset = AppliedActorPreset(recipe)
         state = state.copy(
             scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK),
             project = state.project.copy(
@@ -128,7 +134,7 @@ class ActorPerformanceRecorderTest {
         ActorStudioManager({ state }, { state = it(state) }).handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         val actor = state.activeActor()!!
         val ids = state.actorDefinition()!!.sceneGraph.bones.keys.toList()
-        val existing = com.donnclab.kinetiframe.actors.rig.model.ActorArtworkKey(100_000, mapOf(ids[0] to ""))
+        val existing = ActorArtworkKey(100_000, mapOf(ids[0] to ""))
         state = state.copy(
             scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK),
             project = state.project.copy(

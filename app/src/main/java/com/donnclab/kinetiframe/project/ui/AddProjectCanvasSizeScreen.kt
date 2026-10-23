@@ -27,7 +27,7 @@ import com.composables.icons.lucide.Link2
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.common.ui.AddFlowTopBar
 import com.donnclab.kinetiframe.common.ui.CompactTextField
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.studio.ui.dialogs.SelectionDot
 
 /**

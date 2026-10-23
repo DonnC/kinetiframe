@@ -12,9 +12,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.input.pointer.pointerInteropFilter
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.project.model.BaseNode
 import com.donnclab.kinetiframe.project.model.DrawingTool
-import com.donnclab.kinetiframe.project.model.StageDimensions
 import com.donnclab.kinetiframe.project.model.TextNode
 import com.donnclab.kinetiframe.project.model.TouchPoint
 import com.donnclab.kinetiframe.studio.RulerGuide

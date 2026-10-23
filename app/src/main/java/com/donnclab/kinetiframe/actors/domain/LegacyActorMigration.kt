@@ -2,8 +2,8 @@ package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.data.ActorRevision
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
-import com.donnclab.kinetiframe.actors.data.PerformancePlayback
 import com.donnclab.kinetiframe.actors.data.validate
+import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.project.model.PuppetDefinition
 import com.donnclab.kinetiframe.project.model.PuppetInstance
 

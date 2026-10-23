@@ -1,6 +1,7 @@
 package com.donnclab.kinetiframe.actors.ui.rigging
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
@@ -34,8 +36,12 @@ import androidx.compose.ui.unit.height
 import androidx.compose.ui.unit.isFinite
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.width
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
+import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.common.ui.CompactTextField
+import com.donnclab.kinetiframe.core.actor.artwork.ArtworkAlignment
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.geometry.Point2
 
 /** A non-mutating touch audition; Check commits alignment and Cancel preserves the actor. */
 @Composable
@@ -53,9 +59,9 @@ fun ArtworkAlignmentDialog(
     editing: Boolean = false,
     allowAlternate: Boolean = true,
     showName: Boolean = true,
-    graph: com.donnclab.kinetiframe.actors.rig.model.SceneGraph? = null,
+    graph: SceneGraph? = null,
     partId: String? = null,
-    assets: com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager? = null,
+    assets: RigAssetManager? = null,
     initialContinuousChildId: String? = null,
 ) {
     var label by remember { mutableStateOf(name.take(60)) }
@@ -63,12 +69,12 @@ fun ArtworkAlignmentDialog(
         mutableStateOf(
             initialBinding ?: TextureBinding(
                 "pending",
-                com.donnclab.kinetiframe.core.geometry.Point2(
+                Point2(
                     bitmap.width / 2f,
                     bitmap.height / 2f,
                 ),
-                com.donnclab.kinetiframe.actors.rig.model.ArtworkAlignment(
-                    com.donnclab.kinetiframe.core.geometry.Point2(boneLength / 2f, 0f),
+                ArtworkAlignment(
+                    Point2(boneLength / 2f, 0f),
                     -worldAngle,
                     (boneLength.coerceAtLeast(24f) * 1.2f / bitmap.width).coerceIn(.001f, 100f),
                 ),
@@ -158,12 +164,12 @@ fun ArtworkAlignmentDialog(
     )
 }
 
-@androidx.compose.ui.tooling.preview.Preview
+@Preview
 @Composable
 private fun ArtworkAlignmentPreview() {
     val bitmap =
         remember {
-            Bitmap.createBitmap(32, 32, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.CYAN) }
+            Bitmap.createBitmap(32, 32, Bitmap.Config.ARGB_8888).apply { eraseColor(Color.CYAN) }
         }
     DisposableEffect(bitmap) { onDispose { bitmap.recycle() } }
     MaterialTheme {

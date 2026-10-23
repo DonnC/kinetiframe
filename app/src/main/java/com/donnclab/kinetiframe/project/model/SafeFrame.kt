@@ -1,5 +1,7 @@
 package com.donnclab.kinetiframe.project.model
 
+import com.donnclab.kinetiframe.core.document.StageDimensions
+
 /** Export-safe guides expressed in document coordinates, never device pixels. */
 enum class SafeFrameRatio(val width: Float, val height: Float) {
     WIDESCREEN_16_9(16f, 9f),

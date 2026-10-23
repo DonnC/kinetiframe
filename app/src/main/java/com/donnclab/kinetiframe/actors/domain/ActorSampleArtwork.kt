@@ -3,8 +3,8 @@ package com.donnclab.kinetiframe.actors.domain
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.project.model.AssetKind
 import com.donnclab.kinetiframe.project.model.ProjectAsset
 import com.donnclab.kinetiframe.project.model.TextureSlot

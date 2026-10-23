@@ -2,13 +2,14 @@ package com.donnclab.kinetiframe.actors.domain
 
 import android.graphics.Bitmap
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
-import com.donnclab.kinetiframe.actors.rig.model.ArtworkAlignment
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
-import com.donnclab.kinetiframe.actors.rig.model.Transform
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.actor.artwork.ArtworkAlignment
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
@@ -180,9 +181,9 @@ class ActorArtworkManagerTest {
             val alignment =
                 TextureBinding(
                     "pending",
-                    com.donnclab.kinetiframe.core.geometry.Point2(6f, 4f),
-                    com.donnclab.kinetiframe.actors.rig.model.ArtworkAlignment(
-                        com.donnclab.kinetiframe.core.geometry.Point2(2f, 3f),
+                    Point2(6f, 4f),
+                    ArtworkAlignment(
+                        Point2(2f, 3f),
                         scale = 2f,
                     ),
                 )

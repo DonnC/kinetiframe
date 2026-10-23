@@ -1,28 +1,28 @@
 package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
-import com.donnclab.kinetiframe.actors.data.PerformancePlayback
-import com.donnclab.kinetiframe.actors.data.RootMotionCurve
-import com.donnclab.kinetiframe.actors.data.RootMotionPoint
-import com.donnclab.kinetiframe.actors.data.RotationCurve
-import com.donnclab.kinetiframe.actors.data.RotationCurvePoint
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
-import com.donnclab.kinetiframe.actors.rig.model.ActorArtworkKey
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.rig.model.RootTranslation
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
-import com.donnclab.kinetiframe.actors.rig.presets.RootMotionChannel
 import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
-import com.donnclab.kinetiframe.actors.rig.presets.RotationPoint
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionPoint
+import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
+import com.donnclab.kinetiframe.core.actor.presets.RootMotionChannel
+import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import com.donnclab.kinetiframe.actors.rig.presets.RootMotionPoint as PresetRootPoint
+import com.donnclab.kinetiframe.core.actor.presets.RootMotionPoint as PresetRootPoint
 
 class PerformanceClockBridgeParityTest {
     @Test fun `clocks rotations and complete poses match frozen document evaluation`() {

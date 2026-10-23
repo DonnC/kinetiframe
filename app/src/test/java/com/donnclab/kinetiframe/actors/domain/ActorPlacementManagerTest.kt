@@ -1,6 +1,7 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.rig.model.Transform
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.project.model.ActorPlacementReference
 import com.donnclab.kinetiframe.studio.StudioState
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -86,9 +87,9 @@ class ActorPlacementManagerTest {
         manager.updateTransform(
             "placement-b",
             Transform(
-                translation = com.donnclab.kinetiframe.core.geometry.Point2(42f, 12f),
+                translation = Point2(42f, 12f),
                 rotationDegrees = 0f,
-                stretch = com.donnclab.kinetiframe.core.geometry.Point2(1.5f, 1.5f),
+                stretch = Point2(1.5f, 1.5f),
             ),
         )
         assertEquals(42f, state.project.actorPlacements.getValue("placement-b").transform.x)

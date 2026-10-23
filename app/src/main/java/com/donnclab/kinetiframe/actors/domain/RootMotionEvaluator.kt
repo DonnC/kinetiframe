@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.RootMotionCurve
-import com.donnclab.kinetiframe.actors.rig.model.RootTranslation
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
+import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
 import com.donnclab.kinetiframe.engine.rigging.motion.CurveSampling
 import com.donnclab.kinetiframe.engine.rigging.motion.MotionCurveSampler
 

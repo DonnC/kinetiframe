@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.studio
 
-import com.donnclab.kinetiframe.actors.data.PerformancePlayback
 import com.donnclab.kinetiframe.actors.domain.PerformanceDuration
 import com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator
 import com.donnclab.kinetiframe.actors.domain.RootMotionEvaluator
@@ -9,9 +8,10 @@ import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
 import com.donnclab.kinetiframe.actors.rig.model.ActorView
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.engine.rigging.motion.BeforeTake
 import com.donnclab.kinetiframe.engine.rigging.motion.CurveSampling
 import com.donnclab.kinetiframe.engine.rigging.motion.MotionComposition

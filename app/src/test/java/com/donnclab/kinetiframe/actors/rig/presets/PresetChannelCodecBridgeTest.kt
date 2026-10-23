@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.actors.rig.presets
 
 import com.donnclab.kinetiframe.core.actor.presets.PresetOscillation
 import com.donnclab.kinetiframe.core.actor.presets.PresetRotationChannel
+import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

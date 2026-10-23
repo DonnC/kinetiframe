@@ -1,11 +1,12 @@
 package com.donnclab.kinetiframe.actors.rig.model
 
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.motion.JointContact
+import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.engine.rigging.motion.PoseKeys
 import com.donnclab.kinetiframe.engine.rigging.motion.PoseSampling
 import com.donnclab.kinetiframe.engine.rigging.motion.PoseTrackCache
-
-typealias ActorPoseKey = com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
-typealias JointContact = com.donnclab.kinetiframe.core.actor.motion.JointContact
 
 object ActorPoseTrack {
     private val cache = PoseTrackCache()

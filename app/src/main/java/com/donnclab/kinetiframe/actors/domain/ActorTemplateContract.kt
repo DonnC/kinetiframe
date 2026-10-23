@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.data.ActorManifest
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 
 /** Immutable semantic roles make saved performances portable across actor revisions. */
 object ActorTemplateContract {

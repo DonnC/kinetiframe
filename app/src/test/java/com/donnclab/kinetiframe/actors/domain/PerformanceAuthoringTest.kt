@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test

@@ -2,6 +2,8 @@ package com.donnclab.kinetiframe.actors.data
 
 import com.donnclab.kinetiframe.core.actor.motion.MotionValidationException
 import com.donnclab.kinetiframe.core.actor.motion.MotionValidationIssue
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 
 /** Preserve product diagnostics while public models expose typed, presentation-neutral errors. */
 fun RotationCurve.validate(durationMicros: Long): RotationCurve = apply {

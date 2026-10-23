@@ -1,22 +1,22 @@
 package com.donnclab.kinetiframe.studio
 
-import com.donnclab.kinetiframe.actors.data.RootMotionCurve
-import com.donnclab.kinetiframe.actors.data.RootMotionPoint
-import com.donnclab.kinetiframe.actors.data.RotationCurve
-import com.donnclab.kinetiframe.actors.data.RotationCurvePoint
 import com.donnclab.kinetiframe.actors.domain.ActorStudioManager
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
-import com.donnclab.kinetiframe.actors.rig.model.RootTranslation
-import com.donnclab.kinetiframe.actors.rig.model.Transform
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
-import com.donnclab.kinetiframe.actors.rig.presets.RootMotionChannel
 import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
-import com.donnclab.kinetiframe.actors.rig.presets.RotationPoint
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionPoint
+import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
+import com.donnclab.kinetiframe.core.actor.presets.RootMotionChannel
+import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import com.donnclab.kinetiframe.actors.rig.presets.RootMotionPoint as PresetRootPoint
+import com.donnclab.kinetiframe.core.actor.presets.RootMotionPoint as PresetRootPoint
 
 class ActorStudioCompositionTest {
     @Test fun `studio recordings override preset and key values only from their take start`() {

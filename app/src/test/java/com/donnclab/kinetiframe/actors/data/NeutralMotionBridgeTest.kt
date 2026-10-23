@@ -1,6 +1,9 @@
 package com.donnclab.kinetiframe.actors.data
 
 import com.donnclab.kinetiframe.core.actor.motion.MotionValidationException
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -22,7 +25,7 @@ class NeutralMotionBridgeTest {
 
     @Test fun `compatibility import is the same public model not a copy`() {
         val curve = RotationCurve("arm", points = listOf(RotationCurvePoint(0, 10f)))
-        val publicModel: com.donnclab.kinetiframe.core.actor.motion.RotationCurve = curve
+        val publicModel: RotationCurve = curve
         assertSame(curve, publicModel)
         assertSame(curve, curve.validate(1))
     }

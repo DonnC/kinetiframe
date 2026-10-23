@@ -3,17 +3,23 @@ package com.donnclab.kinetiframe.actors.ui
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.ActorStoreResult
-import com.donnclab.kinetiframe.actors.data.CurveInterpolation
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
-import com.donnclab.kinetiframe.actors.data.PerformancePlayback
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
-import com.donnclab.kinetiframe.actors.data.RootMotionCurve
-import com.donnclab.kinetiframe.actors.data.RotationCurve
 import com.donnclab.kinetiframe.actors.data.validate
 import com.donnclab.kinetiframe.actors.domain.PerformanceAuthoring
 import com.donnclab.kinetiframe.actors.domain.PerformanceCompatibility
+import com.donnclab.kinetiframe.actors.domain.PerformanceDuration
+import com.donnclab.kinetiframe.actors.rig.model.ActorView
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
+import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.ui.BaseViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -140,7 +146,7 @@ class ActorStudioDocumentViewModel(
         }
     }
 
-    private fun changeView(view: com.donnclab.kinetiframe.actors.rig.model.ActorView, create: Boolean) {
+    private fun changeView(view: ActorView, create: Boolean) {
         if (currentState.loading || currentState.isSaving) return
         if (currentState.isDirty || performanceId != null || currentState.performance != null ||
             (create && projectId != null)
@@ -184,12 +190,7 @@ class ActorStudioDocumentViewModel(
         }
     }
 
-    private fun save(
-        graph: com.donnclab.kinetiframe.actors.rig.model.SceneGraph,
-        revisionId: String,
-        artwork: Map<String, String>,
-        exitAfterSaving: Boolean,
-    ) {
+    private fun save(graph: SceneGraph, revisionId: String, artwork: Map<String, String>, exitAfterSaving: Boolean) {
         if (projectId != null || currentState.loading || currentState.isSaving) return
         val view = currentState.revision?.view ?: return
         updateState { it.copy(isSaving = true) }
@@ -222,13 +223,13 @@ class ActorStudioDocumentViewModel(
 
     private fun savePerformance(
         name: String,
-        keys: List<com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey>,
+        keys: List<ActorPoseKey>,
         preset: AppliedActorPreset?,
         requestedDurationMicros: Long,
-        retainedCurves: List<com.donnclab.kinetiframe.actors.data.RotationCurve>,
-        interpolation: com.donnclab.kinetiframe.actors.data.CurveInterpolation,
-        artworkKeys: List<com.donnclab.kinetiframe.actors.rig.model.ActorArtworkKey>,
-        rootMotionCurves: List<com.donnclab.kinetiframe.actors.data.RootMotionCurve>,
+        retainedCurves: List<RotationCurve>,
+        interpolation: CurveInterpolation,
+        artworkKeys: List<ActorArtworkKey>,
+        rootMotionCurves: List<RootMotionCurve>,
     ) {
         if (currentState.loading || currentState.isSaving) return
         val actor = currentState.manifest ?: return
@@ -265,7 +266,7 @@ class ActorStudioDocumentViewModel(
             val duration = if (artworkKeys.isEmpty()) {
                 requestedDuration
             } else {
-                com.donnclab.kinetiframe.actors.domain.PerformanceDuration.expressionLoop(requestedDuration, preset)
+                PerformanceDuration.expressionLoop(requestedDuration, preset)
             }
             val existing = currentState.performance
             when (
@@ -353,7 +354,7 @@ class ActorStudioDocumentViewModel(
     /** Validation failures are user-visible effects; coroutine cancellation still propagates. */
     private inline fun <T> storeOperation(block: () -> ActorStoreResult<T>): ActorStoreResult<T> = try {
         block()
-    } catch (cancelled: kotlinx.coroutines.CancellationException) {
+    } catch (cancelled: CancellationException) {
         throw cancelled
     } catch (error: Exception) {
         ActorStoreResult.Failure(error.message ?: "Could not save performance", error)
