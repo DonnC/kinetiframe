@@ -23,8 +23,8 @@ abstract class ArchitectureAuditWork : WorkAction<AuditParameters> {
         val findings = KotlinBoundaryScanner.scan(root, parameters.modules.get())
         val kinds = findings.entries.groupBy { it.key.substringBefore('|') }
         val uiValues = UI_VALUE_KINDS.flatMap { kinds[it].orEmpty() }
-        val layering = kinds[LAYERING].orEmpty()
-        val structure = findings.entries.filter { it.key.substringBefore('|') !in UI_VALUE_KINDS + LAYERING }
+        val layering = LAYERING_KINDS.flatMap { kinds[it].orEmpty() }
+        val structure = findings.entries.filter { it.key.substringBefore('|') !in UI_VALUE_KINDS + LAYERING_KINDS }
         if (parameters.reportOnly.get()) {
             writeCandidate(
                 File(root, "build/architecture/candidate-baseline.properties"),
@@ -39,7 +39,7 @@ abstract class ArchitectureAuditWork : WorkAction<AuditParameters> {
             writeCandidate(
                 File(root, "build/architecture/candidate-layering-baseline.properties"),
                 layering,
-                "Candidate only: references from a feature to one above it",
+                "Candidate only: upward feature references, Compose outside UI, and UI reading storage",
             )
             println("Candidate baselines in ${File(root, "build/architecture").path}; ${findings.size} total findings")
             return
@@ -58,7 +58,7 @@ abstract class ArchitectureAuditWork : WorkAction<AuditParameters> {
         }
         println(
             "Architecture checks passed; ${structure.size} reviewed legacy violations, " +
-                "${layering.sumOf { it.value }} upward feature references and " +
+                "${layering.sumOf { it.value }} layering violations and " +
                 "${uiValues.sumOf { it.value }} inline UI values remain",
         )
     }
@@ -72,7 +72,7 @@ abstract class ArchitectureAuditWork : WorkAction<AuditParameters> {
     private companion object {
         val UI_VALUE_KINDS = setOf(UiValueRules.COLORS, UiValueRules.DP, UiValueRules.TEXT)
 
-        const val LAYERING = "layering"
+        val LAYERING_KINDS = setOf("layering", UiLayerRules.COMPOSE, UiLayerRules.UI_DATA)
 
         /** Structural debt, upward feature references and inline UI values. Every list only shrinks. */
         val BASELINES = listOf(

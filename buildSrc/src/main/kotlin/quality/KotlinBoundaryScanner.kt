@@ -57,6 +57,12 @@ internal object KotlinBoundaryScanner {
                         val target = layer?.let { FeatureLayering.violation(it, reference) } ?: return
                         layering[target] = (layering[target] ?: 0) + 1
                     }
+                    val uiLayer = sortedMapOf<String, Int>()
+                    fun checkUiLayer(import: String) {
+                        if (!UiLayerRules.applies(module, path)) return
+                        val rule = UiLayerRules.violation(pkg, import) ?: return
+                        uiLayer[rule] = (uiLayer[rule] ?: 0) + 1
+                    }
                     if (UiValueRules.applies(module, path)) {
                         UiValueRules.count(parsed).forEach { (kind, count) -> violations["$kind|$path"] = count }
                     }
@@ -113,6 +119,7 @@ internal object KotlinBoundaryScanner {
                         override fun visitImportDirective(directive: KtImportDirective) {
                             checkReference(directive.importedFqName?.asString().orEmpty())
                             checkLayering(directive.importedFqName?.asString().orEmpty())
+                            checkUiLayer(directive.importedFqName?.asString().orEmpty())
                             super.visitImportDirective(directive)
                         }
                         override fun visitDotQualifiedExpression(expression: KtDotQualifiedExpression) {
@@ -150,6 +157,7 @@ internal object KotlinBoundaryScanner {
                         }
                     })
                     layering.forEach { (target, count) -> violations["layering|$path|$target"] = count }
+                    uiLayer.forEach { (rule, count) -> violations["$rule|$path"] = count }
                 }
             }
         } finally {
