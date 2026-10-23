@@ -51,6 +51,9 @@ internal object KotlinBoundaryScanner {
                     if (module == "app" && RETIRED_APP_PACKAGES.any { pkg == it || pkg.startsWith("$it.") }) {
                         violations["package|$path|$pkg"] = 1
                     }
+                    if (UiValueRules.applies(module, path)) {
+                        UiValueRules.count(parsed).forEach { (kind, count) -> violations["$kind|$path"] = count }
+                    }
                     parsed.accept(object : KtTreeVisitorVoid() {
                         override fun visitNamedFunction(function: KtNamedFunction) {
                             val composable = function.annotationEntries.any { it.shortName?.asString() == "Composable" }
