@@ -61,7 +61,7 @@ data class Layer(
     val populatedFrames: Set<Int> = emptySet(),
     /**
      * When set, this layer is "armed" to a bone: anything sketched on it auto-binds to that
-     * bone as its texture (see [com.donnclab.kinetiframe.actors.domain.RiggingManager.autoBindLayerContent]),
+     * bone as its texture,
      * with the bone's own joint becoming the pivot automatically -- no manual lasso-cut or
      * pivot-drag needed. Created by tapping a bone in Setup (see [LayerManager.addLayer]).
      */
