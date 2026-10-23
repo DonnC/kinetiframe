@@ -50,11 +50,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Folder
 import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.actors.data.ActorManifest
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.ui.ActorManagerIntent
@@ -62,7 +64,6 @@ import com.donnclab.kinetiframe.actors.ui.ActorManagerMessage
 import com.donnclab.kinetiframe.actors.ui.ActorManagerState
 import com.donnclab.kinetiframe.actors.ui.ActorNameDialog
 import com.donnclab.kinetiframe.actors.ui.AddActorScreen
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
 import com.donnclab.kinetiframe.common.ui.BrandBadge
 import com.donnclab.kinetiframe.common.ui.BrandWordmark
 import com.donnclab.kinetiframe.common.ui.CompactTextField
@@ -357,9 +358,13 @@ private fun HomeFab(modifier: Modifier = Modifier, contentDescription: String, o
 @Composable
 private fun ImportSheetContent(onFile: () -> Unit, onLibrary: () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
-        Text("Import", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black)
         Text(
-            "Bring in a project from your device or your library",
+            stringResource(R.string.import_title),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Black,
+        )
+        Text(
+            stringResource(R.string.import_subtitle),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 2.dp, bottom = 12.dp),
@@ -367,15 +372,15 @@ private fun ImportSheetContent(onFile: () -> Unit, onLibrary: () -> Unit) {
         ImportRow(
             Lucide.Folder,
             MaterialTheme.colorScheme.primary,
-            FeatureStrings.Import.FROM_FILE_TITLE,
-            FeatureStrings.Import.FROM_FILE_SUBTITLE,
+            stringResource(R.string.import_from_file_title),
+            stringResource(R.string.import_from_file_subtitle),
             onFile,
         )
         ImportRow(
             Lucide.Layers,
             LibraryAccent,
-            FeatureStrings.Import.FROM_LIBRARY_TITLE,
-            FeatureStrings.Import.FROM_LIBRARY_SUBTITLE,
+            stringResource(R.string.import_from_library_title),
+            stringResource(R.string.import_from_library_subtitle),
             onLibrary,
         )
         Spacer(Modifier.height(12.dp))

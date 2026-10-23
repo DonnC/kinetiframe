@@ -17,8 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 
@@ -43,5 +44,5 @@ fun PreviewBadge(label: String, icon: ImageVector = Icons.Filled.PlayArrow, modi
 @Preview(showBackground = true)
 @Composable
 private fun PreviewBadgePreview() {
-    KinetiFrameTheme { PreviewBadge(FeatureStrings.AssetDetails.LIVE_PREVIEW_LOOPS) }
+    KinetiFrameTheme { PreviewBadge(stringResource(R.string.asset_preview_live_loops)) }
 }

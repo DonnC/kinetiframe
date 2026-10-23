@@ -20,15 +20,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Square
 import com.composables.icons.lucide.Trash2
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.audio.VoiceRecorder
 import com.donnclab.kinetiframe.audio.Waveform
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 
@@ -74,10 +75,10 @@ fun AudioRecorderSheet(
     ) {
         Column(Modifier.padding(Dimens.spaceL), horizontalAlignment = Alignment.CenterHorizontally) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(FeatureStrings.Audio.RECORDER_TITLE, style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.audio_recorder_title), style = MaterialTheme.typography.titleMedium)
                 Box(Modifier.weight(1f))
                 IconButton(onClick = onClose) {
-                    Icon(Lucide.X, contentDescription = FeatureStrings.Audio.CLOSE)
+                    Icon(Lucide.X, contentDescription = stringResource(R.string.action_close))
                 }
             }
 
@@ -95,9 +96,9 @@ fun AudioRecorderSheet(
             Text(
                 text = state.error
                     ?: when {
-                        state.isRecording -> FeatureStrings.Audio.RECORDING
-                        state.hasTake -> FeatureStrings.Audio.TAKE_READY
-                        else -> FeatureStrings.Audio.START_HINT
+                        state.isRecording -> stringResource(R.string.audio_recording)
+                        state.hasTake -> stringResource(R.string.audio_take_ready)
+                        else -> stringResource(R.string.audio_start_hint)
                     },
                 style = MaterialTheme.typography.bodySmall,
                 color = if (state.error != null) {
@@ -115,7 +116,7 @@ fun AudioRecorderSheet(
             ) {
                 if (state.hasTake && !state.isRecording) {
                     IconButton(onClick = actions.onDiscard) {
-                        Icon(Lucide.Trash2, contentDescription = FeatureStrings.Audio.DISCARD)
+                        Icon(Lucide.Trash2, contentDescription = stringResource(R.string.audio_discard_take))
                     }
                 }
                 RecordControl(
@@ -128,7 +129,7 @@ fun AudioRecorderSheet(
                 TextButton(
                     onClick = actions.onUse,
                     modifier = Modifier.padding(top = Dimens.spaceS),
-                ) { Text(FeatureStrings.Audio.USE_TAKE) }
+                ) { Text(stringResource(R.string.audio_add_to_timeline)) }
             }
         }
     }
@@ -148,7 +149,7 @@ private fun RecordControl(isRecording: Boolean, onClick: () -> Unit) {
             if (isRecording) {
                 Icon(
                     Lucide.Square,
-                    contentDescription = FeatureStrings.Audio.STOP,
+                    contentDescription = stringResource(R.string.audio_stop_recording),
                     tint = MaterialTheme.colorScheme.error,
                 )
             } else {

@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.ClipboardPlus
@@ -21,7 +22,7 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Music
 import com.composables.icons.lucide.Square
 import com.composables.icons.lucide.SquarePlus
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.common.ui.AssetDetails
 import com.donnclab.kinetiframe.common.ui.AssetKind
 import com.donnclab.kinetiframe.common.ui.CardThumbnail
@@ -67,13 +68,13 @@ fun AssetDetailsSheet(
             )
         } else if (context.hasOpenProject) {
             PrimaryActionButton(
-                ActionButtonContent(FeatureStrings.Library.ADD_TO_PROJECT, Lucide.SquarePlus),
+                ActionButtonContent(stringResource(R.string.library_add_to_project), Lucide.SquarePlus),
                 ActionButtonState.ENABLED,
                 onClick = onAction,
             )
         } else {
             Text(
-                FeatureStrings.Library.NO_PROJECT_HELPER,
+                stringResource(R.string.library_no_project_helper),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth(),
@@ -89,18 +90,22 @@ private fun AssetPreviewArea(details: AssetDetails) {
         AssetThumbnailBox(thumbnail = details.thumbnail, modifier = Modifier.aspectRatio(1.7f))
         // Motion assets remain static until an actual motion preview renderer is connected.
         val badge = previewBadgeFor(PreviewKind.STATIC_SCREENSHOT)
-        PreviewBadge(badge.first, badge.second, modifier = Modifier.align(Alignment.TopStart).padding(Dimens.spaceS))
+        PreviewBadge(
+            stringResource(badge.first),
+            badge.second,
+            modifier = Modifier.align(Alignment.TopStart).padding(Dimens.spaceS),
+        )
     }
 }
 
 private fun previewBadgeFor(kind: PreviewKind) = when (kind) {
-    PreviewKind.STATIC_SCREENSHOT -> FeatureStrings.AssetDetails.STATIC_PREVIEW to Lucide.Square
+    PreviewKind.STATIC_SCREENSHOT -> R.string.asset_preview_static to Lucide.Square
 
     PreviewKind.LIVE_MOTION, PreviewKind.LIVE_COLLAGE ->
-        FeatureStrings.AssetDetails.LIVE_PREVIEW_LOOPS to
+        R.string.asset_preview_live_loops to
             Lucide.ClipboardPlus
 
-    PreviewKind.AUDIO_PLAYER -> FeatureStrings.AssetDetails.AUDIO_PREVIEW to Lucide.Music
+    PreviewKind.AUDIO_PLAYER -> R.string.asset_preview_audio to Lucide.Music
 }
 
 @Preview(showBackground = true)

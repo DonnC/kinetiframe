@@ -43,15 +43,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.actors.data.ActorManifest
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
 import com.donnclab.kinetiframe.common.ui.ContextIconAction
 import com.donnclab.kinetiframe.common.ui.IconContextMenu
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
@@ -289,7 +290,7 @@ fun HomePackCard(pack: LibraryItemManifest, itemCount: Int, previewFiles: List<F
         Box(Modifier.align(Alignment.BottomEnd).padding(2.dp)) {
             IconButton(onClick = {
                 menuOpen = true
-            }) { Icon(Icons.Default.MoreVert, FeatureStrings.Packs.PACK_ACTIONS, tint = Color.White) }
+            }) { Icon(Icons.Default.MoreVert, stringResource(R.string.pack_actions), tint = Color.White) }
             IconContextMenu(
                 menuOpen,
                 { menuOpen = false },
@@ -317,19 +318,19 @@ fun HomePackCard(pack: LibraryItemManifest, itemCount: Int, previewFiles: List<F
                         )
                     }
                     add(
-                        ContextIconAction(Icons.Default.Edit, FeatureStrings.Packs.EDIT, {
+                        ContextIconAction(Icons.Default.Edit, stringResource(R.string.pack_edit), {
                             menuOpen = false
                             actions.onEdit()
                         }),
                     )
                     add(
-                        ContextIconAction(Icons.Default.Share, FeatureStrings.Packs.SHARE, {
+                        ContextIconAction(Icons.Default.Share, stringResource(R.string.pack_share), {
                             menuOpen = false
                             actions.onShare()
                         }),
                     )
                     add(
-                        ContextIconAction(Icons.Default.Delete, FeatureStrings.Packs.DELETE, {
+                        ContextIconAction(Icons.Default.Delete, stringResource(R.string.pack_delete), {
                             menuOpen = false
                             actions.onDelete()
                         }),

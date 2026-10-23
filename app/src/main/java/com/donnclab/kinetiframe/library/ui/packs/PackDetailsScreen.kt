@@ -20,11 +20,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Pen
 import com.composables.icons.lucide.X
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.data.PackItemEntry
@@ -63,11 +65,11 @@ fun PackDetailsScreen(state: PackDetailsState, onClose: () -> Unit, onEdit: () -
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
         ) {
-            IconButton(onClick = onClose) { Icon(Lucide.X, contentDescription = FeatureStrings.Packs.CLOSE) }
+            IconButton(onClick = onClose) { Icon(Lucide.X, contentDescription = stringResource(R.string.action_close)) }
             Column {
                 Text(state.packTitle, style = MaterialTheme.typography.titleMedium)
                 Text(
-                    FeatureStrings.Packs.itemCount(state.entries.size),
+                    pluralStringResource(R.plurals.pack_item_count, state.entries.size, state.entries.size),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -90,7 +92,7 @@ fun PackDetailsScreen(state: PackDetailsState, onClose: () -> Unit, onEdit: () -
         }
         Surface(tonalElevation = Dimens.elevationS, modifier = Modifier.fillMaxWidth()) {
             PrimaryActionButton(
-                content = ActionButtonContent(FeatureStrings.Packs.EDIT_PACK, Lucide.Pen),
+                content = ActionButtonContent(stringResource(R.string.pack_edit_pack), Lucide.Pen),
                 state = ActionButtonState.ENABLED,
                 onClick = onEdit,
                 modifier = Modifier.padding(Dimens.spaceL),

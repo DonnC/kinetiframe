@@ -31,11 +31,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.ClipboardPlus
 import com.composables.icons.lucide.Lucide
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.common.ui.StampAsset
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
@@ -75,7 +77,7 @@ fun PackContentsGrid(
                 horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
             ) {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = FeatureStrings.Common.BACK)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
                 }
                 Column(Modifier.weight(1f)) {
                     Text(data.packTitle, style = MaterialTheme.typography.titleMedium)
@@ -83,7 +85,11 @@ fun PackContentsGrid(
                         data.error == null
                     ) {
                         Text(
-                            FeatureStrings.PackContents.itemCount(data.stamps.size),
+                            pluralStringResource(
+                                R.plurals.pack_contents_item_count,
+                                data.stamps.size,
+                                data.stamps.size,
+                            ),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -126,7 +132,7 @@ fun PackContentsGrid(
                 Surface(tonalElevation = 3.dp, modifier = Modifier.fillMaxWidth()) {
                     PrimaryActionButton(
                         content = ActionButtonContent(
-                            FeatureStrings.PackContents.ADD_PACK_TO_LIBRARY,
+                            stringResource(R.string.pack_add_to_library),
                             Lucide.ClipboardPlus,
                         ),
                         state = ActionButtonState.ENABLED,

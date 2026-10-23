@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.common.ui.AssetSummary
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
@@ -18,10 +18,10 @@ import com.donnclab.kinetiframe.library.ui.catalog.FilterChipRow
 import com.donnclab.kinetiframe.preview.PreviewCatalog
 
 private val filters = listOf(
-    "All",
-    FeatureStrings.Library.FILTER_FULL_PROJECTS,
-    FeatureStrings.Library.FILTER_BACKGROUND_IMAGES,
-    FeatureStrings.Library.FILTER_STATIC_OVERLAYS,
+    R.string.filter_all,
+    R.string.library_filter_full_projects,
+    R.string.library_filter_background_images,
+    R.string.library_filter_static_overlays,
 )
 
 /** Library's "Projects & Scenes" tab -- the user's own full projects, background images and

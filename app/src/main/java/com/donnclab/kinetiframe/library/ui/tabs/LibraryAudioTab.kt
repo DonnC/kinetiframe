@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.common.ui.AudioTrackSummary
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
@@ -17,10 +17,10 @@ import com.donnclab.kinetiframe.library.ui.catalog.FilterChipRow
 import com.donnclab.kinetiframe.preview.PreviewCatalog
 
 private val filters = listOf(
-    "All",
-    FeatureStrings.Library.FILTER_SOUND_EFFECTS,
-    FeatureStrings.Library.FILTER_MUSIC_TRACKS,
-    FeatureStrings.Library.FILTER_VOICE_CLIPS,
+    R.string.filter_all,
+    R.string.library_filter_sound_effects,
+    R.string.library_filter_music_tracks,
+    R.string.library_filter_voice_clips,
 )
 
 /** Library's "Audio Track Box" tab -- the user's own sound effects, music and voice clips,

@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.common.ui.AssetKind
 import com.donnclab.kinetiframe.common.ui.AssetSummary
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
@@ -18,7 +18,7 @@ import com.donnclab.kinetiframe.library.ui.catalog.AssetGridCard
 import com.donnclab.kinetiframe.library.ui.catalog.FilterChipRow
 import com.donnclab.kinetiframe.preview.PreviewCatalog
 
-private val filters = listOf("All", FeatureStrings.Library.FILTER_RIGS, FeatureStrings.Library.FILTER_PERFORMANCES)
+private val filters = listOf(R.string.filter_all, R.string.library_filter_rigs, R.string.library_filter_performances)
 
 /** Library's "Actors & Actions" tab -- the user's own rigs and performances, narrowed by
  * [selectedFilter]. */

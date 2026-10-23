@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.library.ui.catalog
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,22 +30,22 @@ import com.composables.icons.lucide.Folder
 import com.composables.icons.lucide.Grid2x2
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Music
-import com.donnclab.kinetiframe.common.strings.FeatureStrings
+import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 
 /** One entry in a [TopTabRow] -- deliberately just an icon+label pair with no selection state of
  *  its own, so the row above decides which index is active. */
-data class TopTabDef(val icon: ImageVector, val label: String)
+data class TopTabDef(val icon: ImageVector, @StringRes val label: Int)
 
 /** The four top-level category tabs the Library uses (Projects / Actors / Packs /
  *  Audio), sharing one definition so the two screens can never drift out of sync with each other. */
 object TopTabs {
     val all = listOf(
-        TopTabDef(Lucide.Folder, FeatureStrings.Common.TAB_PROJECTS),
-        TopTabDef(Lucide.Drama, FeatureStrings.Common.TAB_ACTORS),
-        TopTabDef(Lucide.Grid2x2, FeatureStrings.Common.TAB_PACKS),
-        TopTabDef(Lucide.Music, FeatureStrings.Common.TAB_AUDIO),
+        TopTabDef(Lucide.Folder, R.string.library_tab_projects),
+        TopTabDef(Lucide.Drama, R.string.library_tab_actors),
+        TopTabDef(Lucide.Grid2x2, R.string.library_tab_packs),
+        TopTabDef(Lucide.Music, R.string.library_tab_audio),
     )
     const val PROJECTS = 0
     const val ACTORS = 1
@@ -75,8 +77,9 @@ private fun TopTabItem(tab: TopTabDef, active: Boolean, onClick: () -> Unit, mod
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs),
     ) {
-        Icon(tab.icon, tab.label, tint = tint, modifier = Modifier.size(Dimens.iconM))
-        Text(tab.label, style = MaterialTheme.typography.labelSmall, color = tint)
+        val label = stringResource(tab.label)
+        Icon(tab.icon, label, tint = tint, modifier = Modifier.size(Dimens.iconM))
+        Text(label, style = MaterialTheme.typography.labelSmall, color = tint)
         Box(Modifier.fillMaxWidth().height(2.dp).background(underlineColor))
     }
 }
