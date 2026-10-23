@@ -1,6 +1,7 @@
-package com.donnclab.kinetiframe.project.model
+package com.donnclab.kinetiframe.studio.ui.canvas
 
 import androidx.compose.ui.geometry.Offset
+import com.donnclab.kinetiframe.project.model.StageDimensions
 import kotlin.math.abs
 
 /**

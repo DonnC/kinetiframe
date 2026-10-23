@@ -16,16 +16,18 @@ internal object FeatureLayering {
         "common" to emptySet(),
         // Preview fixtures build sample data of every kind.
         "preview" to setOf("home"),
-        "project" to setOf("common"),
-        "media" to setOf("project"),
+        // Crash reports become part of the data module.
+        "diagnostics" to setOf("common"),
+        "project" to setOf("common", "diagnostics"),
+        // Images, sound and video form one media module, so they may use each other.
+        "media" to setOf("project", "audio", "video"),
         "audio" to setOf("media"),
-        "video" to setOf("audio", "media"),
-        "actors" to setOf("video"),
+        "video" to setOf("media"),
+        "actors" to setOf("media"),
         "library" to setOf("actors"),
         "export" to setOf("actors"),
         "studio" to setOf("library", "export", "settings"),
-        "settings" to setOf("project", "diagnostics"),
-        "diagnostics" to setOf("common"),
+        "settings" to setOf("project"),
         "home" to setOf("studio"),
         "navigation" to setOf("home"),
     )

@@ -1,11 +1,12 @@
 package com.donnclab.kinetiframe.project.model
 
-import android.graphics.Color
-import android.graphics.Typeface
 import com.donnclab.kinetiframe.studio.drawing.Affine2D
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+
+/** Opaque white as packed ARGB, the default fill of a text node. */
+const val ARGB_WHITE: Int = 0xFFFFFFFF.toInt()
 
 @Serializable
 @SerialName("com.kinetiframe.models.TextNode")
@@ -24,8 +25,8 @@ data class TextNode(
     override val isVisible: Boolean = true,
     override val zIndex: Int = 0,
     override val style: NodeStyle = NodeStyle(
-        mainColorHex = Color.WHITE,
-        strokeColorHex = Color.BLACK,
+        mainColorHex = ARGB_WHITE,
+        strokeColorHex = ARGB_BLACK,
         strokeWidthPx = 4f,
     ),
     val selectionTransform: Affine2D = Affine2D(),
@@ -39,5 +40,3 @@ data class TextNode(
 
     override fun copyWithId(id: String): TextNode = copy(id = id)
 }
-
-data class FontItem(val displayName: String, val fileName: String, val typeface: Typeface)

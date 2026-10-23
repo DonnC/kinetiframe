@@ -27,7 +27,6 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.actors.rig.model.PivotPlacement
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.project.model.DocumentCoordinateTransform
 import com.donnclab.kinetiframe.project.model.StageDimensions
 
 /**

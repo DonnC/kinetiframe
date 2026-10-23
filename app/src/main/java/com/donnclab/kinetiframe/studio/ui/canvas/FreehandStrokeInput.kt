@@ -3,7 +3,6 @@ package com.donnclab.kinetiframe.studio.ui.canvas
 import android.graphics.Bitmap
 import android.view.MotionEvent
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.project.model.DocumentCoordinateTransform
 import com.donnclab.kinetiframe.project.model.DrawingTool
 import com.donnclab.kinetiframe.project.model.TouchPoint
 import com.donnclab.kinetiframe.studio.RulerGuide
