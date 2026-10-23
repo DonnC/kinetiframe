@@ -64,7 +64,7 @@ class LegacyActorMigrationTest {
             intensity = 1f,
             speed = 2f,
         )
-        val instance = PuppetInstance("legacy-instance", "legacy-actor", motionPreset = preset)
+        val instance = PuppetInstance("legacy-instance", "legacy-actor", motionPreset = preset.document())
 
         val migrated = requireNotNull(
             LegacyActorMigration.performance(

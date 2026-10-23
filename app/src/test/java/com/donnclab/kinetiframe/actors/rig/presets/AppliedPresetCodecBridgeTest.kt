@@ -5,6 +5,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 import kotlin.math.round
 
@@ -19,6 +20,15 @@ class AppliedPresetCodecBridgeTest {
         requiredBones = listOf("head"),
         channels = listOf(RotationChannel("head")),
     )
+
+    @Test fun `a saved document converts back to an equal preset with one evaluator per document`() {
+        val applied = AppliedActorPreset(recipe, .5f, 2f)
+        val document = applied.document()
+        assertEquals(AppliedPresetDocument(recipe.document(), .5f, 2f), document)
+        val evaluator = AppliedActorPreset.of(document)
+        assertEquals(applied, evaluator)
+        assertSame(evaluator, AppliedActorPreset.of(document))
+    }
 
     @Test fun `neutral application matches generated wire fields defaults and raw settings`() {
         for (intensity in listOf(-1f, -0f, 0f, 1f, 2f)) {

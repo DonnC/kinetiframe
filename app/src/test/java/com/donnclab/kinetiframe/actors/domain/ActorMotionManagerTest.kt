@@ -94,7 +94,7 @@ class ActorMotionManagerTest {
                                 instance.copy(
                                     motionPreset = AppliedActorPreset(
                                         recipe,
-                                    ),
+                                    ).document(),
                                 )
                             ),
                 ),
@@ -122,7 +122,7 @@ class ActorMotionManagerTest {
                             instance.copy(
                                 motionPreset = AppliedActorPreset(
                                     recipe.copy(loop = true),
-                                ),
+                                ).document(),
                             )
                         ),
             ),

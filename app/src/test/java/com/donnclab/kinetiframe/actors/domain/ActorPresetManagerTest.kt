@@ -4,6 +4,7 @@ import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorView
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
+import com.donnclab.kinetiframe.actors.rig.presets.document
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioEffect
@@ -51,7 +52,7 @@ class ActorPresetManagerTest {
         assertNull(state.actor.presetPreview)
         manager.handle(StudioIntent.ActorPreset.Preview("nod"))
         manager.handle(StudioIntent.ActorPreset.Apply)
-        assertEquals(recipe, state.activeActor()!!.motionPreset!!.recipe)
+        assertEquals(recipe.document(), state.activeActor()!!.motionPreset!!.recipe)
         assertTrue(state.activeActor()!!.poseKeys.isEmpty())
         authoring.handle(StudioIntent.Actor.Undo)
         assertEquals(before, state.project)

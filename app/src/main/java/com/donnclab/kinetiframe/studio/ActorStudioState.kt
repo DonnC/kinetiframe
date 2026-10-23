@@ -75,7 +75,8 @@ fun StudioState.activeActor(): PuppetInstance? {
 
 fun StudioState.actorPreviewPreset(): AppliedActorPreset? {
     val instance = activeActor()
-    return actor.presetPreview.takeIf { actor.presetPreviewInstanceId == instance?.id } ?: instance?.motionPreset
+    return actor.presetPreview.takeIf { actor.presetPreviewInstanceId == instance?.id }
+        ?: instance?.motionPreset?.let(AppliedActorPreset::of)
 }
 
 fun StudioState.actorPreviewDuration(): Long {
@@ -124,7 +125,9 @@ fun StudioState.actorDefinition(evaluated: Boolean = false): PuppetDefinition? {
         definition.sceneGraph,
         PoseSampling(periodicKeys, instance.poseInterpolation.engineInterpolation()),
     )
-    val preset = actor.presetPreview.takeIf { actor.presetPreviewInstanceId == instance.id } ?: instance.motionPreset
+    val preset =
+        actor.presetPreview.takeIf { actor.presetPreviewInstanceId == instance.id }
+            ?: instance.motionPreset?.let(AppliedActorPreset::of)
     val offsets = preset?.offsets(actor.previewTimeMicros).orEmpty()
     val curveSampling = CurveSampling(
         loop,

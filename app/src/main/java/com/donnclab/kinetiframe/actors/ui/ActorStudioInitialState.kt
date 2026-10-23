@@ -31,7 +31,7 @@ fun actorStudioInitialState(
         id = "studio-instance-${manifest.actorId}",
         definitionId = manifest.actorId,
         poseKeys = performance?.poseKeys.orEmpty(),
-        motionPreset = performance?.presetSnapshot,
+        motionPreset = performance?.presetSnapshot?.document(),
         rotationCurves = performance?.rotationCurves.orEmpty(),
         rootMotionCurves = performance?.rootMotionCurves.orEmpty(),
         poseInterpolation =

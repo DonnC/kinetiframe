@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.project.model
 
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.audio.VoiceEffect
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
@@ -8,6 +7,7 @@ import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import com.donnclab.kinetiframe.core.document.StageDimensions
@@ -53,7 +53,7 @@ data class PuppetInstance(
     /** Current instance pose, independent of the reusable rest skeleton. */
     val pose: Map<String, Transform> = emptyMap(),
     val poseKeys: List<ActorPoseKey> = emptyList(),
-    val motionPreset: AppliedActorPreset? = null,
+    val motionPreset: AppliedPresetDocument? = null,
     /** Keep explicit imported STEP/LINEAR channels intact in Studio until a pose is edited. */
     val rotationCurves: List<RotationCurve> = emptyList(),
     val poseInterpolation: CurveInterpolation = CurveInterpolation.SMOOTH,

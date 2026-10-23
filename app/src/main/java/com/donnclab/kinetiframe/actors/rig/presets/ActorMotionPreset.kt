@@ -107,4 +107,31 @@ data class AppliedActorPreset(val recipe: ActorMotionPreset, val intensity: Floa
         if (recipe.rootMotion.isEmpty()) return emptyMap()
         return PresetRootMotion.evaluate(program, timeMicros, rest)
     }
+
+    /** The form a project saves. The recipe's preview asset is not part of it. */
+    fun document(): AppliedPresetDocument = AppliedPresetDocument(recipe.document(), intensity, speed)
+
+    companion object {
+        private const val CACHE_SIZE = 32
+
+        // Keyed by identity: a saved document is immutable and reused between frames, so playback
+        // builds each preset's evaluation program once instead of on every frame.
+        private val cache = object : LinkedHashMap<IdentityKey, AppliedActorPreset>(CACHE_SIZE, 0.75f, true) {
+            override fun removeEldestEntry(eldest: MutableMap.MutableEntry<IdentityKey, AppliedActorPreset>) =
+                size > CACHE_SIZE
+        }
+
+        /** The evaluator for a saved preset. */
+        fun of(document: AppliedPresetDocument): AppliedActorPreset = synchronized(cache) {
+            cache.getOrPut(IdentityKey(document)) {
+                AppliedActorPreset(document.recipe.product(), document.intensity, document.speed)
+            }
+        }
+    }
+
+    private class IdentityKey(val document: AppliedPresetDocument) {
+        override fun equals(other: Any?) = other is IdentityKey && other.document === document
+
+        override fun hashCode() = System.identityHashCode(document)
+    }
 }
