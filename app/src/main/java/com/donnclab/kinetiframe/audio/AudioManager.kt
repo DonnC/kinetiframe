@@ -5,6 +5,7 @@ import com.donnclab.kinetiframe.project.model.AudioClipPlacement
 import com.donnclab.kinetiframe.project.model.AudioTrackSettings
 import com.donnclab.kinetiframe.project.model.MAX_AUDIO_TRACKS
 import com.donnclab.kinetiframe.project.model.ProjectAsset
+import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 
 /** Pure project-reference mutations for placed audio clips -- structurally identical to
@@ -186,5 +187,30 @@ class AudioManager(
 
     private fun replace(updated: AudioClipPlacement) = updateState { state ->
         state.copy(project = state.project.copy(audioClips = state.project.audioClips + (updated.clipId to updated)))
+    }
+
+    fun handle(intent: StudioIntent.Audio) {
+        when (intent) {
+            is StudioIntent.Audio.Add -> add(intent.placement, intent.asset)
+
+            is StudioIntent.Audio.Remove -> remove(intent.clipId)
+
+            is StudioIntent.Audio.Trim -> trim(intent.clipId, intent.startFrame, intent.durationFrames)
+
+            is StudioIntent.Audio.Move -> move(intent.clipId, intent.trackIndex, intent.startFrame)
+
+            is StudioIntent.Audio.SetVolume -> setVolume(intent.clipId, intent.volume)
+
+            is StudioIntent.Audio.SetTrackMuted -> setTrackMuted(intent.trackIndex, intent.muted)
+
+            is StudioIntent.Audio.SetTrackLocked -> setTrackLocked(intent.trackIndex, intent.locked)
+
+            is StudioIntent.Audio.Duplicate -> duplicate(intent.clipId)
+
+            is StudioIntent.Audio.Split -> split(intent.clipId, intent.atFrame)
+
+            // Fades, crossfades and voice styles are scene effects, applied by SceneEffectsManager.
+            is StudioIntent.Audio.VoiceStyle, is StudioIntent.Audio.Crossfade, is StudioIntent.Audio.SetFades -> Unit
+        }
     }
 }

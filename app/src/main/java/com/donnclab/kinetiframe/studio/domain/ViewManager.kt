@@ -6,6 +6,7 @@ import com.donnclab.kinetiframe.studio.GridDefaults
 import com.donnclab.kinetiframe.studio.GridSize
 import com.donnclab.kinetiframe.studio.RulerGuide
 import com.donnclab.kinetiframe.studio.RulerMode
+import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 
 /**
@@ -216,6 +217,45 @@ class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Uni
     fun setDockPosition(edge: DockEdge, offset: Offset) {
         updateState { state ->
             state.copy(canvas = state.canvas.copy(dockEdge = edge, dockOffset = offset))
+        }
+    }
+
+    fun handle(intent: StudioIntent.View) {
+        when (intent) {
+            is StudioIntent.View.SetGridSize -> setGridSize(intent.size)
+
+            is StudioIntent.View.SetGridSpacing -> setGridSpacing(intent.spacingDp)
+
+            is StudioIntent.View.SetGridEnabled -> setGridEnabled(intent.enabled)
+
+            is StudioIntent.View.SetGridOpacity -> setGridOpacity(intent.opacity)
+
+            is StudioIntent.View.SetGridSpacingVertical -> setGridSpacingVertical(intent.spacing)
+
+            is StudioIntent.View.SetGridSpacingHorizontal -> setGridSpacingHorizontal(intent.spacing)
+
+            StudioIntent.View.ResetGridSettings -> resetGridSettings()
+
+            is StudioIntent.View.SetRulerMode -> setRulerMode(intent.mode)
+
+            is StudioIntent.View.UpdateRulerGuide -> updateRulerGuide(intent.guide)
+
+            is StudioIntent.View.UpdateCanvasTransform -> updateCanvasTransform(intent.matrix)
+
+            StudioIntent.View.ResetCanvasTransform -> resetCanvasTransform()
+
+            StudioIntent.View.ToggleSafeFrame -> toggleSafeFrame()
+
+            is StudioIntent.View.SetViewportSize -> setViewportSize(intent.width, intent.height)
+
+            is StudioIntent.View.UpdateTransform -> updateTransform(
+                intent.panDelta,
+                intent.zoomDelta,
+                intent.rotationDelta,
+                intent.pivot,
+            )
+
+            is StudioIntent.View.SetDockPosition -> setDockPosition(intent.edge, intent.offset)
         }
     }
 }

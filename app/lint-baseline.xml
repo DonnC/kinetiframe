@@ -112,17 +112,6 @@
     </issue>
 
     <issue
-        id="LocalContextResourcesRead"
-        message="Reading Resources using LocalContext.current.resources"
-        errorLine1="                val document = try { viewModel.prepareProjectSave(context.resources.displayMetrics.density) } catch (error: Exception) {"
-        errorLine2="                                                                  ~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/EditorScreen.kt"
-            line="336"
-            column="67"/>
-    </issue>
-
-    <issue
         id="ModifierParameter"
         message="Modifier parameter should be the first optional parameter"
         errorLine1="    modifier: Modifier = Modifier,"
@@ -871,17 +860,6 @@
         <location
             file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/SkeletalRenderLayer.kt"
             line="51"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/StudioViewModel.kt"
-            line="105"
             column="13"/>
     </issue>
 

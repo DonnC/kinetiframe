@@ -5,6 +5,7 @@ import com.donnclab.kinetiframe.project.model.LayerType
 import com.donnclab.kinetiframe.project.model.PuppetDefinition
 import com.donnclab.kinetiframe.project.model.PuppetInstance
 import com.donnclab.kinetiframe.studio.LayerState
+import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers
 
@@ -182,6 +183,27 @@ class LayerManager(
                     layers = state.layers.withStack(updated),
                 )
             }
+        }
+    }
+
+    fun handle(intent: StudioIntent.Layer) {
+        when (intent) {
+            // Selecting a layer also reloads the frame, which StudioViewModel owns.
+            is StudioIntent.Layer.SelectLayer -> Unit
+
+            is StudioIntent.Layer.AddLayer -> addLayer(intent.type)
+
+            is StudioIntent.Layer.RemoveLayer -> removeLayer(intent.index)
+
+            is StudioIntent.Layer.ReorderLayer -> reorderLayer(intent.fromIndex, intent.toIndex)
+
+            is StudioIntent.Layer.SetLayerVisibility -> setLayerVisibility(intent.index, intent.visible)
+
+            is StudioIntent.Layer.ToggleLayerLock -> toggleLayerLock(intent.index)
+
+            is StudioIntent.Layer.SetLayerOpacity -> setLayerOpacity(intent.index, intent.opacity)
+
+            is StudioIntent.Layer.RenameLayer -> renameLayer(intent.index, intent.name)
         }
     }
 }
