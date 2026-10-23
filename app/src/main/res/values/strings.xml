@@ -8,8 +8,8 @@
 
     <!-- Library -->
     <string name="library_title">Library</string>
-    <string name="library_subtitle">Your local collection -- ready to drop into any project</string>
-    <string name="library_packs_flat_note">All your saved packs, one continuous scroll -- no sub-categories to dig through.</string>
+    <string name="library_subtitle">Your local collection — ready to drop into any project</string>
+    <string name="library_packs_flat_note">All your saved packs, one continuous scroll — no sub-categories to dig through.</string>
     <string name="library_add_to_project">Add to Current Project</string>
     <string name="library_no_project_helper">Open a project first to use this asset</string>
     <string name="library_tab_projects">Projects</string>
@@ -24,7 +24,7 @@
     <string name="library_filter_sound_effects">Sound Effects</string>
     <string name="library_filter_music_tracks">Music Tracks</string>
     <string name="library_filter_voice_clips">Voice Clips</string>
-    <string name="asset_preview_live_loops">Live preview -- loops</string>
+    <string name="asset_preview_live_loops">Live preview — loops</string>
     <string name="asset_preview_static">Static preview</string>
     <string name="asset_preview_audio">Preview</string>
     <string name="pack_add_to_library">Add pack to Library</string>
@@ -58,8 +58,8 @@
     <string name="actor_hint_drag_artwork">Drag the artwork · joints stay fixed</string>
     <string name="actor_hint_drag_attachment">Drag the highlighted attachment joint</string>
     <string name="actor_hint_fit_sketch">Fit joints to your sketch · drawing menu to edit lines and colour</string>
-    <string name="actor_hint_trace_artwork">Artwork -- trace the sketch you drew for this part, then confirm its pivot</string>
-    <string name="actor_hint_pick_part">Pick a body part below, then sketch it -- it binds automatically</string>
+    <string name="actor_hint_trace_artwork">Artwork — trace the sketch you drew for this part, then confirm its pivot</string>
+    <string name="actor_hint_pick_part">Pick a body part below, then sketch it — it binds automatically</string>
     <string name="actor_hint_fit_joints">Drag the joint pins to match your drawing, then switch back to the pencil</string>
     <string name="actor_hint_drawing_part">Drawing %1$s · strokes attach automatically</string>
     <string name="actor_hint_selected_part">selected part</string>
