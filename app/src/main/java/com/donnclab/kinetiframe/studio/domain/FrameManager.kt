@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.studio.domain
 import android.graphics.Bitmap
 import com.donnclab.kinetiframe.project.model.Layer
 import com.donnclab.kinetiframe.studio.StudioEffect
+import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
@@ -374,6 +375,34 @@ class FrameManager(
                 }
                 loadFrameInternal(newCurrentFrame)
             }
+        }
+    }
+
+    fun handle(intent: StudioIntent.Frame) {
+        when (intent) {
+            StudioIntent.Frame.AddFrame -> addFrame()
+
+            is StudioIntent.Frame.DeleteFrame -> deleteFrame(intent.index)
+
+            is StudioIntent.Frame.DuplicateFrame -> duplicateFrame(intent.index)
+
+            is StudioIntent.Frame.CopyFrame -> copyFrame(intent.index)
+
+            is StudioIntent.Frame.CopyFrames -> copyFrames(intent.indices)
+
+            is StudioIntent.Frame.PasteFrame -> pasteFrame(intent.index, intent.before)
+
+            is StudioIntent.Frame.PasteFrames -> pasteFrames(intent.index, intent.before)
+
+            is StudioIntent.Frame.DeleteFrames -> deleteFrames(intent.indices)
+
+            is StudioIntent.Frame.AddFrameAt -> addFrameAt(intent.index)
+
+            // Held drawings belong to CelHoldManager.
+            is StudioIntent.Frame.HoldDrawing,
+            is StudioIntent.Frame.EditDrawingScope,
+            is StudioIntent.Frame.UnlinkDrawing,
+            -> Unit
         }
     }
 }

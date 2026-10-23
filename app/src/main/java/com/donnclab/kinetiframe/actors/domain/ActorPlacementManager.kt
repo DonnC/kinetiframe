@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.rig.model.Transform
 import com.donnclab.kinetiframe.project.model.ActorPlacementReference
+import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import java.util.UUID
 
@@ -157,5 +158,35 @@ class ActorPlacementManager(
         val end = reference.startFrame.toLong() + reference.durationFrames.toLong() * reference.repeatCount
         require(end in 1..Int.MAX_VALUE.toLong()) { "Actor clip exceeds the timeline range" }
         return end.toInt()
+    }
+
+    fun handle(intent: StudioIntent.ActorPlacement) {
+        when (intent) {
+            is StudioIntent.ActorPlacement.Add -> add(intent.reference)
+
+            is StudioIntent.ActorPlacement.Duplicate -> duplicate(intent.placementId)
+
+            is StudioIntent.ActorPlacement.Remove -> remove(intent.placementId)
+
+            is StudioIntent.ActorPlacement.UpdateTransform -> updateTransform(intent.placementId, intent.transform)
+
+            is StudioIntent.ActorPlacement.BringToFront -> bringToFront(intent.placementId)
+
+            is StudioIntent.ActorPlacement.SendToBack -> sendToBack(intent.placementId)
+
+            is StudioIntent.ActorPlacement.Trim -> trim(intent.placementId, intent.startFrame, intent.durationFrames)
+
+            is StudioIntent.ActorPlacement.Move -> move(intent.placementId, intent.startFrame)
+
+            is StudioIntent.ActorPlacement.SwitchPerformance -> switchPerformance(
+                intent.placementId,
+                intent.performanceId,
+                intent.actorRevisionId,
+                intent.label,
+                intent.durationFrames,
+            )
+
+            is StudioIntent.ActorPlacement.Split -> split(intent.placementId, intent.atFrame)
+        }
     }
 }
