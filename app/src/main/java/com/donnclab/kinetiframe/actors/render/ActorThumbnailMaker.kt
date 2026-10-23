@@ -5,12 +5,10 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
 import com.donnclab.kinetiframe.actors.data.ActorRevision
-import com.donnclab.kinetiframe.actors.render.PuppetArtworkRenderer
-import com.donnclab.kinetiframe.actors.render.PuppetRenderPlan
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.data.storage.DurableFile
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
-import com.donnclab.kinetiframe.project.model.PuppetInstance
 import java.io.File
 
 /** IO-only, revision-keyed whole-character thumbnail. Decodes one source part at a time. */

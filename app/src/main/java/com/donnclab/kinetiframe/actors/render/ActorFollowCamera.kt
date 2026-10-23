@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.render
 
-import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.studio.camera.CameraPose
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.camera.CameraPose
 import com.donnclab.kinetiframe.studio.camera.SceneCamera
 
 /** Causal, bounded sampling instead of a stateful spring: seeking backwards gives the same shot.

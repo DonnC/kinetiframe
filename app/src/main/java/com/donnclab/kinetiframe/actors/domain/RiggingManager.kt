@@ -16,12 +16,12 @@ import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.document.AssetKind
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.ProjectAsset
+import com.donnclab.kinetiframe.core.document.TextureSlot
+import com.donnclab.kinetiframe.core.document.bindTextureToBone
 import com.donnclab.kinetiframe.core.geometry.Point2
-import com.donnclab.kinetiframe.project.model.AssetKind
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.ProjectAsset
-import com.donnclab.kinetiframe.project.model.TextureSlot
-import com.donnclab.kinetiframe.project.model.bindTextureToBone
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.activeActor

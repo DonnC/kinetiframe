@@ -1,11 +1,11 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
+import com.donnclab.kinetiframe.core.document.AssetKind
+import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.data.storage.DurableFile
 import com.donnclab.kinetiframe.media.BackgroundImageDecoder
 import com.donnclab.kinetiframe.media.ProjectAssetManager
-import com.donnclab.kinetiframe.project.model.AssetKind
-import com.donnclab.kinetiframe.project.model.ProjectAsset
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import kotlinx.coroutines.CancellationException

@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.studio.drawing
+package com.donnclab.kinetiframe.core.geometry
 
 import kotlinx.serialization.Serializable
 

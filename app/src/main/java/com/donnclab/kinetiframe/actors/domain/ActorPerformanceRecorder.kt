@@ -2,10 +2,6 @@ package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceLimits
-import com.donnclab.kinetiframe.actors.domain.PerformanceAuthoring
-import com.donnclab.kinetiframe.actors.domain.RecordedContactBends
-import com.donnclab.kinetiframe.actors.domain.RecordedMotionCurves
-import com.donnclab.kinetiframe.actors.domain.RecordedRootMotionCurves
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
@@ -15,10 +11,10 @@ import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.engine.rigging.math.CompiledMotionCurve
-import com.donnclab.kinetiframe.project.model.DrawingTool
-import com.donnclab.kinetiframe.project.model.PuppetInstance
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioIntent

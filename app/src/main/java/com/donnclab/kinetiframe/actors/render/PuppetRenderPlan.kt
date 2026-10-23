@@ -3,8 +3,8 @@ package com.donnclab.kinetiframe.actors.render
 import android.graphics.Matrix
 import com.donnclab.kinetiframe.actors.rig.math.ArtworkSkinning
 import com.donnclab.kinetiframe.actors.rig.math.ForwardKinematicsSolver
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
-import com.donnclab.kinetiframe.project.model.PuppetInstance
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.PuppetInstance
 
 /**
  * A bitmap-independent render instruction for rigid cutouts and continuous multi-bone skins.

@@ -2,9 +2,9 @@ package com.donnclab.kinetiframe.project.data
 
 import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.ProjectDocument
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -99,17 +99,17 @@ class KframeArchiverTest {
         val project = original.project.copy(
             assets = mapOf(
                 "sound" to
-                    com.donnclab.kinetiframe.project.model.ProjectAsset(
+                    com.donnclab.kinetiframe.core.document.ProjectAsset(
                         "sound",
-                        com.donnclab.kinetiframe.project.model.AssetKind.AUDIO,
+                        com.donnclab.kinetiframe.core.document.AssetKind.AUDIO,
                         audio.path,
                         1,
                         1,
                     ),
                 "background" to
-                    com.donnclab.kinetiframe.project.model.ProjectAsset(
+                    com.donnclab.kinetiframe.core.document.ProjectAsset(
                         "background",
-                        com.donnclab.kinetiframe.project.model.AssetKind.IMPORTED_IMAGE,
+                        com.donnclab.kinetiframe.core.document.AssetKind.IMPORTED_IMAGE,
                         background.path,
                         128,
                         128,
@@ -164,7 +164,7 @@ class KframeArchiverTest {
         )
         requireSuccess(com.donnclab.kinetiframe.actors.data.PerformanceRepository(files).save(performance))
         val original = document("project-a")
-        val placement = com.donnclab.kinetiframe.project.model.ActorPlacementReference(
+        val placement = com.donnclab.kinetiframe.core.document.ActorPlacementReference(
             "placed",
             "wave",
             "alice",

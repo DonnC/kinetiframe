@@ -3,7 +3,7 @@ package com.donnclab.kinetiframe.studio.drawing
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.TouchPoint
 
 /** Ballpoint-style pen: fixed width, native analytic curves, one alpha deposit.
  * Pencil/ink brushes still own pressure dynamics; raw force/speed must not roughen the Pen. */

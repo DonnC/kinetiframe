@@ -3,8 +3,8 @@ package com.donnclab.kinetiframe.studio.ui.canvas
 import android.graphics.Bitmap
 import android.view.MotionEvent
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.project.model.DrawingTool
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.studio.RulerGuide
 import com.donnclab.kinetiframe.studio.RulerMode
 import com.donnclab.kinetiframe.studio.drawing.RulerStrokeConstraintSession

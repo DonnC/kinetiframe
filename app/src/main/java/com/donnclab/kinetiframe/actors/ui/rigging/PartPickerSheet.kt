@@ -21,9 +21,9 @@ import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Image
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Plus
+import com.donnclab.kinetiframe.core.document.LayerType
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
-import com.donnclab.kinetiframe.project.model.LayerType
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers

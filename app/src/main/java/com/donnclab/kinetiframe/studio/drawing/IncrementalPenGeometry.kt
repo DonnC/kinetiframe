@@ -3,7 +3,7 @@ package com.donnclab.kinetiframe.studio.drawing
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.TouchPoint
 
 /** Gesture-owned geometry. No document-sized raster surface and no growing prediction-list copy. */
 class IncrementalPenGeometry {

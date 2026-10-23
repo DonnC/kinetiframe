@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.video
 
-import com.donnclab.kinetiframe.project.model.AssetKind
-import com.donnclab.kinetiframe.project.model.ProjectAsset
-import com.donnclab.kinetiframe.project.model.VideoClipPlacement
+import com.donnclab.kinetiframe.core.document.AssetKind
+import com.donnclab.kinetiframe.core.document.ProjectAsset
+import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 import com.donnclab.kinetiframe.studio.StudioState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -94,7 +94,7 @@ class VideoTrackManagerTest {
             y = 40f,
             width = 320f,
             height = 180f,
-            selectionTransform = com.donnclab.kinetiframe.studio.drawing.Affine2D(tx = 24f),
+            selectionTransform = com.donnclab.kinetiframe.core.geometry.Affine2D(tx = 24f),
         )
         manager.add(video, asset("asset"))
         assertTrue(state.animation.totalFrames >= 30)

@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.studio.camera
 
+import com.donnclab.kinetiframe.core.document.camera.CameraPose
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin

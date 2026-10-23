@@ -1,14 +1,11 @@
 package com.donnclab.kinetiframe.audio
 
-import kotlinx.serialization.Serializable
+import com.donnclab.kinetiframe.core.document.VoiceEffect
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.exp
 import kotlin.math.roundToInt
 import kotlin.math.tanh
-
-@Serializable
-enum class VoiceEffect { ORIGINAL, WARM, RADIO, ROBOT }
 
 /** Stateful per-channel filters retain continuity across bounded PCM windows. No timing changes. */
 class VoiceFilter(private val effect: VoiceEffect, private val rate: Int = 44100, private val channels: Int = 2) {

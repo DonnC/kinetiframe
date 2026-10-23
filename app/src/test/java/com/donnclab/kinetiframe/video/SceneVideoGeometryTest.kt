@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.video
 
-import com.donnclab.kinetiframe.project.model.VideoClipPlacement
-import com.donnclab.kinetiframe.studio.drawing.Affine2D
+import com.donnclab.kinetiframe.core.document.VideoClipPlacement
+import com.donnclab.kinetiframe.core.geometry.Affine2D
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals

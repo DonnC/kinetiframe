@@ -2,7 +2,7 @@ package com.donnclab.kinetiframe.video
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import com.donnclab.kinetiframe.project.model.VideoClipPlacement
+import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 
 /** Stage geometry shared by lasso hit-testing, live preview, and export. */
 object SceneVideoGeometry {

@@ -9,10 +9,9 @@ import android.graphics.PorterDuff
 import androidx.core.graphics.createBitmap
 import com.donnclab.kinetiframe.actors.render.ActorFollowCamera
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.ProjectDocument
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.studio.drawing.LayerCompositor
-import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import com.donnclab.kinetiframe.video.SceneVideoRenderer
 
 /**
@@ -151,7 +150,7 @@ class ProjectFrameCompositor(
                 val renders = resolved.mapNotNull { it.render }
                 actorRenderer.draw(canvas, identity, renders)
             }
-            project.nodes.values.filterIsInstance<com.donnclab.kinetiframe.project.model.TextNode>().filter {
+            project.nodes.values.filterIsInstance<com.donnclab.kinetiframe.core.document.TextNode>().filter {
                 it.isVisible
             }.forEach { node ->
                 val typeface =

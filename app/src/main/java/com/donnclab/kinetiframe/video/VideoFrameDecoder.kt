@@ -3,8 +3,7 @@ package com.donnclab.kinetiframe.video
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.util.Log
-import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.video.VideoTrackSync
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import kotlin.math.roundToInt
 
 /** One sequential lane, one native decoder. Decode off the main thread.

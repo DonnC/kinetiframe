@@ -74,7 +74,7 @@ fun ActorStudioScreen(
     var showPerformanceActions by remember { mutableStateOf(false) }
     var duplicatePerformanceName by remember { mutableStateOf<String?>(null) }
     var pendingPerformance by remember {
-        mutableStateOf<Pair<com.donnclab.kinetiframe.project.model.PuppetInstance, Long>?>(null)
+        mutableStateOf<Pair<com.donnclab.kinetiframe.core.document.PuppetInstance, Long>?>(null)
     }
     val manifest = state.manifest
     val revision = state.revision

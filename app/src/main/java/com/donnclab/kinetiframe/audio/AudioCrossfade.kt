@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.audio
 
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 
 /** Overlaps the next clip, never stretches or resamples speech. Pair uses sin/cos gain law. */
 object AudioCrossfade {

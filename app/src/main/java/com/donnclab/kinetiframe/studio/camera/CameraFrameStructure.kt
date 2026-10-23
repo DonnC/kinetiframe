@@ -1,5 +1,7 @@
 package com.donnclab.kinetiframe.studio.camera
 
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
+
 /** Keep a shot attached to its scene frames as drawings are inserted/deleted. Empty shots drop. */
 object CameraFrameStructure {
     fun reindex(shots: List<CameraShot>, inserted: Int?, deleted: List<Int>): List<CameraShot> {

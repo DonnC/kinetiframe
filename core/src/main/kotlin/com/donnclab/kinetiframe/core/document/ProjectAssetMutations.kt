@@ -1,5 +1,6 @@
-package com.donnclab.kinetiframe.project.model
+package com.donnclab.kinetiframe.core.document
 
+import com.donnclab.kinetiframe.core.actor.artwork.SceneArtwork
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 
 /** Immutable document update plus decoded runtime assets that can now be safely released. */
@@ -8,7 +9,7 @@ data class AssetMutation(val document: ProjectDocument, val releasableAssetIds: 
 /**
  * Every asset ID reachable from this document's puppet definitions: bound bone textures plus
  * texture-slot defaults/alternates. This is also the set used for runtime bitmap garbage
- * collection ([com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager.retainOnly]) once undo/redo
+ * collection by the rig asset manager once undo/redo
  * snapshots are folded in by the caller, so keep it in sync with every new way a definition can
  * reference an asset.
  */
@@ -17,7 +18,7 @@ fun ProjectDocument.referencedAssetIds(): Set<String> = puppetDefinitions.values
         listOf(slot.defaultAssetId) +
             slot.alternateAssetIds
     }
-    val boneAssetIds = com.donnclab.kinetiframe.actors.rig.model.ActorArtwork.bindings(
+    val boneAssetIds = SceneArtwork.bindings(
         definition.sceneGraph,
     ).values.map {
         it.assetId

@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.data.ActorPlacement
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test

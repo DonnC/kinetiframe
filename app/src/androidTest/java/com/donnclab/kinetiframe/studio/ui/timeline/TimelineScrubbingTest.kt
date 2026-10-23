@@ -17,12 +17,11 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipe
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
 import com.donnclab.kinetiframe.studio.AnimationState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
-import com.donnclab.kinetiframe.studio.ui.timeline.TimelineFrameList
 import com.donnclab.kinetiframe.studio.ui.timeline.audio.ProjectAudioScrubRibbon
 import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals

@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
-import com.donnclab.kinetiframe.project.model.DrawingTool
+import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.studio.StudioState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -34,15 +34,15 @@ import com.composables.icons.lucide.Redo
 import com.composables.icons.lucide.Text
 import com.composables.icons.lucide.Trash2
 import com.composables.icons.lucide.Undo
+import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.core.document.camera.CameraPose
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
-import com.donnclab.kinetiframe.studio.camera.CameraAction
-import com.donnclab.kinetiframe.studio.camera.CameraPose
 import com.donnclab.kinetiframe.studio.camera.CameraRanges
 import com.donnclab.kinetiframe.studio.camera.CameraRecipe
 import com.donnclab.kinetiframe.studio.camera.CameraRecipes
-import com.donnclab.kinetiframe.studio.camera.CameraShot
 import com.donnclab.kinetiframe.studio.camera.SceneCamera
 import kotlinx.coroutines.launch
 

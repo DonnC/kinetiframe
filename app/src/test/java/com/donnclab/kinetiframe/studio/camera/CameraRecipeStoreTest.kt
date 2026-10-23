@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.studio.camera
 
-import com.donnclab.kinetiframe.studio.camera.CameraRecipes
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

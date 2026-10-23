@@ -2,8 +2,6 @@ package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.validate
-import com.donnclab.kinetiframe.actors.domain.ActorMotionManager
-import com.donnclab.kinetiframe.actors.domain.ActorStudioManager
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
@@ -37,7 +35,7 @@ class MotionTimingTest {
 
     @Test fun `instance conversion retains imported curves and chosen timing`() {
         val curves = PerformanceAuthoring.rotationCurves(keys, 1_000_000, CurveInterpolation.EASE_IN_OUT)
-        val instance = com.donnclab.kinetiframe.project.model.PuppetInstance(
+        val instance = com.donnclab.kinetiframe.core.document.PuppetInstance(
             "instance",
             "definition",
             rotationCurves = curves,

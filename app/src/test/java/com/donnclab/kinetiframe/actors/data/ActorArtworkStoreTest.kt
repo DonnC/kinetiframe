@@ -111,10 +111,10 @@ class ActorArtworkStoreTest {
                 ),
             ),
         )
-        val definition = com.donnclab.kinetiframe.project.model.PuppetDefinition("actor", "Actor", graph)
+        val definition = com.donnclab.kinetiframe.core.document.PuppetDefinition("actor", "Actor", graph)
         val matrix = com.donnclab.kinetiframe.actors.render.PuppetRenderPlan.create(
             definition,
-            com.donnclab.kinetiframe.project.model.PuppetInstance("instance", "actor"),
+            com.donnclab.kinetiframe.core.document.PuppetInstance("instance", "actor"),
         ).single().matrix
         val points = floatArrayOf(10f, 20f, 30f, 20f)
         matrix.mapPoints(points)

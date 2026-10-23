@@ -48,12 +48,12 @@ import com.composables.icons.lucide.Settings2
 import com.composables.icons.lucide.Text
 import com.composables.icons.lucide.Trash2
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.core.document.camera.CameraPose
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.studio.StudioState
-import com.donnclab.kinetiframe.studio.camera.CameraAction
 import com.donnclab.kinetiframe.studio.camera.CameraFraming
-import com.donnclab.kinetiframe.studio.camera.CameraPose
 import com.donnclab.kinetiframe.studio.camera.CameraRanges
-import com.donnclab.kinetiframe.studio.camera.CameraShot
 import com.donnclab.kinetiframe.studio.camera.SceneCamera
 import kotlinx.coroutines.delay
 

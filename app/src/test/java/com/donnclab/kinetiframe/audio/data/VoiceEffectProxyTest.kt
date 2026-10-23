@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.audio.data
 
-import com.donnclab.kinetiframe.audio.VoiceEffect
+import com.donnclab.kinetiframe.core.document.VoiceEffect
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse

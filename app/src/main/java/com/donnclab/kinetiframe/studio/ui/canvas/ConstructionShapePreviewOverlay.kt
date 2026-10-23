@@ -9,10 +9,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import com.donnclab.kinetiframe.project.model.TouchPoint
-import com.donnclab.kinetiframe.studio.drawing.BrushId
+import com.donnclab.kinetiframe.core.document.BrushId
+import com.donnclab.kinetiframe.core.document.BrushSnapshot
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.studio.drawing.BrushRenderers
-import com.donnclab.kinetiframe.studio.drawing.BrushSnapshot
 
 /** Non-destructive construction-shape ghost. Permanent pixels are created only on Confirm. */
 @Composable

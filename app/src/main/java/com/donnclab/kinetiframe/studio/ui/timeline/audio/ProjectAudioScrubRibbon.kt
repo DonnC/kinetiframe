@@ -28,8 +28,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.audio.TimelineAudioSummary
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
 import com.donnclab.kinetiframe.studio.ui.timeline.FRAME_CELL_WIDTH
 import com.donnclab.kinetiframe.studio.ui.timeline.TimelineScrubPosition
 

@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.project.model
 
+import com.donnclab.kinetiframe.core.document.StrokeBakeReceipts
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertSame

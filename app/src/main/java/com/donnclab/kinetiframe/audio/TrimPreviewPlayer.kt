@@ -1,7 +1,6 @@
 package com.donnclab.kinetiframe.audio
 
 import android.media.MediaPlayer
-import com.donnclab.kinetiframe.audio.AudioTrimSelection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

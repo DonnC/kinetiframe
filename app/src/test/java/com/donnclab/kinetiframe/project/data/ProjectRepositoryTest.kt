@@ -2,9 +2,9 @@ package com.donnclab.kinetiframe.project.data
 
 import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.ProjectDocument
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -19,15 +19,15 @@ class ProjectRepositoryTest {
         val base = document("effects")
         val shot = com.donnclab.kinetiframe.studio.camera.SceneCamera.preset(
             "pan",
-            com.donnclab.kinetiframe.studio.camera.CameraAction.PAN,
+            com.donnclab.kinetiframe.core.document.camera.CameraAction.PAN,
             0,
             24,
-            com.donnclab.kinetiframe.studio.camera.CameraPose(),
+            com.donnclab.kinetiframe.core.document.camera.CameraPose(),
         ).copy(waitFrames = 3, settleFrames = 4, frequencyHz = 5f)
-        val audio = com.donnclab.kinetiframe.project.model.AudioClipPlacement(
+        val audio = com.donnclab.kinetiframe.core.document.AudioClipPlacement(
             "voice", "asset", 0, "Voice", 0, 24,
             fadeInFrames = 6, fadeOutFrames = 6, envelopeDurationFrames = 24, equalPowerFades = true,
-            voiceEffect = com.donnclab.kinetiframe.audio.VoiceEffect.RADIO, originalAssetId = "original",
+            voiceEffect = com.donnclab.kinetiframe.core.document.VoiceEffect.RADIO, originalAssetId = "original",
         )
         val doc = base.copy(
             totalFrames = 24,
@@ -115,10 +115,10 @@ class ProjectRepositoryTest {
     @Test fun `embedded video survives closing repository and portable archive import`() {
         val files = ActorFileStore(root)
         val source = File(root, "screen.mp4").apply { writeBytes(byteArrayOf(1, 2, 3, 4)) }
-        val clip = com.donnclab.kinetiframe.project.model.VideoClipPlacement(
+        val clip = com.donnclab.kinetiframe.core.document.VideoClipPlacement(
             "screen", "video", "Story", 12, 48,
             videoSourceOffsetSeconds = 1.5, isSceneContent = true, x = 600f, y = 40f, width = 400f, height = 225f,
-            selectionTransform = com.donnclab.kinetiframe.studio.drawing.Affine2D(tx = 12f),
+            selectionTransform = com.donnclab.kinetiframe.core.geometry.Affine2D(tx = 12f),
         )
         val base = document("project-video")
         val doc = base.copy(
@@ -127,9 +127,9 @@ class ProjectRepositoryTest {
                 videoClips = mapOf("screen" to clip),
                 assets = mapOf(
                     "video" to
-                        com.donnclab.kinetiframe.project.model.ProjectAsset(
+                        com.donnclab.kinetiframe.core.document.ProjectAsset(
                             "video",
-                            com.donnclab.kinetiframe.project.model.AssetKind.VIDEO,
+                            com.donnclab.kinetiframe.core.document.AssetKind.VIDEO,
                             source.absolutePath,
                             1280,
                             720,
@@ -251,7 +251,7 @@ class ProjectRepositoryTest {
 
     @Test fun `editable text and independent frame layer stacks survive reopening`() {
         val saved = document("project-text", StageDimensions.Square, 24)
-        val text = com.donnclab.kinetiframe.project.model.TextNode(
+        val text = com.donnclab.kinetiframe.core.document.TextNode(
             id = "caption",
             text = "Hello",
             x = 100f,

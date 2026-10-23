@@ -20,15 +20,15 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.withSaveLayer
-import com.donnclab.kinetiframe.project.model.BaseNode
-import com.donnclab.kinetiframe.project.model.DrawCommand
-import com.donnclab.kinetiframe.project.model.DrawingTool
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.TextNode
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.BaseNode
+import com.donnclab.kinetiframe.core.document.BrushId
+import com.donnclab.kinetiframe.core.document.BrushSnapshot
+import com.donnclab.kinetiframe.core.document.DrawCommand
+import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.TextNode
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.studio.EraserType
-import com.donnclab.kinetiframe.studio.drawing.BrushId
-import com.donnclab.kinetiframe.studio.drawing.BrushSnapshot
 import com.donnclab.kinetiframe.studio.drawing.FontRegistry
 import com.donnclab.kinetiframe.studio.drawing.MultilineTextRenderer
 
@@ -57,7 +57,7 @@ fun CanvasDrawingLayer(
     pastTint: ColorFilter?,
     futureTint: ColorFilter?,
     currentFrameBitmap: Bitmap?,
-    nodes: Map<String, com.donnclab.kinetiframe.project.model.BaseNode>,
+    nodes: Map<String, com.donnclab.kinetiframe.core.document.BaseNode>,
     fontRegistry: FontRegistry,
     displayDensity: Float,
     activeStroke: ActiveStroke,

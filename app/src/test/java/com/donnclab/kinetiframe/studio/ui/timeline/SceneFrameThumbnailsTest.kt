@@ -2,9 +2,9 @@ package com.donnclab.kinetiframe.studio.ui.timeline
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.ProjectDocument
 import com.donnclab.kinetiframe.studio.LayerState
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
@@ -62,9 +62,9 @@ class SceneFrameThumbnailsTest {
                 project = state.project.copy(
                     backgroundAssetId = "missing",
                     assets = mapOf(
-                        "missing" to com.donnclab.kinetiframe.project.model.ProjectAsset(
+                        "missing" to com.donnclab.kinetiframe.core.document.ProjectAsset(
                             "missing",
-                            com.donnclab.kinetiframe.project.model.AssetKind.IMPORTED_IMAGE,
+                            com.donnclab.kinetiframe.core.document.AssetKind.IMPORTED_IMAGE,
                             "/missing-thumbnail-test.png",
                             512,
                             256,

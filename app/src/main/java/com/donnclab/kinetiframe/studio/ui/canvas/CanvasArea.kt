@@ -48,7 +48,7 @@ import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 @Composable
 fun CanvasArea(
     cameraPreview: Boolean = false,
-    cameraPoseOverride: com.donnclab.kinetiframe.studio.camera.CameraPose? = null,
+    cameraPoseOverride: com.donnclab.kinetiframe.core.document.camera.CameraPose? = null,
     fitStage: Boolean = false,
     actorReference: com.donnclab.kinetiframe.actors.ui.ActorReferenceSession? = null,
     state: StudioState,
@@ -89,7 +89,7 @@ fun CanvasArea(
         } else {
             val scale =
                 minOf(viewportSize.width.toFloat() / stage.width, viewportSize.height.toFloat() / stage.height) * .92f
-            com.donnclab.kinetiframe.studio.drawing.Affine2D(
+            com.donnclab.kinetiframe.core.geometry.Affine2D(
                 a = scale,
                 d = scale,
                 tx = (viewportSize.width - stage.width * scale) / 2f,
@@ -102,7 +102,7 @@ fun CanvasArea(
             values
         } else {
             (
-                com.donnclab.kinetiframe.studio.drawing.Affine2D(
+                com.donnclab.kinetiframe.core.geometry.Affine2D(
                     values[0],
                     values[3],
                     values[1],
@@ -333,7 +333,7 @@ private fun CanvasAreaContents(
                             activeVideo.clipId in state.selection.selectedContent?.videos.orEmpty()
                         ) {
                             selectionTransform.matrix.values.let {
-                                com.donnclab.kinetiframe.studio.drawing.Affine2D(
+                                com.donnclab.kinetiframe.core.geometry.Affine2D(
                                     it[0],
                                     it[1],
                                     it[4],
@@ -343,7 +343,7 @@ private fun CanvasAreaContents(
                                 )
                             }
                         } else {
-                            com.donnclab.kinetiframe.studio.drawing.Affine2D()
+                            com.donnclab.kinetiframe.core.geometry.Affine2D()
                         }
                     },
                     modifier = Modifier.fillMaxSize().zIndex(1.5f),
