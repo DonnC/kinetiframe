@@ -51,6 +51,12 @@ internal object KotlinBoundaryScanner {
                     if (module == "app" && RETIRED_APP_PACKAGES.any { pkg == it || pkg.startsWith("$it.") }) {
                         violations["package|$path|$pkg"] = 1
                     }
+                    val layer = FeatureLayering.featureOf(pkg)?.takeIf { FeatureLayering.applies(module, path) }
+                    val layering = sortedMapOf<String, Int>()
+                    fun checkLayering(reference: String) {
+                        val target = layer?.let { FeatureLayering.violation(it, reference) } ?: return
+                        layering[target] = (layering[target] ?: 0) + 1
+                    }
                     if (UiValueRules.applies(module, path)) {
                         UiValueRules.count(parsed).forEach { (kind, count) -> violations["$kind|$path"] = count }
                     }
@@ -106,12 +112,14 @@ internal object KotlinBoundaryScanner {
                         }
                         override fun visitImportDirective(directive: KtImportDirective) {
                             checkReference(directive.importedFqName?.asString().orEmpty())
+                            checkLayering(directive.importedFqName?.asString().orEmpty())
                             super.visitImportDirective(directive)
                         }
                         override fun visitDotQualifiedExpression(expression: KtDotQualifiedExpression) {
                             // Imports are checked once as complete names, not again as partial qualifiers.
                             if (generateSequence(expression.parent) { it.parent }.none { it is KtImportDirective }) {
                                 checkReference(expression.text)
+                                if (expression.parent !is KtDotQualifiedExpression) checkLayering(expression.text)
                             }
                             super.visitDotQualifiedExpression(expression)
                         }
@@ -141,6 +149,7 @@ internal object KotlinBoundaryScanner {
                             violations["dependency|$path|$forbidden"] = 1
                         }
                     })
+                    layering.forEach { (target, count) -> violations["layering|$path|$target"] = count }
                 }
             }
         } finally {

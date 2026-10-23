@@ -41,6 +41,10 @@ literals passed to `Text(...)` or `contentDescription`. Existing counts are in
 `.architecture/ui-values-baseline.properties`. A file's count may only go down, and a file
 that isn't listed may have none.
 
+It also checks that `app` features only use the features below them, in the order the
+[feature modules](architecture/decisions/feature-modules.md) decision sets out. Existing upward
+references are in `.architecture/layering-baseline.properties`, under the same rule.
+
 ## Modules and dependencies
 
 | Module | May depend on |
