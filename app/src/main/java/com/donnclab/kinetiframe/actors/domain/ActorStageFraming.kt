@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.actors.domain
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.rig.model.Transform
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.geometry.Point2
-import com.donnclab.kinetiframe.project.model.StageDimensions
 
 /** Fit actual posed artwork, not its authoring origin, into a useful initial scene framing. */
 object ActorStageFraming {

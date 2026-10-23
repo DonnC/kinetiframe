@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import com.donnclab.kinetiframe.actors.rig.model.ActorDrawingRegion
+import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawingRegion
 import kotlin.math.hypot
 import kotlin.math.min
 

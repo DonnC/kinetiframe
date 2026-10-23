@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.studio.ui.canvas
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull

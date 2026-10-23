@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.project.data
 
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import kotlinx.serialization.Serializable
 
 /** Lightweight, gallery-listing-only metadata -- mirrors ActorManifest's manifest/document split

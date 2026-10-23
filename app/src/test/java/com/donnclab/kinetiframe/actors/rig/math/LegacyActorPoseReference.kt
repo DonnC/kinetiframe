@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.geometry.Point2
 import kotlin.math.abs
 

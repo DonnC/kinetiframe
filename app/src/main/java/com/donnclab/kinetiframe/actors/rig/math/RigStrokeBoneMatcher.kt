@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 
 /**
  * Routes one freehand stroke to the skeletal segment it most closely follows.

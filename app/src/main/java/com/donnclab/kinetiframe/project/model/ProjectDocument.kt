@@ -1,15 +1,16 @@
 package com.donnclab.kinetiframe.project.model
 
-import com.donnclab.kinetiframe.actors.data.CurveInterpolation
-import com.donnclab.kinetiframe.actors.data.PerformancePlayback
-import com.donnclab.kinetiframe.actors.data.RootMotionCurve
-import com.donnclab.kinetiframe.actors.data.RotationCurve
-import com.donnclab.kinetiframe.actors.rig.model.ActorArtworkKey
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
-import com.donnclab.kinetiframe.actors.rig.model.Transform
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.audio.VoiceEffect
+import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
+import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.project.model.BaseNode
 import com.donnclab.kinetiframe.project.model.Layer
 import com.donnclab.kinetiframe.studio.camera.CameraShot

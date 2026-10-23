@@ -1,9 +1,12 @@
 package com.donnclab.kinetiframe.actors.ui.sketch
 
 import android.graphics.Bitmap
-import com.donnclab.kinetiframe.actors.rig.model.ActorDrawing
-import com.donnclab.kinetiframe.actors.rig.model.ActorDrawingRegion
-import com.donnclab.kinetiframe.actors.rig.model.DrawingPoint
+import android.graphics.Color
+import androidx.compose.ui.geometry.Offset
+import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawing
+import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawingRegion
+import com.donnclab.kinetiframe.core.actor.artwork.DrawingPoint
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.project.model.TouchPoint
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
@@ -16,7 +19,7 @@ data class ActorSketchState(
     val colour: Bitmap? = null,
     val layer: SketchLayer = SketchLayer.LINEWORK,
     val tool: SketchTool = SketchTool.PEN,
-    val paintColour: Int = android.graphics.Color.BLACK,
+    val paintColour: Int = Color.BLACK,
     val size: Float = 4f,
     val revision: Int = 0,
     val busy: Boolean = true,
@@ -25,7 +28,7 @@ data class ActorSketchState(
     val canRedo: Boolean = false,
     val regions: List<ActorDrawingRegion> = emptyList(),
     val bindingPartId: String? = null,
-    val graph: com.donnclab.kinetiframe.actors.rig.model.SceneGraph? = null,
+    val graph: SceneGraph? = null,
 ) : ViewState
 sealed interface ActorSketchIntent : ViewIntent {
     data class Layer(val value: SketchLayer) : ActorSketchIntent
@@ -37,18 +40,13 @@ sealed interface ActorSketchIntent : ViewIntent {
     data class BindingPart(val id: String) : ActorSketchIntent
     data class BindRegion(val outline: List<DrawingPoint>) : ActorSketchIntent
     data class ClearRegions(val partId: String) : ActorSketchIntent
-    data class MoveJoint(val partId: String, val start: Boolean, val target: androidx.compose.ui.geometry.Offset) :
-        ActorSketchIntent
+    data class MoveJoint(val partId: String, val start: Boolean, val target: Offset) : ActorSketchIntent
     data object Undo : ActorSketchIntent
     data object Redo : ActorSketchIntent
     data object Bind : ActorSketchIntent
 }
 sealed interface ActorSketchEffect : ViewEffect {
     data class Error(val message: String) : ActorSketchEffect
-    data class Bound(
-        val ink: Bitmap,
-        val colour: Bitmap,
-        val drawing: ActorDrawing,
-        val restGraph: com.donnclab.kinetiframe.actors.rig.model.SceneGraph,
-    ) : ActorSketchEffect
+    data class Bound(val ink: Bitmap, val colour: Bitmap, val drawing: ActorDrawing, val restGraph: SceneGraph) :
+        ActorSketchEffect
 }

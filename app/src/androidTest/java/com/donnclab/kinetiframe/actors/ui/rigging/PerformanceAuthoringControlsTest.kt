@@ -4,10 +4,10 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey
 import com.donnclab.kinetiframe.actors.ui.rigging.PerformanceDurationMenu
 import com.donnclab.kinetiframe.actors.ui.rigging.PerformanceFrameRuler
 import com.donnclab.kinetiframe.actors.ui.rigging.PuppetTopBar
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState

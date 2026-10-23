@@ -1,10 +1,10 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.CurveInterpolation
-import com.donnclab.kinetiframe.actors.data.RootMotionCurve
-import com.donnclab.kinetiframe.actors.data.RootMotionPoint
-import com.donnclab.kinetiframe.actors.data.RotationCurve
-import com.donnclab.kinetiframe.actors.data.RotationCurvePoint
+import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionPoint
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
 import com.donnclab.kinetiframe.engine.rigging.motion.BeforeTake
 import com.donnclab.kinetiframe.engine.rigging.motion.CurveSampling
 import org.junit.jupiter.api.Assertions.assertEquals

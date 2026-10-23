@@ -1,13 +1,13 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
-import com.donnclab.kinetiframe.actors.rig.model.Transform
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneArtwork
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue

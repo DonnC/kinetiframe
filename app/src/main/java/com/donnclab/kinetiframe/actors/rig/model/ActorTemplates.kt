@@ -3,8 +3,11 @@ package com.donnclab.kinetiframe.actors.rig.model
 import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.document.StageDimensions
 
 // Internal identifiers remain readable for saved actors; creation now describes topology,
 // never a stock character illustration or a promise of automatically generated viewpoints.

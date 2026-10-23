@@ -25,6 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.domain.ActorMotionManager
+import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
+import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
+import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
@@ -39,7 +43,7 @@ fun ActorPoseTimeline(
     state: StudioState,
     onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,
-    assets: com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager? = null,
+    assets: RigAssetManager? = null,
 ) {
     val keys = state.activeActor()?.poseKeys.orEmpty()
     val artworkKeys = state.activeActor()?.artworkKeys.orEmpty()
@@ -49,7 +53,7 @@ fun ActorPoseTimeline(
         (
             keys +
                 (curves.flatMap { it.points }.map { it.timeMicros } + roots.flatMap { it.points }.map { it.timeMicros })
-                    .map { com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey(it, emptyMap()) }
+                    .map { ActorPoseKey(it, emptyMap()) }
             )
             .distinctBy { it.timeMicros }.sortedBy { it.timeMicros }
     }
@@ -57,7 +61,7 @@ fun ActorPoseTimeline(
         (
             poseMarkers +
                 artworkKeys.map {
-                    com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey(it.timeMicros, emptyMap())
+                    ActorPoseKey(it.timeMicros, emptyMap())
                 }
             ).distinctBy { it.timeMicros }.sortedBy { it.timeMicros }
     }
@@ -109,7 +113,7 @@ fun ActorPoseTimeline(
                     }
                     ActorMotionTimingMenu(state, onIntent, enabled = !hasPreset)
                     val contact = state.actorDefinition()?.sceneGraph?.let {
-                        com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose.contactBone(
+                        ActorMotionPose.contactBone(
                             it,
                             state.scene.selectedBoneId,
                         )
@@ -117,7 +121,7 @@ fun ActorPoseTimeline(
                     ActorContactMenu(
                         !hasPreset && contact != null,
                         contact in
-                            com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack.contacts(
+                            ActorPoseTrack.contacts(
                                 keys,
                                 state.actor.previewTimeMicros,
                             ),

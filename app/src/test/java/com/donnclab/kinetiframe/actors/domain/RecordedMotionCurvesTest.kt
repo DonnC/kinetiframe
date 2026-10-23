@@ -1,7 +1,8 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.RotationCurve
-import com.donnclab.kinetiframe.actors.data.RotationCurvePoint
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -22,7 +23,7 @@ class RecordedMotionCurvesTest {
         val head = arm.copy(boneId = "head")
         val result = PerformanceAuthoring.refineCurves(
             listOf(arm, head),
-            com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey(500_000, mapOf("arm" to 30f)),
+            ActorPoseKey(500_000, mapOf("arm" to 30f)),
         )
         assertEquals(listOf(5f, 30f, 20f), result.first().points.map { it.degrees })
         assertSame(head, result.last())

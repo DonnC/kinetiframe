@@ -28,8 +28,8 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Move
 import com.composables.icons.lucide.Pen
 import com.composables.icons.lucide.Scissors
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
 import com.donnclab.kinetiframe.actors.ui.ActorNameDialog
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.project.model.DrawingTool
 import com.donnclab.kinetiframe.studio.ActorEditTarget

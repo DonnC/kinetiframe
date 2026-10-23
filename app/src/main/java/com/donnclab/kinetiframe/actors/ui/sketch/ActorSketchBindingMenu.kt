@@ -14,11 +14,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.Lasso
 import com.composables.icons.lucide.ListTree
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Text
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 
 /** Choose a named part, then lasso its artwork. Reset is local to that part and undoable. */
 @Composable
@@ -65,7 +67,7 @@ internal fun ActorSketchBindingMenu(state: ActorSketchState, graph: SceneGraph, 
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview
+@Preview
 @Composable
 private fun SketchBindingPreview() {
     MaterialTheme {
@@ -75,7 +77,7 @@ private fun SketchBindingPreview() {
                 listOf("root"),
                 mapOf(
                     "root" to
-                        com.donnclab.kinetiframe.actors.rig.model.BoneNode("root", name = "Body", length = 32f),
+                        BoneNode("root", name = "Body", length = 32f),
                 ),
             ),
             {

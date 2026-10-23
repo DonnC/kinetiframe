@@ -7,7 +7,7 @@ import com.donnclab.kinetiframe.actors.data.ActorRevision
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals

@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.engine.rigging.math.RigidGeometryException
 import com.donnclab.kinetiframe.engine.rigging.math.RigidRigGeometry

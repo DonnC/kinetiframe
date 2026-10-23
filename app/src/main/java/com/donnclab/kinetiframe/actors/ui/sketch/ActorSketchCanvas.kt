@@ -25,8 +25,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
-import com.donnclab.kinetiframe.actors.rig.model.DrawingPoint
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.artwork.DrawingPoint
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.project.model.TouchPoint
 import kotlin.math.hypot
 

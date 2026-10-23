@@ -1,6 +1,14 @@
 package com.donnclab.kinetiframe.actors.data
 
+import com.donnclab.kinetiframe.actors.data.db.ActorDao
+import com.donnclab.kinetiframe.actors.data.db.ActorEntity
 import com.donnclab.kinetiframe.actors.domain.ActorTemplateContract
+import com.donnclab.kinetiframe.actors.render.ActorThumbnailMaker
+import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
+import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
+import com.donnclab.kinetiframe.actors.rig.model.ActorView
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -19,7 +27,7 @@ class ActorRepository(
         ignoreUnknownKeys = false
         prettyPrint = true
     },
-    private val dao: com.donnclab.kinetiframe.actors.data.db.ActorDao? = null,
+    private val dao: ActorDao? = null,
 ) {
     /** Read-only character hierarchy: motion remains owned by its original project/revision. */
     fun relatedPerformances(): List<PerformanceDocument> {
@@ -164,7 +172,7 @@ class ActorRepository(
 
     /** Returns a stable file thumbnail for dashboard-only use; absence is not an error. */
     fun characterPreview(actorId: String): ActorStoreResult<String?> = runCatching {
-        com.donnclab.kinetiframe.actors.render.ActorThumbnailMaker.create(
+        ActorThumbnailMaker.create(
             files.actorDirectory(actorId),
             loadValue(actorId).second,
         )
@@ -188,11 +196,11 @@ class ActorRepository(
 
     fun saveRevision(
         actorId: String,
-        sceneGraph: com.donnclab.kinetiframe.actors.rig.model.SceneGraph,
+        sceneGraph: SceneGraph,
         newRevisionId: String,
         nowEpochMs: Long,
         artworkAssetPaths: Map<String, String>? = null,
-        view: com.donnclab.kinetiframe.actors.rig.model.ActorView? = null,
+        view: ActorView? = null,
     ): ActorStoreResult<Pair<ActorManifest, ActorRevision>> = runCatching {
         val (manifest, selected) = loadValue(actorId)
         val current = if (view == null || selected.view == view) {
@@ -223,7 +231,7 @@ class ActorRepository(
 
     fun selectView(
         actorId: String,
-        view: com.donnclab.kinetiframe.actors.rig.model.ActorView,
+        view: ActorView,
         nowEpochMs: Long,
     ): ActorStoreResult<Pair<ActorManifest, ActorRevision>> = runCatching {
         val (manifest, _) = loadValue(actorId)
@@ -240,28 +248,28 @@ class ActorRepository(
     /** New views start without artwork. Drawing unseen surfaces is an authoring decision. */
     fun createView(
         actorId: String,
-        view: com.donnclab.kinetiframe.actors.rig.model.ActorView,
+        view: ActorView,
         revisionId: String,
         nowEpochMs: Long,
     ): ActorStoreResult<Pair<ActorManifest, ActorRevision>> = runCatching {
         val (manifest, _) = loadValue(actorId)
         require(
-            view != com.donnclab.kinetiframe.actors.rig.model.ActorView.ORIGINAL && view !in manifest.authoredViews(),
+            view != ActorView.ORIGINAL && view !in manifest.authoredViews(),
         ) {
             "View already exists"
         }
         val template = when (manifest.templateId) {
-            ActorManifest.HUMAN_TEMPLATE_ID -> com.donnclab.kinetiframe.actors.rig.model.ActorTemplate.HUMAN
-            ActorManifest.ANIMAL_TEMPLATE_ID -> com.donnclab.kinetiframe.actors.rig.model.ActorTemplate.ANIMAL
-            else -> com.donnclab.kinetiframe.actors.rig.model.ActorTemplate.CUSTOM
+            ActorManifest.HUMAN_TEMPLATE_ID -> ActorTemplate.HUMAN
+            ActorManifest.ANIMAL_TEMPLATE_ID -> ActorTemplate.ANIMAL
+            else -> ActorTemplate.CUSTOM
         }
         val revision = ActorRevision(
             revisionId = revisionId,
             actorId = actorId,
             view = view,
-            sceneGraph = com.donnclab.kinetiframe.actors.rig.model.ActorTemplates.create(
+            sceneGraph = ActorTemplates.create(
                 template,
-                com.donnclab.kinetiframe.project.model.StageDimensions.LandscapeHd,
+                StageDimensions.LandscapeHd,
                 view,
             ),
             createdAtEpochMs = nowEpochMs,
@@ -362,18 +370,17 @@ class ActorRepository(
         is ActorStoreResult.Failure -> null
     }
 
-    private fun toEntity(manifest: ActorManifest, thumbnail: String?) =
-        com.donnclab.kinetiframe.actors.data.db.ActorEntity(
-            actorId = manifest.actorId,
-            displayName = manifest.displayName,
-            templateId = manifest.templateId,
-            currentRevisionId = manifest.currentRevisionId,
-            createdAtEpochMs = manifest.createdAtEpochMs,
-            updatedAtEpochMs = manifest.updatedAtEpochMs,
-            thumbnailPath = thumbnail,
-        )
+    private fun toEntity(manifest: ActorManifest, thumbnail: String?) = ActorEntity(
+        actorId = manifest.actorId,
+        displayName = manifest.displayName,
+        templateId = manifest.templateId,
+        currentRevisionId = manifest.currentRevisionId,
+        createdAtEpochMs = manifest.createdAtEpochMs,
+        updatedAtEpochMs = manifest.updatedAtEpochMs,
+        thumbnailPath = thumbnail,
+    )
 
-    private fun toManifest(entity: com.donnclab.kinetiframe.actors.data.db.ActorEntity) = ActorManifest(
+    private fun toManifest(entity: ActorEntity) = ActorManifest(
         actorId = entity.actorId,
         displayName = entity.displayName,
         templateId = entity.templateId,

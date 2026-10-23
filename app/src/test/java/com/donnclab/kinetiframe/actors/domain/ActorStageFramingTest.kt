@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.domain
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

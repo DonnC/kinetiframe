@@ -4,7 +4,7 @@ import com.donnclab.kinetiframe.actors.domain.PerformanceCompatibility
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.actors.rig.model.ActorView
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals

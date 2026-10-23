@@ -1,15 +1,16 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import com.donnclab.kinetiframe.actors.rig.model.ArtworkSkin
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
-import com.donnclab.kinetiframe.actors.rig.model.SkinAffine
-import com.donnclab.kinetiframe.actors.rig.model.SkinBone
-import com.donnclab.kinetiframe.actors.rig.model.SkinGrid
-import com.donnclab.kinetiframe.actors.rig.model.SkinMesh
-import com.donnclab.kinetiframe.actors.rig.model.SkinSourceSize
-import com.donnclab.kinetiframe.actors.rig.model.SkinVertex
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
+import com.donnclab.kinetiframe.core.actor.artwork.ArtworkSkin
+import com.donnclab.kinetiframe.core.actor.artwork.SkinAffine
+import com.donnclab.kinetiframe.core.actor.artwork.SkinBone
+import com.donnclab.kinetiframe.core.actor.artwork.SkinGrid
+import com.donnclab.kinetiframe.core.actor.artwork.SkinMesh
+import com.donnclab.kinetiframe.core.actor.artwork.SkinSourceSize
+import com.donnclab.kinetiframe.core.actor.artwork.SkinVertex
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.geometry.Point2
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -28,7 +29,7 @@ class ArtworkBindingTransformTest {
                 assetId = "wrong",
                 alignment = old.alignment.copy(
                     scale = 2f,
-                    offset = com.donnclab.kinetiframe.core.geometry.Point2(5f, 0f),
+                    offset = Point2(5f, 0f),
                 ),
             ),
         )
@@ -56,7 +57,7 @@ class ArtworkBindingTransformTest {
                 alignment = old.alignment.copy(
                     scale = 2f,
                     rotationDegrees = 90f,
-                    offset = com.donnclab.kinetiframe.core.geometry.Point2(10f, 0f),
+                    offset = Point2(10f, 0f),
                 ),
             ),
         )
@@ -79,7 +80,7 @@ class ArtworkBindingTransformTest {
                 old,
                 old.copy(
                     alignment = old.alignment.copy(
-                        offset = com.donnclab.kinetiframe.core.geometry.Point2(Float.NaN, 0f),
+                        offset = Point2(Float.NaN, 0f),
                     ),
                 ),
             )

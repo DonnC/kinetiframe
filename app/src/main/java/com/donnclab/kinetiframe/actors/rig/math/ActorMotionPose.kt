@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import com.donnclab.kinetiframe.actors.rig.model.JointContact
-import com.donnclab.kinetiframe.actors.rig.model.RootTranslation
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.motion.JointContact
+import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.engine.rigging.motion.MotionContacts
 import com.donnclab.kinetiframe.engine.rigging.motion.MotionPose
 

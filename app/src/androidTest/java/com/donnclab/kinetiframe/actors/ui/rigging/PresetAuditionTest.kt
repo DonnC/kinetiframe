@@ -10,6 +10,9 @@ import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
 import com.donnclab.kinetiframe.actors.ui.rigging.ActorMotionTimingMenu
 import com.donnclab.kinetiframe.actors.ui.rigging.PresetAuditionControls
 import com.donnclab.kinetiframe.actors.ui.rigging.PresetLibrarySection
+import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
+import com.donnclab.kinetiframe.studio.StudioIntent
+import com.donnclab.kinetiframe.studio.StudioState
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -50,16 +53,16 @@ class PresetAuditionTest {
     }
 
     @Test fun timingMenuEmitsSavedAuthoringIntent() {
-        var selected: com.donnclab.kinetiframe.studio.StudioIntent? = null
+        var selected: StudioIntent? = null
         compose.setContent {
-            ActorMotionTimingMenu(com.donnclab.kinetiframe.studio.StudioState(), { selected = it }, true)
+            ActorMotionTimingMenu(StudioState(), { selected = it }, true)
         }
         compose.onNodeWithContentDescription("Motion timing").performClick()
         compose.onNodeWithText("Ease · pose to pose").performClick()
         compose.runOnIdle {
             assertEquals(
-                com.donnclab.kinetiframe.studio.StudioIntent.ActorMotion.SetInterpolation(
-                    com.donnclab.kinetiframe.actors.data.CurveInterpolation.EASE_IN_OUT,
+                StudioIntent.ActorMotion.SetInterpolation(
+                    CurveInterpolation.EASE_IN_OUT,
                 ),
                 selected,
             )

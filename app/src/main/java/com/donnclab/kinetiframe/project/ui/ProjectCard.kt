@@ -14,6 +14,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,10 +27,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.project.data.ProjectManifest
+import com.donnclab.kinetiframe.project.data.ProjectRepository
 
 /** One dashboard card. Shows the project's real frame-0 thumbnail once one has been generated
- *  (see [com.donnclab.kinetiframe.project.data.ProjectRepository.thumbnailFile] and EditorScreen's
+ *  (see [ProjectRepository.thumbnailFile] and EditorScreen's
  *  onSaveProjectClick) -- a plain colored surface is the fallback for a project that predates
  *  thumbnails or hasn't been saved since. */
 @Composable
@@ -54,7 +57,7 @@ fun ProjectCard(
                         modifier = Modifier.fillMaxSize(),
                     )
                 } else {
-                    androidx.compose.material3.Surface(
+                    Surface(
                         modifier = Modifier.fillMaxWidth().aspectRatio(
                             project.stage.width.toFloat() / project.stage.height.toFloat(),
                         ),
@@ -104,7 +107,7 @@ private fun ProjectCardPreview() = ProjectCard(
     ProjectManifest(
         projectId = "project-1",
         displayName = "My Cartoon",
-        stage = com.donnclab.kinetiframe.project.model.StageDimensions.LandscapeHd,
+        stage = StageDimensions.LandscapeHd,
         fps = 12,
         createdAtEpochMs = 1,
         updatedAtEpochMs = 1,

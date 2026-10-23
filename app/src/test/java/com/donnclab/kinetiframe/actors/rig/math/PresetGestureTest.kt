@@ -2,13 +2,13 @@ package com.donnclab.kinetiframe.actors.rig.math
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
-import com.donnclab.kinetiframe.actors.rig.presets.RotationPoint
+import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.engine.rigging.presets.PresetCurve
-import com.donnclab.kinetiframe.project.model.StageDimensions
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows

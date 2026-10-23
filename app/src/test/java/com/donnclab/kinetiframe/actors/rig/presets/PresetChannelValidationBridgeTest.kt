@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.actors.rig.presets
 
+import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

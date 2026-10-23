@@ -1,16 +1,37 @@
 package com.donnclab.kinetiframe.studio
 
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import com.donnclab.kinetiframe.actors.domain.ActorPlacementManager
+import com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry
+import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
+import com.donnclab.kinetiframe.audio.VoiceEffect
+import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawing
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
+import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.library.ui.packs.PackFrameTag
+import com.donnclab.kinetiframe.project.model.ActorPlacementReference
+import com.donnclab.kinetiframe.project.model.AudioClipPlacement
+import com.donnclab.kinetiframe.project.model.AudioTrackSettings
 import com.donnclab.kinetiframe.project.model.DrawingTool
 import com.donnclab.kinetiframe.project.model.Layer
 import com.donnclab.kinetiframe.project.model.LayerType
+import com.donnclab.kinetiframe.project.model.ProjectAsset
 import com.donnclab.kinetiframe.project.model.TextNode
 import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.project.model.VideoClipPlacement
+import com.donnclab.kinetiframe.project.model.VideoFit
+import com.donnclab.kinetiframe.studio.camera.CameraShot
 import com.donnclab.kinetiframe.studio.drawing.BrushId
 import com.donnclab.kinetiframe.studio.drawing.BrushSnapshot
 import com.donnclab.kinetiframe.studio.drawing.ConstructionShape
+import com.donnclab.kinetiframe.studio.drawing.FontRegistry
 import com.donnclab.kinetiframe.ui.ViewIntent
 
 /**
@@ -18,16 +39,16 @@ import com.donnclab.kinetiframe.ui.ViewIntent
  */
 sealed class StudioIntent : ViewIntent {
     sealed class PackItem : StudioIntent() {
-        data class SetTag(val index: Int, val tag: com.donnclab.kinetiframe.library.ui.packs.PackFrameTag) : PackItem()
-        data class Add(val index: Int, val tag: com.donnclab.kinetiframe.library.ui.packs.PackFrameTag) : PackItem()
+        data class SetTag(val index: Int, val tag: PackFrameTag) : PackItem()
+        data class Add(val index: Int, val tag: PackFrameTag) : PackItem()
     }
     sealed class Actor : StudioIntent() {
         data class CommitDrawing(
             val definitionId: String,
             val ink: Bitmap,
             val colour: Bitmap,
-            val document: com.donnclab.kinetiframe.actors.rig.model.ActorDrawing,
-            val restGraph: com.donnclab.kinetiframe.actors.rig.model.SceneGraph? = null,
+            val document: ActorDrawing,
+            val restGraph: SceneGraph? = null,
         ) : Actor()
         data class UseDrawing(val enabled: Boolean) : Actor()
         data class SetDrawingOverlay(val partId: String, val enabled: Boolean, val behind: Boolean = false) : Actor()
@@ -38,7 +59,7 @@ sealed class StudioIntent : ViewIntent {
             val partId: String,
             val name: String,
             val bitmap: Bitmap,
-            val alignment: com.donnclab.kinetiframe.actors.rig.model.TextureBinding,
+            val alignment: TextureBinding,
             val asVariant: Boolean,
             val continuousChildId: String? = null,
             val replaceVariantId: String? = null,
@@ -49,12 +70,12 @@ sealed class StudioIntent : ViewIntent {
             val partId: String,
             val variantId: String,
             val name: String,
-            val alignment: com.donnclab.kinetiframe.actors.rig.model.TextureBinding,
+            val alignment: TextureBinding,
         ) : Actor()
         data class RemoveArtwork(val partId: String, val variantId: String = "") : Actor()
         data class SetAttachmentBlend(val partId: String, val variantId: String = "", val enabled: Boolean) : Actor()
         data class AddSampleArtwork(val color: Int) : Actor()
-        data class Create(val template: com.donnclab.kinetiframe.actors.rig.model.ActorTemplate) : Actor()
+        data class Create(val template: ActorTemplate) : Actor()
         data class Drag(val id: String, val target: Offset) : Actor()
         object CommitDrag : Actor()
         object CancelDrag : Actor()
@@ -79,7 +100,7 @@ sealed class StudioIntent : ViewIntent {
         data class SetTakeSmoothness(val value: Float) : ActorMotion()
         data class SetTakeMoveCharacter(val value: Boolean) : ActorMotion()
         object DeleteArtworkKey : ActorMotion()
-        data class SetInterpolation(val value: com.donnclab.kinetiframe.actors.data.CurveInterpolation) : ActorMotion()
+        data class SetInterpolation(val value: CurveInterpolation) : ActorMotion()
         data class Scrub(val timeMicros: Long) : ActorMotion()
         data class SetDuration(val durationMicros: Long) : ActorMotion()
         object TogglePlayback : ActorMotion()
@@ -98,13 +119,10 @@ sealed class StudioIntent : ViewIntent {
         object Remove : ActorPreset()
     }
     sealed class ActorPlacement : StudioIntent() {
-        data class Add(val reference: com.donnclab.kinetiframe.project.model.ActorPlacementReference) : ActorPlacement()
+        data class Add(val reference: ActorPlacementReference) : ActorPlacement()
         data class Duplicate(val placementId: String) : ActorPlacement()
         data class Remove(val placementId: String) : ActorPlacement()
-        data class UpdateTransform(
-            val placementId: String,
-            val transform: com.donnclab.kinetiframe.actors.rig.model.Transform,
-        ) : ActorPlacement()
+        data class UpdateTransform(val placementId: String, val transform: Transform) : ActorPlacement()
 
         /** FxF can only change a placement's scene ordering; rig edits belong to Actor Studio. */
         data class BringToFront(val placementId: String) : ActorPlacement()
@@ -127,7 +145,7 @@ sealed class StudioIntent : ViewIntent {
         ) : ActorPlacement()
 
         /** Cuts a placed clip into two independent placements at [atFrame], which must fall
-         *  strictly inside the clip's active range. See [com.donnclab.kinetiframe.actors.domain.ActorPlacementManager.split]
+         *  strictly inside the clip's active range. See [ActorPlacementManager.split]
          *  for the timing caveat this shares with left-trim: neither half continues playback from
          *  where the other left off, since the placement model has no in-point field yet. */
         data class Split(val placementId: String, val atFrame: Int) : ActorPlacement()
@@ -160,7 +178,7 @@ sealed class StudioIntent : ViewIntent {
         ) : Draw()
         data class SelectTool(val tool: DrawingTool) : Draw()
         data class SelectConstructionShape(val shape: ConstructionShape?) : Draw()
-        data class SetBrushColor(val color: androidx.compose.ui.graphics.Color) : Draw()
+        data class SetBrushColor(val color: Color) : Draw()
         data class SetBrushSize(val size: Float) : Draw()
         data class SelectBrush(val brushId: BrushId) : Draw()
         data class SetEraserSize(val size: Float) : Draw()
@@ -209,7 +227,7 @@ sealed class StudioIntent : ViewIntent {
         object ResetGridSettings : View()
         data class SetRulerMode(val mode: RulerMode) : View()
         data class UpdateRulerGuide(val guide: RulerGuide) : View()
-        data class UpdateCanvasTransform(val matrix: android.graphics.Matrix) : View()
+        data class UpdateCanvasTransform(val matrix: Matrix) : View()
         object ResetCanvasTransform : View()
         object ToggleSafeFrame : View()
         data class SetViewportSize(val width: Int, val height: Int) : View()
@@ -226,19 +244,16 @@ sealed class StudioIntent : ViewIntent {
         data class SetEnabled(val enabled: Boolean) : OnionSkin()
         data class SetFramesBefore(val frames: Int) : OnionSkin()
         data class SetFramesAfter(val frames: Int) : OnionSkin()
-        data class SetColorBefore(val color: androidx.compose.ui.graphics.Color) : OnionSkin()
-        data class SetColorAfter(val color: androidx.compose.ui.graphics.Color) : OnionSkin()
+        data class SetColorBefore(val color: Color) : OnionSkin()
+        data class SetColorAfter(val color: Color) : OnionSkin()
         data class SetOpacity(val opacity: Float) : OnionSkin()
         object Reset : OnionSkin()
     }
 
     sealed class Rigging : StudioIntent() {
         data class SetStudioMode(val mode: StudioMode) : Rigging()
-        data class PreparePivotPlacement(
-            val sourceFrame: Bitmap,
-            val lassoPath: androidx.compose.ui.graphics.Path,
-            val dilationRadius: Int = 8,
-        ) : Rigging()
+        data class PreparePivotPlacement(val sourceFrame: Bitmap, val lassoPath: Path, val dilationRadius: Int = 8) :
+            Rigging()
         data class MovePivot(val x: Float, val y: Float) : Rigging()
         data class AddBoneAt(val x: Float, val y: Float) : Rigging()
         data class SelectBone(val id: String?) : Rigging()
@@ -261,19 +276,16 @@ sealed class StudioIntent : ViewIntent {
     sealed class Selection : StudioIntent() {
         data class SetTool(val type: SelectionToolType) : Selection()
         data class SelectArea(
-            val path: androidx.compose.ui.graphics.Path? = null,
+            val path: Path? = null,
             val rect: Rect? = null,
             val density: Float = 1f,
-            val fontRegistry: com.donnclab.kinetiframe.studio.drawing.FontRegistry? = null,
-            val actors: com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry? = null,
+            val fontRegistry: FontRegistry? = null,
+            val actors: ActorSelectionGeometry? = null,
         ) : Selection()
 
         /** Selects a vector text node without rasterising the pixels beneath it. */
-        data class SelectTextNode(
-            val id: String,
-            val density: Float,
-            val fontRegistry: com.donnclab.kinetiframe.studio.drawing.FontRegistry? = null,
-        ) : Selection()
+        data class SelectTextNode(val id: String, val density: Float, val fontRegistry: FontRegistry? = null) :
+            Selection()
         data class SetActive(val active: Boolean) : Selection()
         data class UpdateTransform(val matrix: androidx.compose.ui.graphics.Matrix) : Selection()
         data class UpdatePivot(val offset: Offset) : Selection()
@@ -292,11 +304,8 @@ sealed class StudioIntent : ViewIntent {
          * drag was dropped. When they are null, as for a tap in the library picker, the stamp is
          * centered on the stage.
          */
-        data class StampBitmap(
-            val bitmap: android.graphics.Bitmap,
-            val centerX: Float? = null,
-            val centerY: Float? = null,
-        ) : Selection()
+        data class StampBitmap(val bitmap: Bitmap, val centerX: Float? = null, val centerY: Float? = null) :
+            Selection()
         object Delete : Selection()
         object ResetTransform : Selection()
         object Cancel : Selection()
@@ -325,7 +334,7 @@ sealed class StudioIntent : ViewIntent {
     }
 
     /** Placed audio clips across the project's fixed audio-track lanes -- see
-     *  [com.donnclab.kinetiframe.project.model.AudioClipPlacement]'s doc comment. [Add] mirrors
+     *  [AudioClipPlacement]'s doc comment. [Add] mirrors
      *  [Background.SetImage]'s precedent: the caller (EditorScreen, which has Android
      *  Context/ContentResolver/MediaRecorder access) has already copied the audio file into the
      *  project's own storage and resolved its duration before this intent is ever dispatched, so
@@ -334,21 +343,18 @@ sealed class StudioIntent : ViewIntent {
         data class VoiceStyle(
             val clipId: String,
             val expectedAssetId: String,
-            val effect: com.donnclab.kinetiframe.audio.VoiceEffect,
-            val proxy: com.donnclab.kinetiframe.project.model.ProjectAsset?,
+            val effect: VoiceEffect,
+            val proxy: ProjectAsset?,
         ) : Audio()
         data class Crossfade(val clipId: String, val nextClipId: String, val frames: Int) : Audio()
         data class SetFades(val clipId: String, val fadeInFrames: Int, val fadeOutFrames: Int) : Audio()
-        data class Add(
-            val placement: com.donnclab.kinetiframe.project.model.AudioClipPlacement,
-            val asset: com.donnclab.kinetiframe.project.model.ProjectAsset,
-        ) : Audio()
+        data class Add(val placement: AudioClipPlacement, val asset: ProjectAsset) : Audio()
         data class Remove(val clipId: String) : Audio()
         data class Trim(val clipId: String, val startFrame: Int, val durationFrames: Int) : Audio()
         data class Move(val clipId: String, val trackIndex: Int, val startFrame: Int) : Audio()
         data class SetVolume(val clipId: String, val volume: Float) : Audio()
 
-        /** Lane-wide, not clip-wide -- see [com.donnclab.kinetiframe.project.model.AudioTrackSettings]. */
+        /** Lane-wide, not clip-wide -- see [AudioTrackSettings]. */
         data class SetTrackMuted(val trackIndex: Int, val muted: Boolean) : Audio()
         data class SetTrackLocked(val trackIndex: Int, val locked: Boolean) : Audio()
         data class Duplicate(val clipId: String) : Audio()
@@ -357,19 +363,14 @@ sealed class StudioIntent : ViewIntent {
         data class Split(val clipId: String, val atFrame: Int) : Audio()
     }
     sealed class Video : StudioIntent() {
-        data class Framing(
-            val clipId: String,
-            val fit: com.donnclab.kinetiframe.project.model.VideoFit,
-            val cropX: Float,
-            val cropY: Float,
-        ) : Video()
+        data class Framing(val clipId: String, val fit: VideoFit, val cropX: Float, val cropY: Float) : Video()
         data class Split(val clipId: String, val atFrame: Int) : Video()
         data class Select(val clipId: String) : Video()
         data class DetachAudio(val clipId: String) : Video()
         data class Add(
-            val placement: com.donnclab.kinetiframe.project.model.VideoClipPlacement,
-            val asset: com.donnclab.kinetiframe.project.model.ProjectAsset,
-            val sourceAudio: com.donnclab.kinetiframe.project.model.AudioClipPlacement? = null,
+            val placement: VideoClipPlacement,
+            val asset: ProjectAsset,
+            val sourceAudio: AudioClipPlacement? = null,
         ) : Video()
         data class Remove(val clipId: String) : Video()
         data class Trim(
@@ -381,7 +382,7 @@ sealed class StudioIntent : ViewIntent {
         data class SetTrackOpacity(val opacity: Float) : Video()
     }
     sealed class Camera : StudioIntent() {
-        data class Put(val shot: com.donnclab.kinetiframe.studio.camera.CameraShot) : Camera()
+        data class Put(val shot: CameraShot) : Camera()
         data class Remove(val id: String) : Camera()
         object Undo : Camera()
         object Redo : Camera()

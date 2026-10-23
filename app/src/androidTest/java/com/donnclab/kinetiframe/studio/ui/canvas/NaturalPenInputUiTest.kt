@@ -7,8 +7,8 @@ import android.view.View
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.test.junit4.createComposeRule
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.project.model.DrawingTool
-import com.donnclab.kinetiframe.project.model.StageDimensions
 import com.donnclab.kinetiframe.project.model.TouchPoint
 import com.donnclab.kinetiframe.studio.SelectionToolType
 import com.donnclab.kinetiframe.studio.StudioMode

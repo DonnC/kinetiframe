@@ -3,19 +3,21 @@ package com.donnclab.kinetiframe.studio
 import com.donnclab.kinetiframe.actors.data.ActorManifest
 import com.donnclab.kinetiframe.actors.data.ActorRevision
 import com.donnclab.kinetiframe.actors.domain.ActorStudioManager
+import com.donnclab.kinetiframe.actors.rig.math.ActorDrawingBinder
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.rig.model.DrawingBinding
-import com.donnclab.kinetiframe.actors.rig.model.DrawingComposition
-import com.donnclab.kinetiframe.actors.rig.model.DrawingExtent
-import com.donnclab.kinetiframe.actors.rig.model.DrawingPlacement
-import com.donnclab.kinetiframe.actors.rig.model.DrawingSource
-import com.donnclab.kinetiframe.actors.rig.model.SkinSourceSize
 import com.donnclab.kinetiframe.actors.ui.actorStudioInitialState
+import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawing
+import com.donnclab.kinetiframe.core.actor.artwork.DrawingBinding
+import com.donnclab.kinetiframe.core.actor.artwork.DrawingComposition
+import com.donnclab.kinetiframe.core.actor.artwork.DrawingExtent
+import com.donnclab.kinetiframe.core.actor.artwork.DrawingPlacement
+import com.donnclab.kinetiframe.core.actor.artwork.DrawingSource
+import com.donnclab.kinetiframe.core.actor.artwork.SkinSourceSize
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.project.model.Layer
 import com.donnclab.kinetiframe.project.model.LayerType
-import com.donnclab.kinetiframe.project.model.StageDimensions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
@@ -26,11 +28,11 @@ class ActorStudioStateTest {
         ActorStudioManager({ state }, { state = it(state) }).handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         val definition = state.actorDefinition()!!
         val graph = definition.sceneGraph
-        val drawing = com.donnclab.kinetiframe.actors.rig.model.ActorDrawing(
+        val drawing = ActorDrawing(
             DrawingSource("ink", "colour", SkinSourceSize(32, 16)),
             DrawingPlacement(Point2(0f, 0f), DrawingExtent(32f, 16f)),
             DrawingBinding(
-                com.donnclab.kinetiframe.actors.rig.math.ActorDrawingBinder.bind(
+                ActorDrawingBinder.bind(
                     graph,
                     SkinSourceSize(32, 16),
                     DrawingPlacement(Point2(0f, 0f), DrawingExtent(32f, 16f)),

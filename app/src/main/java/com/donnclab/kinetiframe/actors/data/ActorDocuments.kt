@@ -1,14 +1,18 @@
 package com.donnclab.kinetiframe.actors.data
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
-import com.donnclab.kinetiframe.actors.rig.model.ActorArtworkKey
 import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.actors.rig.model.ActorView
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
-import com.donnclab.kinetiframe.actors.rig.model.Transform
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
+import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackManifest
 import com.donnclab.kinetiframe.project.data.KframeArchiver

@@ -1,11 +1,12 @@
 package com.donnclab.kinetiframe.project.model
 
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
+import com.donnclab.kinetiframe.core.actor.artwork.ArtworkVariant
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneArtwork
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -19,7 +20,7 @@ class ProjectAssetMutationsTest {
             artwork = BoneArtwork(
                 artworkVariants = mapOf(
                     "smile" to
-                        com.donnclab.kinetiframe.actors.rig.model.ArtworkVariant(
+                        ArtworkVariant(
                             "Smile",
                             TextureBinding("old", 2f, 3f),
                         ),

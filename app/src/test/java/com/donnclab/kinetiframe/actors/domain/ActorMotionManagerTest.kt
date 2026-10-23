@@ -1,6 +1,11 @@
 package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
+import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
+import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionPoint
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -38,11 +43,11 @@ class ActorMotionManagerTest {
                 puppetInstances = state.project.puppetInstances + (
                     actor.id to actor.copy(
                         rootMotionCurves = listOf(
-                            com.donnclab.kinetiframe.actors.data.RootMotionCurve(
+                            RootMotionCurve(
                                 "torso",
                                 listOf(
-                                    com.donnclab.kinetiframe.actors.data.RootMotionPoint(40_000_000, 0f, 0f),
-                                    com.donnclab.kinetiframe.actors.data.RootMotionPoint(41_000_000, 30f, 0f),
+                                    RootMotionPoint(40_000_000, 0f, 0f),
+                                    RootMotionPoint(41_000_000, 30f, 0f),
                                 ),
                             ),
                         ),
@@ -67,14 +72,14 @@ class ActorMotionManagerTest {
         var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         ActorStudioManager({ state }, { state = it(state) }).handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         val instance = state.activeActor()!!
-        val recipe = com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset(
+        val recipe = ActorMotionPreset(
             id = "test",
             name = "Test",
             description = "",
             durationSeconds = .8f,
             requiredBones = listOf("head"),
             channels = listOf(
-                com.donnclab.kinetiframe.actors.rig.presets.RotationChannel("head", offsetDegrees = 20f),
+                RotationChannel("head", offsetDegrees = 20f),
             ),
             loop = false,
         )
@@ -87,7 +92,7 @@ class ActorMotionManagerTest {
                         (
                             instance.id to
                                 instance.copy(
-                                    motionPreset = com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset(
+                                    motionPreset = AppliedActorPreset(
                                         recipe,
                                     ),
                                 )
@@ -115,7 +120,7 @@ class ActorMotionManagerTest {
                     (
                         instance.id to
                             instance.copy(
-                                motionPreset = com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset(
+                                motionPreset = AppliedActorPreset(
                                     recipe.copy(loop = true),
                                 ),
                             )

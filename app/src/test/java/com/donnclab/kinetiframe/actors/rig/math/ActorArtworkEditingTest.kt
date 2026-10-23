@@ -2,14 +2,15 @@ package com.donnclab.kinetiframe.actors.rig.math
 
 import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
-import com.donnclab.kinetiframe.actors.rig.model.ArtworkAlignment
-import com.donnclab.kinetiframe.actors.rig.model.ArtworkVariant
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
-import com.donnclab.kinetiframe.actors.rig.model.Transform
+import com.donnclab.kinetiframe.core.actor.artwork.ArtworkAlignment
+import com.donnclab.kinetiframe.core.actor.artwork.ArtworkVariant
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.geometry.Point2
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -87,8 +88,8 @@ class ActorArtworkEditingTest {
         val binding =
             TextureBinding(
                 "neutral",
-                com.donnclab.kinetiframe.core.geometry.Point2(0f, 0f),
-                ArtworkAlignment(com.donnclab.kinetiframe.core.geometry.Point2(3f, 5f)),
+                Point2(0f, 0f),
+                ArtworkAlignment(Point2(3f, 5f)),
             )
         val original = graph().let {
             it.copy(

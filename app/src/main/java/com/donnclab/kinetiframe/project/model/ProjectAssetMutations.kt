@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.project.model
 
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 
 /** Immutable document update plus decoded runtime assets that can now be safely released. */
 data class AssetMutation(val document: ProjectDocument, val releasableAssetIds: Set<String> = emptySet())

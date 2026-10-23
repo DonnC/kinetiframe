@@ -1,8 +1,11 @@
 package com.donnclab.kinetiframe.actors.rig.model
 
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.motion.JointContact
+import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.engine.rigging.math.CompiledMotionCurve
 import com.donnclab.kinetiframe.engine.rigging.motion.PoseSampling
-import com.donnclab.kinetiframe.project.model.StageDimensions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.random.Random

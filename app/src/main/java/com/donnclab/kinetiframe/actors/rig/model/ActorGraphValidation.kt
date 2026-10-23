@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.actors.rig.model
 
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.validation.GraphValidationException
 import com.donnclab.kinetiframe.core.actor.validation.GraphValidationIssue
 import com.donnclab.kinetiframe.core.actor.validation.SceneGraphValidation

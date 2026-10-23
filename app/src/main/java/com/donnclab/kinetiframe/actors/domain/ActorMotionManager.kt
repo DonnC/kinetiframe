@@ -1,7 +1,11 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey
+import com.donnclab.kinetiframe.actors.data.PerformanceLimits
+import com.donnclab.kinetiframe.actors.domain.PerformanceAuthoring
+import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
@@ -173,7 +177,7 @@ class ActorMotionManager(
                                 state.actorPreviewPreset()?.recipe?.loop
                                     ?: (
                                         state.activeActor()?.motionPlayback ==
-                                            com.donnclab.kinetiframe.actors.data.PerformancePlayback.LOOP
+                                            PerformancePlayback.LOOP
                                         )
                                 )
                     val initial = if (review) {
@@ -219,7 +223,7 @@ class ActorMotionManager(
                 var contacts = ActorPoseTrack.contacts(instance.poseKeys, state.actor.previewTimeMicros)
                 if (intent == StudioIntent.ActorMotion.ToggleContact) {
                     val id =
-                        com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose.contactBone(
+                        ActorMotionPose.contactBone(
                             graph,
                             state.scene.selectedBoneId,
                         )
@@ -229,7 +233,7 @@ class ActorMotionManager(
                     } else {
                         contacts + (
                             id to
-                                com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose.captureContact(
+                                ActorMotionPose.captureContact(
                                     graph,
                                     id,
                                     state.scene.selectedBoneId,
@@ -262,7 +266,7 @@ class ActorMotionManager(
                                                     .takeIf { it.isNotEmpty() }?.let { curve.copy(points = it) }
                                             }
                                         } else {
-                                            com.donnclab.kinetiframe.actors.domain.PerformanceAuthoring.refineRoots(
+                                            PerformanceAuthoring.refineRoots(
                                                 instance.rootMotionCurves,
                                                 ActorPoseTrack.capture(
                                                     state.actor.previewTimeMicros,
@@ -281,7 +285,7 @@ class ActorMotionManager(
                                                     .takeIf { it.isNotEmpty() }?.let { curve.copy(points = it) }
                                             }
                                         } else {
-                                            com.donnclab.kinetiframe.actors.domain.PerformanceAuthoring.refineCurves(
+                                            PerformanceAuthoring.refineCurves(
                                                 instance.rotationCurves,
                                                 ActorPoseTrack.capture(
                                                     state.actor.previewTimeMicros,
@@ -302,6 +306,6 @@ class ActorMotionManager(
 
     companion object {
         const val DURATION_MICROS = 2_000_000L
-        const val MAX_DURATION_MICROS = com.donnclab.kinetiframe.actors.data.PerformanceLimits.MAX_DURATION_MICROS
+        const val MAX_DURATION_MICROS = PerformanceLimits.MAX_DURATION_MICROS
     }
 }

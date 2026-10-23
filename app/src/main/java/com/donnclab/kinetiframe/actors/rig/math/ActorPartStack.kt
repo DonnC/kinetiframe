@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 
 /** Preserve legacy FK traversal for equal/default ranks, not map insertion order. */
 object ActorPartStack {

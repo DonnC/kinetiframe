@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 
 /** Rest-structure edits become a new bind, so later motion does not inherit an obsolete rest pose.
  * Preserve the visible deformed surface and its weights; do not replace user artwork with a rigid image. */

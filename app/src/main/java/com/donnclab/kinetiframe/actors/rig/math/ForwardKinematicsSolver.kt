@@ -2,7 +2,7 @@ package com.donnclab.kinetiframe.actors.rig.math
 
 import android.graphics.Matrix
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.engine.rigging.math.RigWorldTransforms
 
 data class ComputedBone(val id: String, val worldMatrix: Matrix, val startPoint: Offset, val endPoint: Offset)

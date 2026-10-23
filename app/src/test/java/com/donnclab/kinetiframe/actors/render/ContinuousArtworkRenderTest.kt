@@ -7,13 +7,13 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import com.donnclab.kinetiframe.actors.rig.math.ArtworkSkinBuilder
 import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
-import com.donnclab.kinetiframe.actors.rig.model.Transform
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneArtwork
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import com.donnclab.kinetiframe.project.model.PuppetDefinition
 import com.donnclab.kinetiframe.project.model.PuppetInstance
 import org.junit.Assert.assertEquals

@@ -3,11 +3,11 @@ package com.donnclab.kinetiframe.studio.domain
 import android.graphics.Bitmap
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Matrix
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.project.model.AssetKind
 import com.donnclab.kinetiframe.project.model.AudioClipPlacement
 import com.donnclab.kinetiframe.project.model.ProjectAsset
 import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.project.model.StageDimensions
 import com.donnclab.kinetiframe.project.model.VideoClipPlacement
 import com.donnclab.kinetiframe.studio.StudioState
 import kotlinx.coroutines.CoroutineScope

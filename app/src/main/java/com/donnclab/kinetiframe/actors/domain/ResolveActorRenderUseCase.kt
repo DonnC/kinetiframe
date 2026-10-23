@@ -6,6 +6,7 @@ import com.donnclab.kinetiframe.actors.data.ActorRevision
 import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 
 /** Resolves a placement once into render input; the renderer receives no file-system handles. */
 class ResolveActorRenderUseCase(
@@ -44,5 +45,5 @@ data class ActorRenderInput(
     val revision: ActorRevision,
     val performance: PerformanceDocument,
     val rotations: Map<String, Float>,
-    val posedGraph: com.donnclab.kinetiframe.actors.rig.model.SceneGraph = revision.sceneGraph,
+    val posedGraph: SceneGraph = revision.sceneGraph,
 )

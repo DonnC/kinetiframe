@@ -2,6 +2,8 @@ package com.donnclab.kinetiframe.actors.rig.presets
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorView
 import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeDocument
+import com.donnclab.kinetiframe.core.actor.presets.RootMotionChannel
+import com.donnclab.kinetiframe.core.actor.presets.RootMotionPoint
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

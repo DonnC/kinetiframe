@@ -4,7 +4,8 @@ import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.actors.rig.model.ActorView
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.core.geometry.Point2
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
@@ -26,7 +27,7 @@ class ActorGraphValidationTest {
             head.withRest(ikChainRootId = "left_thigh"),
             head.withRest(
                 localTransform = head.localTransform.copy(
-                    translation = com.donnclab.kinetiframe.core.geometry.Point2(Float.NaN, head.localTransform.y),
+                    translation = Point2(Float.NaN, head.localTransform.y),
                 ),
             ),
         ).forEach { bad ->

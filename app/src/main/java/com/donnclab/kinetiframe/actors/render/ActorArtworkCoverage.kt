@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.actors.render
 
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 
 /** Missing a single bound limb is a broken render, even when the remaining textures decoded. */
 internal object ActorArtworkCoverage {

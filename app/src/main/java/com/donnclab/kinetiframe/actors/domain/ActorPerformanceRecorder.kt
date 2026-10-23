@@ -2,20 +2,22 @@ package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceLimits
-import com.donnclab.kinetiframe.actors.data.RootMotionPoint
-import com.donnclab.kinetiframe.actors.data.RotationCurve
-import com.donnclab.kinetiframe.actors.data.RotationCurvePoint
 import com.donnclab.kinetiframe.actors.domain.PerformanceAuthoring
 import com.donnclab.kinetiframe.actors.domain.RecordedContactBends
 import com.donnclab.kinetiframe.actors.domain.RecordedMotionCurves
 import com.donnclab.kinetiframe.actors.domain.RecordedRootMotionCurves
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
-import com.donnclab.kinetiframe.actors.rig.model.ActorArtworkKey
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
-import com.donnclab.kinetiframe.actors.rig.model.RootTranslation
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionPoint
+import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.engine.rigging.math.CompiledMotionCurve
+import com.donnclab.kinetiframe.project.model.DrawingTool
 import com.donnclab.kinetiframe.project.model.PuppetInstance
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioEffect
@@ -113,7 +115,7 @@ class ActorPerformanceRecorder(
         baseline = state.copy(actor = state.actor.copy(previewGraph = null)).actorDefinition(true)?.sceneGraph
         updateState {
             it.copy(
-                tool = it.tool.copy(activeTool = com.donnclab.kinetiframe.project.model.DrawingTool.RIG_SELECT),
+                tool = it.tool.copy(activeTool = DrawingTool.RIG_SELECT),
                 actor = it.actor.copy(
                     takePhase = PerformanceTakePhase.ARMED,
                     takeStartMicros = start,
@@ -249,7 +251,7 @@ class ActorPerformanceRecorder(
                 bone.withRest(
                     localTransform = bone.localTransform.copy(
                         rotationDegrees = held[id] ?: bone.localTransform.rotationDegrees,
-                        translation = com.donnclab.kinetiframe.core.geometry.Point2(
+                        translation = Point2(
                             if (root != null && rest != null) rest.x + root.x else bone.localTransform.x,
                             if (root != null && rest != null) rest.y + root.y else bone.localTransform.y,
                         ),

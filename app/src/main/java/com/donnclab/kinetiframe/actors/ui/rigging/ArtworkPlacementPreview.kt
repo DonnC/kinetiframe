@@ -21,15 +21,21 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import com.donnclab.kinetiframe.actors.render.PuppetArtworkRenderer
 import com.donnclab.kinetiframe.actors.render.PuppetRenderCommand
 import com.donnclab.kinetiframe.actors.render.PuppetRenderPlan
+import com.donnclab.kinetiframe.actors.rig.math.ArtworkBindingTransform
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.designsystem.theme.BrandTeal
+import com.donnclab.kinetiframe.engine.rigging.math.ArtworkGestureBasis
+import com.donnclab.kinetiframe.engine.rigging.math.ArtworkGestureDelta
+import com.donnclab.kinetiframe.engine.rigging.math.ArtworkPlacementGesture
 import com.donnclab.kinetiframe.project.model.PuppetDefinition
 import com.donnclab.kinetiframe.project.model.PuppetInstance
 
@@ -73,7 +79,7 @@ fun ArtworkPlacementPreview(
         val previous = node?.textureBinding?.takeIf { it.assetId == binding.assetId }
             ?: node?.artworkVariants?.values?.firstOrNull { it.binding.assetId == binding.assetId }?.binding
         if (graph != null && node != null && previous?.skin != null) {
-            val adjusted = com.donnclab.kinetiframe.actors.rig.math.ArtworkBindingTransform.apply(
+            val adjusted = ArtworkBindingTransform.apply(
                 graph,
                 node.id,
                 previous,
@@ -106,14 +112,14 @@ fun ArtworkPlacementPreview(
         }.onSizeChanged { size = it }.pointerInput(framing, worldAngle) {
             detectTransformGestures { _, pan, zoom, rotation ->
                 changed(
-                    com.donnclab.kinetiframe.engine.rigging.math.ArtworkPlacementGesture.apply(
+                    ArtworkPlacementGesture.apply(
                         latest,
-                        com.donnclab.kinetiframe.engine.rigging.math.ArtworkGestureDelta(
-                            com.donnclab.kinetiframe.core.geometry.Point2(pan.x, pan.y),
+                        ArtworkGestureDelta(
+                            Point2(pan.x, pan.y),
                             zoom,
                             rotation,
                         ),
-                        com.donnclab.kinetiframe.engine.rigging.math.ArtworkGestureBasis(framing.first, worldAngle),
+                        ArtworkGestureBasis(framing.first, worldAngle),
                     ),
                 )
             }
@@ -139,7 +145,7 @@ fun ArtworkPlacementPreview(
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(widthDp = 320, heightDp = 240)
+@Preview(widthDp = 320, heightDp = 240)
 @Composable
 private fun ArtworkPlacementPreviewSample() {
     val bitmap =

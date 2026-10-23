@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.ui.rigging
 
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 
 /** Depth-first bone order matching [ActorPartTree]'s own traversal, so any flat UI (the part
  *  rail's chip strip) reads parts in the same order as the hierarchical tree without duplicating

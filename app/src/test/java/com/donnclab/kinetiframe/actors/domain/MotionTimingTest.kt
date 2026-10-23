@@ -1,19 +1,19 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.CurveInterpolation
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
-import com.donnclab.kinetiframe.actors.data.PerformancePlayback
 import com.donnclab.kinetiframe.actors.data.validate
 import com.donnclab.kinetiframe.actors.domain.ActorMotionManager
 import com.donnclab.kinetiframe.actors.domain.ActorStudioManager
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.rig.model.RootTranslation
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
+import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
+import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.engine.rigging.math.CompiledMotionCurve
 import com.donnclab.kinetiframe.engine.rigging.motion.PoseSampling
-import com.donnclab.kinetiframe.project.model.StageDimensions
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode

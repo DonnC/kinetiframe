@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.project.ui
 
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.document.StageDimensions
 
 /**
  * A named canvas size a new project can start from. Deliberately a fixed table of real-world

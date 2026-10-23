@@ -1,6 +1,8 @@
 package com.donnclab.kinetiframe.library.data
 
-import com.donnclab.kinetiframe.actors.rig.model.TextureBinding
+import com.donnclab.kinetiframe.core.actor.artwork.ArtworkAlignment
+import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
+import com.donnclab.kinetiframe.core.geometry.Point2
 import kotlinx.serialization.Serializable
 
 /** Portable source registration, not a copied bind-world matrix from another actor. */
@@ -33,12 +35,12 @@ data class PackArtworkRegistration(
         val ratio = targetLength / boneLength
         return TextureBinding(
             "pending",
-            com.donnclab.kinetiframe.core.geometry.Point2(
+            Point2(
                 pivotX * decodedWidth / sourceWidth,
                 pivotY * decodedHeight / sourceHeight,
             ),
-            com.donnclab.kinetiframe.actors.rig.model.ArtworkAlignment(
-                com.donnclab.kinetiframe.core.geometry.Point2(offsetX * ratio, offsetY * ratio),
+            ArtworkAlignment(
+                Point2(offsetX * ratio, offsetY * ratio),
                 rotationDegrees,
                 (scale * ratio * sourceWidth / decodedWidth).coerceIn(.001f, 100f),
             ),

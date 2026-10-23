@@ -1,15 +1,15 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.CurveInterpolation
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceLimits
-import com.donnclab.kinetiframe.actors.data.PerformancePlayback
-import com.donnclab.kinetiframe.actors.data.RootMotionCurve
-import com.donnclab.kinetiframe.actors.data.RootMotionPoint
 import com.donnclab.kinetiframe.actors.data.validate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.project.model.StageDimensions
+import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
+import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
+import com.donnclab.kinetiframe.core.actor.motion.RootMotionPoint
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals

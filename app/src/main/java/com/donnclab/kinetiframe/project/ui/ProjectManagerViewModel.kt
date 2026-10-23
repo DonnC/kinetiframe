@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.project.ui
 
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.project.data.ProjectManifest
 import com.donnclab.kinetiframe.project.data.ProjectRepository
 import com.donnclab.kinetiframe.project.data.ProjectSaveDocument
@@ -9,7 +10,6 @@ import com.donnclab.kinetiframe.project.data.db.ProjectDao
 import com.donnclab.kinetiframe.project.data.db.ProjectEntity
 import com.donnclab.kinetiframe.project.model.Layer
 import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.project.model.StageDimensions
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -157,7 +157,7 @@ class ProjectManagerViewModel(
     private fun ProjectEntity.toManifest() = ProjectManifest(
         projectId = projectId,
         displayName = title,
-        stage = com.donnclab.kinetiframe.project.model.StageDimensions(resolutionWidth, resolutionHeight),
+        stage = StageDimensions(resolutionWidth, resolutionHeight),
         fps = fps,
         createdAtEpochMs = createdAtEpochMs,
         updatedAtEpochMs = lastModified,

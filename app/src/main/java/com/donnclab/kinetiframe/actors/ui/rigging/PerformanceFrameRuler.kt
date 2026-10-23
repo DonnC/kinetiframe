@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.actors.ui.rigging
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -23,8 +24,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.domain.PerformanceRulerTiming
-import com.donnclab.kinetiframe.actors.rig.model.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
+import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.studio.StudioState
+import com.donnclab.kinetiframe.studio.ui.FrameThumbnailContent
+import com.donnclab.kinetiframe.studio.ui.timeline.ObserveTimelineScrubbing
+import com.donnclab.kinetiframe.studio.ui.timeline.TimelineCenterPointer
 
 /**
  * Frame-facing view of a time-based gesture. The ruler never owns animation data: it simply
@@ -38,8 +43,8 @@ fun PerformanceFrameRuler(
     keys: List<ActorPoseKey>,
     onFrameSelected: (Long) -> Unit,
     modifier: Modifier = Modifier,
-    artworkKeys: List<com.donnclab.kinetiframe.actors.rig.model.ActorArtworkKey> = emptyList(),
-    thumbnail: (@Composable (Long) -> android.graphics.Bitmap?)? = null,
+    artworkKeys: List<ActorArtworkKey> = emptyList(),
+    thumbnail: (@Composable (Long) -> Bitmap?)? = null,
 ) {
     val safeFps = fps.coerceAtLeast(1)
     val frameCount = PerformanceRulerTiming.frameCount(durationMicros, safeFps)
@@ -69,7 +74,7 @@ fun PerformanceFrameRuler(
     }
 
     val scroll = rememberLazyListState()
-    com.donnclab.kinetiframe.studio.ui.timeline.ObserveTimelineScrubbing(
+    ObserveTimelineScrubbing(
         scroll,
         44.dp,
         selectedFrame,
@@ -126,7 +131,7 @@ fun PerformanceFrameRuler(
                         },
                     contentAlignment = Alignment.Center,
                 ) {
-                    com.donnclab.kinetiframe.studio.ui.FrameThumbnailContent(
+                    FrameThumbnailContent(
                         thumbnail?.invoke(
                             if (selected) {
                                 currentTimeMicros
@@ -149,7 +154,7 @@ fun PerformanceFrameRuler(
                 }
             }
         }
-        com.donnclab.kinetiframe.studio.ui.timeline.TimelineCenterPointer(Modifier.align(Alignment.TopCenter))
+        TimelineCenterPointer(Modifier.align(Alignment.TopCenter))
     }
 }
 

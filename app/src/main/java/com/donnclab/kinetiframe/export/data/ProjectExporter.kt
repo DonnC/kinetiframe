@@ -2,23 +2,30 @@ package com.donnclab.kinetiframe.export.data
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.media.MediaCodec
+import android.media.MediaExtractor
 import android.media.MediaMuxer
 import android.os.Build
 import android.provider.MediaStore
+import androidx.core.content.FileProvider
 import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.export.data.db.ExportDao
 import com.donnclab.kinetiframe.export.data.db.ExportEntity
 import com.donnclab.kinetiframe.project.data.ProjectRepository
+import com.donnclab.kinetiframe.project.model.MAX_AUDIO_TRACKS
+import com.donnclab.kinetiframe.studio.drawing.FontRegistry
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import com.donnclab.kinetiframe.studio.render.ProjectFrameCompositor
 import kotlinx.coroutines.CoroutineScope
@@ -26,16 +33,17 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.ensureActive
 import java.io.File
+import java.nio.ByteBuffer
 import java.util.UUID
 
 /**
  * Renders one project's whole timeline to a single MP4 file -- the "ultimate verification," where
  * everything that went into building the project (background, layers, packs already stamped into
- * layer pixels, actors, performances, and up to [com.donnclab.kinetiframe.project.model.MAX_AUDIO_TRACKS]
+ * layer pixels, actors, performances, and up to [MAX_AUDIO_TRACKS]
  * audio lanes and embedded scene video) shows up in one flattened, shareable video.
  * Legacy tracing clips are excluded; embedded videos contribute pictures, not source audio.
  *
- * The project's own [com.donnclab.kinetiframe.project.model.StageDimensions] and FPS (chosen once, at
+ * The project's own [StageDimensions] and FPS (chosen once, at
  * project creation) still fully determine how the timeline is *rendered* -- there's no separate
  * "working resolution" picker. What's chosen at export time is only a destination [ExportPreset]:
  * when it names a platform target, composited frames are letterboxed to that target resolution
@@ -64,7 +72,7 @@ class ProjectExporter(
      *  pattern rather than writing straight into MediaStore mid-encode. */
     suspend fun export(
         projectId: String,
-        targetDimensions: com.donnclab.kinetiframe.project.model.StageDimensions? = null,
+        targetDimensions: StageDimensions? = null,
         onProgress: (Float) -> Unit = {},
     ): ActorStoreResult<File> = runCatching {
         val (manifest, document) = when (val result = projectRepository.load(projectId)) {
@@ -95,7 +103,7 @@ class ProjectExporter(
         val fonts = if (project.nodes.isEmpty()) {
             null
         } else {
-            com.donnclab.kinetiframe.studio.drawing.FontRegistry(
+            FontRegistry(
                 context,
             )
         }
@@ -111,7 +119,7 @@ class ProjectExporter(
         var videoResolved = false
         var audioFile: File? = null
         var pcmFile: File? = null
-        var audioExtractor: android.media.MediaExtractor? = null
+        var audioExtractor: MediaExtractor? = null
         var audioTrack = -1
         var videoEncoder: VideoEncoder? = null
         var letterboxScratch: Bitmap? = null
@@ -148,7 +156,7 @@ class ProjectExporter(
                 } finally {
                     audioMuxer.release()
                 }
-                val extractor = android.media.MediaExtractor()
+                val extractor = MediaExtractor()
                 audioExtractor = extractor
                 extractor.setDataSource(spool.path)
                 require(extractor.trackCount == 1) { "Invalid encoded audio track" }
@@ -218,8 +226,8 @@ class ProjectExporter(
                 tryStartMuxer()
             }
             audioExtractor?.let { extractor ->
-                val packet = java.nio.ByteBuffer.allocateDirect(256 * 1024)
-                val info = android.media.MediaCodec.BufferInfo()
+                val packet = ByteBuffer.allocateDirect(256 * 1024)
+                val info = MediaCodec.BufferInfo()
                 while (true) {
                     kotlinx.coroutines.currentCoroutineContext().ensureActive()
                     packet.clear()
@@ -298,16 +306,16 @@ class ProjectExporter(
     }.fold({ ActorStoreResult.Value(it) }, { ActorStoreResult.Failure(it.message ?: "Could not save to gallery", it) })
 
     /** Hands an already-exported MP4 to the system share sheet via a FileProvider content:// URI
-     *  -- the exact same pattern [com.donnclab.kinetiframe.home.HomeRoute]'s project and pack share
+     *  -- the exact same pattern the home screen's project and pack share
      *  helpers already use for `.kframe`/`.kpack` files, so exporting doesn't invent a second
      *  sharing convention. */
     fun shareVideo(file: File, displayName: String) {
-        val uri = androidx.core.content.FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-        val sendIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+        val sendIntent = Intent(Intent.ACTION_SEND).apply {
             type = "video/mp4"
-            putExtra(android.content.Intent.EXTRA_STREAM, uri)
-            addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        context.startActivity(android.content.Intent.createChooser(sendIntent, "Share $displayName"))
+        context.startActivity(Intent.createChooser(sendIntent, "Share $displayName"))
     }
 }

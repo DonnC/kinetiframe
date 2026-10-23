@@ -1,6 +1,8 @@
 package com.donnclab.kinetiframe.studio.domain
 
+import android.graphics.Matrix
 import androidx.compose.ui.geometry.Offset
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.studio.DockEdge
 import com.donnclab.kinetiframe.studio.GridDefaults
 import com.donnclab.kinetiframe.studio.GridSize
@@ -87,7 +89,7 @@ class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Uni
         }
     }
 
-    fun updateCanvasTransform(matrix: android.graphics.Matrix) {
+    fun updateCanvasTransform(matrix: Matrix) {
         updateState { state ->
             val values = FloatArray(9)
             matrix.getValues(values)
@@ -126,7 +128,7 @@ class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Uni
 
     fun updateTransform(panDelta: Offset, zoomDelta: Float, rotationDelta: Float, pivot: Offset) {
         updateState { state ->
-            val matrix = android.graphics.Matrix()
+            val matrix = Matrix()
             matrix.setValues(state.canvas.matrixValues)
 
             // CanvasState.zoom is relative to the fitted workspace scale.  Keeping it
@@ -160,23 +162,18 @@ class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Uni
     }
 
     private fun extractZoom(values: FloatArray): Float {
-        val scaleX = values[android.graphics.Matrix.MSCALE_X]
-        val skewY = values[android.graphics.Matrix.MSKEW_Y]
+        val scaleX = values[Matrix.MSCALE_X]
+        val skewY = values[Matrix.MSKEW_Y]
         return kotlin.math.sqrt((scaleX * scaleX + skewY * skewY).toDouble()).toFloat()
     }
 
     private fun extractRotation(values: FloatArray): Float {
-        val scaleX = values[android.graphics.Matrix.MSCALE_X]
-        val skewY = values[android.graphics.Matrix.MSKEW_Y]
+        val scaleX = values[Matrix.MSCALE_X]
+        val skewY = values[Matrix.MSKEW_Y]
         return Math.toDegrees(Math.atan2(skewY.toDouble(), scaleX.toDouble())).toFloat()
     }
 
-    private fun extractPan(
-        matrix: android.graphics.Matrix,
-        viewportWidth: Int,
-        viewportHeight: Int,
-        stage: com.donnclab.kinetiframe.project.model.StageDimensions,
-    ): Offset {
+    private fun extractPan(matrix: Matrix, viewportWidth: Int, viewportHeight: Int, stage: StageDimensions): Offset {
         if (viewportWidth <= 0 || viewportHeight <= 0) return Offset.Zero
         val pts = floatArrayOf(stage.width / 2f, stage.height / 2f)
         matrix.mapPoints(pts)
@@ -187,7 +184,7 @@ class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Uni
         val canvas = state.canvas
         if (canvas.viewportWidth <= 0 || canvas.viewportHeight <= 0) return state
 
-        val matrix = android.graphics.Matrix()
+        val matrix = Matrix()
         // Matrix = Translate(pan) * Translate(VC) * Scale(zoom) * Rotate(rotation) * Translate(-DC)
 
         val stage = state.project.stage

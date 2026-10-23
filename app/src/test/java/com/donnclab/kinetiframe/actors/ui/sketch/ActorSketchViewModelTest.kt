@@ -2,12 +2,12 @@ package com.donnclab.kinetiframe.actors.ui.sketch
 
 import android.graphics.Color
 import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
-import com.donnclab.kinetiframe.actors.rig.model.BoneNode
-import com.donnclab.kinetiframe.actors.rig.model.DrawingExtent
-import com.donnclab.kinetiframe.actors.rig.model.DrawingPlacement
-import com.donnclab.kinetiframe.actors.rig.model.DrawingPoint
-import com.donnclab.kinetiframe.actors.rig.model.SceneGraph
-import com.donnclab.kinetiframe.actors.rig.model.SkinSourceSize
+import com.donnclab.kinetiframe.core.actor.artwork.DrawingExtent
+import com.donnclab.kinetiframe.core.actor.artwork.DrawingPlacement
+import com.donnclab.kinetiframe.core.actor.artwork.DrawingPoint
+import com.donnclab.kinetiframe.core.actor.artwork.SkinSourceSize
+import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
+import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.project.model.TouchPoint
 import kotlinx.coroutines.Dispatchers
