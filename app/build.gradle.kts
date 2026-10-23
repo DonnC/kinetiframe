@@ -1,24 +1,17 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.google.devtools.ksp)
-    alias(libs.plugins.jetbrains.kotlin.plugin.serialization)
+    id("kinetiframe.android.application")
+    id("kinetiframe.android.compose")
+    id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
     namespace = "com.donnclab.kinetiframe"
-    compileSdk {
-        version = release(37)
-    }
 
     defaultConfig {
         applicationId = "com.donnclab.kinetiframe"
-        minSdk = 28
-        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -31,13 +24,6 @@ android {
                 enable = false
             }
         }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    buildFeatures {
-        compose = true
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
@@ -57,18 +43,14 @@ dependencies {
     implementation(project(":presentation"))
     implementation(project(":designsystem"))
     testImplementation("org.robolectric:robolectric:4.16")
-    testImplementation(platform(libs.junit5.bom))
-    testImplementation(libs.junit5.jupiter)
+    // Runs the existing JUnit 4 tests alongside JUnit 5 ones.
     testRuntimeOnly(libs.junit5.vintage)
-    testRuntimeOnly(libs.junit5.launcher)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -91,19 +73,14 @@ dependencies {
     testImplementation(libs.androidx.junit)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.runner)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-    debugImplementation(libs.androidx.compose.ui.tooling)
     "ksp"(libs.androidx.room.compiler)
 }
 
-// Keep existing JUnit4 coverage runnable while new engine tests use JUnit5.
 tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
     // Host-side archive/render tests read these directly, not via Android resources.
     // A changed cutout/fixture must invalidate test results even when Kotlin is unchanged.
     inputs.dir("src/main/assets/loose-signal").withPropertyName("looseSignalFixtures")
