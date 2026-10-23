@@ -6,8 +6,8 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
-import com.donnclab.kinetiframe.project.model.DrawCommand
-import com.donnclab.kinetiframe.project.model.DrawingTool
+import com.donnclab.kinetiframe.core.document.DrawCommand
+import com.donnclab.kinetiframe.core.document.DrawingTool
 
 /**
  * Draws one saved [DrawCommand] onto a layer. Blur and smudge read and write [bitmap] directly,

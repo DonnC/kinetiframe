@@ -1,5 +1,8 @@
 package com.donnclab.kinetiframe.studio.drawing
 
+import com.donnclab.kinetiframe.core.document.BrushCatalog
+import com.donnclab.kinetiframe.core.document.BrushId
+import com.donnclab.kinetiframe.core.document.BrushSnapshot
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

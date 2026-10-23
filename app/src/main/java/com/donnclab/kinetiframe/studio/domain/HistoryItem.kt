@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Path
-import com.donnclab.kinetiframe.project.model.BaseNode
-import com.donnclab.kinetiframe.project.model.DrawCommand
+import com.donnclab.kinetiframe.core.document.BaseNode
+import com.donnclab.kinetiframe.core.document.DrawCommand
 
 sealed class HistoryItem {
     data class Stroke(val command: DrawCommand) : HistoryItem()
@@ -25,14 +25,14 @@ sealed class HistoryItem {
 
     /** Metadata only: never duplicates actor artwork or performance data. */
     data class ObjectEdit(
-        val beforeActors: Map<String, com.donnclab.kinetiframe.project.model.ActorPlacementReference>,
-        val afterActors: Map<String, com.donnclab.kinetiframe.project.model.ActorPlacementReference>,
+        val beforeActors: Map<String, com.donnclab.kinetiframe.core.document.ActorPlacementReference>,
+        val afterActors: Map<String, com.donnclab.kinetiframe.core.document.ActorPlacementReference>,
         val beforeNodes: Map<String, BaseNode>,
         val afterNodes: Map<String, BaseNode>,
-        val beforeVideos: Map<String, com.donnclab.kinetiframe.project.model.VideoClipPlacement> = emptyMap(),
-        val afterVideos: Map<String, com.donnclab.kinetiframe.project.model.VideoClipPlacement> = emptyMap(),
-        val beforeAudio: Map<String, com.donnclab.kinetiframe.project.model.AudioClipPlacement> = emptyMap(),
-        val afterAudio: Map<String, com.donnclab.kinetiframe.project.model.AudioClipPlacement> = emptyMap(),
+        val beforeVideos: Map<String, com.donnclab.kinetiframe.core.document.VideoClipPlacement> = emptyMap(),
+        val afterVideos: Map<String, com.donnclab.kinetiframe.core.document.VideoClipPlacement> = emptyMap(),
+        val beforeAudio: Map<String, com.donnclab.kinetiframe.core.document.AudioClipPlacement> = emptyMap(),
+        val afterAudio: Map<String, com.donnclab.kinetiframe.core.document.AudioClipPlacement> = emptyMap(),
     ) : HistoryItem()
 
     /** A pixel move is one undo step: source removal and transformed destination together. */

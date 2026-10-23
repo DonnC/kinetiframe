@@ -12,14 +12,14 @@ import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.engine.rigging.motion.BeforeTake
 import com.donnclab.kinetiframe.engine.rigging.motion.CurveSampling
 import com.donnclab.kinetiframe.engine.rigging.motion.MotionComposition
 import com.donnclab.kinetiframe.engine.rigging.motion.PoseSampling
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
-import com.donnclab.kinetiframe.project.model.PuppetInstance
 
 /** Transient authoring state. A gesture preview never changes the saved rest pose. */
 enum class ActorEditTarget { JOINT_END, JOINT_START, ARTWORK }

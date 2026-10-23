@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import com.donnclab.kinetiframe.diagnostics.CrashReportStore
 
 fun shareDiagnostics(context: Context) {
     val file = CrashReportStore(context.filesDir).reportFile

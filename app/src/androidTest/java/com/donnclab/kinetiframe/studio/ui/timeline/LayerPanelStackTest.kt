@@ -2,8 +2,8 @@ package com.donnclab.kinetiframe.studio.ui.timeline
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.project.model.Layer
 import com.donnclab.kinetiframe.studio.LayerState
 import com.donnclab.kinetiframe.studio.StudioState
 import org.junit.Rule

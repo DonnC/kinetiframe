@@ -45,14 +45,14 @@ import com.composables.icons.lucide.Triangle
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.common.ui.StandardSlider
+import com.donnclab.kinetiframe.core.document.BrushCatalog
+import com.donnclab.kinetiframe.core.document.BrushId
+import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
-import com.donnclab.kinetiframe.project.model.DrawingTool
 import com.donnclab.kinetiframe.studio.RulerMode
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.ToolConfig
-import com.donnclab.kinetiframe.studio.drawing.BrushCatalog
-import com.donnclab.kinetiframe.studio.drawing.BrushId
 import com.donnclab.kinetiframe.studio.drawing.ConstructionShape
 
 @Composable

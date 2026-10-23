@@ -2,13 +2,13 @@ package com.donnclab.kinetiframe.studio.ui.canvas
 
 import android.graphics.Matrix
 import androidx.compose.ui.geometry.Offset
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
-import com.donnclab.kinetiframe.project.model.ProjectDocument
+import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.StudioViewModel
-import com.donnclab.kinetiframe.studio.camera.CameraAction
-import com.donnclab.kinetiframe.studio.camera.CameraShot
 import com.donnclab.kinetiframe.studio.domain.ViewManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

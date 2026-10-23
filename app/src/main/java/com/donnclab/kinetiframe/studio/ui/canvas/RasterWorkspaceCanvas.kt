@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
+import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.project.model.DrawingTool
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers

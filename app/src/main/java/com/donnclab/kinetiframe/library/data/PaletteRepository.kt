@@ -6,7 +6,6 @@ import com.donnclab.kinetiframe.actors.data.LibraryItemKind
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.validate
 import com.donnclab.kinetiframe.data.storage.DurableFile
-import com.donnclab.kinetiframe.library.data.LibraryRepository
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File

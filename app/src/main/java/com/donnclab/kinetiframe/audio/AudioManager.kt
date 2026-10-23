@@ -1,16 +1,16 @@
 package com.donnclab.kinetiframe.audio
 
 import com.donnclab.kinetiframe.actors.domain.ActorPlacementManager
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
-import com.donnclab.kinetiframe.project.model.AudioTrackSettings
-import com.donnclab.kinetiframe.project.model.MAX_AUDIO_TRACKS
-import com.donnclab.kinetiframe.project.model.ProjectAsset
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.AudioTrackSettings
+import com.donnclab.kinetiframe.core.document.MAX_AUDIO_TRACKS
+import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 
 /** Pure project-reference mutations for placed audio clips -- structurally identical to
  *  [ActorPlacementManager], since [AudioClipPlacement] is the audio counterpart to
- *  [com.donnclab.kinetiframe.project.model.ActorPlacementReference]. Decoding, recording and copying
+ *  [com.donnclab.kinetiframe.core.document.ActorPlacementReference]. Decoding, recording and copying
  *  audio files happens at the UI layer, which has the Android Context; this class only receives
  *  an already-resolved [ProjectAsset] and placement, never a Uri or a path to copy. */
 class AudioManager(
@@ -32,7 +32,7 @@ class AudioManager(
         }
     }
 
-    /** The clip's own asset is intentionally left in [com.donnclab.kinetiframe.project.model.ProjectDocument.assets]
+    /** The clip's own asset is intentionally left in [com.donnclab.kinetiframe.core.document.ProjectDocument.assets]
      *  -- unlike the single persistent background, a removed audio clip's source file is cheap to
      *  keep (an entry pointing at a file already in project-assets/audio/). Reclaiming storage
      *  belongs in a project-wide sweep of unused assets, not in clip removal. */

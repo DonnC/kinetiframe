@@ -10,14 +10,14 @@ import com.donnclab.kinetiframe.actors.domain.ActorStudioManager
 import com.donnclab.kinetiframe.actors.domain.RiggingManager
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.BrushSnapshot
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.actorDefinition
 import com.donnclab.kinetiframe.studio.drawing.BrushRenderers
-import com.donnclab.kinetiframe.studio.drawing.BrushSnapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

@@ -1,6 +1,10 @@
 package com.donnclab.kinetiframe.studio.camera
 
-import com.donnclab.kinetiframe.project.model.ProjectDocument
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.core.document.camera.CameraPose
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.core.document.camera.CameraShots
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals

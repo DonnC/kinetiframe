@@ -4,14 +4,14 @@ import android.graphics.Bitmap
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import com.donnclab.kinetiframe.actors.rig.model.PivotPlacement
-import com.donnclab.kinetiframe.project.model.BaseNode
-import com.donnclab.kinetiframe.project.model.DrawCommand
-import com.donnclab.kinetiframe.project.model.DrawingTool
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.project.model.TextNode
-import com.donnclab.kinetiframe.project.model.TouchPoint
-import com.donnclab.kinetiframe.studio.drawing.BrushId
+import com.donnclab.kinetiframe.core.document.BaseNode
+import com.donnclab.kinetiframe.core.document.BrushId
+import com.donnclab.kinetiframe.core.document.DrawCommand
+import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.TextNode
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.studio.drawing.ConstructionShape
 import com.donnclab.kinetiframe.ui.ViewState
 
@@ -40,11 +40,11 @@ data class SelectedContent(
     val bounds: Rect = Rect.Zero,
     /** True when [bitmap] was cut from the rendered layer rather than reconstructed from commands. */
     val isRasterSelection: Boolean = false,
-    val actors: Map<String, com.donnclab.kinetiframe.project.model.ActorPlacementReference> = emptyMap(),
-    val videos: Map<String, com.donnclab.kinetiframe.project.model.VideoClipPlacement> = emptyMap(),
+    val actors: Map<String, com.donnclab.kinetiframe.core.document.ActorPlacementReference> = emptyMap(),
+    val videos: Map<String, com.donnclab.kinetiframe.core.document.VideoClipPlacement> = emptyMap(),
     val isPaste: Boolean = false,
     /** Linked sound follows selected video through copy/delete/undo, without being drawable. */
-    val audio: Map<String, com.donnclab.kinetiframe.project.model.AudioClipPlacement> = emptyMap(),
+    val audio: Map<String, com.donnclab.kinetiframe.core.document.AudioClipPlacement> = emptyMap(),
 )
 
 data class RulerGuide(

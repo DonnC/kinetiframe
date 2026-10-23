@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.common.ui.StandardSlider
+import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
-import com.donnclab.kinetiframe.project.model.DrawingTool
 import com.donnclab.kinetiframe.studio.EraserType
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState

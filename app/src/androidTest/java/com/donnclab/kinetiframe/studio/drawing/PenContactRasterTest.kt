@@ -4,7 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.BrushSnapshot
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.studio.ui.canvas.ActiveStroke
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
@@ -140,7 +141,7 @@ class PenContactRasterTest {
         for (seed in listOf(100L, 200L)) {
             stroke.settle(
                 listOf(point.copy(timestamp = seed)),
-                com.donnclab.kinetiframe.project.model.DrawingTool.BRUSH,
+                com.donnclab.kinetiframe.core.document.DrawingTool.BRUSH,
                 com.donnclab.kinetiframe.studio.EraserType.AREA,
                 6f,
                 1f,

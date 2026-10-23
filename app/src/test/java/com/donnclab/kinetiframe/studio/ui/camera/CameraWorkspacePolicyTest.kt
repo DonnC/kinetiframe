@@ -1,9 +1,8 @@
 package com.donnclab.kinetiframe.studio.ui.camera
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.project.model.DrawingTool
+import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.studio.StudioIntent
-import com.donnclab.kinetiframe.studio.ui.camera.CameraWorkspacePolicy
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

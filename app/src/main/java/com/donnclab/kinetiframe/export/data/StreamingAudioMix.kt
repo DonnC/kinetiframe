@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.export.data
 
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
-import com.donnclab.kinetiframe.project.model.ProjectAsset
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.ProjectAsset
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

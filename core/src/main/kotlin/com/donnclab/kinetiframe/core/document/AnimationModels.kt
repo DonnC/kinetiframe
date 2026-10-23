@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.project.model
+package com.donnclab.kinetiframe.core.document
 
 import kotlinx.serialization.Serializable
 

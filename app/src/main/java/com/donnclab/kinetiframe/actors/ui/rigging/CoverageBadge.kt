@@ -13,8 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
 
 /** How many rig parts already have artwork bound, so the user can tell at a glance when an
  *  actor is fully covered instead of discovering a bare bone only at pose time. */

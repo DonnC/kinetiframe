@@ -1,14 +1,14 @@
 package com.donnclab.kinetiframe.video
 
 import com.donnclab.kinetiframe.audio.AudioManager
-import com.donnclab.kinetiframe.project.model.ProjectAsset
-import com.donnclab.kinetiframe.project.model.VideoClipPlacement
+import com.donnclab.kinetiframe.core.document.ProjectAsset
+import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 import com.donnclab.kinetiframe.studio.StudioState
 import kotlin.math.roundToInt
 
 /** Pure project-reference mutations for the single video track's clips -- structurally close to
  *  [AudioManager], but every mutation here also enforces the "single track, sequential,
- *  non-overlapping clips" rule described on [com.donnclab.kinetiframe.project.model.VideoClipPlacement].
+ *  non-overlapping clips" rule described on [com.donnclab.kinetiframe.core.document.VideoClipPlacement].
  *  Decoding and copying video files happens at the UI layer, which has the Android Context; this
  *  class only receives an already-resolved [ProjectAsset] and placement. */
 class VideoTrackManager(
@@ -22,7 +22,7 @@ class VideoTrackManager(
     fun add(
         placement: VideoClipPlacement,
         asset: ProjectAsset,
-        audio: com.donnclab.kinetiframe.project.model.AudioClipPlacement? = null,
+        audio: com.donnclab.kinetiframe.core.document.AudioClipPlacement? = null,
     ) {
         val project = getState().project
         require(placement.clipId !in project.videoClips) { "Video clip already exists" }

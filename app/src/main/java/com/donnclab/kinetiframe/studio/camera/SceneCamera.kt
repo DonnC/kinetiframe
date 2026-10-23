@@ -1,6 +1,11 @@
 package com.donnclab.kinetiframe.studio.camera
 
-import com.donnclab.kinetiframe.studio.drawing.Affine2D
+import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.core.document.camera.CameraEasing
+import com.donnclab.kinetiframe.core.document.camera.CameraPose
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.core.document.camera.ShakeDirection
+import com.donnclab.kinetiframe.core.geometry.Affine2D
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin

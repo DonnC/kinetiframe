@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.audio
 
+import com.donnclab.kinetiframe.core.document.VoiceEffect
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.exp

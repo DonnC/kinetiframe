@@ -6,7 +6,7 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
-import com.donnclab.kinetiframe.project.model.Layer
+import com.donnclab.kinetiframe.core.document.Layer
 
 /** Replaces pixels inside an isolated active layer, preserving lower/upper layers and opacity. */
 internal class ManipulationLayerPreview {

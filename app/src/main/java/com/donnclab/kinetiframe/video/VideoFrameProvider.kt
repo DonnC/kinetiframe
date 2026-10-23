@@ -1,9 +1,8 @@
 package com.donnclab.kinetiframe.video
 
 import android.graphics.Bitmap
-import com.donnclab.kinetiframe.project.model.ProjectDocument
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.studio.StudioState
-import com.donnclab.kinetiframe.video.VideoFrameDecoder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

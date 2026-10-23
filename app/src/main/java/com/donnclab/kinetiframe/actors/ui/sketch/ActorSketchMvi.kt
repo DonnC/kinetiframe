@@ -7,7 +7,7 @@ import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawing
 import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawingRegion
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingPoint
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
 import com.donnclab.kinetiframe.ui.ViewState

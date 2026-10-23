@@ -14,9 +14,9 @@ import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFollowCamera
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
-import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.studio.camera.CameraAction
-import com.donnclab.kinetiframe.studio.camera.CameraPose
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.core.document.camera.CameraPose
 import com.donnclab.kinetiframe.studio.render.completedPreviewFrames
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

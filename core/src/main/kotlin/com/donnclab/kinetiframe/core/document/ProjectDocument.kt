@@ -1,6 +1,5 @@
-package com.donnclab.kinetiframe.project.model
+package com.donnclab.kinetiframe.core.document
 
-import com.donnclab.kinetiframe.audio.VoiceEffect
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
@@ -10,12 +9,9 @@ import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
-import com.donnclab.kinetiframe.core.document.StageDimensions
-import com.donnclab.kinetiframe.project.model.BaseNode
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.studio.camera.CameraShot
-import com.donnclab.kinetiframe.studio.camera.CameraShots
-import com.donnclab.kinetiframe.studio.drawing.Affine2D
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.core.document.camera.CameraShots
+import com.donnclab.kinetiframe.core.geometry.Affine2D
 import kotlinx.serialization.Serializable
 import java.util.UUID
 

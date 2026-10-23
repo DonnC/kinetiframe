@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.studio.domain
 
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.LayerType
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.studio.LayerState
 import com.donnclab.kinetiframe.studio.StudioState
 import org.junit.Assert.assertEquals
@@ -13,7 +13,7 @@ class LayerManagerTest {
     @Test
     fun `adding puppet layer creates a definition and scene instance`() {
         var state = StudioState(
-            project = com.donnclab.kinetiframe.project.model.ProjectDocument(
+            project = com.donnclab.kinetiframe.core.document.ProjectDocument(
                 layers = listOf(Layer("Main", id = "main")),
             ),
             layers = LayerState(

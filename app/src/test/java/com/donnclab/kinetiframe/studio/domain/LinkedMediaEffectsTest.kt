@@ -1,13 +1,13 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import com.donnclab.kinetiframe.audio.AudioManager
-import com.donnclab.kinetiframe.audio.VoiceEffect
-import com.donnclab.kinetiframe.project.model.AssetKind
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
-import com.donnclab.kinetiframe.project.model.AudioTrackSettings
-import com.donnclab.kinetiframe.project.model.ProjectAsset
-import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.project.model.VideoClipPlacement
+import com.donnclab.kinetiframe.core.document.AssetKind
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.AudioTrackSettings
+import com.donnclab.kinetiframe.core.document.ProjectAsset
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.VideoClipPlacement
+import com.donnclab.kinetiframe.core.document.VoiceEffect
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.video.VideoTrackManager
 import org.junit.jupiter.api.Assertions.assertEquals

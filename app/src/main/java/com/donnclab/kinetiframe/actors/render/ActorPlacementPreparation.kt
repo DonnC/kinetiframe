@@ -5,8 +5,8 @@ import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.domain.ActorStageFraming
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
-import com.donnclab.kinetiframe.project.model.ProjectDocument
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 
 /** IO worker: validate the exact render dependencies before inserting an invisible clip. */
 class ActorPlacementPreparation(

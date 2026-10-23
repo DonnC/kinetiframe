@@ -1,5 +1,9 @@
 package com.donnclab.kinetiframe.studio.camera
 
+import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.core.document.camera.CameraEasing
+import com.donnclab.kinetiframe.core.document.camera.CameraPose
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import kotlinx.serialization.Serializable
 import kotlin.math.roundToInt
 

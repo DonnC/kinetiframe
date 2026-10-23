@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.project.model
+package com.donnclab.kinetiframe.core.document
 
 /** Immutable queue envelope. Only its owned point snapshot may be replayed after suspension. */
 class StrokeSubmission private constructor(val command: DrawCommand, val frameIndex: Int, val layerId: String) {
@@ -7,7 +7,7 @@ class StrokeSubmission private constructor(val command: DrawCommand, val frameIn
             require(frameIndex >= 0)
             require(layerId.isNotBlank())
             return StrokeSubmission(
-                command.copy(points = command.points.toList(), cachedPath = null),
+                command.copy(points = command.points.toList()),
                 frameIndex,
                 layerId,
             )

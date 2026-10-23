@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.studio
 
-import com.donnclab.kinetiframe.project.model.DrawingTool
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.TextNode
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.TextNode
+import com.donnclab.kinetiframe.core.document.TouchPoint
 
 /**
  * Handles intents for the drawing surface: playback, drawing, layers, frames, rigging, text,

@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.studio.domain
 
-import com.donnclab.kinetiframe.project.model.ProjectDocument
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.studio.StudioState
-import com.donnclab.kinetiframe.studio.camera.CameraShot
 
 /** Bounded non-destructive effect history. Retains references, not decoded media or frame pixels.
  * Undo restores only effect/media references; unrelated drawings, actors and viewport survive. */
@@ -13,8 +13,8 @@ class SceneEffectsManager(
     private data class Snapshot(
         val projectId: String,
         val shots: List<CameraShot>,
-        val audio: Map<String, com.donnclab.kinetiframe.project.model.AudioClipPlacement>,
-        val video: Map<String, com.donnclab.kinetiframe.project.model.VideoClipPlacement>,
+        val audio: Map<String, com.donnclab.kinetiframe.core.document.AudioClipPlacement>,
+        val video: Map<String, com.donnclab.kinetiframe.core.document.VideoClipPlacement>,
     )
     private val undo = ArrayDeque<Snapshot>()
     private val redo = ArrayDeque<Snapshot>()
@@ -58,14 +58,14 @@ class SceneEffectsManager(
     fun voiceStyle(
         id: String,
         expected: String,
-        effect: com.donnclab.kinetiframe.audio.VoiceEffect,
-        proxy: com.donnclab.kinetiframe.project.model.ProjectAsset?,
+        effect: com.donnclab.kinetiframe.core.document.VoiceEffect,
+        proxy: com.donnclab.kinetiframe.core.document.ProjectAsset?,
     ) = edit { project ->
         val clip = project.audioClips[id] ?: return@edit project
         if (clip.assetId != expected || project.audioTracks[clip.trackIndex]?.isLocked == true) return@edit project
         val original = clip.originalAssetId ?: clip.assetId
         val target = if (effect ==
-            com.donnclab.kinetiframe.audio.VoiceEffect.ORIGINAL
+            com.donnclab.kinetiframe.core.document.VoiceEffect.ORIGINAL
         ) {
             original
         } else {
@@ -77,7 +77,7 @@ class SceneEffectsManager(
             assets = if (proxy == null) project.assets else project.assets + (proxy.id to proxy),
         )
     }
-    fun videoFraming(id: String, fit: com.donnclab.kinetiframe.project.model.VideoFit, x: Float, y: Float) =
+    fun videoFraming(id: String, fit: com.donnclab.kinetiframe.core.document.VideoFit, x: Float, y: Float) =
         edit { project ->
             val clip = project.videoClips[id] ?: return@edit project
             project.copy(

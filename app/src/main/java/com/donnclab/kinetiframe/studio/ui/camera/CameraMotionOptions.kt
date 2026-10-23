@@ -19,10 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.studio.camera.CameraAction
-import com.donnclab.kinetiframe.studio.camera.CameraEasing
-import com.donnclab.kinetiframe.studio.camera.CameraShot
-import com.donnclab.kinetiframe.studio.camera.ShakeDirection
+import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.core.document.camera.CameraEasing
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.core.document.camera.ShakeDirection
 import kotlin.math.roundToInt
 
 /** Advanced controls live behind one context action, leaving the framing surface uncluttered. */

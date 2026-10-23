@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.studio.drawing
 
-import com.donnclab.kinetiframe.project.model.DrawingTool
+import com.donnclab.kinetiframe.core.document.DrawingTool
 
 /** Keeps construction gestures from stealing input from non-brush tools. */
 object ConstructionGesturePolicy {

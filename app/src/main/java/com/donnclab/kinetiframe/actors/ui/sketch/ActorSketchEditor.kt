@@ -33,7 +33,7 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.studio.StudioIntent
 
 /** A draft closes only after the actor document accepts its source IDs; import/budget failures

@@ -50,19 +50,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.project.model.BaseNode
-import com.donnclab.kinetiframe.project.model.DrawingTool
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.TextNode
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.BaseNode
+import com.donnclab.kinetiframe.core.document.BrushId
+import com.donnclab.kinetiframe.core.document.BrushSnapshot
+import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.TextNode
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.studio.EraserType
 import com.donnclab.kinetiframe.studio.SelectedContent
 import com.donnclab.kinetiframe.studio.SelectionToolType
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers
-import com.donnclab.kinetiframe.studio.drawing.BrushId
-import com.donnclab.kinetiframe.studio.drawing.BrushSnapshot
 import com.donnclab.kinetiframe.studio.drawing.ConstructionShape
 import com.donnclab.kinetiframe.studio.drawing.FontRegistry
 import com.donnclab.kinetiframe.studio.drawing.MultilineTextRenderer
@@ -112,7 +112,7 @@ fun BufferedDrawingCanvas(
     onionSkinOpacity: Float = 0.5f,
     cacheManager: FrameCacheManager? = null,
     activeLayerId: String = "main",
-    nodes: Map<String, com.donnclab.kinetiframe.project.model.BaseNode> = emptyMap(),
+    nodes: Map<String, com.donnclab.kinetiframe.core.document.BaseNode> = emptyMap(),
     onTextNodeUpdate: (TextNode) -> Unit = {},
     onTextNodeSelect: (String?) -> Unit = {},
     onIntent: (StudioIntent) -> Unit = {},
@@ -297,7 +297,7 @@ fun BufferedDrawingCanvas(
             studioMode = studioState.scene.studioMode,
             activeTool = activeTool,
             pressureSensitive =
-            activeTool == DrawingTool.BRUSH && brushId != com.donnclab.kinetiframe.studio.drawing.BrushId.PEN,
+            activeTool == DrawingTool.BRUSH && brushId != com.donnclab.kinetiframe.core.document.BrushId.PEN,
             rulerGuide = studioState.canvas.rulerGuide,
             constructionShape = constructionShape,
             constructionPreviewPending = constructionPreviewPending,

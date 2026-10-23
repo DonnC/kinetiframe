@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.audio
 
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 
 /**
  * Flattens every placed audio clip into one peak per animation frame, for the thin waveform ribbon

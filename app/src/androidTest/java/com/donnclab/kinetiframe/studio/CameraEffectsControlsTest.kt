@@ -9,11 +9,11 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.width
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.core.document.camera.CameraPose
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
-import com.donnclab.kinetiframe.studio.camera.CameraAction
-import com.donnclab.kinetiframe.studio.camera.CameraPose
-import com.donnclab.kinetiframe.studio.camera.CameraShot
 import com.donnclab.kinetiframe.studio.ui.camera.CameraWorkspaceControls
 import com.donnclab.kinetiframe.studio.ui.timeline.AudioFadeDialog
 import org.junit.Assert.assertEquals
@@ -55,7 +55,7 @@ class CameraEffectsControlsTest {
                 com.donnclab.kinetiframe.studio.ui.camera.CameraShotEditor(
                     draft,
                     StudioState(
-                        project = com.donnclab.kinetiframe.project.model.ProjectDocument(
+                        project = com.donnclab.kinetiframe.core.document.ProjectDocument(
                             cameraShots = listOf(occupied),
                         ),
                         animation = AnimationState(totalFrames = 96),
@@ -79,7 +79,7 @@ class CameraEffectsControlsTest {
                 com.donnclab.kinetiframe.studio.ui.canvas.CanvasArea(
                     cameraPreview = true,
                     state = StudioState(
-                        project = com.donnclab.kinetiframe.project.model.ProjectDocument(
+                        project = com.donnclab.kinetiframe.core.document.ProjectDocument(
                             cameraShots =
                             listOf(CameraShot("impact", CameraAction.SHAKE, 8, 21)),
                         ),

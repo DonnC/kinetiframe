@@ -9,10 +9,10 @@ import com.donnclab.kinetiframe.actors.data.LibraryItemKind
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.LibraryScope
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.library.ui.packs.PackTrayItem
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
-import com.donnclab.kinetiframe.project.model.ProjectDocument
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

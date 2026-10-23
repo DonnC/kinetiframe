@@ -14,7 +14,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
-import com.donnclab.kinetiframe.project.model.TextNode
+import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.studio.SelectedContent
 import com.donnclab.kinetiframe.studio.SelectionInteractionMode
 import com.donnclab.kinetiframe.studio.StudioIntent

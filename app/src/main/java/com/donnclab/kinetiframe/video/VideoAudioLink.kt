@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.video
 
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
-import com.donnclab.kinetiframe.project.model.AudioClipSourceWindow
-import com.donnclab.kinetiframe.project.model.VideoClipPlacement
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.AudioClipSourceWindow
+import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 
 /** One frame clock for linked picture and sound. Audio retains its independent volume/fades. */
 object VideoAudioLink {

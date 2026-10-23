@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import androidx.compose.ui.geometry.Rect
-import com.donnclab.kinetiframe.project.model.TextNode
+import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.studio.SelectedContent
 import com.donnclab.kinetiframe.studio.SelectionState
 import com.donnclab.kinetiframe.studio.StudioState

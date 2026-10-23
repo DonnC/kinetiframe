@@ -1,8 +1,6 @@
-package com.donnclab.kinetiframe.project.model
+package com.donnclab.kinetiframe.core.document
 
-import com.donnclab.kinetiframe.studio.drawing.BrushSnapshot
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 /**
  * Represents a single drawing operation (a stroke) that can be undone or redone.
@@ -16,6 +14,4 @@ data class DrawCommand(
     val alpha: Float = 1.0f,
     val strength: Float = 0.5f,
     val brush: BrushSnapshot = BrushSnapshot(),
-    @Transient
-    var cachedPath: android.graphics.Path? = null,
 )

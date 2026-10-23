@@ -7,9 +7,6 @@ import androidx.compose.ui.test.performClick
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
-import com.donnclab.kinetiframe.actors.ui.rigging.ActorMotionTimingMenu
-import com.donnclab.kinetiframe.actors.ui.rigging.PresetAuditionControls
-import com.donnclab.kinetiframe.actors.ui.rigging.PresetLibrarySection
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState

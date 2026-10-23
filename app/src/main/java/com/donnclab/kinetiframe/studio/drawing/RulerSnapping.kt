@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.studio.drawing
 
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.studio.RulerGuide
 import com.donnclab.kinetiframe.studio.RulerMode
 import kotlin.math.abs

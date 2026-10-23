@@ -7,7 +7,7 @@ import com.donnclab.kinetiframe.actors.domain.ActorPlacementManager
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.audio.AudioManager
 import com.donnclab.kinetiframe.audio.AudioPlaybackManager
-import com.donnclab.kinetiframe.project.model.LayerType
+import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.studio.domain.AnimationEngine
 import com.donnclab.kinetiframe.studio.domain.BackgroundManager
 import com.donnclab.kinetiframe.studio.domain.CelHoldManager

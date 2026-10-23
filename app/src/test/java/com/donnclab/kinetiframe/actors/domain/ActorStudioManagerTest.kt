@@ -4,7 +4,7 @@ import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
-import com.donnclab.kinetiframe.project.model.TextureSlot
+import com.donnclab.kinetiframe.core.document.TextureSlot
 import com.donnclab.kinetiframe.studio.ActorEditTarget
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioIntent

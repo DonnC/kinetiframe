@@ -10,8 +10,8 @@ import com.donnclab.kinetiframe.actors.render.PuppetRenderPlan
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
-import com.donnclab.kinetiframe.project.model.ProjectDocument
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioIntent

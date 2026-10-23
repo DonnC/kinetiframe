@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.studio.drawing
 
-import com.donnclab.kinetiframe.project.model.Layer
+import com.donnclab.kinetiframe.core.document.Layer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

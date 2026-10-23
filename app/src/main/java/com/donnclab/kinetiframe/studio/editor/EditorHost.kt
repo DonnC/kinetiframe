@@ -5,10 +5,10 @@ import androidx.compose.runtime.Composable
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.actors.ui.ActorReferenceSession
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.library.ui.packs.PackCreatorConfig
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
-import com.donnclab.kinetiframe.project.model.PuppetInstance
 import com.donnclab.kinetiframe.studio.StudioState
 
 /**

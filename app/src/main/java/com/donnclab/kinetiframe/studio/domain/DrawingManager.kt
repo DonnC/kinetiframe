@@ -6,16 +6,16 @@ import android.graphics.Color
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.toArgb
 import com.donnclab.kinetiframe.actors.domain.RiggingManager
-import com.donnclab.kinetiframe.project.model.DrawCommand
-import com.donnclab.kinetiframe.project.model.DrawingTool
-import com.donnclab.kinetiframe.project.model.StrokeBakeReceipts
-import com.donnclab.kinetiframe.project.model.StrokeSubmission
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.BrushSnapshot
+import com.donnclab.kinetiframe.core.document.DrawCommand
+import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.document.StrokeBakeReceipts
+import com.donnclab.kinetiframe.core.document.StrokeSubmission
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.studio.EraserType
 import com.donnclab.kinetiframe.studio.RulerMode
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers
-import com.donnclab.kinetiframe.studio.drawing.BrushSnapshot
 import com.donnclab.kinetiframe.studio.drawing.FloodFill
 import com.donnclab.kinetiframe.studio.drawing.RulerStrokeConstraintSession
 import com.donnclab.kinetiframe.studio.drawing.StrokeHitTest
@@ -159,10 +159,7 @@ class DrawingManager(
                 } else {
                     submittedPoints.snapToRuler(drawingState.canvas.rulerGuide)
                 }
-                val command = submission.command.copy(
-                    points = commandPoints,
-                    cachedPath = null,
-                )
+                val command = submission.command.copy(points = commandPoints)
 
                 val guide = drawingState.canvas.rulerGuide
                 if (drawingState.tool.activeTool == DrawingTool.BRUSH && guide?.mode == RulerMode.MIRROR) {

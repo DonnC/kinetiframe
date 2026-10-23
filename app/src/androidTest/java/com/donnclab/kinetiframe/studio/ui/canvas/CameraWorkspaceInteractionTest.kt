@@ -8,14 +8,13 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipe
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.project.model.ProjectDocument
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
-import com.donnclab.kinetiframe.studio.camera.CameraAction
-import com.donnclab.kinetiframe.studio.camera.CameraShot
-import com.donnclab.kinetiframe.studio.ui.canvas.CanvasArea
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule

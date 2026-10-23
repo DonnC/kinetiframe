@@ -7,8 +7,8 @@ import com.donnclab.kinetiframe.actors.data.ActorRevision
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
-import com.donnclab.kinetiframe.project.model.PuppetInstance
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.PuppetInstance
 
 /**
  * Which document an Actor Studio session is opened against.

@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.studio.drawing
 
+import com.donnclab.kinetiframe.core.geometry.Affine2D
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test

@@ -14,10 +14,10 @@ import com.donnclab.kinetiframe.core.actor.artwork.DrawingExtent
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingPlacement
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingSource
 import com.donnclab.kinetiframe.core.actor.artwork.SkinSourceSize
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.geometry.Point2
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.LayerType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test

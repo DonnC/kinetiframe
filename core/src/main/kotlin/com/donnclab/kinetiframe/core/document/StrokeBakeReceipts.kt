@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.project.model
+package com.donnclab.kinetiframe.core.document
 
 /** Transient, bounded completion receipts, including deliberately rejected/no-op edits. */
 object StrokeBakeReceipts {

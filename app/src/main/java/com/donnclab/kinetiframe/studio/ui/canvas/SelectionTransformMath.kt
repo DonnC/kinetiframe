@@ -3,7 +3,7 @@ package com.donnclab.kinetiframe.studio.ui.canvas
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Matrix
-import com.donnclab.kinetiframe.studio.drawing.Affine2D
+import com.donnclab.kinetiframe.core.geometry.Affine2D
 import kotlin.math.abs
 import kotlin.math.atan2
 

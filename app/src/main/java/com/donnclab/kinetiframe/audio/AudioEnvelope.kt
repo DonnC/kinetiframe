@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.audio
 
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 
 /** One envelope for audition and sample-accurate export. Overlapping fades multiply. */
 object AudioEnvelope {

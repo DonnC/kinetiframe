@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.studio.editor
 
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.studio.StudioViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.video
 
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
-import com.donnclab.kinetiframe.project.model.VideoClipPlacement
-import com.donnclab.kinetiframe.project.model.VideoFit
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.VideoClipPlacement
+import com.donnclab.kinetiframe.core.document.VideoFit
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

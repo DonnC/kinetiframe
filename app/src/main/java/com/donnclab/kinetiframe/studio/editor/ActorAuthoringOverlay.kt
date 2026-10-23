@@ -19,7 +19,7 @@ import com.donnclab.kinetiframe.actors.ui.rigging.PartRail
 import com.donnclab.kinetiframe.actors.ui.sketch.ActorDrawingModeButton
 import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchArtworkControls
 import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchJointControls
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState

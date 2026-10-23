@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-package com.donnclab.kinetiframe.studio.camera
+package com.donnclab.kinetiframe.core.document.camera
 
 import kotlinx.serialization.Serializable
 

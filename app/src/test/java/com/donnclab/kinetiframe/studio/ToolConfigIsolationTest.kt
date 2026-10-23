@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.studio
 
-import com.donnclab.kinetiframe.project.model.DrawingTool
-import com.donnclab.kinetiframe.studio.drawing.BrushId
+import com.donnclab.kinetiframe.core.document.BrushId
+import com.donnclab.kinetiframe.core.document.DrawingTool
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

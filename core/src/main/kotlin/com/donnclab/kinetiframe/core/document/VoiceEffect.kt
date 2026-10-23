@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-package com.donnclab.kinetiframe.audio
+package com.donnclab.kinetiframe.core.document
 
 import kotlinx.serialization.Serializable
 

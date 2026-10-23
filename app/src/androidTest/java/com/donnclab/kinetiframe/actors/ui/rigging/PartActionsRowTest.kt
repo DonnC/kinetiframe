@@ -5,13 +5,12 @@ import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
-import com.donnclab.kinetiframe.actors.ui.rigging.PartActionsRow
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneArtwork
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
-import com.donnclab.kinetiframe.project.model.DrawingTool
+import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.studio.StudioIntent
 import org.junit.Assert.assertEquals
 import org.junit.Rule

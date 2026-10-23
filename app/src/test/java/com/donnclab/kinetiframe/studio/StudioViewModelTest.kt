@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.studio
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
-import com.donnclab.kinetiframe.project.model.DrawingTool
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.DrawingTool
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -216,7 +216,7 @@ class StudioViewModelTest {
 
         val nodes = viewModel.state.value.scene.nodes
         assertEquals(1, nodes.size)
-        val node = nodes.values.first() as com.donnclab.kinetiframe.project.model.TextNode
+        val node = nodes.values.first() as com.donnclab.kinetiframe.core.document.TextNode
         assertEquals(text, node.text)
         assertEquals(100f, node.x)
         assertEquals(200f, node.y)

@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.studio.domain
 
-import com.donnclab.kinetiframe.project.model.LayerType
+import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers

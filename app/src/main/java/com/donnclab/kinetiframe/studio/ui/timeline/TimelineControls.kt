@@ -198,7 +198,7 @@ fun TimelineControls(
                     onDismiss = { contextFrameIndex = null },
                     onEditDetails = if (packMode) onEditPackItem?.let { edit -> { edit(frameIndex) } } else null,
                     onHeldDrawing = if (!packMode &&
-                        activeLayer?.type == com.donnclab.kinetiframe.project.model.LayerType.RASTER &&
+                        activeLayer?.type == com.donnclab.kinetiframe.core.document.LayerType.RASTER &&
                         !activeLayer.isLocked
                     ) {
                         (

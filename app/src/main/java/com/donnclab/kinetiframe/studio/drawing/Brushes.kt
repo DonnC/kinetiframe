@@ -2,8 +2,9 @@ package com.donnclab.kinetiframe.studio.drawing
 
 import android.graphics.Canvas
 import android.graphics.Paint
-import com.donnclab.kinetiframe.project.model.TouchPoint
-import com.donnclab.kinetiframe.studio.drawing.StrokeGeometry
+import com.donnclab.kinetiframe.core.document.BrushId
+import com.donnclab.kinetiframe.core.document.BrushSnapshot
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import kotlin.math.roundToInt
 
 /** Pure recipe math that is safe to validate without Android graphics. */

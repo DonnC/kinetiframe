@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingPoint
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import kotlin.math.hypot
 
 /** One-finger drawing/stylus input; two fingers pan/zoom without leaving ink. No heavy objects

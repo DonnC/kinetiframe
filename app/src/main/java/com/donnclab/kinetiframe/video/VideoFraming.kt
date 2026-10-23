@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.video
 
-import com.donnclab.kinetiframe.project.model.VideoClipPlacement
-import com.donnclab.kinetiframe.project.model.VideoFit
+import com.donnclab.kinetiframe.core.document.VideoClipPlacement
+import com.donnclab.kinetiframe.core.document.VideoFit
 
 /** Pure, normalized crop math shared by native preview and export; no bitmap allocations. */
 object VideoFraming {

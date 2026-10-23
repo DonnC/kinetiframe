@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.studio.drawing
 
-import com.donnclab.kinetiframe.project.model.DrawCommand
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.DrawCommand
+import com.donnclab.kinetiframe.core.document.TouchPoint
 
 /** Decides which strokes a stroke eraser touches. */
 internal object StrokeHitTest {

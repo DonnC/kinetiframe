@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.project.model.referencedAssetIds
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.referencedAssetIds
 import com.donnclab.kinetiframe.studio.LayerState
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioState

@@ -10,12 +10,12 @@ import com.donnclab.kinetiframe.actors.render.ActorFollowCamera
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
 import com.donnclab.kinetiframe.actors.render.ActorPlacementPreparation
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.library.bundled.BundledActorSourceReader
 import com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures
 import com.donnclab.kinetiframe.project.data.KframeArchiver
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
-import com.donnclab.kinetiframe.project.model.ProjectDocument
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
@@ -98,9 +98,9 @@ class ActorPlacementPipelineTest {
                             com.donnclab.kinetiframe.actors.domain.ActorStageFraming.outside(points, target.stage),
                         )
                     }
-                    val follow = com.donnclab.kinetiframe.studio.camera.CameraShot(
+                    val follow = com.donnclab.kinetiframe.core.document.camera.CameraShot(
                         "follow",
-                        com.donnclab.kinetiframe.studio.camera.CameraAction.FOLLOW,
+                        com.donnclab.kinetiframe.core.document.camera.CameraAction.FOLLOW,
                         0,
                         48,
                         targetPlacementId = prepared.placementId,
@@ -113,7 +113,7 @@ class ActorPlacementPipelineTest {
                     ActorFollowCamera.evaluate(followedProject, 12, renderer)
                     assertEquals(finalPose, ActorFollowCamera.evaluate(followedProject, 47, renderer))
                     assertEquals(
-                        com.donnclab.kinetiframe.studio.camera.CameraPose(),
+                        com.donnclab.kinetiframe.core.document.camera.CameraPose(),
                         ActorFollowCamera.evaluate(followedProject, 48, renderer),
                     )
                     assertNull(renderer.resolveAll(listOf(prepared), target.id, 48, 12).single().render)
