@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import java.util.UUID

@@ -1,6 +1,6 @@
-package com.donnclab.kinetiframe.project.model
+package com.donnclab.kinetiframe.core.document
 
-import com.donnclab.kinetiframe.studio.drawing.Affine2D
+import com.donnclab.kinetiframe.core.geometry.Affine2D
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient

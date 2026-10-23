@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
-import com.donnclab.kinetiframe.project.model.Layer
+import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState

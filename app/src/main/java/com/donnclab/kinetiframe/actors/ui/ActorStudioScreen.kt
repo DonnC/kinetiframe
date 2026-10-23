@@ -25,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
+import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.studio.EditorScreen
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +74,7 @@ fun ActorStudioScreen(
     var showPerformanceActions by remember { mutableStateOf(false) }
     var duplicatePerformanceName by remember { mutableStateOf<String?>(null) }
     var pendingPerformance by remember {
-        mutableStateOf<Pair<com.donnclab.kinetiframe.project.model.PuppetInstance, Long>?>(null)
+        mutableStateOf<Pair<com.donnclab.kinetiframe.core.document.PuppetInstance, Long>?>(null)
     }
     val manifest = state.manifest
     val revision = state.revision
@@ -188,7 +189,7 @@ fun ActorStudioScreen(
                     ActorStudioDocumentIntent.SavePerformance(
                         name,
                         instance.poseKeys,
-                        instance.motionPreset,
+                        instance.motionPreset?.let(AppliedActorPreset::of),
                         durationMicros,
                         instance.rotationCurves,
                         instance.poseInterpolation,

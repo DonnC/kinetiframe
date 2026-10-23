@@ -6,12 +6,12 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Path
 import com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry
-import com.donnclab.kinetiframe.project.model.BaseNode
-import com.donnclab.kinetiframe.project.model.TextNode
+import com.donnclab.kinetiframe.core.document.BaseNode
+import com.donnclab.kinetiframe.core.document.TextNode
+import com.donnclab.kinetiframe.core.geometry.Affine2D
 import com.donnclab.kinetiframe.studio.SelectedContent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers
-import com.donnclab.kinetiframe.studio.drawing.Affine2D
 import com.donnclab.kinetiframe.studio.drawing.FontRegistry
 import com.donnclab.kinetiframe.studio.drawing.MultilineTextRenderer
 import com.donnclab.kinetiframe.studio.ui.canvas.rotateVector
@@ -60,7 +60,7 @@ class SelectionManager(
             updateState {
                 it.copy(
                     tool = it.tool.copy(
-                        activeTool = com.donnclab.kinetiframe.project.model.DrawingTool.LASSO,
+                        activeTool = com.donnclab.kinetiframe.core.document.DrawingTool.LASSO,
                         constructionShape = null,
                     ),
                 )
@@ -371,7 +371,7 @@ class SelectionManager(
                 }
                 // One video lane: copies append sequentially rather than introducing overlapping decoders.
                 var nextVideoFrame = getState().project.videoClips.values.maxOfOrNull { it.timelineEndFrame } ?: 0
-                val audioCopies = mutableMapOf<String, com.donnclab.kinetiframe.project.model.AudioClipPlacement>()
+                val audioCopies = mutableMapOf<String, com.donnclab.kinetiframe.core.document.AudioClipPlacement>()
                 val videos = if (saved.projectId == getState().project.id) {
                     saved.content.videos.values.associate { clip ->
                         val id = UUID.randomUUID().toString()
@@ -419,7 +419,7 @@ class SelectionManager(
         }
     }
 
-    private fun linkedSound(clips: Collection<com.donnclab.kinetiframe.project.model.VideoClipPlacement>) =
+    private fun linkedSound(clips: Collection<com.donnclab.kinetiframe.core.document.VideoClipPlacement>) =
         clips.mapNotNull {
             it.linkedAudioClipId
         }.mapNotNull { getState().project.audioClips[it] }.associateBy { it.clipId }
@@ -451,7 +451,7 @@ class SelectionManager(
                 updateState {
                     it.copy(
                         tool = it.tool.copy(
-                            activeTool = com.donnclab.kinetiframe.project.model.DrawingTool.LASSO,
+                            activeTool = com.donnclab.kinetiframe.core.document.DrawingTool.LASSO,
                             constructionShape = null,
                         ),
                     )

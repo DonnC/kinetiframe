@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 
 /** Retain the source clock, including loop phase; a shortened block must not restart the gesture. */
 object ActorPlacementTrimming {

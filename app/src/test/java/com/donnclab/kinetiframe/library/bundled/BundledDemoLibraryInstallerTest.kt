@@ -77,7 +77,7 @@ class BundledDemoLibraryInstallerTest {
         val source = File(root, "drawing.png").apply { writeBytes(byteArrayOf(1, 2, 3)) }
         value(library.exportAsset(LibraryItemKind.FRAME, "shared", "Personal drawing", source, nowEpochMs = 1))
         for (id in listOf("first", "second")) {
-            val project = com.donnclab.kinetiframe.project.model.ProjectDocument(id = id)
+            val project = com.donnclab.kinetiframe.core.document.ProjectDocument(id = id)
             value(
                 com.donnclab.kinetiframe.project.data.ProjectRepository(files).save(
                     com.donnclab.kinetiframe.project.data.ProjectManifest(

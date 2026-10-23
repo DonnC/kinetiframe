@@ -2,7 +2,6 @@ package com.donnclab.kinetiframe.studio.domain
 
 import com.donnclab.kinetiframe.studio.AnimationState
 import com.donnclab.kinetiframe.studio.StudioState
-import com.donnclab.kinetiframe.studio.domain.AnimationEngine
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,7 +24,7 @@ class PlaybackManagerTest {
     @Test fun `slow renders cannot accumulate jobs and empty active frames still compose`() = runTest {
         var state =
             StudioState(
-                project = com.donnclab.kinetiframe.project.model.ProjectDocument(fps = 24),
+                project = com.donnclab.kinetiframe.core.document.ProjectDocument(fps = 24),
                 animation = AnimationState(totalFrames = 144),
             )
         val gate = CompletableDeferred<Unit>()
@@ -116,7 +115,7 @@ class PlaybackManagerTest {
     @Test fun `last frame loops to zero without advancing editing frame`() = runTest {
         var state =
             StudioState(
-                project = com.donnclab.kinetiframe.project.model.ProjectDocument(fps = 24),
+                project = com.donnclab.kinetiframe.core.document.ProjectDocument(fps = 24),
                 animation = AnimationState(totalFrames = 144, currentFrame = 143),
             )
         val dispatcher = StandardTestDispatcher(testScheduler)

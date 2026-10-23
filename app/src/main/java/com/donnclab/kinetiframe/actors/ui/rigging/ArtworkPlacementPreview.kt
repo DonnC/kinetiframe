@@ -31,13 +31,13 @@ import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.designsystem.theme.BrandTeal
 import com.donnclab.kinetiframe.engine.rigging.math.ArtworkGestureBasis
 import com.donnclab.kinetiframe.engine.rigging.math.ArtworkGestureDelta
 import com.donnclab.kinetiframe.engine.rigging.math.ArtworkPlacementGesture
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
-import com.donnclab.kinetiframe.project.model.PuppetInstance
 
 /** Fixed actor framing: dragging artwork must not make the viewport chase it. Pixels are borrowed. */
 @Composable

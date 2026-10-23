@@ -7,9 +7,9 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.project.model.VideoClipPlacement
 import com.donnclab.kinetiframe.studio.ui.timeline.TimelineTracksPanel
 import org.junit.Assert.assertEquals
 import org.junit.Rule

@@ -7,8 +7,8 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RadialGradient
 import android.graphics.Shader
-import com.donnclab.kinetiframe.project.model.TouchPoint
-import com.donnclab.kinetiframe.studio.drawing.StrokeGeometry
+import com.donnclab.kinetiframe.core.document.BrushSnapshot
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import kotlin.math.ceil
 import kotlin.math.cos
 import kotlin.math.hypot

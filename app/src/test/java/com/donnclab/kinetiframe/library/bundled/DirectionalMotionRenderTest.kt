@@ -19,10 +19,9 @@ import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.geometry.Point2
-import com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures
 import com.donnclab.kinetiframe.project.data.KframeArchiver
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
 import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

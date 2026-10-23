@@ -5,8 +5,8 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
-import com.donnclab.kinetiframe.project.model.VideoClipPlacement
-import com.donnclab.kinetiframe.studio.drawing.Affine2D
+import com.donnclab.kinetiframe.core.document.VideoClipPlacement
+import com.donnclab.kinetiframe.core.geometry.Affine2D
 
 /** Allocated outside Compose draw phases; independent of raster erasing. */
 class SceneVideoRenderer {

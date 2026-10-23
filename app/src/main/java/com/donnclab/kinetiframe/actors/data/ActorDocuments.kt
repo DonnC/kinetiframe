@@ -13,10 +13,10 @@ import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.geometry.Affine2D
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackManifest
 import com.donnclab.kinetiframe.project.data.KframeArchiver
-import com.donnclab.kinetiframe.studio.drawing.Affine2D
 import kotlinx.serialization.Serializable
 
 /** Stable actor identity and its currently editable structural revision. */

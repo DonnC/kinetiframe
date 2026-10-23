@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.studio.editor
 
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.studio.StudioIntent
 
 /** What the editor's bars, panels and canvas overlays can ask the screen to do. */

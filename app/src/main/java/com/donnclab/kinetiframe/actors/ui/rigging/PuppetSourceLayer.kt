@@ -16,9 +16,9 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
+import com.donnclab.kinetiframe.core.document.BrushSnapshot
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
-import com.donnclab.kinetiframe.studio.drawing.BrushSnapshot
 import com.donnclab.kinetiframe.studio.showActorSourceArtwork
 import com.donnclab.kinetiframe.studio.ui.canvas.ActiveStroke
 import com.donnclab.kinetiframe.studio.ui.canvas.drawVariableWidthStroke
@@ -85,7 +85,7 @@ fun PuppetSourceLayer(
                 native.drawColor(android.graphics.Color.WHITE)
                 referenceUnderlay?.invoke(native)
                 if (state.showActorSourceArtwork() &&
-                    state.tool.activeTool != com.donnclab.kinetiframe.project.model.DrawingTool.ERASER
+                    state.tool.activeTool != com.donnclab.kinetiframe.core.document.DrawingTool.ERASER
                 ) {
                     state.currentBitmap?.takeUnless {
                         it.isRecycled
@@ -96,7 +96,7 @@ fun PuppetSourceLayer(
                 // Draw any settled strokes not yet baked into the bitmap (prevent blink)
                 stroke.settledStrokes.filterNot {
                     it.brush.seed in state.bakedStrokeSeeds ||
-                        it.tool == com.donnclab.kinetiframe.project.model.DrawingTool.ERASER
+                        it.tool == com.donnclab.kinetiframe.core.document.DrawingTool.ERASER
                 }.forEach { settled ->
                     settled.manipulationPreview?.takeUnless { it.bitmap.isRecycled }?.let { preview ->
                         native.drawBitmap(preview.bitmap, preview.left.toFloat(), preview.top.toFloat(), null)
@@ -115,16 +115,16 @@ fun PuppetSourceLayer(
 
                 // Draw active stroke
                 if (stroke.points.isNotEmpty() &&
-                    state.tool.activeTool != com.donnclab.kinetiframe.project.model.DrawingTool.ERASER
+                    state.tool.activeTool != com.donnclab.kinetiframe.core.document.DrawingTool.ERASER
                 ) {
-                    if (state.tool.activeTool == com.donnclab.kinetiframe.project.model.DrawingTool.BLUR ||
-                        state.tool.activeTool == com.donnclab.kinetiframe.project.model.DrawingTool.SMUDGE
+                    if (state.tool.activeTool == com.donnclab.kinetiframe.core.document.DrawingTool.BLUR ||
+                        state.tool.activeTool == com.donnclab.kinetiframe.core.document.DrawingTool.SMUDGE
                     ) {
                         stroke.manipulationPreview()?.takeUnless { it.bitmap.isRecycled }?.let { preview ->
                             native.drawBitmap(preview.bitmap, preview.left.toFloat(), preview.top.toFloat(), null)
                         }
-                    } else if (state.tool.activeTool == com.donnclab.kinetiframe.project.model.DrawingTool.BRUSH &&
-                        brush.id == com.donnclab.kinetiframe.studio.drawing.BrushId.PEN
+                    } else if (state.tool.activeTool == com.donnclab.kinetiframe.core.document.DrawingTool.BRUSH &&
+                        brush.id == com.donnclab.kinetiframe.core.document.BrushId.PEN
                     ) {
                         stroke.drawIncrementalPen(native, baseWidth, pressurePaint)
                     } else {

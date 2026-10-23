@@ -3,9 +3,10 @@ package com.donnclab.kinetiframe.actors.domain
 import com.donnclab.kinetiframe.actors.data.ActorRevision
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.validate
+import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
-import com.donnclab.kinetiframe.project.model.PuppetInstance
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.PuppetInstance
 
 /** Explicit conversion boundary for the legacy in-memory Actor Studio prototype. */
 object LegacyActorMigration {
@@ -26,7 +27,7 @@ object LegacyActorMigration {
         name: String,
         nowEpochMs: Long,
     ): PerformanceDocument? {
-        val preset = instance.motionPreset
+        val preset = instance.motionPreset?.let(AppliedActorPreset::of)
         if (instance.poseKeys.isEmpty() && instance.rotationCurves.isEmpty() && instance.rootMotionCurves.isEmpty() &&
             instance.artworkKeys.isEmpty() &&
             preset == null

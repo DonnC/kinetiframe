@@ -22,9 +22,9 @@ import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.studio.camera.CameraAction
+import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.studio.camera.CameraRanges
-import com.donnclab.kinetiframe.studio.camera.CameraShot
 
 /** Occupied ranges share the slider's frame scale, with readable labels below it. */
 @Composable

@@ -1,6 +1,10 @@
 package com.donnclab.kinetiframe.studio.camera
 
-import com.donnclab.kinetiframe.project.model.ProjectDocument
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.core.document.camera.CameraPose
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.core.document.camera.CameraShots
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -43,7 +47,7 @@ class SceneCameraTest {
         val inserted = CameraFrameStructure.reindex(listOf(a, b), 5, emptyList())
         assertEquals(11, inserted[0].endFrame)
         assertEquals(11, inserted[1].startFrame)
-        SceneCamera.validate(inserted)
+        CameraShots.validate(inserted)
         val removed = CameraFrameStructure.reindex(listOf(a, b), null, (0 until 10).toList())
         assertEquals(listOf(b.copy(startFrame = 0, endFrame = 10)), removed)
     }
@@ -83,12 +87,12 @@ class SceneCameraTest {
 
     @Test fun `overlap and duplicate ids reject but adjacency is allowed`() {
         val a = CameraShot("a", CameraAction.PAN, 0, 10)
-        SceneCamera.validate(listOf(a, a.copy(id = "b", startFrame = 10, endFrame = 20)))
+        CameraShots.validate(listOf(a, a.copy(id = "b", startFrame = 10, endFrame = 20)))
         assertThrows(IllegalArgumentException::class.java) {
-            SceneCamera.validate(listOf(a, a.copy(id = "b", startFrame = 9)))
+            CameraShots.validate(listOf(a, a.copy(id = "b", startFrame = 9)))
         }
         assertThrows(IllegalArgumentException::class.java) {
-            SceneCamera.validate(listOf(a, a.copy(startFrame = 10, endFrame = 20)))
+            CameraShots.validate(listOf(a, a.copy(startFrame = 10, endFrame = 20)))
         }
     }
 

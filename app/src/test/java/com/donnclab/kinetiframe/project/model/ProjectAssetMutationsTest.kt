@@ -7,6 +7,16 @@ import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.document.AssetKind
+import com.donnclab.kinetiframe.core.document.ProjectAsset
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.TextureSlot
+import com.donnclab.kinetiframe.core.document.bindTextureToBone
+import com.donnclab.kinetiframe.core.document.isAssetReferenced
+import com.donnclab.kinetiframe.core.document.referencedAssetIds
+import com.donnclab.kinetiframe.core.document.replaceAsset
+import com.donnclab.kinetiframe.core.document.unbindTextureFromBone
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue

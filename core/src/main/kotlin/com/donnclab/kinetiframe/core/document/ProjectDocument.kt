@@ -1,21 +1,17 @@
-package com.donnclab.kinetiframe.project.model
+package com.donnclab.kinetiframe.core.document
 
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
-import com.donnclab.kinetiframe.audio.VoiceEffect
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
-import com.donnclab.kinetiframe.core.document.StageDimensions
-import com.donnclab.kinetiframe.project.model.BaseNode
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.studio.camera.CameraShot
-import com.donnclab.kinetiframe.studio.camera.SceneCamera
-import com.donnclab.kinetiframe.studio.drawing.Affine2D
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.core.document.camera.CameraShots
+import com.donnclab.kinetiframe.core.geometry.Affine2D
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
@@ -53,7 +49,7 @@ data class PuppetInstance(
     /** Current instance pose, independent of the reusable rest skeleton. */
     val pose: Map<String, Transform> = emptyMap(),
     val poseKeys: List<ActorPoseKey> = emptyList(),
-    val motionPreset: AppliedActorPreset? = null,
+    val motionPreset: AppliedPresetDocument? = null,
     /** Keep explicit imported STEP/LINEAR channels intact in Studio until a pose is edited. */
     val rotationCurves: List<RotationCurve> = emptyList(),
     val poseInterpolation: CurveInterpolation = CurveInterpolation.SMOOTH,
@@ -281,7 +277,7 @@ data class ProjectDocument(
         require(fps in 1..30) { "Project FPS must be between 1 and 30." }
         require(nodeDensity.isFinite() && nodeDensity > 0f) { "Invalid text drawing density" }
         require(videoTrackOpacity in 0f..1f) { "Video track opacity must be between 0 and 1" }
-        SceneCamera.validate(cameraShots)
+        CameraShots.validate(cameraShots)
     }
 
     fun instanceForLayer(layer: Layer): PuppetInstance? = layer.puppetInstanceId?.let(puppetInstances::get)

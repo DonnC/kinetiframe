@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.geometry.Point2
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
 import com.donnclab.kinetiframe.studio.StudioState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals

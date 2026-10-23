@@ -29,7 +29,7 @@ import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.render.ActorPlacementPreparation
 import com.donnclab.kinetiframe.actors.ui.hasActorStudioChanges
 import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchEditor
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode

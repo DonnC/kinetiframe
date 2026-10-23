@@ -40,9 +40,9 @@ import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Plus
+import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.project.model.Layer
 import com.donnclab.kinetiframe.studio.LayerState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState

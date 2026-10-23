@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.project.data
 
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.ProjectDocument
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import kotlinx.serialization.Serializable
 
 /**

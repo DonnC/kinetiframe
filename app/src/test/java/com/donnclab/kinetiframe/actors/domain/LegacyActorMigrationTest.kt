@@ -6,9 +6,9 @@ import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.core.document.StageDimensions
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
-import com.donnclab.kinetiframe.project.model.PuppetInstance
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
@@ -64,7 +64,7 @@ class LegacyActorMigrationTest {
             intensity = 1f,
             speed = 2f,
         )
-        val instance = PuppetInstance("legacy-instance", "legacy-actor", motionPreset = preset)
+        val instance = PuppetInstance("legacy-instance", "legacy-actor", motionPreset = preset.document())
 
         val migrated = requireNotNull(
             LegacyActorMigration.performance(

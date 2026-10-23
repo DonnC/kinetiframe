@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.studio.drawing
 
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import kotlin.math.hypot
 
 /** Arc-length spacing carries across event boundaries; event rate is not brush strength. */

@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.audio
 
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
-import com.donnclab.kinetiframe.project.model.AudioClipSourceWindow
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.AudioClipSourceWindow
 
 /** Frame-aligned, non-destructive lane trimming. Never invent audio outside the selected window. */
 object AudioClipTrimming {

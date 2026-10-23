@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.studio.ui.timeline.audio
 
 import androidx.compose.foundation.lazy.LazyListState
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
-import com.donnclab.kinetiframe.project.model.AudioTrackSettings
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.AudioTrackSettings
 
 /**
  * Everything the audio lanes need to read, bundled so the lane group stays inside the

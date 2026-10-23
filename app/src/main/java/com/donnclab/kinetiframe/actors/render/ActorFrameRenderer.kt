@@ -11,12 +11,9 @@ import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.domain.ActorPlacementMapper
 import com.donnclab.kinetiframe.actors.domain.ResolveActorRenderUseCase
-import com.donnclab.kinetiframe.actors.render.PuppetArtworkRenderer
-import com.donnclab.kinetiframe.actors.render.PuppetRenderCommand
-import com.donnclab.kinetiframe.actors.render.PuppetRenderPlan
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
-import com.donnclab.kinetiframe.project.model.PuppetInstance
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.studio.render.ProjectFrameCompositor
 import com.donnclab.kinetiframe.studio.render.SharedResourceCache
 import java.io.File

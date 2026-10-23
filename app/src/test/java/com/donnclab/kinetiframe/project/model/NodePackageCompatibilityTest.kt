@@ -1,5 +1,8 @@
 package com.donnclab.kinetiframe.project.model
 
+import com.donnclab.kinetiframe.core.document.BaseNode
+import com.donnclab.kinetiframe.core.document.StrokeNode
+import com.donnclab.kinetiframe.core.document.TextNode
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject

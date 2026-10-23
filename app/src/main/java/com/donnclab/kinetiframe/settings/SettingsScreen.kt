@@ -39,9 +39,6 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.common.ui.ContextIconAction
 import com.donnclab.kinetiframe.common.ui.ContextIconButton
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.settings.AppPreferences
-import com.donnclab.kinetiframe.settings.AppTheme
-import com.donnclab.kinetiframe.settings.StudioOrientation
 
 val LocalAppPreferences = staticCompositionLocalOf { AppPreferences() }
 

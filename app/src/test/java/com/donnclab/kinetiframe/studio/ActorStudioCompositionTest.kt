@@ -28,7 +28,7 @@ class ActorStudioCompositionTest {
         val preset = preset(root)
         val instance = original.copy(
             pose = mapOf(root to Transform(rotationDegrees = 65f)),
-            motionPreset = preset,
+            motionPreset = preset.document(),
             poseKeys = listOf(ActorPoseKey(0, mapOf(root to 20f), mapOf(root to RootTranslation(3f, 4f)))),
             rotationCurves = listOf(RotationCurve(root, points = listOf(RotationCurvePoint(1_000_000, 0f)))),
             rootMotionCurves = listOf(RootMotionCurve(root, listOf(RootMotionPoint(1_000_000, 0f, 0f)))),

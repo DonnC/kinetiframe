@@ -3,7 +3,6 @@ package com.donnclab.kinetiframe.studio.domain
 import android.graphics.Bitmap
 import com.donnclab.kinetiframe.audio.AudioPlaybackManager
 import com.donnclab.kinetiframe.studio.StudioState
-import com.donnclab.kinetiframe.studio.domain.AnimationEngine
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher

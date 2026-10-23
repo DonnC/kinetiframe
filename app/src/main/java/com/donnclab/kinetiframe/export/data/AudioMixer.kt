@@ -3,8 +3,8 @@ package com.donnclab.kinetiframe.export.data
 import android.media.MediaCodec
 import android.media.MediaExtractor
 import android.media.MediaFormat
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
-import com.donnclab.kinetiframe.project.model.ProjectAsset
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.ProjectAsset
 import kotlin.math.roundToInt
 
 /**

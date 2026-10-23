@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.studio.drawing
 
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.exp

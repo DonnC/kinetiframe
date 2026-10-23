@@ -20,8 +20,8 @@ import com.composables.icons.lucide.Play
 import com.composables.icons.lucide.Trash2
 import com.donnclab.kinetiframe.common.ui.ContextIconAction
 import com.donnclab.kinetiframe.common.ui.IconContextMenu
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.studio.StudioIntent
-import com.donnclab.kinetiframe.studio.camera.CameraShot
 import com.donnclab.kinetiframe.studio.ui.timeline.TRACK_HEIGHT
 import com.donnclab.kinetiframe.studio.ui.timeline.TimelineAssetClip
 
@@ -83,7 +83,7 @@ internal fun CameraTimelineLane(
 private fun CameraTimelinePreview() {
     com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme {
         CameraTimelineLane(
-            listOf(CameraShot("preview", com.donnclab.kinetiframe.studio.camera.CameraAction.PAN, 0, 10)),
+            listOf(CameraShot("preview", com.donnclab.kinetiframe.core.document.camera.CameraAction.PAN, 0, 10)),
             24,
             0f,
             10f,

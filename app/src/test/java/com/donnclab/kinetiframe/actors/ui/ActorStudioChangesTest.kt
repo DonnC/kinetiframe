@@ -43,7 +43,7 @@ class ActorStudioChangesTest {
         val changed = initial.copy(
             project = initial.project.copy(
                 puppetInstances = initial.project.puppetInstances +
-                    (actor.id to actor.copy(motionPreset = preset)),
+                    (actor.id to actor.copy(motionPreset = preset.document())),
             ),
         )
         assertTrue(hasActorStudioChanges(initial, changed))

@@ -33,7 +33,7 @@ flowchart TD
 | Module | Type | Responsibility |
 | --- | --- | --- |
 | [`app`](../../app/README.md) | Android app | Entry point, navigation, the studio and other screens, rendering and media adapters, repositories, Room database, bundled assets |
-| [`core`](../../core/README.md) | Kotlin/JVM | Platform-neutral records for actors, rigs, motion and presets; JSON codecs; validation; service contracts; the MVI `StateStore` |
+| [`core`](../../core/README.md) | Kotlin/JVM | The project document and platform-neutral records for actors, rigs, motion and presets; JSON codecs; validation; service contracts; the MVI `StateStore` |
 | [`engine`](../../engine/README.md) | Android library | IK (FABRIK and two-bone), world transforms, skin deformation, artwork registration, pose and curve sampling, performance clocks, motion presets |
 | [`data`](../../data/README.md) | Android library | `DurableFile`: atomic, crash-safe file writes |
 | [`presentation`](../../presentation/README.md) | Android library | `BaseViewModel` and shared MVI plumbing |

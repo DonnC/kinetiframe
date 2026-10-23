@@ -5,8 +5,6 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.donnclab.kinetiframe.actors.ui.rigging.ActorArtworkMenu
-import com.donnclab.kinetiframe.actors.ui.rigging.PartActionsRow
 import com.donnclab.kinetiframe.core.actor.artwork.ArtworkVariant
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneArtwork

@@ -11,7 +11,9 @@ could read KinetiFrame files with it.
 | `actor.motion` | Pose and contact records, motion channels, playback timing |
 | `actor.presets` | Versioned motion preset documents and their codecs |
 | `actor.validation` | Typed validation issues |
-| `document`, `geometry` | Stage and geometry primitives |
+| `document` | The project document: layers, frames, nodes, strokes, audio and video clips, actor instances |
+| `document.camera` | Camera shots and the rules a saved list of shots follows |
+| `geometry` | Points and 2D affine transforms |
 | `contracts` | Small interfaces for replaceable services, with disabled defaults |
 | `mvi` | `StateStore`, the state and effect plumbing behind every ViewModel |
 

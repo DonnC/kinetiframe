@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.audio
 
-import com.donnclab.kinetiframe.project.model.AssetKind
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
-import com.donnclab.kinetiframe.project.model.ProjectAsset
+import com.donnclab.kinetiframe.core.document.AssetKind
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.studio.StudioState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows

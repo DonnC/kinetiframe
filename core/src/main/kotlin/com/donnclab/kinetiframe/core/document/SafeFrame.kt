@@ -1,6 +1,4 @@
-package com.donnclab.kinetiframe.project.model
-
-import com.donnclab.kinetiframe.core.document.StageDimensions
+package com.donnclab.kinetiframe.core.document
 
 /** Export-safe guides expressed in document coordinates, never device pixels. */
 enum class SafeFrameRatio(val width: Float, val height: Float) {

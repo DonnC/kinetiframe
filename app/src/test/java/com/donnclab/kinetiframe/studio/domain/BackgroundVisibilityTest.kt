@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.studio.domain
 
+import com.donnclab.kinetiframe.core.document.AssetKind
+import com.donnclab.kinetiframe.core.document.ProjectAsset
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.media.ProjectAssetManager
-import com.donnclab.kinetiframe.project.model.AssetKind
-import com.donnclab.kinetiframe.project.model.ProjectAsset
-import com.donnclab.kinetiframe.project.model.ProjectDocument
 import com.donnclab.kinetiframe.studio.CanvasState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState

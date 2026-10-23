@@ -11,9 +11,9 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
+import com.donnclab.kinetiframe.core.document.SafeFrameRatio
+import com.donnclab.kinetiframe.core.document.safeFrame
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.project.model.SafeFrameRatio
-import com.donnclab.kinetiframe.project.model.safeFrame
 import com.donnclab.kinetiframe.studio.StudioState
 
 /** Non-interactive document-space stage and export-safe guides. */

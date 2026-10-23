@@ -60,8 +60,8 @@ import com.composables.icons.lucide.Square
 import com.composables.icons.lucide.Type
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.common.ui.StandardSlider
+import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
-import com.donnclab.kinetiframe.project.model.DrawingTool
 import com.donnclab.kinetiframe.studio.CanvasState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode

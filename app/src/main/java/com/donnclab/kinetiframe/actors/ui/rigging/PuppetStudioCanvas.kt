@@ -26,14 +26,14 @@ import com.donnclab.kinetiframe.actors.rig.math.ForwardKinematicsSolver
 import com.donnclab.kinetiframe.actors.rig.math.RigJointHitTester
 import com.donnclab.kinetiframe.actors.rig.math.RigJointTarget
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.document.BrushSnapshot
+import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.project.model.DrawingTool
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.activeActor
 import com.donnclab.kinetiframe.studio.actorDefinition
 import com.donnclab.kinetiframe.studio.currentFrameLayers
-import com.donnclab.kinetiframe.studio.drawing.BrushSnapshot
 import com.donnclab.kinetiframe.studio.ui.canvas.ActiveStroke
 import com.donnclab.kinetiframe.studio.ui.canvas.CanvasInputLayer
 import com.donnclab.kinetiframe.studio.ui.canvas.PivotPlacementOverlay
@@ -185,7 +185,7 @@ fun PuppetStudioCanvas(
                 sourceFrame = state.currentBitmap,
                 studioMode = state.scene.studioMode,
                 activeTool = state.tool.activeTool,
-                pressureSensitive = config.brushId != com.donnclab.kinetiframe.studio.drawing.BrushId.PEN,
+                pressureSensitive = config.brushId != com.donnclab.kinetiframe.core.document.BrushId.PEN,
                 rulerGuide = state.canvas.rulerGuide,
                 constructionShape = state.tool.constructionShape,
                 constructionPreviewPending = state.constructionShape.previewActive,

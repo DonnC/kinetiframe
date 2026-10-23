@@ -1,8 +1,6 @@
 package com.donnclab.kinetiframe.actors.domain
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.domain.LegacyActorMigration
-import com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
@@ -95,7 +93,7 @@ class ActorPerformanceRecorderTest {
             scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK),
             project = state.project.copy(
                 puppetInstances =
-                state.project.puppetInstances + (actor.id to actor.copy(motionPreset = preset)),
+                state.project.puppetInstances + (actor.id to actor.copy(motionPreset = preset.document())),
             ),
         )
         val recorder =
@@ -124,7 +122,7 @@ class ActorPerformanceRecorderTest {
         advanceTimeBy(300)
         runCurrent()
         recorder.handle(StudioIntent.ActorMotion.StopTake)
-        assertEquals(preset, state.activeActor()!!.motionPreset)
+        assertEquals(preset.document(), state.activeActor()!!.motionPreset)
         assertTrue(state.activeActor()!!.rotationCurves.none { it.boneId == "head" })
         recorder.cancel()
     }

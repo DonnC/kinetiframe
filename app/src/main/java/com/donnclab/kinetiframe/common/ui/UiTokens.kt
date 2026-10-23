@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.common.ui.CompactTextField
 
 @Composable
 fun DenseTextField(

@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.video
 
 import com.donnclab.kinetiframe.audio.AudioTrackSync
-import com.donnclab.kinetiframe.project.model.VideoClipPlacement
+import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 
 /** Pure frame -> active-clip lookup for the single video reference track, mirroring
  *  [AudioTrackSync]'s shape. Since the track is single-lane and clips are enforced

@@ -1,5 +1,7 @@
 package com.donnclab.kinetiframe.studio.camera
 
+import com.donnclab.kinetiframe.core.document.camera.CameraShot
+
 object CameraRanges {
     fun conflicts(shot: CameraShot, shots: List<CameraShot>): List<CameraShot> = shots.filter {
         it.id != shot.id && shot.startFrame < it.endFrame && it.startFrame < shot.endFrame

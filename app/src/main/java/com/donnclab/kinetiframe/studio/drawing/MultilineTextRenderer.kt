@@ -7,7 +7,7 @@ import android.graphics.Typeface
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
-import com.donnclab.kinetiframe.project.model.TextNode
+import com.donnclab.kinetiframe.core.document.TextNode
 
 object MultilineTextRenderer {
 

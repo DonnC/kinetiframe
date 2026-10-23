@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.domain.ActorMotionManager
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
+import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
@@ -69,7 +70,7 @@ fun ActorPoseTimeline(
     val frame = (state.actor.previewTimeMicros * fps / 1_000_000.0).roundToLong()
     val duration = state.actorPreviewDuration()
     val frameMicros = 1_000_000L / fps.coerceAtLeast(1)
-    val preset = state.actor.presetPreview ?: state.activeActor()?.motionPreset
+    val preset = state.actor.presetPreview ?: state.activeActor()?.motionPreset?.let(AppliedActorPreset::of)
     val presetDuration = preset?.let { (it.recipe.durationSeconds * 1_000_000 / it.speed).toLong() } ?: 0L
     val minimumDuration = maxOf(frameMicros, rulerKeys.maxOfOrNull { it.timeMicros } ?: 0L, presetDuration)
     val hasPreset = state.activeActor()?.motionPreset != null || state.actor.presetPreview != null

@@ -11,7 +11,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.project.model.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import kotlin.math.roundToInt
 
 @Composable

@@ -3,8 +3,7 @@ package com.donnclab.kinetiframe.studio.drawing
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
-import com.donnclab.kinetiframe.project.model.TouchPoint
-import com.donnclab.kinetiframe.studio.drawing.StrokeGeometry
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.min

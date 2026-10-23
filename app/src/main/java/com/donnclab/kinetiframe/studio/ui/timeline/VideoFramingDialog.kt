@@ -32,9 +32,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
-import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.project.model.VideoClipPlacement
-import com.donnclab.kinetiframe.project.model.VideoFit
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.VideoClipPlacement
+import com.donnclab.kinetiframe.core.document.VideoFit
 import com.donnclab.kinetiframe.video.VideoFrameDecoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

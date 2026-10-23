@@ -2,8 +2,8 @@ package com.donnclab.kinetiframe.studio
 
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.ProjectDocument
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +33,7 @@ class StudioViewModel(
     diagnosticsDir: File = filesDir,
 ) : BaseViewModel<StudioState, StudioIntent, StudioEffect>(
     initialEditorState ?: StudioState(
-        project = com.donnclab.kinetiframe.project.model.ProjectDocument(
+        project = com.donnclab.kinetiframe.core.document.ProjectDocument(
             layers = listOf(Layer(name = "Main Layer", id = "main")),
         ),
         layers = LayerState(

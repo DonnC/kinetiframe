@@ -6,8 +6,8 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
-import com.donnclab.kinetiframe.project.model.DrawingTool
-import com.donnclab.kinetiframe.project.model.TouchPoint
+import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.hypot

@@ -12,14 +12,14 @@ import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.engine.rigging.motion.BeforeTake
 import com.donnclab.kinetiframe.engine.rigging.motion.CurveSampling
 import com.donnclab.kinetiframe.engine.rigging.motion.MotionComposition
 import com.donnclab.kinetiframe.engine.rigging.motion.PoseSampling
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.ProjectDocument
-import com.donnclab.kinetiframe.project.model.PuppetDefinition
-import com.donnclab.kinetiframe.project.model.PuppetInstance
 
 /** Transient authoring state. A gesture preview never changes the saved rest pose. */
 enum class ActorEditTarget { JOINT_END, JOINT_START, ARTWORK }
@@ -75,7 +75,8 @@ fun StudioState.activeActor(): PuppetInstance? {
 
 fun StudioState.actorPreviewPreset(): AppliedActorPreset? {
     val instance = activeActor()
-    return actor.presetPreview.takeIf { actor.presetPreviewInstanceId == instance?.id } ?: instance?.motionPreset
+    return actor.presetPreview.takeIf { actor.presetPreviewInstanceId == instance?.id }
+        ?: instance?.motionPreset?.let(AppliedActorPreset::of)
 }
 
 fun StudioState.actorPreviewDuration(): Long {
@@ -124,7 +125,9 @@ fun StudioState.actorDefinition(evaluated: Boolean = false): PuppetDefinition? {
         definition.sceneGraph,
         PoseSampling(periodicKeys, instance.poseInterpolation.engineInterpolation()),
     )
-    val preset = actor.presetPreview.takeIf { actor.presetPreviewInstanceId == instance.id } ?: instance.motionPreset
+    val preset =
+        actor.presetPreview.takeIf { actor.presetPreviewInstanceId == instance.id }
+            ?: instance.motionPreset?.let(AppliedActorPreset::of)
     val offsets = preset?.offsets(actor.previewTimeMicros).orEmpty()
     val curveSampling = CurveSampling(
         loop,

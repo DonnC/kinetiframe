@@ -95,7 +95,7 @@ class ActorPresetManager(
                             puppetInstances = it.project.puppetInstances +
                                 (
                                     instance.id to instance.copy(
-                                        motionPreset = preset,
+                                        motionPreset = preset?.document(),
                                         poseKeys = if (preset != null) emptyList() else instance.poseKeys,
                                         rotationCurves = if (preset != null) emptyList() else instance.rotationCurves,
                                         rootMotionCurves = if (preset !=

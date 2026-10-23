@@ -2,7 +2,7 @@ package com.donnclab.kinetiframe.studio
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Matrix
-import com.donnclab.kinetiframe.project.model.DrawingTool
+import com.donnclab.kinetiframe.core.document.DrawingTool
 
 // Pure state changes for studio intents that need no manager, file or bitmap work. Each returns
 // the next state, so StudioViewModel applies them inside one updateState call.

@@ -26,6 +26,8 @@ import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.LibraryScope
 import com.donnclab.kinetiframe.common.ui.FullScreenDialog
+import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArchiver
@@ -34,8 +36,6 @@ import com.donnclab.kinetiframe.library.data.PackManifest
 import com.donnclab.kinetiframe.project.data.ProjectManifest
 import com.donnclab.kinetiframe.project.data.ProjectRepository
 import com.donnclab.kinetiframe.project.data.ProjectSaveDocument
-import com.donnclab.kinetiframe.project.model.Layer
-import com.donnclab.kinetiframe.project.model.ProjectDocument
 import com.donnclab.kinetiframe.studio.EditorScreen
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import kotlinx.coroutines.Dispatchers

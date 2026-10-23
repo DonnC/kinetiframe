@@ -8,8 +8,8 @@ import com.donnclab.kinetiframe.core.actor.artwork.DrawingPoint
 import com.donnclab.kinetiframe.core.actor.artwork.SkinSourceSize
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.core.geometry.Point2
-import com.donnclab.kinetiframe.project.model.TouchPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

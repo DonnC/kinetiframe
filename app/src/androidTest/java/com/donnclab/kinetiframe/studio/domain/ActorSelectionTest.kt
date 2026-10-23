@@ -5,9 +5,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Matrix
 import com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
-import com.donnclab.kinetiframe.project.model.ActorPlacementReference
-import com.donnclab.kinetiframe.project.model.ProjectDocument
 import com.donnclab.kinetiframe.studio.StudioState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
