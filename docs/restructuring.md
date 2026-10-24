@@ -82,6 +82,11 @@ fixed after the module work, unless one blocks testing.
 
 **Editor**
 
+- **Blocks voice-over.** In landscape the audio recorder dialog is taller than the screen and
+  doesn't scroll, so its "Add to timeline" button is out of reach and a recorded take can't be
+  used. Seen on a Galaxy A73.
+- The asset menu cuts off "Actor perfor…" and "Import audio …".
+- The asset tracks panel covers the whole stage and says only "No clips yet".
 - "Save before leaving?" appears even right after saving with nothing changed. In that dialog,
   Discard looks like the safe buttons although it throws work away.
 - A successful save opens a blocking dialog that needs OK. A short message would do.
@@ -100,6 +105,9 @@ fixed after the module work, unless one blocks testing.
   views" in the title, and the last card sits under the + button.
 - Actor views are listed alphabetically; Front should come first.
 - Leaving Actor Studio returns to the Projects tab, not the Actors tab it was opened from.
+- On a fresh install the Library's Audio tab says "No matching items. Try another filter or
+  search." with no filter or search applied.
+- Settings is a bottom bar tab but shows a back arrow and a second header under the brand bar.
 
 **System bars**
 
