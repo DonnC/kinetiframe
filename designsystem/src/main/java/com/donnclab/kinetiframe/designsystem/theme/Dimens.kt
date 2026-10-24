@@ -62,6 +62,9 @@ object Dimens {
     val recorderButtonSize = 72.dp
     val recorderButtonInner = 28.dp
 
+    // Wide enough for the discard, record and "Add to timeline" controls on one line.
+    val recorderSheetMaxWidth = 480.dp
+
     // Grid layout.
     val gridColumnGap = 14.dp
     val gridColumns = 2
