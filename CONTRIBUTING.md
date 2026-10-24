@@ -123,7 +123,8 @@ In the pull request description, explain:
 - screenshots or a short recording for anything visible
 
 Add a line to the `Unreleased` section of [CHANGELOG.md](CHANGELOG.md) for changes users will
-notice.
+notice. If the pull request starts or finishes a task in the
+[restructuring tracker](docs/restructuring.md), or lowers a debt count, update the tracker too.
 
 A maintainer will review your pull request as soon as they can. If you haven't heard back after a
 week, leave a comment. Reviews are a conversation, not a verdict: expect questions and
