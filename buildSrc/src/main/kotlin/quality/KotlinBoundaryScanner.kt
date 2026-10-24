@@ -221,7 +221,7 @@ internal object KotlinBoundaryScanner {
 
     // Feature packages of the app module. Library modules sit below app and never reference them.
     private val APP_PACKAGES = listOf(
-        "actors", "audio", "common", "diagnostics", "export", "home", "library", "media", "navigation",
+        "actors", "audio", "common", "export", "home", "library", "media", "navigation",
         "preview", "project", "settings", "studio", "video",
     ).map { "com.donnclab.kinetiframe.$it." }
 

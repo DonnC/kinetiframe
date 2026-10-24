@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.library.bundled
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.DurableFile
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import java.io.File
 import java.io.InputStream
@@ -13,7 +13,7 @@ import java.io.InputStream
  * Standalone payloads are streamed with a size bound; no bitmap/audio decoding or full ZIP heap.
  */
 class BundledDemoLibraryInstaller(
-    private val files: ActorFileStore,
+    private val files: DocumentFileStore,
     private val openAsset: (String) -> InputStream,
     private val library: LibraryRepository = LibraryRepository(files),
 ) {
@@ -53,8 +53,8 @@ class BundledDemoLibraryInstaller(
                                 nowEpochMs = 1791158400000L,
                             )
                         ) {
-                            is ActorStoreResult.Value -> installed++
-                            is ActorStoreResult.Failure -> error(result.message)
+                            is StoreResult.Value -> installed++
+                            is StoreResult.Failure -> error(result.message)
                         }
                     } finally {
                         staging.delete()

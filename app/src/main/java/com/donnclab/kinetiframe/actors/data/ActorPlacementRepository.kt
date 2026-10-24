@@ -1,18 +1,20 @@
 package com.donnclab.kinetiframe.actors.data
 
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 
 class ActorPlacementRepository(
-    private val files: ActorFileStore,
+    private val files: DocumentFileStore,
     private val json: Json = Json {
         ignoreUnknownKeys =
             false
         prettyPrint = true
     },
 ) {
-    fun save(placement: ActorPlacement): ActorStoreResult<ActorPlacement> = runCatching {
+    fun save(placement: ActorPlacement): StoreResult<ActorPlacement> = runCatching {
         placement.validate()
         files.writeAtomically(
             File(files.projectDirectory(placement.projectId), "placements/${placement.placementId}.json"),
@@ -21,7 +23,7 @@ class ActorPlacementRepository(
         placement
     }.fold(::value, ::failure)
 
-    fun list(projectId: String): ActorStoreResult<List<ActorPlacement>> = runCatching {
+    fun list(projectId: String): StoreResult<List<ActorPlacement>> = runCatching {
         ActorDocumentValidation.requireId(projectId, "project ID")
         File(files.projectDirectory(projectId), "placements").listFiles().orEmpty().filter { it.extension == "json" }
             .map {
@@ -30,7 +32,7 @@ class ActorPlacementRepository(
     }.fold(::value, ::failure)
 
     /** Recoverable removal; never permanently deletes a project placement document. */
-    fun archive(projectId: String, placementId: String): ActorStoreResult<Unit> = runCatching {
+    fun archive(projectId: String, placementId: String): StoreResult<Unit> = runCatching {
         ActorDocumentValidation.requireId(projectId, "project ID")
         ActorDocumentValidation.requireId(placementId, "placement ID")
         val source = File(files.projectDirectory(projectId), "placements/$placementId.json")
@@ -38,7 +40,7 @@ class ActorPlacementRepository(
         files.move(source, File(files.projectDirectory(projectId), "archive/placements/$placementId.json"))
     }.fold(::value, ::failure)
 
-    private fun <T> value(value: T): ActorStoreResult<T> = ActorStoreResult.Value(value)
-    private fun failure(error: Throwable): ActorStoreResult.Failure =
-        ActorStoreResult.Failure(error.message ?: "Placement storage failed", error)
+    private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
+    private fun failure(error: Throwable): StoreResult.Failure =
+        StoreResult.Failure(error.message ?: "Placement storage failed", error)
 }

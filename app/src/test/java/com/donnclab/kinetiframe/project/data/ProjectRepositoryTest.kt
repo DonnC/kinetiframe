@@ -1,10 +1,10 @@
 package com.donnclab.kinetiframe.project.data
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -15,7 +15,7 @@ class ProjectRepositoryTest {
     @TempDir lateinit var root: File
 
     @Test fun `camera shots and faded audio survive a fresh repository reopen`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val base = document("effects")
         val shot = com.donnclab.kinetiframe.studio.camera.SceneCamera.preset(
             "pan",
@@ -34,13 +34,13 @@ class ProjectRepositoryTest {
             project = base.project.copy(cameraShots = listOf(shot), audioClips = mapOf("voice" to audio)),
         )
         requireSuccess(ProjectRepository(files).save(manifest("effects", "Effects"), doc))
-        val reopened = requireSuccess(ProjectRepository(ActorFileStore(root)).load("effects")).second
+        val reopened = requireSuccess(ProjectRepository(DocumentFileStore(root)).load("effects")).second
         assertEquals(listOf(shot), reopened.project.cameraShots)
         assertEquals(audio, reopened.project.audioClips["voice"])
     }
 
     @Test fun `held drawing references and canonical pixels survive portable project import`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val doc = document("held-project").copy(
             totalFrames = 3,
             linkedCels = mapOf("main" to mapOf(0 to "cel-a", 1 to "cel-a", 2 to "cel-a")),
@@ -52,7 +52,7 @@ class ProjectRepositoryTest {
         assertEquals(doc.linkedCels, requireSuccess(ProjectRepository(files).load("held-project")).second.linkedCels)
         val archive = File(root, "held.kframe")
         requireSuccess(KframeArchiver.export(files, "held-project", archive))
-        val destination = ActorFileStore(File(root, "imported"))
+        val destination = DocumentFileStore(File(root, "imported"))
         requireSuccess(KframeArchiver.import(destination, archive))
         val restored = requireSuccess(ProjectRepository(destination).load("held-project")).second
         assertEquals(doc.linkedCels, restored.linkedCels)
@@ -91,19 +91,19 @@ class ProjectRepositoryTest {
         updatedAtEpochMs = time,
     )
 
-    private fun <T> requireSuccess(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
+    private fun <T> requireSuccess(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
 
-        is ActorStoreResult.Failure -> throw AssertionError(
+        is StoreResult.Failure -> throw AssertionError(
             "Expected success but got failure: ${result.message}",
             result.cause,
         )
     }
 
     @Test fun `a saved project round trips through its manifest and document`() {
-        val repository = ProjectRepository(ActorFileStore(root))
+        val repository = ProjectRepository(DocumentFileStore(root))
         val saved = repository.save(manifest("project-a", "My Cartoon"), document("project-a"))
-        assertTrue(saved is ActorStoreResult.Value<*>)
+        assertTrue(saved is StoreResult.Value<*>)
 
         val (loadedManifest, loadedDocument) = requireSuccess(repository.load("project-a"))
         assertEquals("My Cartoon", loadedManifest.displayName)
@@ -113,7 +113,7 @@ class ProjectRepositoryTest {
     }
 
     @Test fun `embedded video survives closing repository and portable archive import`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val source = File(root, "screen.mp4").apply { writeBytes(byteArrayOf(1, 2, 3, 4)) }
         val clip = com.donnclab.kinetiframe.core.document.VideoClipPlacement(
             "screen", "video", "Story", 12, 48,
@@ -141,12 +141,12 @@ class ProjectRepositoryTest {
         assertEquals(
             clip,
             requireSuccess(
-                ProjectRepository(ActorFileStore(root)).load("project-video"),
+                ProjectRepository(DocumentFileStore(root)).load("project-video"),
             ).second.project.videoClips["screen"],
         )
         val archive = File(root, "screen.kframe")
         requireSuccess(KframeArchiver.export(files, "project-video", archive))
-        val otherFiles = ActorFileStore(File(root, "other-device"))
+        val otherFiles = DocumentFileStore(File(root, "other-device"))
         requireSuccess(KframeArchiver.import(otherFiles, archive))
         val reopened = requireSuccess(ProjectRepository(otherFiles).load("project-video")).second.project
         assertEquals(clip, reopened.videoClips["screen"])
@@ -157,7 +157,7 @@ class ProjectRepositoryTest {
     }
 
     @Test fun `the gallery lists newest-updated projects first`() {
-        val repository = ProjectRepository(ActorFileStore(root))
+        val repository = ProjectRepository(DocumentFileStore(root))
         repository.save(manifest("project-a", "Older", time = 1L), document("project-a"))
         repository.save(manifest("project-b", "Newer", time = 2L), document("project-b"))
 
@@ -166,7 +166,7 @@ class ProjectRepositoryTest {
     }
 
     @Test fun `project names must be unique, case-insensitively`() {
-        val repository = ProjectRepository(ActorFileStore(root))
+        val repository = ProjectRepository(DocumentFileStore(root))
         repository.save(manifest("project-a", "My Cartoon"), document("project-a"))
 
         assertEquals(false, requireSuccess(repository.isDisplayNameAvailable("my cartoon")))
@@ -178,7 +178,7 @@ class ProjectRepositoryTest {
     }
 
     @Test fun `renaming a project preserves its document and updates the manifest only`() {
-        val repository = ProjectRepository(ActorFileStore(root))
+        val repository = ProjectRepository(DocumentFileStore(root))
         repository.save(manifest("project-a", "Old Name", time = 1L), document("project-a"))
 
         val renamed = requireSuccess(repository.rename("project-a", "New Name", 2L))
@@ -190,7 +190,7 @@ class ProjectRepositoryTest {
     }
 
     @Test fun `deleting a project removes its whole directory, including performances placed elsewhere in it`() {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val repository = ProjectRepository(store)
         repository.save(manifest("project-a", "My Cartoon"), document("project-a"))
         // Simulate a sibling performance file living under the same project directory, the way
@@ -199,54 +199,57 @@ class ProjectRepositoryTest {
         performanceFile.parentFile!!.mkdirs()
         performanceFile.writeText("{}")
 
-        assertTrue(repository.delete("project-a") is ActorStoreResult.Value<*>)
-        assertTrue(repository.load("project-a") is ActorStoreResult.Failure)
+        assertTrue(repository.delete("project-a") is StoreResult.Value<*>)
+        assertTrue(repository.load("project-a") is StoreResult.Failure)
         assertTrue(!store.projectDirectory("project-a").exists())
     }
 
     @Test fun `deleting a project that does not exist is a typed failure, not a crash`() {
-        val repository = ProjectRepository(ActorFileStore(root))
-        assertTrue(repository.delete("no-such-project") is ActorStoreResult.Failure)
+        val repository = ProjectRepository(DocumentFileStore(root))
+        assertTrue(repository.delete("no-such-project") is StoreResult.Failure)
     }
 
     @Test fun `a manifest whose project ID disagrees with its document is rejected`() {
-        val repository = ProjectRepository(ActorFileStore(root))
+        val repository = ProjectRepository(DocumentFileStore(root))
         val result = repository.save(manifest("project-a", "My Cartoon"), document("project-b"))
-        assertTrue(result is ActorStoreResult.Failure)
+        assertTrue(result is StoreResult.Failure)
     }
 
     @Test fun `a malformed manifest file is surfaced as a typed storage failure, not a crash`() {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val manifestFile = File(store.projectDirectory("project-broken"), "manifest.json")
         manifestFile.parentFile!!.mkdirs()
         manifestFile.writeText("not json")
 
         assertEquals(emptyList<ProjectManifest>(), requireSuccess(ProjectRepository(store).list()))
-        assertTrue(ProjectRepository(store).load("project-broken") is ActorStoreResult.Failure)
+        assertTrue(ProjectRepository(store).load("project-broken") is StoreResult.Failure)
     }
 
     @Test fun `loading is null-safe against a project with no manifest at all`() {
-        val repository = ProjectRepository(ActorFileStore(root))
-        assertTrue(repository.load("never-created") is ActorStoreResult.Failure)
+        val repository = ProjectRepository(DocumentFileStore(root))
+        assertTrue(repository.load("never-created") is StoreResult.Failure)
     }
 
     @Test fun `fresh repository reads committed snapshot despite interrupted legacy updates`() {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         requireSuccess(ProjectRepository(store).save(manifest("project-a", "Saved"), document("project-a")))
         File(store.projectDirectory("project-a"), "manifest.json").writeText("interrupted")
         File(store.projectDirectory("project-a"), "document.json").writeText("interrupted")
-        val reopened = ProjectRepository(ActorFileStore(root))
+        val reopened = ProjectRepository(DocumentFileStore(root))
         assertEquals("Saved", requireSuccess(reopened.load("project-a")).first.displayName)
         assertEquals(1, requireSuccess(reopened.list()).size)
     }
 
     @Test fun `canvas and FPS disagreement cannot replace a committed project`() {
-        val repo = ProjectRepository(ActorFileStore(root))
+        val repo = ProjectRepository(DocumentFileStore(root))
         requireSuccess(repo.save(manifest("project-a", "Saved"), document("project-a")))
         assertTrue(
-            repo.save(manifest("project-a", "Wrong", fps = 24), document("project-a")) is ActorStoreResult.Failure,
+            repo.save(manifest("project-a", "Wrong", fps = 24), document("project-a")) is StoreResult.Failure,
         )
-        assertEquals(12, requireSuccess(ProjectRepository(ActorFileStore(root)).load("project-a")).second.project.fps)
+        assertEquals(
+            12,
+            requireSuccess(ProjectRepository(DocumentFileStore(root)).load("project-a")).second.project.fps,
+        )
     }
 
     @Test fun `editable text and independent frame layer stacks survive reopening`() {
@@ -265,10 +268,10 @@ class ProjectRepositoryTest {
         )
         requireSuccess(
             ProjectRepository(
-                ActorFileStore(root),
+                DocumentFileStore(root),
             ).save(manifest("project-text", "Text", StageDimensions.Square, 24), complete),
         )
-        val reopened = requireSuccess(ProjectRepository(ActorFileStore(root)).load("project-text"))
+        val reopened = requireSuccess(ProjectRepository(DocumentFileStore(root)).load("project-text"))
         assertEquals(complete, reopened.second)
         assertEquals(2, reopened.first.totalFrames)
         assertEquals(24, reopened.first.fps)

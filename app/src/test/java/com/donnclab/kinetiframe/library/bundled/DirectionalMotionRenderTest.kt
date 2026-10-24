@@ -6,9 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.data.validate
@@ -21,6 +19,8 @@ import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.project.data.KframeArchiver
 import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
@@ -108,9 +108,9 @@ class DirectionalMotionRenderTest {
     @get:Rule val temporary = TemporaryFolder()
     private val assets = File("src/main/assets").takeIf(File::isDirectory) ?: File("app/src/main/assets")
     private val json = Json { ignoreUnknownKeys = true }
-    private fun <T> value(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> throw AssertionError(result.message, result.cause)
+    private fun <T> value(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> throw AssertionError(result.message, result.cause)
     }
 
     @Test fun viewSpecificHandsAndHeadTiltsRenderWithoutMissingAssets() {
@@ -199,7 +199,7 @@ class DirectionalMotionRenderTest {
     }
 
     private fun withCast(block: (ActorRepository, PerformanceRepository, ActorFrameRenderer) -> Unit) {
-        val files = ActorFileStore(temporary.newFolder())
+        val files = DocumentFileStore(temporary.newFolder())
         BundledActorSourceReader.read(
             DemoAssetFixtures.file(assets, BundledActorSourceReader.ASSET_PATH),
             files,

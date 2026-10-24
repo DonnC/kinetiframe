@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.library.bundled
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackItemEntry
 import com.donnclab.kinetiframe.library.data.PackManifest
@@ -17,7 +17,7 @@ class CuratedLibraryMigrationTest {
     @TempDir lateinit var root: File
 
     @Test fun `cleanup is recoverable preserves background and cast and runs once`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val pixel = File(root, "pixel.png").apply { writeBytes(byteArrayOf(1)) }
         BundledDemoInstaller.curatedPackIds.forEach {
             assertTrue(
@@ -32,7 +32,7 @@ class CuratedLibraryMigrationTest {
                     ),
                     mapOf("frame_000.png" to pixel),
                     nowEpochMs = 0,
-                ) is ActorStoreResult.Value,
+                ) is StoreResult.Value,
             )
         }
         CuratedLibraryMigration.castIds.forEach { files.actorDirectory(it).mkdirs() }
@@ -49,9 +49,9 @@ class CuratedLibraryMigrationTest {
                 "Scene",
                 image,
                 nowEpochMs = 0,
-            ) is ActorStoreResult.Value,
+            ) is StoreResult.Value,
         )
-        assertEquals(ActorStoreResult.Value(3), CuratedLibraryMigration(files).migrate())
+        assertEquals(StoreResult.Value(3), CuratedLibraryMigration(files).migrate())
         assertFalse(trial.exists())
         assertEquals(
             "user trial pixels",
@@ -61,14 +61,14 @@ class CuratedLibraryMigrationTest {
         assertTrue(files.projectDirectory(BundledDemoInstaller.TAVI_PRESENTATION_ID).exists())
         assertTrue(CuratedLibraryMigration.castIds.all { files.actorDirectory(it).exists() })
         val future = files.projectDirectory("future-project").apply { mkdirs() }
-        assertEquals(ActorStoreResult.Value(0), CuratedLibraryMigration(files).migrate())
+        assertEquals(StoreResult.Value(0), CuratedLibraryMigration(files).migrate())
         assertTrue(future.exists())
     }
 
     @Test fun `missing replacements do not remove trials`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val trial = files.projectDirectory("trial-project").apply { mkdirs() }
-        assertTrue(CuratedLibraryMigration(files).migrate() is ActorStoreResult.Failure)
+        assertTrue(CuratedLibraryMigration(files).migrate() is StoreResult.Failure)
         assertTrue(trial.exists())
     }
 }

@@ -1,11 +1,11 @@
 package com.donnclab.kinetiframe.library.bundled
 
 import com.donnclab.kinetiframe.actors.data.ActorBundleRepository
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.DurableFile
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import java.io.File
 import java.io.InputStream
 import java.nio.file.Files
@@ -13,7 +13,10 @@ import java.nio.file.Files
 /** Reusable structured samples come from bundled originals, never from edited user projects.
  * Receipt policy preserves explicit deletion and existing Library content. Call on IO.
  */
-class BundledActorSampleInstaller(private val files: ActorFileStore, private val openAsset: (String) -> InputStream) {
+class BundledActorSampleInstaller(
+    private val files: DocumentFileStore,
+    private val openAsset: (String) -> InputStream,
+) {
     fun install(): BundledDemoInstaller.Result = synchronized(lock) {
         val receipts = File(files.projectsRoot().parentFile, "demo-receipts/actor-samples-v2").apply { mkdirs() }
         val priorReceipts = File(files.projectsRoot().parentFile, "demo-receipts/actor-samples-v1")
@@ -23,7 +26,7 @@ class BundledActorSampleInstaller(private val files: ActorFileStore, private val
         val errors = mutableListOf<String>()
         var installed = 0
         try {
-            val originalFiles = ActorFileStore(File(workspace, "source"))
+            val originalFiles = DocumentFileStore(File(workspace, "source"))
             val archive = File(workspace, "original.zip")
             openAsset(BundledActorSourceReader.ASSET_PATH).use { input ->
                 DurableFile.write(archive) { output -> input.copyTo(output) }
@@ -72,9 +75,9 @@ class BundledActorSampleInstaller(private val files: ActorFileStore, private val
         BundledDemoInstaller.Result(installed, errors)
     }
 
-    private fun <T> requireValue(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> error(result.message)
+    private fun <T> requireValue(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> error(result.message)
     }
     private data class Entry(val sourceId: String, val name: String) {
         val itemId = "starter-$sourceId"

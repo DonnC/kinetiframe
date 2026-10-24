@@ -2,7 +2,6 @@ package com.donnclab.kinetiframe.actors.ui
 
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.data.validate
@@ -18,6 +17,7 @@ import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
@@ -91,16 +91,16 @@ class ActorStudioDocumentViewModel(
         updateState { it.copy(loading = true, error = null) }
         viewModelScope.launch {
             when (val result = withContext(ioDispatcher) { repository.load(actorId) }) {
-                is ActorStoreResult.Value -> {
+                is StoreResult.Value -> {
                     val performanceResult =
                         withContext(ioDispatcher) {
                             performanceId?.let { id -> projectId?.let { project -> performances?.load(project, id) } }
                         }
-                    if (performanceResult is ActorStoreResult.Failure) {
+                    if (performanceResult is StoreResult.Failure) {
                         updateState { it.copy(loading = false, error = performanceResult.message) }
                         return@launch
                     }
-                    val performance = (performanceResult as? ActorStoreResult.Value)?.value
+                    val performance = (performanceResult as? StoreResult.Value)?.value
                     val revision = if (performance ==
                         null
                     ) {
@@ -112,9 +112,9 @@ class ActorStudioDocumentViewModel(
                                     repository.loadRevision(actorId, performance.actorRevisionId)
                                 }
                         ) {
-                            is ActorStoreResult.Value -> pinned.value
+                            is StoreResult.Value -> pinned.value
 
-                            is ActorStoreResult.Failure -> {
+                            is StoreResult.Failure -> {
                                 updateState { it.copy(loading = false, error = pinned.message) }
                                 return@launch
                             }
@@ -141,7 +141,7 @@ class ActorStudioDocumentViewModel(
                     }
                 }
 
-                is ActorStoreResult.Failure -> updateState { it.copy(loading = false, error = result.message) }
+                is StoreResult.Failure -> updateState { it.copy(loading = false, error = result.message) }
             }
         }
     }
@@ -173,7 +173,7 @@ class ActorStudioDocumentViewModel(
                     }
                 }
             ) {
-                is ActorStoreResult.Value -> updateState {
+                is StoreResult.Value -> updateState {
                     it.copy(
                         loading = false,
                         manifest = result.value.first,
@@ -182,7 +182,7 @@ class ActorStudioDocumentViewModel(
                     )
                 }
 
-                is ActorStoreResult.Failure -> {
+                is StoreResult.Failure -> {
                     updateState { it.copy(loading = false) }
                     sendEffect(ActorStudioDocumentEffect.ShowError(result.message))
                 }
@@ -201,7 +201,7 @@ class ActorStudioDocumentViewModel(
                         repository.saveRevision(actorId, graph, revisionId, now(), artwork, view)
                     }
             ) {
-                is ActorStoreResult.Value -> {
+                is StoreResult.Value -> {
                     updateState {
                         it.copy(
                             isSaving = false,
@@ -213,7 +213,7 @@ class ActorStudioDocumentViewModel(
                     if (exitAfterSaving) sendEffect(ActorStudioDocumentEffect.Exit)
                 }
 
-                is ActorStoreResult.Failure -> {
+                is StoreResult.Failure -> {
                     updateState { it.copy(isSaving = false) }
                     sendEffect(ActorStudioDocumentEffect.ShowError(result.message))
                 }
@@ -299,12 +299,12 @@ class ActorStudioDocumentViewModel(
                     }
                 }
             ) {
-                is ActorStoreResult.Value -> {
+                is StoreResult.Value -> {
                     updateState { it.copy(isSaving = false, performance = result.value, isDirty = false) }
                     sendEffect(ActorStudioDocumentEffect.PerformanceSaved(result.value))
                 }
 
-                is ActorStoreResult.Failure -> {
+                is StoreResult.Failure -> {
                     updateState { it.copy(isSaving = false) }
                     sendEffect(ActorStudioDocumentEffect.ShowError(result.message))
                 }
@@ -329,8 +329,8 @@ class ActorStudioDocumentViewModel(
                     }
                 }
             ) {
-                is ActorStoreResult.Value -> updateState { it.copy(performance = result.value, isDirty = false) }
-                is ActorStoreResult.Failure -> sendEffect(ActorStudioDocumentEffect.ShowError(result.message))
+                is StoreResult.Value -> updateState { it.copy(performance = result.value, isDirty = false) }
+                is StoreResult.Failure -> sendEffect(ActorStudioDocumentEffect.ShowError(result.message))
             }
         }
     }
@@ -345,18 +345,18 @@ class ActorStudioDocumentViewModel(
                         requireNotNull(performances).archive(destination, existing.performanceId)
                     }
             ) {
-                is ActorStoreResult.Value -> sendEffect(ActorStudioDocumentEffect.Exit)
-                is ActorStoreResult.Failure -> sendEffect(ActorStudioDocumentEffect.ShowError(result.message))
+                is StoreResult.Value -> sendEffect(ActorStudioDocumentEffect.Exit)
+                is StoreResult.Failure -> sendEffect(ActorStudioDocumentEffect.ShowError(result.message))
             }
         }
     }
 
     /** Validation failures are user-visible effects; coroutine cancellation still propagates. */
-    private inline fun <T> storeOperation(block: () -> ActorStoreResult<T>): ActorStoreResult<T> = try {
+    private inline fun <T> storeOperation(block: () -> StoreResult<T>): StoreResult<T> = try {
         block()
     } catch (cancelled: CancellationException) {
         throw cancelled
     } catch (error: Exception) {
-        ActorStoreResult.Failure(error.message ?: "Could not save performance", error)
+        StoreResult.Failure(error.message ?: "Could not save performance", error)
     }
 }

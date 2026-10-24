@@ -27,7 +27,7 @@ fun LibraryRoute(
     val context = androidx.compose.ui.platform.LocalContext.current
     val files =
         remember(context) {
-            com.donnclab.kinetiframe.actors.data.ActorFileStore(java.io.File(context.filesDir, "actor-studio"))
+            com.donnclab.kinetiframe.data.storage.DocumentFileStore(java.io.File(context.filesDir, "actor-studio"))
         }
     val repository = remember(files) {
         com.donnclab.kinetiframe.library.data.LibraryRepository(

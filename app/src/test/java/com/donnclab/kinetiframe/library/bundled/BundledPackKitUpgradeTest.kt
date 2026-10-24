@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.library.bundled
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArchiver
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -15,7 +15,7 @@ class BundledPackKitUpgradeTest {
 
     @Test fun `only unchanged old kits are archived after replacements exist`() {
         val assets = File("src/main/assets").takeIf(File::isDirectory) ?: File("app/src/main/assets")
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val library = LibraryRepository(files)
         listOf("tavi", "mira").forEach { name ->
             assertTrue(
@@ -25,7 +25,7 @@ class BundledPackKitUpgradeTest {
                     File(assets, "loose-signal/curated/v3/ls-$name-cutouts-v5.kpack"),
                     "ls-$name-cutouts-v5",
                     nowEpochMs = 1,
-                ) is ActorStoreResult.Value,
+                ) is StoreResult.Value,
             )
             assertTrue(
                 PackArchiver.import(
@@ -34,7 +34,7 @@ class BundledPackKitUpgradeTest {
                     File(assets, "loose-signal/curated/v4/ls-$name-cutouts-v6.kpack"),
                     "ls-$name-cutouts-v6",
                     nowEpochMs = 2,
-                ) is ActorStoreResult.Value,
+                ) is StoreResult.Value,
             )
         }
         // Simulate changed pixels. The upgrader must not confuse an edited old kit with shipped art.

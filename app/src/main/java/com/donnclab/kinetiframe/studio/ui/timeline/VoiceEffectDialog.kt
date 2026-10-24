@@ -75,7 +75,7 @@ internal fun VoiceEffectDialog(
                                 "Audio source missing"
                             }
                         val id = "voice-${java.util.UUID.randomUUID()}"
-                        val directory = com.donnclab.kinetiframe.actors.data.ActorFileStore(
+                        val directory = com.donnclab.kinetiframe.data.storage.DocumentFileStore(
                             File(context.filesDir, "actor-studio"),
                         ).projectDirectory(project.id)
                         val output = File(directory, "project-assets/audio/$id.wav")

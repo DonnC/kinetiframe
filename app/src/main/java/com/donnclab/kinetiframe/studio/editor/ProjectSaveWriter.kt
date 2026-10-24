@@ -4,7 +4,7 @@ package com.donnclab.kinetiframe.studio.editor
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.project.data.ProjectFrameDraft
 import com.donnclab.kinetiframe.project.data.ProjectManifest
 import com.donnclab.kinetiframe.project.data.ProjectSaveDocument
@@ -39,13 +39,13 @@ internal class ProjectSaveWriter(
         document: ProjectSaveDocument,
         draftFrames: File?,
         time: Long,
-    ): ActorStoreResult<ProjectManifest> = withContext(ioDispatcher) {
+    ): StoreResult<ProjectManifest> = withContext(ioDispatcher) {
         val projects = repositories.projects
         // Re-read the manifest first so a save never clobbers the project's own
         // display name, which the document itself does not carry.
         val existingManifest = when (val loaded = projects.load(projectId)) {
-            is ActorStoreResult.Value -> loaded.value.first
-            is ActorStoreResult.Failure -> null
+            is StoreResult.Value -> loaded.value.first
+            is StoreResult.Failure -> null
         }
         val manifest = (
             existingManifest ?: ProjectManifest(
@@ -70,10 +70,10 @@ internal class ProjectSaveWriter(
                 )
             }
         } catch (failure: Exception) {
-            return@withContext ActorStoreResult.Failure(failure.message ?: "Could not save frame pixels", failure)
+            return@withContext StoreResult.Failure(failure.message ?: "Could not save frame pixels", failure)
         }
         val saveResult = projects.save(manifest, document)
-        if (saveResult is ActorStoreResult.Value) {
+        if (saveResult is StoreResult.Value) {
             // The thumbnail is regenerated on every save so the gallery always shows the
             // current scene. It costs one composited frame.
             val thumbnailPath = runCatching { writeThumbnail(projectId, document) }.getOrNull()

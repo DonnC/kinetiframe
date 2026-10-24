@@ -1,10 +1,10 @@
 package com.donnclab.kinetiframe.project.ui
 
 import androidx.lifecycle.viewModelScope
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.project.data.ProjectManifest
 import com.donnclab.kinetiframe.project.data.ProjectRepository
 import com.donnclab.kinetiframe.project.data.ProjectSaveDocument
@@ -65,12 +65,12 @@ class ProjectManagerViewModel(
                             totalFrames = document.totalFrames,
                         )
                     when (val saved = repository.save(manifest, document)) {
-                        is ActorStoreResult.Value -> {
+                        is StoreResult.Value -> {
                             indexInRoom(saved.value)
                             saved.value
                         }
 
-                        is ActorStoreResult.Failure -> throw IllegalStateException(saved.message, saved.cause)
+                        is StoreResult.Failure -> throw IllegalStateException(saved.message, saved.cause)
                     }
                 }
             }
@@ -90,12 +90,12 @@ class ProjectManagerViewModel(
                 val result = withContext(ioDispatcher) {
                     requireNameAvailable(name, projectId)
                     repository.rename(projectId, name, now()).also {
-                        if (it is ActorStoreResult.Value) indexInRoom(it.value)
+                        if (it is StoreResult.Value) indexInRoom(it.value)
                     }
                 }
             ) {
-                is ActorStoreResult.Value -> reload()
-                is ActorStoreResult.Failure -> sendEffect(ProjectManagerEffect.ShowError(result.message))
+                is StoreResult.Value -> reload()
+                is StoreResult.Failure -> sendEffect(ProjectManagerEffect.ShowError(result.message))
             }
         }
     }
@@ -105,12 +105,12 @@ class ProjectManagerViewModel(
             when (
                 val result = withContext(ioDispatcher) {
                     repository.delete(projectId).also {
-                        if (it is ActorStoreResult.Value) runCatching { projectDao?.deleteById(projectId) }
+                        if (it is StoreResult.Value) runCatching { projectDao?.deleteById(projectId) }
                     }
                 }
             ) {
-                is ActorStoreResult.Value -> reload()
-                is ActorStoreResult.Failure -> sendEffect(ProjectManagerEffect.ShowError(result.message))
+                is StoreResult.Value -> reload()
+                is StoreResult.Failure -> sendEffect(ProjectManagerEffect.ShowError(result.message))
             }
         }
     }
@@ -121,8 +121,8 @@ class ProjectManagerViewModel(
 
     private fun nameIsAvailable(name: String, excludingProjectId: String?): Boolean =
         when (val result = repository.isDisplayNameAvailable(name, excludingProjectId)) {
-            is ActorStoreResult.Value -> result.value
-            is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+            is StoreResult.Value -> result.value
+            is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
         }
 
     /**
@@ -133,7 +133,7 @@ class ProjectManagerViewModel(
         updateState { it.copy(loading = true, error = null) }
         viewModelScope.launch {
             when (val result = withContext(ioDispatcher) { repository.list() }) {
-                is ActorStoreResult.Value -> {
+                is StoreResult.Value -> {
                     updateState { it.copy(loading = false, projects = result.value) }
                     result.value.forEach { manifest -> indexInRoom(manifest) }
                     withContext(ioDispatcher) {
@@ -149,7 +149,7 @@ class ProjectManagerViewModel(
                     }
                 }
 
-                is ActorStoreResult.Failure -> updateState { it.copy(loading = false, error = result.message) }
+                is StoreResult.Failure -> updateState { it.copy(loading = false, error = result.message) }
             }
         }
     }

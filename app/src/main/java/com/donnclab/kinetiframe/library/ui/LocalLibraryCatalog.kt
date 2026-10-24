@@ -10,9 +10,7 @@ import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ViewModule
 import androidx.compose.ui.graphics.Color
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.LibraryScope
@@ -24,6 +22,8 @@ import com.donnclab.kinetiframe.common.ui.AudioTrackSummary
 import com.donnclab.kinetiframe.common.ui.CardThumbnail
 import com.donnclab.kinetiframe.common.ui.PreviewKind
 import com.donnclab.kinetiframe.common.ui.StampAsset
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryOrganization
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.ui.packs.PackBrowserIndex
@@ -32,7 +32,7 @@ import java.io.File
 
 /** IO-only projection. Working projects/actors and captured reusable items are separate stores.
  * Scope-qualified IDs prevent collisions between project vaults; no bitmap decoding here. */
-class LocalLibraryCatalog(private val files: ActorFileStore, private val library: LibraryRepository) {
+class LocalLibraryCatalog(private val files: DocumentFileStore, private val library: LibraryRepository) {
     data class Snapshot(
         val projects: List<AssetSummary>,
         val actors: List<AssetSummary>,
@@ -112,7 +112,7 @@ class LocalLibraryCatalog(private val files: ActorFileStore, private val library
                         item.libraryItemId,
                         item.scope,
                         item.sourceProjectId,
-                    ) as? ActorStoreResult.Value
+                    ) as? StoreResult.Value
                     )?.value?.second
             } else {
                 null
@@ -209,8 +209,8 @@ class LocalLibraryCatalog(private val files: ActorFileStore, private val library
         return AssetSummary(id, name, info, thumbnail, details = details)
     }
 
-    private fun <T> value(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+    private fun <T> value(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
     }
 }

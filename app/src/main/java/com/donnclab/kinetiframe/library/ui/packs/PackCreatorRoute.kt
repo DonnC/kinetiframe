@@ -21,14 +21,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.LibraryScope
 import com.donnclab.kinetiframe.common.ui.FullScreenDialog
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArchiver
 import com.donnclab.kinetiframe.library.data.PackItemEntry
@@ -83,7 +83,7 @@ fun PackCreatorRoute(
     onHome: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
-    val files = remember(storageRoot) { ActorFileStore(storageRoot) }
+    val files = remember(storageRoot) { DocumentFileStore(storageRoot) }
     val projectRepository = remember(files) { ProjectRepository(files) }
     val libraryRepository = remember(files, context) {
         LibraryRepository(
@@ -139,8 +139,8 @@ fun PackCreatorRoute(
                 isPackDraft = true,
             )
             when (val saved = withContext(Dispatchers.IO) { projectRepository.save(manifest, document) }) {
-                is ActorStoreResult.Value -> draftId = id
-                is ActorStoreResult.Failure -> draftError = saved.message
+                is StoreResult.Value -> draftId = id
+                is StoreResult.Failure -> draftError = saved.message
             }
         }
     }
@@ -163,8 +163,8 @@ fun PackCreatorRoute(
                             sourceProjectId,
                         )
                     ) {
-                        is ActorStoreResult.Value -> loaded.value
-                        is ActorStoreResult.Failure -> throw IllegalStateException(loaded.message, loaded.cause)
+                        is StoreResult.Value -> loaded.value
+                        is StoreResult.Failure -> throw IllegalStateException(loaded.message, loaded.cause)
                     }
                     val sortedItems = pack.items.sortedBy { it.index }
                     val totalFrames = sortedItems.size.coerceAtLeast(1)
@@ -188,8 +188,8 @@ fun PackCreatorRoute(
                         isPackDraft = true,
                     )
                     when (val saved = projectRepository.save(draftManifest, document)) {
-                        is ActorStoreResult.Value -> Unit
-                        is ActorStoreResult.Failure -> throw IllegalStateException(saved.message, saved.cause)
+                        is StoreResult.Value -> Unit
+                        is StoreResult.Failure -> throw IllegalStateException(saved.message, saved.cause)
                     }
                     val cacheManager =
                         FrameCacheManager(cacheDir = File(files.projectDirectory(id), "frames"), scope = ioScope)
@@ -298,8 +298,8 @@ fun PackCreatorRoute(
                                 nowEpochMs = nowEpochMs,
                             )
                         ) {
-                            is ActorStoreResult.Value -> Unit
-                            is ActorStoreResult.Failure -> throw IllegalStateException(exported.message, exported.cause)
+                            is StoreResult.Value -> Unit
+                            is StoreResult.Failure -> throw IllegalStateException(exported.message, exported.cause)
                         }
                         projectRepository.delete(id)
                     } finally {

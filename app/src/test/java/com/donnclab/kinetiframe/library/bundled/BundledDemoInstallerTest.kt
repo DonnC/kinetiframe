@@ -1,12 +1,12 @@
 package com.donnclab.kinetiframe.library.bundled
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.domain.PerformanceCompatibility
 import com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.project.data.KframeArchiver
 import com.donnclab.kinetiframe.project.data.ProjectManifest
@@ -25,7 +25,7 @@ import java.util.zip.ZipOutputStream
 class BundledDemoInstallerTest {
     @TempDir lateinit var root: File
     private val assets = File("src/main/assets").takeIf(File::isDirectory) ?: File("app/src/main/assets")
-    private fun installer(files: ActorFileStore) = BundledDemoInstaller(files, {
+    private fun installer(files: DocumentFileStore) = BundledDemoInstaller(files, {
         com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures.file(assets, it).inputStream()
     })
 
@@ -33,7 +33,7 @@ class BundledDemoInstallerTest {
     // receipt case wastes disk/CI time; the full payload is exercised separately above.
     private fun policyAssets(): File {
         val fixture = File(root, "fixtures").apply { mkdirs() }
-        val source = ActorFileStore(File(root, "fixture-source"))
+        val source = DocumentFileStore(File(root, "fixture-source"))
         BundledDemoInstaller.projectIds.forEach { id ->
             val layer = Layer(name = "Main", id = "main")
             val project = ProjectDocument(id = id, stage = StageDimensions(16, 16), fps = 24, layers = listOf(layer))
@@ -73,13 +73,13 @@ class BundledDemoInstallerTest {
         }
         return fixture
     }
-    private fun <T> value(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> throw AssertionError(result.message, result.cause)
+    private fun <T> value(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> throw AssertionError(result.message, result.cause)
     }
 
     @Test fun `current catalog installs without restoring retired projects`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val result = installer(files).install()
         assertEquals(emptyList<String>(), result.errors)
         assertEquals(BundledDemoInstaller.projectIds.size + BundledDemoInstaller.packIds.size, result.installed)
@@ -100,7 +100,7 @@ class BundledDemoInstallerTest {
     }
 
     @Test fun `edited existing projects are untouched and deleted installed demos stay deleted`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val fixture = policyAssets()
         val id = BundledDemoInstaller.projectIds.first()
         val occupied = files.projectDirectory(id).apply { mkdirs() }
@@ -115,7 +115,7 @@ class BundledDemoInstallerTest {
         files.libraryDirectory(deletedId).deleteRecursively()
         assertEquals(
             0,
-            BundledDemoInstaller(ActorFileStore(root), {
+            BundledDemoInstaller(DocumentFileStore(root), {
                 File(fixture, File(it).name).inputStream()
             }).install().installed,
         )
@@ -123,7 +123,7 @@ class BundledDemoInstallerTest {
     }
 
     @Test fun `missing asset can be retried without replacing successfully installed entries`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val fixture = policyAssets()
         val firstId = BundledDemoInstaller.projectIds.first()
         val broken = BundledDemoInstaller(files, { path ->

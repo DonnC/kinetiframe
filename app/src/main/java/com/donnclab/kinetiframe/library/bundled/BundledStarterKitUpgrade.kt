@@ -1,19 +1,22 @@
 package com.donnclab.kinetiframe.library.bundled
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorManifest
-import com.donnclab.kinetiframe.actors.data.ActorPathPolicy
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.validate
+import com.donnclab.kinetiframe.data.storage.ContainedPaths
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.DurableFile
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.json.Json
 import java.io.File
 
 /** Append repaired snapshots only to an untouched bundled cast. Never rewrite a pinned revision.
  * Asset publication precedes the catalog pointer, making retries safe after an interrupted copy. */
-internal class BundledStarterKitUpgrade(private val source: ActorFileStore, private val destination: ActorFileStore) {
+internal class BundledStarterKitUpgrade(
+    private val source: DocumentFileStore,
+    private val destination: DocumentFileStore,
+) {
     private val json = Json { ignoreUnknownKeys = false }
     fun upgradeActor(id: String) {
         val target = destination.actorDirectory(id)
@@ -29,8 +32,8 @@ internal class BundledStarterKitUpgrade(private val source: ActorFileStore, priv
         val revisions = repaired.authoredViews().values.map { value(original.loadRevision(id, it)) }
         revisions.forEach { revision ->
             revision.artworkAssetPaths.values.forEach { relative ->
-                val from = ActorPathPolicy.resolveWithin(source.actorDirectory(id), relative, "Starter artwork")
-                val to = ActorPathPolicy.resolveWithin(target, relative, "Starter artwork")
+                val from = ContainedPaths.resolveWithin(source.actorDirectory(id), relative, "Starter artwork")
+                val to = ContainedPaths.resolveWithin(target, relative, "Starter artwork")
                 // New versioned locations only. An existing different file is not safe to overwrite.
                 if (to.exists()) {
                     require(from.readBytes().contentEquals(to.readBytes())) { "Conflicting starter artwork" }
@@ -92,8 +95,8 @@ internal class BundledStarterKitUpgrade(private val source: ActorFileStore, priv
     }
     private fun isOriginal(actor: ActorManifest) = actor.updatedAtEpochMs == actor.createdAtEpochMs &&
         actor.authoredViews().all { (view, revision) -> revision == "${actor.actorId}-${view.name.lowercase()}" }
-    private fun <T> value(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> error(result.message)
+    private fun <T> value(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> error(result.message)
     }
 }

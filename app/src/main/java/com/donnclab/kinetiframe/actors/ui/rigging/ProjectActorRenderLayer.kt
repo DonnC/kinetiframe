@@ -22,11 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.studio.render.completedPreviewFrames
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.conflate
@@ -48,7 +48,7 @@ fun ProjectActorRenderLayer(
     canvasMatrix: FloatArray,
     actors: ActorRepository,
     performances: PerformanceRepository,
-    files: ActorFileStore,
+    files: DocumentFileStore,
     modifier: Modifier = Modifier,
     onGeometryResolved: (com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry) -> Unit = {},
     selectedIds: Set<String> = emptySet(),

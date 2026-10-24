@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.library.data
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.validate
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -14,7 +14,7 @@ class PaletteRepositoryTest {
     @TempDir lateinit var root: File
 
     @Test fun `eight palettes preserve all 98 exact named swatches across restart`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val repository = PaletteRepository(files)
         repository.installStarters()
         assertEquals(8, repository.list().size)
@@ -23,7 +23,7 @@ class PaletteRepositoryTest {
             BundledPalettes.entries.associateBy {
                 it.id
             },
-            PaletteRepository(ActorFileStore(root)).list().associateBy { it.id },
+            PaletteRepository(DocumentFileStore(root)).list().associateBy { it.id },
         )
         repository.installStarters()
         assertEquals(8, repository.list().size)
@@ -31,7 +31,7 @@ class PaletteRepositoryTest {
     }
 
     @Test fun `deleted starter is not resurrected and user-owned ID is untouched`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val palette = BundledPalettes.entries.first().copy(
             name = "My colours",
             swatches = listOf(ColorSwatch("Transparent", 0x00112233)),
@@ -40,8 +40,8 @@ class PaletteRepositoryTest {
         repository.save(palette)
         repository.installStarters()
         assertEquals(palette, repository.list().single { it.id == palette.id })
-        assertTrue(LibraryRepository(files).delete(palette.id) is ActorStoreResult.Value)
-        PaletteRepository(ActorFileStore(root)).installStarters()
+        assertTrue(LibraryRepository(files).delete(palette.id) is StoreResult.Value)
+        PaletteRepository(DocumentFileStore(root)).installStarters()
         assertEquals(7, repository.list().size)
     }
 
@@ -61,14 +61,14 @@ class PaletteRepositoryTest {
     }
 
     @Test fun `library copy is independent of original palette payload`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val repository = PaletteRepository(files)
         repository.installStarters()
         val library = LibraryRepository(files)
-        val item = (library.list() as ActorStoreResult.Value).value.first()
+        val item = (library.list() as StoreResult.Value).value.first()
         val destination = File(root, "copied-palette.json")
-        assertTrue(library.copyAssetTo(item.libraryItemId, destination) is ActorStoreResult.Value)
-        assertTrue(library.delete(item.libraryItemId) is ActorStoreResult.Value)
+        assertTrue(library.copyAssetTo(item.libraryItemId, destination) is StoreResult.Value)
+        assertTrue(library.delete(item.libraryItemId) is StoreResult.Value)
         assertTrue(destination.isFile && destination.readText().contains("swatches"))
     }
 }

@@ -7,11 +7,11 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.AudioTrackSettings
 import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.studio.AnimationState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
@@ -27,7 +27,7 @@ class TrackClipContextMenuTest {
     private val clip = AudioClipPlacement("voice", "asset", 0, "Voice", 0, 8)
 
     private fun show(locked: Boolean = false, playhead: Int = 3, onIntent: (StudioIntent) -> Unit = {}) {
-        val repository = PerformanceRepository(ActorFileStore(temporary.newFolder()))
+        val repository = PerformanceRepository(DocumentFileStore(temporary.newFolder()))
         val state = StudioState(
             project = ProjectDocument(
                 audioClips = mapOf(clip.clipId to clip),

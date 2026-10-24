@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.library.bundled
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.validate
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackManifest
 import kotlinx.serialization.json.Json
@@ -14,7 +14,7 @@ import java.util.zip.ZipInputStream
 /** Archive only byte-identical shipped v5 kit payloads once the replacement is installed.
  * User-edited packs are not guessed at or deleted. No projects or actor revisions are touched. */
 internal class BundledPackKitUpgrade(
-    private val files: ActorFileStore,
+    private val files: DocumentFileStore,
     private val openAsset: (String) -> InputStream,
 ) {
     fun upgrade(): List<String> = listOf("tavi", "mira", "kuda").mapNotNull { character ->
@@ -23,13 +23,13 @@ internal class BundledPackKitUpgrade(
         if (!old.isDirectory || !files.libraryDirectory("ls-$character-cutouts-v6").isDirectory) return@mapNotNull null
         if (LibraryRepository(
                 files,
-            ).loadPack("ls-$character-cutouts-v6") !is ActorStoreResult.Value
+            ).loadPack("ls-$character-cutouts-v6") !is StoreResult.Value
         ) {
             return@mapNotNull null
         }
         runCatching {
             val loaded = LibraryRepository(files).loadPack(oldId)
-            val manifest = (loaded as? ActorStoreResult.Value)?.value?.second ?: return@runCatching
+            val manifest = (loaded as? StoreResult.Value)?.value?.second ?: return@runCatching
             val expected = mutableMapOf<String, ByteArray>()
             var sourceManifest: PackManifest? = null
             ZipInputStream(openAsset("loose-signal/curated/v3/$oldId.kpack")).use { zip ->

@@ -1,9 +1,7 @@
 package com.donnclab.kinetiframe.studio.render
 
 import android.graphics.BitmapFactory
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFollowCamera
@@ -13,6 +11,8 @@ import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.bundled.BundledActorSourceReader
 import com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures
 import com.donnclab.kinetiframe.project.data.KframeArchiver
@@ -33,15 +33,15 @@ import java.nio.file.Files
 @Config(sdk = [34], manifest = Config.NONE)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class ActorPlacementPipelineTest {
-    private fun <T> value(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> throw AssertionError(result.message, result.cause)
+    private fun <T> value(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> throw AssertionError(result.message, result.cause)
     }
 
     @Test fun `all Mira views reuse render fit and remain visible after repository restart`() {
         val root = Files.createTempDirectory("actor-placement-test").toFile()
         try {
-            val files = ActorFileStore(root)
+            val files = DocumentFileStore(root)
             val assets = File("src/main/assets").takeIf { it.isDirectory } ?: File("app/src/main/assets")
             BundledActorSourceReader.read(
                 DemoAssetFixtures.file(assets, BundledActorSourceReader.ASSET_PATH),
@@ -84,8 +84,8 @@ class ActorPlacementPipelineTest {
                 assertNotEquals(Transform(), prepared.transform)
                 val renderer =
                     ActorFrameRenderer(
-                        ActorRepository(ActorFileStore(root)),
-                        PerformanceRepository(ActorFileStore(root)),
+                        ActorRepository(DocumentFileStore(root)),
+                        PerformanceRepository(DocumentFileStore(root)),
                         files,
                     )
                 try {

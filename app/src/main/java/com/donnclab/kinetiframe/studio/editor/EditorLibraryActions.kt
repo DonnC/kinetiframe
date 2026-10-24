@@ -4,7 +4,6 @@ package com.donnclab.kinetiframe.studio.editor
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.LibraryScope
@@ -12,6 +11,7 @@ import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.ui.packs.PackTrayItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -170,8 +170,8 @@ internal class EditorLibraryActions(
             )
         }
         return when (result) {
-            is ActorStoreResult.Value -> "Added ${placement.label} to your library"
-            is ActorStoreResult.Failure -> result.message
+            is StoreResult.Value -> "Added ${placement.label} to your library"
+            is StoreResult.Failure -> result.message
         }
     }
 
@@ -182,7 +182,7 @@ internal class EditorLibraryActions(
         projectId: String,
         fallback: String,
         source: () -> File,
-    ): ActorStoreResult<LibraryItemManifest> = withContext(ioDispatcher) {
+    ): StoreResult<LibraryItemManifest> = withContext(ioDispatcher) {
         runCatching {
             library.exportAsset(
                 kind = kind,
@@ -193,7 +193,7 @@ internal class EditorLibraryActions(
                 projectId = projectId,
                 nowEpochMs = System.currentTimeMillis(),
             )
-        }.getOrElse { ActorStoreResult.Failure(it.message ?: fallback, it) }
+        }.getOrElse { StoreResult.Failure(it.message ?: fallback, it) }
     }
 
     /** Copies a raw-asset library item's payload to [destination]. */
@@ -209,12 +209,12 @@ internal class EditorLibraryActions(
         BitmapFactory.decodeFile(file.absolutePath) ?: throw IOException(failure)
 }
 
-private fun <T> ActorStoreResult<T>.orThrow(): T = when (this) {
-    is ActorStoreResult.Value -> value
-    is ActorStoreResult.Failure -> throw IllegalStateException(message, cause)
+private fun <T> StoreResult<T>.orThrow(): T = when (this) {
+    is StoreResult.Value -> value
+    is StoreResult.Failure -> throw IllegalStateException(message, cause)
 }
 
-private fun ActorStoreResult<*>.message(success: String): String = when (this) {
-    is ActorStoreResult.Value -> success
-    is ActorStoreResult.Failure -> message
+private fun StoreResult<*>.message(success: String): String = when (this) {
+    is StoreResult.Value -> success
+    is StoreResult.Failure -> message
 }

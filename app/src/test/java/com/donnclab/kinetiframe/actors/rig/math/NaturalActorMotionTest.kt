@@ -1,10 +1,8 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorManifest
 import com.donnclab.kinetiframe.actors.data.ActorRevision
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.data.validate
@@ -20,6 +18,8 @@ import com.donnclab.kinetiframe.core.actor.motion.JointContact
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.engine.rigging.math.CompiledMotionCurve
 import com.donnclab.kinetiframe.studio.actorDefinition
 import kotlinx.serialization.encodeToString
@@ -122,12 +122,12 @@ class NaturalActorMotionTest {
             )
         val document = document(keys).validate()
         PerformanceCompatibility.validate(document, revision)
-        val files = ActorFileStore(directory)
-        assertTrue(PerformanceRepository(files).save(document) is ActorStoreResult.Value)
+        val files = DocumentFileStore(directory)
+        assertTrue(PerformanceRepository(files).save(document) is StoreResult.Value)
         val loaded = (
             PerformanceRepository(
-                ActorFileStore(directory),
-            ).load("project-test", "performance-test") as ActorStoreResult.Value
+                DocumentFileStore(directory),
+            ).load("project-test", "performance-test") as StoreResult.Value
             ).value
         assertEquals(document, loaded)
         val studio = actorStudioInitialState(manifest, revision, loaded)

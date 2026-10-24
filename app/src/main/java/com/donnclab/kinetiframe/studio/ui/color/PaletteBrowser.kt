@@ -28,7 +28,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.data.BundledPalettes
 import com.donnclab.kinetiframe.library.data.PaletteRepository
@@ -38,7 +38,7 @@ import java.io.File
 @Composable
 fun PaletteBrowser(color: Color, onColorChanged: (Color) -> Unit) {
     val context = LocalContext.current
-    val repository = remember(context) { PaletteRepository(ActorFileStore(File(context.filesDir, "actor-studio"))) }
+    val repository = remember(context) { PaletteRepository(DocumentFileStore(File(context.filesDir, "actor-studio"))) }
     val model: PaletteViewModel = viewModel(
         key = "palette-browser",
         factory = object : ViewModelProvider.Factory {

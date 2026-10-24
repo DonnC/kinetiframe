@@ -1,10 +1,10 @@
 package com.donnclab.kinetiframe.library.ui.packs
 
 import androidx.lifecycle.viewModelScope
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.LibraryScope
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackItemEntry
 import com.donnclab.kinetiframe.ui.BaseViewModel
@@ -93,7 +93,7 @@ class PacksTabViewModel(
         reloadJob = viewModelScope.launch {
             try {
                 when (val result = withContext(ioDispatcher) { libraryRepository.list(scope, projectId) }) {
-                    is ActorStoreResult.Value -> {
+                    is StoreResult.Value -> {
                         val packs = result.value.filter { it.kind == LibraryItemKind.PACK }
                         val counts = mutableMapOf<String, Int>()
                         val previews = mutableMapOf<String, List<PackItemEntry>>()
@@ -108,7 +108,7 @@ class PacksTabViewModel(
                                         pack.sourceProjectId,
                                     )
                                 ) {
-                                    is ActorStoreResult.Value -> {
+                                    is StoreResult.Value -> {
                                         counts[pack.libraryItemId] = loaded.value.second.totalItems
                                         previews[pack.libraryItemId] =
                                             loaded.value.second.items.sortedBy { it.index }.take(4)
@@ -116,7 +116,7 @@ class PacksTabViewModel(
                                             loaded.value.second.items.map { it.name + " " + it.desc }
                                     }
 
-                                    is ActorStoreResult.Failure -> Unit
+                                    is StoreResult.Failure -> Unit
                                 }
                             }
                         }
@@ -139,7 +139,7 @@ class PacksTabViewModel(
                         }
                     }
 
-                    is ActorStoreResult.Failure -> updateState { it.copy(loading = false, error = result.message) }
+                    is StoreResult.Failure -> updateState { it.copy(loading = false, error = result.message) }
                 }
             } catch (
                 cancelled: kotlinx.coroutines.CancellationException,
@@ -164,8 +164,8 @@ class PacksTabViewModel(
                     libraryRepository.delete(libraryItemId, scope, projectId)
                 }
             ) {
-                is ActorStoreResult.Value -> reload()
-                is ActorStoreResult.Failure -> sendEffect(PacksTabEffect.ShowError(result.message))
+                is StoreResult.Value -> reload()
+                is StoreResult.Failure -> sendEffect(PacksTabEffect.ShowError(result.message))
             }
         }
     }
@@ -189,7 +189,7 @@ class PacksTabViewModel(
                         libraryRepository.loadPack(pack.libraryItemId, pack.scope, pack.sourceProjectId)
                     }
             ) {
-                is ActorStoreResult.Value -> updateState {
+                is StoreResult.Value -> updateState {
                     // The details screen may have been dismissed (or a different pack opened)
                     // while this load was in flight -- only apply the result if it's still current.
                     if (it.openDetails?.libraryItemId == pack.libraryItemId) {
@@ -204,7 +204,7 @@ class PacksTabViewModel(
                     }
                 }
 
-                is ActorStoreResult.Failure -> {
+                is StoreResult.Failure -> {
                     updateState {
                         if (it.openDetails?.libraryItemId ==
                             pack.libraryItemId

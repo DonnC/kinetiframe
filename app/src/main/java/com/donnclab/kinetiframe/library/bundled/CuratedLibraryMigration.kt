@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.library.bundled
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.DurableFile
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.project.data.ProjectRepository
 import java.io.File
@@ -12,9 +12,9 @@ import java.io.File
  * Must run on IO after the curated replacements are installed and before browse reload.
  * A completed receipt ensures future user projects/packs aren't removed on another launch.
  */
-class CuratedLibraryMigration(private val files: ActorFileStore) {
+class CuratedLibraryMigration(private val files: DocumentFileStore) {
     fun pending(): Boolean = !File(files.projectsRoot().parentFile, "demo-receipts/curated-v3.installed").isFile
-    fun migrate(): ActorStoreResult<Int> = synchronized(lock) {
+    fun migrate(): StoreResult<Int> = synchronized(lock) {
         runCatching {
             val root = requireNotNull(files.projectsRoot().parentFile).canonicalFile
             val receipt = File(root, "demo-receipts/curated-v3.installed")
@@ -31,8 +31,8 @@ class CuratedLibraryMigration(private val files: ActorFileStore) {
                 },
             ) { "Four-view cast must be installed before cleanup" }
             val library = when (val listed = LibraryRepository(files).list()) {
-                is ActorStoreResult.Value -> listed.value
-                is ActorStoreResult.Failure -> error(listed.message)
+                is StoreResult.Value -> listed.value
+                is StoreResult.Failure -> error(listed.message)
             }
             require(
                 BundledDemoInstaller.curatedPackIds.all { id ->
@@ -50,8 +50,8 @@ class CuratedLibraryMigration(private val files: ActorFileStore) {
                     it.libraryItemId in castIds.map { id -> "starter-$id" }
             }.map { it.libraryItemId }.toSet()
             val projects = when (val listed = ProjectRepository(files).list()) {
-                is ActorStoreResult.Value -> listed.value
-                is ActorStoreResult.Failure -> error(listed.message)
+                is StoreResult.Value -> listed.value
+                is StoreResult.Failure -> error(listed.message)
             }
             val retainedProjects = projects.filter {
                 it.projectId in BundledDemoInstaller.projectIds ||
@@ -63,8 +63,8 @@ class CuratedLibraryMigration(private val files: ActorFileStore) {
             // A retained scene must retain its dependencies, even if an actor is not in the cast.
             val retainedActors = castIds + retainedProjects.flatMap { projectId ->
                 when (val loaded = ProjectRepository(files).load(projectId)) {
-                    is ActorStoreResult.Value -> loaded.value.second.project.actorPlacements.values.map { it.actorId }
-                    is ActorStoreResult.Failure -> emptyList()
+                    is StoreResult.Value -> loaded.value.second.project.actorPlacements.values.map { it.actorId }
+                    is StoreResult.Failure -> emptyList()
                 }
             }
             var moved = 0
@@ -87,7 +87,7 @@ class CuratedLibraryMigration(private val files: ActorFileStore) {
             }
             DurableFile.write(receipt) { it.write("archived-curated-v3\n".toByteArray()) }
             moved
-        }.fold({ ActorStoreResult.Value(it) }, { ActorStoreResult.Failure(it.message ?: "Library cleanup failed", it) })
+        }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(it.message ?: "Library cleanup failed", it) })
     }
 
     companion object {

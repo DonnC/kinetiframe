@@ -1,18 +1,18 @@
 package com.donnclab.kinetiframe.actors.render
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.domain.ActorStageFraming
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 
 /** IO worker: validate the exact render dependencies before inserting an invisible clip. */
 class ActorPlacementPreparation(
     private val actors: ActorRepository,
     private val performances: PerformanceRepository,
-    private val files: ActorFileStore,
+    private val files: DocumentFileStore,
 ) {
     fun prepare(
         reference: ActorPlacementReference,

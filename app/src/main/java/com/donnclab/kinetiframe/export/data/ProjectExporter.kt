@@ -15,13 +15,13 @@ import android.media.MediaMuxer
 import android.os.Build
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
 import com.donnclab.kinetiframe.core.document.MAX_AUDIO_TRACKS
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.export.data.db.ExportDao
 import com.donnclab.kinetiframe.export.data.db.ExportEntity
 import com.donnclab.kinetiframe.project.data.ProjectRepository
@@ -60,7 +60,7 @@ import java.util.UUID
  */
 class ProjectExporter(
     private val context: Context,
-    private val actorStore: ActorFileStore,
+    private val actorStore: DocumentFileStore,
     private val actorRepository: ActorRepository,
     private val performanceRepository: PerformanceRepository,
     private val projectRepository: ProjectRepository,
@@ -74,10 +74,10 @@ class ProjectExporter(
         projectId: String,
         targetDimensions: StageDimensions? = null,
         onProgress: (Float) -> Unit = {},
-    ): ActorStoreResult<File> = runCatching {
+    ): StoreResult<File> = runCatching {
         val (manifest, document) = when (val result = projectRepository.load(projectId)) {
-            is ActorStoreResult.Value -> result.value
-            is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+            is StoreResult.Value -> result.value
+            is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
         }
         val project = document.project
         require(document.totalFrames > 0) { "Project has no frames to export" }
@@ -272,12 +272,12 @@ class ProjectExporter(
             ),
         )
         outputFile
-    }.fold({ ActorStoreResult.Value(it) }, { ActorStoreResult.Failure(it.message ?: "Export failed", it) })
+    }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(it.message ?: "Export failed", it) })
 
     /** Copies an already-exported MP4 into the user's public gallery via MediaStore, so it
      *  survives an app uninstall and shows up in their normal camera-roll/gallery apps -- Android's
      *  Scoped Storage rules mean this app can never write directly into `Movies/` itself. */
-    fun saveToGallery(file: File, displayName: String): ActorStoreResult<Unit> = runCatching {
+    fun saveToGallery(file: File, displayName: String): StoreResult<Unit> = runCatching {
         require(file.isFile && file.length() > 0) { "Exported video is missing" }
         val resolver = context.contentResolver
         val values = ContentValues().apply {
@@ -303,7 +303,7 @@ class ProjectExporter(
             resolver.delete(uri, null, null)
             throw error
         }
-    }.fold({ ActorStoreResult.Value(it) }, { ActorStoreResult.Failure(it.message ?: "Could not save to gallery", it) })
+    }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(it.message ?: "Could not save to gallery", it) })
 
     /** Hands an already-exported MP4 to the system share sheet via a FileProvider content:// URI
      *  -- the exact same pattern the home screen's project and pack share

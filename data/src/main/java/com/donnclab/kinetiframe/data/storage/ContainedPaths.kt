@@ -1,9 +1,10 @@
-package com.donnclab.kinetiframe.actors.data
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.data.storage
 
 import java.io.File
 
-/** One canonical policy for document-controlled relative paths. */
-internal object ActorPathPolicy {
+/** Resolves relative paths that come from documents, so none can point outside its root. */
+object ContainedPaths {
     fun resolveWithin(root: File, relativePath: String, label: String): File {
         require(relativePath.isNotBlank()) { "$label path is blank" }
         val canonicalRoot = root.canonicalFile

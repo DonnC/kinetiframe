@@ -4,10 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.data.storage.ContainedPaths
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import java.io.File
 
 /** Persists revision artwork by stable texture asset ID; only bound parts are stored. */
-class ActorArtworkStore(private val files: ActorFileStore) {
+class ActorArtworkStore(private val files: DocumentFileStore) {
     fun save(actorId: String, revisionId: String, graph: SceneGraph, runtime: RigAssetManager): Map<String, String> {
         ActorDocumentValidation.requireId(revisionId, "revision ID")
         val directory = File(files.actorDirectory(actorId), "revisions/$revisionId/artwork")
@@ -36,7 +38,7 @@ class ActorArtworkStore(private val files: ActorFileStore) {
         return artwork.mapNotNull { (partId, relativePath) ->
             val assetId = bindings[partId]?.assetId ?: return@mapNotNull partId
             val source = runCatching {
-                ActorPathPolicy.resolveWithin(files.actorDirectory(actorId), relativePath, "Artwork")
+                ContainedPaths.resolveWithin(files.actorDirectory(actorId), relativePath, "Artwork")
             }.getOrNull() ?: return@mapNotNull partId
             val bitmap = BitmapFactory.decodeFile(source.path) ?: return@mapNotNull partId
             runtime.registerAsset(assetId, bitmap)

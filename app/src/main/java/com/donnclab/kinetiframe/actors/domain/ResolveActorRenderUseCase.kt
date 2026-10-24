@@ -3,32 +3,32 @@ package com.donnclab.kinetiframe.actors.domain
 import com.donnclab.kinetiframe.actors.data.ActorPlacement
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.ActorRevision
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.data.storage.StoreResult
 
 /** Resolves a placement once into render input; the renderer receives no file-system handles. */
 class ResolveActorRenderUseCase(
     private val actors: ActorRepository,
     private val performances: PerformanceRepository,
-    private val loadPerformance: (String, String) -> ActorStoreResult<PerformanceDocument> = performances::load,
-    private val loadRevision: (String, String) -> ActorStoreResult<ActorRevision> = actors::loadRevision,
+    private val loadPerformance: (String, String) -> StoreResult<PerformanceDocument> = performances::load,
+    private val loadRevision: (String, String) -> StoreResult<ActorRevision> = actors::loadRevision,
 ) {
-    fun execute(placement: ActorPlacement, frame: Int, fps: Int): ActorStoreResult<ActorRenderInput> {
+    fun execute(placement: ActorPlacement, frame: Int, fps: Int): StoreResult<ActorRenderInput> {
         val micros = ActorPlacementTiming.elapsedMicros(placement, frame, fps)
         if (micros == null) {
-            return ActorStoreResult.Failure("Placement is not active at frame $frame")
+            return StoreResult.Failure("Placement is not active at frame $frame")
         }
         val performance = when (val result = loadPerformance(placement.projectId, placement.performanceId)) {
-            is ActorStoreResult.Value -> result.value
-            is ActorStoreResult.Failure -> return result
+            is StoreResult.Value -> result.value
+            is StoreResult.Failure -> return result
         }
         val revision = when (val result = loadRevision(performance.actorId, performance.actorRevisionId)) {
-            is ActorStoreResult.Value -> result.value
-            is ActorStoreResult.Failure -> return result
+            is StoreResult.Value -> result.value
+            is StoreResult.Failure -> return result
         }
-        return ActorStoreResult.Value(
+        return StoreResult.Value(
             ActorRenderInput(
                 placement,
                 revision,

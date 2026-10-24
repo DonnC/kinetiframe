@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.project.data
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -9,8 +9,8 @@ import java.io.File
 
 /**
  * Project persistence boundary -- mirrors [com.donnclab.kinetiframe.actors.data.ActorRepository]'s
- * manifest/document split and [ActorStoreResult] error handling exactly, and deliberately reuses
- * [ActorFileStore]'s existing `projects/<id>/` root: [com.donnclab.kinetiframe.actors.data.PerformanceRepository]
+ * manifest/document split and [StoreResult] error handling exactly, and deliberately reuses
+ * [DocumentFileStore]'s existing `projects/<id>/` root: [com.donnclab.kinetiframe.actors.data.PerformanceRepository]
  * already writes a project's performances under that same directory, and the editor points the
  * frame-pixel cache and the persistent background's storage there too, so a project's manifest,
  * document, performances, frame cache and background asset all live under one directory and a
@@ -21,7 +21,7 @@ import java.io.File
  * it doesn't know should still open the project.
  */
 class ProjectRepository(
-    private val files: ActorFileStore,
+    private val files: DocumentFileStore,
     private val json: Json = Json {
         ignoreUnknownKeys = true
         prettyPrint = true
@@ -29,7 +29,7 @@ class ProjectRepository(
 ) {
     /** Never returns pack drafts ([ProjectManifest.isPackDraft]) -- they are real project
      *  directories under this same root, but not something a person would open from their gallery. */
-    fun list(): ActorStoreResult<List<ProjectManifest>> = runCatching {
+    fun list(): StoreResult<List<ProjectManifest>> = runCatching {
         files.projectsRoot().listFiles().orEmpty().filter(File::isDirectory).mapNotNull { directory ->
             runCatching { loadValue(directory.name).first }.getOrNull()
         }.filterNot { it.isPackDraft }.map { manifest ->
@@ -45,42 +45,41 @@ class ProjectRepository(
      *  project's directory, so deleting the project removes it too. */
     fun thumbnailFile(projectId: String): File = File(files.projectDirectory(projectId), THUMBNAIL)
 
-    fun isDisplayNameAvailable(displayName: String, excludingProjectId: String? = null): ActorStoreResult<Boolean> =
+    fun isDisplayNameAvailable(displayName: String, excludingProjectId: String? = null): StoreResult<Boolean> =
         runCatching {
             val normalized = displayName.trim().lowercase()
             require(normalized.isNotBlank()) { "Project name cannot be blank" }
             when (val result = list()) {
-                is ActorStoreResult.Value -> result.value.none {
+                is StoreResult.Value -> result.value.none {
                     it.projectId != excludingProjectId &&
                         it.displayName.trim().lowercase() == normalized
                 }
 
-                is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+                is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
             }
         }.fold(::value, ::failure)
 
-    fun save(manifest: ProjectManifest, document: ProjectSaveDocument): ActorStoreResult<ProjectManifest> =
-        runCatching {
-            manifest.validate()
-            require(manifest.projectId == document.project.id) {
-                "Manifest and document disagree on which project this is"
-            }
-            require(document.totalFrames > 0) { "Project must contain frames" }
-            com.donnclab.kinetiframe.studio.render.CelExposureIndex.validate(document.linkedCels, document.totalFrames)
-            require(manifest.stage == document.project.stage && manifest.fps == document.project.fps) {
-                "Project canvas or FPS differs from its manifest"
-            }
-            val directory = files.projectDirectory(manifest.projectId)
-            val committed = manifest.copy(totalFrames = document.totalFrames)
-            // Compatibility copies are not the commit record. A restart reads one coherent snapshot,
-            // even if the process dies between updating the two legacy files.
-            files.writeAtomically(File(directory, DOCUMENT), json.encodeToString(document))
-            files.writeAtomically(File(directory, MANIFEST), json.encodeToString(committed))
-            files.writeAtomically(File(directory, SNAPSHOT), json.encodeToString(ProjectSnapshot(committed, document)))
-            committed
-        }.fold(::value, ::failure)
+    fun save(manifest: ProjectManifest, document: ProjectSaveDocument): StoreResult<ProjectManifest> = runCatching {
+        manifest.validate()
+        require(manifest.projectId == document.project.id) {
+            "Manifest and document disagree on which project this is"
+        }
+        require(document.totalFrames > 0) { "Project must contain frames" }
+        com.donnclab.kinetiframe.studio.render.CelExposureIndex.validate(document.linkedCels, document.totalFrames)
+        require(manifest.stage == document.project.stage && manifest.fps == document.project.fps) {
+            "Project canvas or FPS differs from its manifest"
+        }
+        val directory = files.projectDirectory(manifest.projectId)
+        val committed = manifest.copy(totalFrames = document.totalFrames)
+        // Compatibility copies are not the commit record. A restart reads one coherent snapshot,
+        // even if the process dies between updating the two legacy files.
+        files.writeAtomically(File(directory, DOCUMENT), json.encodeToString(document))
+        files.writeAtomically(File(directory, MANIFEST), json.encodeToString(committed))
+        files.writeAtomically(File(directory, SNAPSHOT), json.encodeToString(ProjectSnapshot(committed, document)))
+        committed
+    }.fold(::value, ::failure)
 
-    fun load(projectId: String): ActorStoreResult<Pair<ProjectManifest, ProjectSaveDocument>> = runCatching {
+    fun load(projectId: String): StoreResult<Pair<ProjectManifest, ProjectSaveDocument>> = runCatching {
         require(projectId.isNotBlank()) { "Project ID cannot be blank" }
         val directory = files.projectDirectory(projectId)
         files.readOrNull(File(directory, SNAPSHOT))?.let { content ->
@@ -114,13 +113,12 @@ class ProjectRepository(
         manifest to document
     }.fold(::value, ::failure)
 
-    fun rename(projectId: String, displayName: String, nowEpochMs: Long): ActorStoreResult<ProjectManifest> =
-        runCatching {
-            val (manifest, document) = loadValue(projectId)
-            val renamed = manifest.copy(displayName = displayName.trim(), updatedAtEpochMs = nowEpochMs).validate()
-            saveValue(renamed, document)
-            renamed
-        }.fold(::value, ::failure)
+    fun rename(projectId: String, displayName: String, nowEpochMs: Long): StoreResult<ProjectManifest> = runCatching {
+        val (manifest, document) = loadValue(projectId)
+        val renamed = manifest.copy(displayName = displayName.trim(), updatedAtEpochMs = nowEpochMs).validate()
+        saveValue(renamed, document)
+        renamed
+    }.fold(::value, ::failure)
 
     /**
      * Hard delete: the project's whole directory (manifest, document, performances, frame cache,
@@ -129,7 +127,7 @@ class ProjectRepository(
      * also no "in use" guard: nothing else in the app references a project the
      * way a placement references an actor, so archiving-to-protect-referenced-data does not apply here.
      */
-    fun delete(projectId: String): ActorStoreResult<Unit> = runCatching {
+    fun delete(projectId: String): StoreResult<Unit> = runCatching {
         require(projectId.isNotBlank()) { "Project ID cannot be blank" }
         val directory = files.projectDirectory(projectId)
         require(directory.isDirectory) { "Project not found" }
@@ -138,20 +136,20 @@ class ProjectRepository(
 
     private fun loadValue(projectId: String): Pair<ProjectManifest, ProjectSaveDocument> =
         when (val result = load(projectId)) {
-            is ActorStoreResult.Value -> result.value
-            is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+            is StoreResult.Value -> result.value
+            is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
         }
 
     private fun saveValue(manifest: ProjectManifest, document: ProjectSaveDocument) {
         when (val result = save(manifest, document)) {
-            is ActorStoreResult.Value -> Unit
-            is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+            is StoreResult.Value -> Unit
+            is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
         }
     }
 
-    private fun <T> value(value: T): ActorStoreResult<T> = ActorStoreResult.Value(value)
-    private fun failure(error: Throwable): ActorStoreResult.Failure =
-        ActorStoreResult.Failure(error.message ?: "Project storage failed", error)
+    private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
+    private fun failure(error: Throwable): StoreResult.Failure =
+        StoreResult.Failure(error.message ?: "Project storage failed", error)
     private companion object {
         const val MANIFEST = "manifest.json"
         const val DOCUMENT = "document.json"

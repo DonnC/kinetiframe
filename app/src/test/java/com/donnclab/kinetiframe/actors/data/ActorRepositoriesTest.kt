@@ -12,6 +12,9 @@ import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.ContainedPaths
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -23,11 +26,11 @@ class ActorRepositoriesTest {
     @TempDir lateinit var root: File
 
     @Test fun `saved revision cannot be overwritten but actor rename remains possible`() {
-        val repository = ActorRepository(ActorFileStore(root))
+        val repository = ActorRepository(DocumentFileStore(root))
         val original = actorRevision()
         requireSuccess(repository.save(actorManifest(), original))
         val changed = original.copy(createdAtEpochMs = 2)
-        assertTrue(repository.save(actorManifest(displayName = "Wrong"), changed) is ActorStoreResult.Failure)
+        assertTrue(repository.save(actorManifest(displayName = "Wrong"), changed) is StoreResult.Failure)
         assertEquals(original, requireSuccess(repository.loadRevision(original.actorId, original.revisionId)))
         assertEquals("Alice", requireSuccess(repository.load(original.actorId)).first.displayName)
         requireSuccess(repository.rename(original.actorId, "Renamed", 3))
@@ -35,7 +38,7 @@ class ActorRepositoriesTest {
     }
 
     @Test fun `failed revision write leaves manifest pointing at the previous complete revision`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val repository = ActorRepository(files)
         requireSuccess(repository.save(actorManifest(), actorRevision()))
         // Make the temporary-file destination unwritable without relying on OS permissions.
@@ -46,13 +49,13 @@ class ActorRepositoriesTest {
                 actorRevision().sceneGraph,
                 "rev-next",
                 2,
-            ) is ActorStoreResult.Failure,
+            ) is StoreResult.Failure,
         )
         assertEquals("rev-alice-1", requireSuccess(repository.load("actor-alice")).first.currentRevisionId)
     }
 
     @Test fun `explicit empty artwork removes paths while omitted artwork preserves them`() {
-        val repository = ActorRepository(ActorFileStore(root))
+        val repository = ActorRepository(DocumentFileStore(root))
         val original = actorRevision().copy(artworkAssetPaths = mapOf("head" to "head.png"))
         requireSuccess(repository.save(actorManifest(), original))
         val retained = requireSuccess(repository.saveRevision("actor-alice", original.sceneGraph, "rev-next", 2)).second
@@ -65,21 +68,21 @@ class ActorRepositoriesTest {
     }
 
     @Test fun `revision loaded under the wrong file identity is rejected`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val repository = ActorRepository(files)
         requireSuccess(repository.save(actorManifest(), actorRevision()))
         val directory = files.actorDirectory("actor-alice")
         File(directory, "revisions/rev-alice-1.json").copyTo(File(directory, "revisions/rev-wrong.json"))
-        assertTrue(repository.loadRevision("actor-alice", "rev-wrong") is ActorStoreResult.Failure)
+        assertTrue(repository.loadRevision("actor-alice", "rev-wrong") is StoreResult.Failure)
     }
 
     @Test fun `actor revision round trip is keyed by stable IDs not display name`() {
-        val repository = ActorRepository(ActorFileStore(root))
+        val repository = ActorRepository(DocumentFileStore(root))
         val manifest = actorManifest(displayName = "Alice One")
         val revision = actorRevision()
 
         val saved = repository.save(manifest, revision)
-        assertTrue(saved is ActorStoreResult.Value<*>)
+        assertTrue(saved is StoreResult.Value<*>)
         val loaded = requireSuccess(repository.load("actor-alice"))
 
         assertEquals("Alice One", loaded.first.displayName)
@@ -91,29 +94,29 @@ class ActorRepositoriesTest {
     }
 
     @Test fun `malformed manifest is surfaced as a typed storage failure`() {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val manifest = File(store.actorDirectory("actor-broken"), "manifest.json")
         manifest.parentFile!!.mkdirs()
         manifest.writeText("not json")
 
         assertEquals(emptyList<ActorManifest>(), requireSuccess(ActorRepository(store).list()))
-        assertTrue(ActorRepository(store).load("actor-broken") is ActorStoreResult.Failure)
+        assertTrue(ActorRepository(store).load("actor-broken") is StoreResult.Failure)
     }
 
     @Test fun `unsupported contract versions and missing required human parts are rejected`() {
         assertThrows(IllegalArgumentException::class.java) { actorManifest().copy(schemaVersion = 99).validate() }
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val incomplete = actorRevision().copy(
             sceneGraph = actorRevision().sceneGraph.copy(
                 bones =
                 actorRevision().sceneGraph.bones - "head",
             ),
         )
-        assertTrue(ActorRepository(store).save(actorManifest(), incomplete) is ActorStoreResult.Failure)
+        assertTrue(ActorRepository(store).save(actorManifest(), incomplete) is StoreResult.Failure)
     }
 
     @Test fun `stale interrupted-write temporary file never replaces the durable document`() {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val file = File(store.actorDirectory("actor-alice"), "manifest.json")
         store.writeAtomically(file, "durable")
         File(file.parentFile, ".${file.name}.tmp").writeText("interrupted")
@@ -133,7 +136,7 @@ class ActorRepositoriesTest {
     }
 
     @Test fun `performance is project scoped and filters by actor`() {
-        val repository = PerformanceRepository(ActorFileStore(root))
+        val repository = PerformanceRepository(DocumentFileStore(root))
         val alice = performance("perf-alice", "actor-alice")
         val other = performance("perf-other", "actor-other")
         repository.save(alice)
@@ -144,10 +147,10 @@ class ActorRepositoriesTest {
     }
 
     @Test fun `performance names are unique per actor within a project`() {
-        val repository = PerformanceRepository(ActorFileStore(root))
+        val repository = PerformanceRepository(DocumentFileStore(root))
         requireSuccess(repository.save(performance("perf-wave", "actor-alice").copy(displayName = "Wave")))
         val duplicate = performance("perf-wave-copy", "actor-alice").copy(displayName = "wave")
-        assertTrue(repository.save(duplicate) is ActorStoreResult.Failure)
+        assertTrue(repository.save(duplicate) is StoreResult.Failure)
         // The same human-readable name remains valid for a different actor source.
         requireSuccess(repository.save(performance("perf-other", "actor-other").copy(displayName = "Wave")))
     }
@@ -161,19 +164,19 @@ class ActorRepositoriesTest {
     @Test fun `document artwork paths cannot escape an actor or library root`() {
         val actorRoot = File(root, "actor")
         assertThrows(IllegalArgumentException::class.java) {
-            ActorPathPolicy.resolveWithin(actorRoot, "../outside.png", "Artwork")
+            ContainedPaths.resolveWithin(actorRoot, "../outside.png", "Artwork")
         }
         assertThrows(IllegalArgumentException::class.java) {
-            ActorPathPolicy.resolveWithin(actorRoot, "", "Artwork")
+            ContainedPaths.resolveWithin(actorRoot, "", "Artwork")
         }
         assertEquals(
             File(actorRoot, "revisions/rev-1/artwork/hand.png").canonicalFile,
-            ActorPathPolicy.resolveWithin(actorRoot, "revisions/rev-1/artwork/hand.png", "Artwork"),
+            ContainedPaths.resolveWithin(actorRoot, "revisions/rev-1/artwork/hand.png", "Artwork"),
         )
     }
 
     @Test fun `actor thumbnail resolves persisted artwork deterministically`() {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val repository = ActorRepository(store)
         val path = "revisions/rev-alice-1/artwork/hand.png"
         val revision = actorRevision().copy(artworkAssetPaths = mapOf("left_hand" to path))
@@ -208,7 +211,7 @@ class ActorRepositoriesTest {
     }
 
     @Test fun `placement resolves the pinned historical actor revision`() {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val actors = ActorRepository(store)
         val performance = PerformanceRepository(store)
         actors.save(actorManifest(), actorRevision())
@@ -228,7 +231,7 @@ class ActorRepositoriesTest {
     }
 
     @Test fun `durable placement resolution restarts at each repeat`() {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val actors = ActorRepository(store)
         val performances = PerformanceRepository(store)
         actors.save(actorManifest(), actorRevision())
@@ -251,7 +254,7 @@ class ActorRepositoriesTest {
     }
 
     @Test fun `placement storage archives recoverably`() {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val placements = ActorPlacementRepository(store)
         val document = ActorPlacement(
             placementId = "placement-wave",
@@ -267,16 +270,16 @@ class ActorRepositoriesTest {
     }
 
     @Test fun `archive is recoverable and blocked while referenced`() {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val actors = ActorRepository(store)
         actors.save(actorManifest(), actorRevision())
-        assertTrue(actors.archive("actor-alice") { true } is ActorStoreResult.Failure)
-        assertTrue(actors.archive("actor-alice") { false } is ActorStoreResult.Value<*>)
+        assertTrue(actors.archive("actor-alice") { true } is StoreResult.Failure)
+        assertTrue(actors.archive("actor-alice") { false } is StoreResult.Value<*>)
         assertTrue(store.archiveDirectory("actor-alice").isDirectory)
     }
 
     @Test fun `duplicate has fresh identity and preserves the source graph`() {
-        val repository = ActorRepository(ActorFileStore(root))
+        val repository = ActorRepository(DocumentFileStore(root))
         repository.save(actorManifest(), actorRevision())
         requireSuccess(repository.duplicate("actor-alice", "actor-alice-copy", "revision-copy", "Alice copy", 2))
         assertTrue(
@@ -286,7 +289,7 @@ class ActorRepositoriesTest {
                 "revision-another",
                 "Alice copy 2",
                 3,
-            ) is ActorStoreResult.Failure,
+            ) is StoreResult.Failure,
         )
         val copied = requireSuccess(repository.load("actor-alice-copy"))
         assertEquals("Alice copy", copied.first.displayName)
@@ -294,7 +297,7 @@ class ActorRepositoriesTest {
     }
 
     @Test fun `actor library export imports with fresh identity`() {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val actors = ActorRepository(store)
         val performances = PerformanceRepository(store)
         actors.save(actorManifest(), actorRevision())
@@ -307,7 +310,7 @@ class ActorRepositoriesTest {
     }
 
     @Test fun `performance library export imports into a chosen project with its pinned revision`() {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val actors = ActorRepository(store)
         val performances = PerformanceRepository(store)
         requireSuccess(actors.save(actorManifest(), actorRevision()))
@@ -326,7 +329,7 @@ class ActorRepositoriesTest {
     }
 
     @Test fun `duplicate and library import own artwork instead of retaining source paths`() {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val actors = ActorRepository(store)
         val sourcePath = "revisions/rev-alice-1/artwork/hand.png"
         val revision = actorRevision().copy(artworkAssetPaths = mapOf("left_hand" to sourcePath))
@@ -372,7 +375,7 @@ class ActorRepositoriesTest {
                 rows.remove(actorId)
             }
         }
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         requireSuccess(ActorRepository(files, dao = dao).save(actorManifest(), actorRevision()))
         requireSuccess(
             ActorRepository(
@@ -380,7 +383,7 @@ class ActorRepositoriesTest {
             ).save(actorManifest("Bob").copy(actorId = "actor-bob"), actorRevision().copy(actorId = "actor-bob")),
         )
         assertEquals(1, rows.size)
-        assertEquals(2, requireSuccess(ActorRepository(ActorFileStore(root), dao = dao).list()).size)
+        assertEquals(2, requireSuccess(ActorRepository(DocumentFileStore(root), dao = dao).list()).size)
         assertEquals(2, rows.size)
     }
 
@@ -396,7 +399,7 @@ class ActorRepositoriesTest {
                 rows.remove(performanceId)
             }
         }
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val first = performance("wave", "actor-alice").copy(
             poseKeys = listOf(
                 ActorPoseKey(0, mapOf("head" to 25f)),
@@ -407,17 +410,17 @@ class ActorRepositoriesTest {
         requireSuccess(PerformanceRepository(files, dao = dao).save(first))
         requireSuccess(PerformanceRepository(files).save(second))
         assertEquals(1, rows.size)
-        val loaded = requireSuccess(PerformanceRepository(ActorFileStore(root), dao = dao).list("project-film"))
+        val loaded = requireSuccess(PerformanceRepository(DocumentFileStore(root), dao = dao).list("project-film"))
         assertEquals(listOf(second, first), loaded)
         assertEquals(2, rows.size)
     }
 
     @Test fun `performance loaded under another file identity is rejected`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val repo = PerformanceRepository(files)
         requireSuccess(repo.save(performance("wave", "actor-alice")))
         files.performanceFile("project-film", "wave").copyTo(files.performanceFile("project-film", "wrong"))
-        assertTrue(repo.load("project-film", "wrong") is ActorStoreResult.Failure)
+        assertTrue(repo.load("project-film", "wrong") is StoreResult.Failure)
     }
 
     private fun actorRevision() = ActorRevision(
@@ -439,8 +442,8 @@ class ActorRepositoriesTest {
     )
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> requireSuccess(result: ActorStoreResult<T>): T {
-        assertTrue(result is ActorStoreResult.Value<*>, (result as? ActorStoreResult.Failure)?.message)
-        return (result as ActorStoreResult.Value<T>).value
+    private fun <T> requireSuccess(result: StoreResult<T>): T {
+        assertTrue(result is StoreResult.Value<*>, (result as? StoreResult.Failure)?.message)
+        return (result as StoreResult.Value<T>).value
     }
 }

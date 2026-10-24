@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.actors.ui
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorManifest
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.ActorRevision
@@ -8,6 +7,7 @@ import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -57,7 +57,7 @@ class ActorStudioDocumentViewModelTest {
             ActorStudioDocumentViewModel(
                 ActorStudioTarget("sample", "film"),
                 repository,
-                PerformanceRepository(ActorFileStore(root)),
+                PerformanceRepository(DocumentFileStore(root)),
             )
         val revision = model.state.first { !it.loading }.revision
         model.handleIntent(ActorStudioDocumentIntent.SetDirty(true))
@@ -85,7 +85,7 @@ class ActorStudioDocumentViewModelTest {
     }
 
     private fun actorWithViews(): ActorRepository {
-        val repository = ActorRepository(ActorFileStore(root))
+        val repository = ActorRepository(DocumentFileStore(root))
         repository.save(
             ActorManifest(
                 actorId = "sample",
@@ -113,7 +113,7 @@ class ActorStudioDocumentViewModelTest {
                 ActorStudioTarget("sample", "film"),
                 repository,
                 PerformanceRepository(
-                    ActorFileStore(root),
+                    DocumentFileStore(root),
                 ),
                 now = {
                     3
@@ -139,7 +139,7 @@ class ActorStudioDocumentViewModelTest {
 
     @Test fun `reopening performance resolves pinned view not actors current editable view`() = runBlocking {
         val repository = actorWithViews()
-        val performances = PerformanceRepository(ActorFileStore(root))
+        val performances = PerformanceRepository(DocumentFileStore(root))
         performances.save(
             com.donnclab.kinetiframe.actors.data.PerformanceDocument(
                 performanceId = "talk",
@@ -167,7 +167,7 @@ class ActorStudioDocumentViewModelTest {
     }
 
     @Test fun `saving a project performance emits the saved document for FxF return`() = runBlocking {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val actor = ActorRepository(store)
         val graph = ActorTemplates.create(ActorTemplate.HUMAN, StageDimensions.LandscapeHd)
         actor.save(
@@ -206,7 +206,7 @@ class ActorStudioDocumentViewModelTest {
     }
 
     @Test fun `saving a performance while a preset is applied keeps the preset`() = runBlocking {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val actor = ActorRepository(store)
         val graph = ActorTemplates.create(ActorTemplate.HUMAN, StageDimensions.LandscapeHd)
         actor.save(
@@ -265,7 +265,7 @@ class ActorStudioDocumentViewModelTest {
 
     @Test fun `dirty actor studio asks before exit and exits after discard`() = runBlocking {
         val model =
-            ActorStudioDocumentViewModel(ActorStudioTarget("actor-alice"), ActorRepository(ActorFileStore(root)))
+            ActorStudioDocumentViewModel(ActorStudioTarget("actor-alice"), ActorRepository(DocumentFileStore(root)))
         model.handleIntent(ActorStudioDocumentIntent.SetDirty(true))
         model.handleIntent(ActorStudioDocumentIntent.RequestExit)
         assertEquals(ActorStudioDocumentEffect.ConfirmDiscard, model.effect.first())
@@ -276,7 +276,7 @@ class ActorStudioDocumentViewModelTest {
     }
 
     @Test fun `existing performance can duplicate and archive without changing its pinned revision`() = runBlocking {
-        val store = ActorFileStore(root)
+        val store = DocumentFileStore(root)
         val actor = ActorRepository(store)
         val graph = ActorTemplates.create(ActorTemplate.HUMAN, StageDimensions.LandscapeHd)
         actor.save(

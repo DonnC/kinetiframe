@@ -1,18 +1,18 @@
 package com.donnclab.kinetiframe.library.data
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.validate
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.DurableFile
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 
 /** Uses the real durable Library, not a second cache or a raster drawing pack. Call on IO. */
 class PaletteRepository(
-    private val files: ActorFileStore,
+    private val files: DocumentFileStore,
     private val library: LibraryRepository = LibraryRepository(files),
 ) {
     private val json = Json {
@@ -63,9 +63,9 @@ class PaletteRepository(
     }
 
     fun list(): List<PaletteDocument> = value(library.list()).filter { it.kind == LibraryItemKind.PALETTE }.map(::load)
-    private fun <T> value(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+    private fun <T> value(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
     }
     companion object {
         private val lock = Any()

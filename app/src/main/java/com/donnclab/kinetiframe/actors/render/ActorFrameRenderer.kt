@@ -5,15 +5,15 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.domain.ActorPlacementMapper
 import com.donnclab.kinetiframe.actors.domain.ResolveActorRenderUseCase
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.studio.render.ProjectFrameCompositor
 import com.donnclab.kinetiframe.studio.render.SharedResourceCache
 import java.io.File
@@ -28,7 +28,7 @@ import java.io.File
 class ActorFrameRenderer(
     private val actors: ActorRepository,
     private val performances: PerformanceRepository,
-    private val files: ActorFileStore,
+    private val files: DocumentFileStore,
     // Three full-body actors already use 48 active parts. Leave slot headroom for recent facial/
     // hand swaps to remain cached beyond the previous display snapshot. The
     // independent byte budget below remains authoritative on low-memory devices.
@@ -118,9 +118,9 @@ class ActorFrameRenderer(
         val document = runCatching { ActorPlacementMapper.document(projectId, placement) }
             .getOrElse { return placementDiagnostic(placement, "Placement data is invalid") }
         val input = when (val result = resolver.execute(document, frame, fps)) {
-            is ActorStoreResult.Value -> result.value
+            is StoreResult.Value -> result.value
 
-            is ActorStoreResult.Failure -> return if (result.message.startsWith("Placement is not active")) {
+            is StoreResult.Failure -> return if (result.message.startsWith("Placement is not active")) {
                 Resolution()
             } else {
                 placementDiagnostic(placement, result.message)

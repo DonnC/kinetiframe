@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.library.ui
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.LibraryScope
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackItemEntry
 import com.donnclab.kinetiframe.library.data.PackManifest
@@ -33,9 +33,9 @@ class PackEditFlowTest {
     @AfterEach fun teardown() {
         Dispatchers.resetMain()
     }
-    private fun <T> value(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> error(result.message)
+    private fun <T> value(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> error(result.message)
     }
     private fun save(
         repository: LibraryRepository,
@@ -65,7 +65,7 @@ class PackEditFlowTest {
     }
 
     @Test fun `review edit emits real pack identity then refreshes edited inspector`() = runTest(dispatcher) {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val repository = LibraryRepository(files)
         val original = save(repository, "Faces", "Happy")
         val model = LibraryViewModel(LocalLibraryCatalog(files, repository), ioDispatcher = dispatcher)
@@ -86,7 +86,7 @@ class PackEditFlowTest {
     }
 
     @Test fun `reopening project pack preserves scope without overwriting personal pack`() {
-        val repository = LibraryRepository(ActorFileStore(root))
+        val repository = LibraryRepository(DocumentFileStore(root))
         save(repository, "Personal", "Happy")
         val projectPack = save(repository, "Project", "Concerned", LibraryScope.PROJECT, "episode")
         val reopened = value(
@@ -94,7 +94,8 @@ class PackEditFlowTest {
         ).first
         save(repository, "Edited project", "Angry", reopened.scope, reopened.sourceProjectId)
         assertEquals("Personal", value(repository.loadPack("faces")).first.displayName)
-        val edited = value(LibraryRepository(ActorFileStore(root)).loadPack("faces", LibraryScope.PROJECT, "episode"))
+        val edited =
+            value(LibraryRepository(DocumentFileStore(root)).loadPack("faces", LibraryScope.PROJECT, "episode"))
         assertEquals("Edited project", edited.first.displayName)
         assertEquals("Angry", edited.second.items.single().name)
         assertEquals(setOf("ls-faces"), edited.first.tags)

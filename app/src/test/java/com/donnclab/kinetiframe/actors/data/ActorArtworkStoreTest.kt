@@ -11,6 +11,8 @@ import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -29,7 +31,7 @@ class ActorArtworkStoreTest {
         val runtime = RigAssetManager()
         val restored = RigAssetManager()
         try {
-            val files = ActorFileStore(root)
+            val files = DocumentFileStore(root)
             val upper = BoneNode("upper", name = "Upper", length = 50f)
             val lower = BoneNode(
                 hierarchy = BoneHierarchy("lower", "Lower", "upper"),
@@ -58,9 +60,9 @@ class ActorArtworkStoreTest {
             val store = ActorArtworkStore(files)
             val paths = store.save("actor", "revision", graph, runtime)
             val repository = ActorRepository(files)
-            fun <T> value(result: ActorStoreResult<T>): T = when (result) {
-                is ActorStoreResult.Value -> result.value
-                is ActorStoreResult.Failure -> error(result.message)
+            fun <T> value(result: StoreResult<T>): T = when (result) {
+                is StoreResult.Value -> result.value
+                is StoreResult.Failure -> error(result.message)
             }
             value(
                 repository.save(
@@ -85,7 +87,7 @@ class ActorArtworkStoreTest {
             val bundles = ActorBundleRepository(files, repository, PerformanceRepository(files))
             value(bundles.exportActor("actor", "library-skin", "Continuous limb", 2))
             value(bundles.importActor("library-skin", "copy", "copy-revision", 3))
-            val copy = value(ActorRepository(ActorFileStore(root)).load("copy")).second
+            val copy = value(ActorRepository(DocumentFileStore(root)).load("copy")).second
             assertEquals(skin, copy.sceneGraph.bones.getValue("upper").textureBinding!!.skin)
             assertTrue(store.restore("copy", copy.artworkAssetPaths, copy.sceneGraph, restored).isEmpty())
             assertEquals(Color.CYAN, restored.getAsset("continuous")!!.getPixel(50, 10))
@@ -177,7 +179,7 @@ class ActorArtworkStoreTest {
                         ),
                     ),
                 )
-            val store = ActorArtworkStore(ActorFileStore(root))
+            val store = ActorArtworkStore(DocumentFileStore(root))
             val paths = store.save("actor", "revision", graph, runtime)
             assertEquals(setOf("mouth", "mouth#happy"), paths.keys)
             runtime.clear()
@@ -185,11 +187,11 @@ class ActorArtworkStoreTest {
             assertEquals(Color.RED, restored.getAsset("default")!!.getPixel(0, 0))
             assertEquals(Color.BLUE, restored.getAsset("smile")!!.getPixel(0, 0))
             assertTrue(restored.allocatedBytes() > 0)
-            val files = ActorFileStore(root)
+            val files = DocumentFileStore(root)
             val repository = ActorRepository(files)
-            fun <T> value(result: ActorStoreResult<T>): T = when (result) {
-                is ActorStoreResult.Value -> result.value
-                is ActorStoreResult.Failure -> error(result.message)
+            fun <T> value(result: StoreResult<T>): T = when (result) {
+                is StoreResult.Value -> result.value
+                is StoreResult.Failure -> error(result.message)
             }
             value(
                 repository.save(
@@ -213,7 +215,7 @@ class ActorArtworkStoreTest {
             val bundles = ActorBundleRepository(files, repository, PerformanceRepository(files))
             value(bundles.exportActor("actor", "library-actor", "Talker", 2))
             value(bundles.importActor("library-actor", "actor-copy", "revision-copy", 3))
-            val copy = value(ActorRepository(ActorFileStore(root)).load("actor-copy")).second
+            val copy = value(ActorRepository(DocumentFileStore(root)).load("actor-copy")).second
             restored.clear()
             assertTrue(store.restore("actor-copy", copy.artworkAssetPaths, copy.sceneGraph, restored).isEmpty())
             assertEquals(Color.BLUE, restored.getAsset("smile")!!.getPixel(0, 0))

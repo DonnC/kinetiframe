@@ -8,7 +8,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.studio.StudioViewModel
 import com.donnclab.kinetiframe.studio.ui.dialogs.SaveBeforeExitDialog
 import kotlinx.coroutines.CancellationException
@@ -83,7 +83,7 @@ internal class EditorSaveActions(
             }
             val result = target.writer.write(target.projectId, document, target.draftFrames, time)
             messages.projectSaveMessage = when (result) {
-                is ActorStoreResult.Value -> {
+                is StoreResult.Value -> {
                     viewModel.frameReferences.clear()
                     if (leaveWhenSaved) {
                         exit.returnHomeAfterSave = false
@@ -92,7 +92,7 @@ internal class EditorSaveActions(
                     "Project saved"
                 }
 
-                is ActorStoreResult.Failure -> {
+                is StoreResult.Failure -> {
                     if (leaveWhenSaved) exit.returnHomeAfterSave = false
                     result.message
                 }

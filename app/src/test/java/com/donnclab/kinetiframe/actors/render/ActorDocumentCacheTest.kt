@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.render
 
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.data.storage.DurableFile
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -17,12 +17,12 @@ class ActorDocumentCacheTest {
         var reads = 0
         fun load() = cache.load(file) {
             reads++
-            ActorStoreResult.Value(file.readText())
+            StoreResult.Value(file.readText())
         }
-        repeat(100) { assertEquals(ActorStoreResult.Value("first"), load()) }
+        repeat(100) { assertEquals(StoreResult.Value("first"), load()) }
         assertEquals(1, reads)
         DurableFile.write(file) { it.write("changed".toByteArray()) }
-        assertEquals(ActorStoreResult.Value("changed"), load())
+        assertEquals(StoreResult.Value("changed"), load())
         assertEquals(2, reads)
         cache.clear()
         load()

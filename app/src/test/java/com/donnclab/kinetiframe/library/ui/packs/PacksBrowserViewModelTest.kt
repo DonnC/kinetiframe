@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.library.ui.packs
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.AssetCategory
 import com.donnclab.kinetiframe.library.data.BrowseMode
 import com.donnclab.kinetiframe.library.data.BrowserPosition
@@ -38,7 +38,7 @@ class PacksBrowserViewModelTest {
     }
 
     private fun repository(): LibraryRepository {
-        val repository = LibraryRepository(ActorFileStore(root))
+        val repository = LibraryRepository(DocumentFileStore(root))
         val png = File(root, "hand.png").apply { writeText("artwork") }
         repository.exportPack(
             "ls-hands",
@@ -78,7 +78,7 @@ class PacksBrowserViewModelTest {
         val model = PacksTabViewModel(repository, ioDispatcher = dispatcher)
         val state = model.state.first { !it.loading }
         assertNotNull(state.error)
-        assertTrue(repository.loadPack("ls-hands") is ActorStoreResult.Value)
+        assertTrue(repository.loadPack("ls-hands") is StoreResult.Value)
         assertEquals("corrupt", File(root, "library-organisation.json").readText())
     }
 }

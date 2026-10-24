@@ -1,10 +1,10 @@
 package com.donnclab.kinetiframe.project.data
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -39,17 +39,17 @@ class KframeArchiverTest {
         totalFrames = 3,
     )
 
-    private fun <T> requireSuccess(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
+    private fun <T> requireSuccess(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
 
-        is ActorStoreResult.Failure -> throw AssertionError(
+        is StoreResult.Failure -> throw AssertionError(
             "Expected success but got failure: ${result.message}",
             result.cause,
         )
     }
 
     @Test fun `exporting then importing round trips the project's manifest and document, keeping its id`() {
-        val sourceFiles = ActorFileStore(sourceRoot)
+        val sourceFiles = DocumentFileStore(sourceRoot)
         val repository = ProjectRepository(sourceFiles)
         requireSuccess(repository.save(manifest("project-a"), document("project-a")))
         // A file that isn't manifest.json/document.json (a frame PNG stand-in) must survive too.
@@ -61,7 +61,7 @@ class KframeArchiverTest {
         requireSuccess(KframeArchiver.export(sourceFiles, "project-a", archive))
         assertTrue(archive.isFile)
 
-        val destinationFiles = ActorFileStore(otherRoot)
+        val destinationFiles = DocumentFileStore(otherRoot)
         val importedId = requireSuccess(KframeArchiver.import(destinationFiles, archive))
         assertEquals("project-a", importedId)
 
@@ -72,25 +72,25 @@ class KframeArchiverTest {
     }
 
     @Test fun `importing an archive whose id already exists locally is refused, not silently overwritten`() {
-        val files = ActorFileStore(sourceRoot)
+        val files = DocumentFileStore(sourceRoot)
         requireSuccess(ProjectRepository(files).save(manifest("project-a"), document("project-a")))
         val archive = File(exportDir, "export.kframe")
         requireSuccess(KframeArchiver.export(files, "project-a", archive))
 
         // Import into the very same store that already has this project id.
         val result = KframeArchiver.import(files, archive)
-        assertTrue(result is ActorStoreResult.Failure)
-        assertEquals("A project with this ID already exists locally", (result as ActorStoreResult.Failure).message)
+        assertTrue(result is StoreResult.Failure)
+        assertEquals("A project with this ID already exists locally", (result as StoreResult.Failure).message)
     }
 
     @Test fun `importing a file that is not a kframe archive fails cleanly`() {
         val notAnArchive = File(exportDir, "notes.txt").apply { writeText("hello") }
-        val result = KframeArchiver.import(ActorFileStore(otherRoot), notAnArchive)
-        assertTrue(result is ActorStoreResult.Failure)
+        val result = KframeArchiver.import(DocumentFileStore(otherRoot), notAnArchive)
+        assertTrue(result is StoreResult.Failure)
     }
 
     @Test fun `importing to another storage root relocates audio and background paths`() {
-        val files = ActorFileStore(sourceRoot)
+        val files = DocumentFileStore(sourceRoot)
         val audio = File(exportDir, "sound.m4a").apply { writeText("sound bytes") }
         val background = File(files.projectDirectory("project-a"), "project-assets/background.png")
         background.parentFile!!.mkdirs()
@@ -120,7 +120,7 @@ class KframeArchiverTest {
         requireSuccess(ProjectRepository(files).save(manifest("project-a"), original.copy(project = project)))
         val archive = File(exportDir, "portable.kframe")
         requireSuccess(KframeArchiver.export(files, "project-a", archive))
-        val destination = ActorFileStore(otherRoot)
+        val destination = DocumentFileStore(otherRoot)
         requireSuccess(KframeArchiver.import(destination, archive))
         val restored = requireSuccess(ProjectRepository(destination).load("project-a")).second.project
         assertEquals("sound bytes", File(restored.assets.getValue("sound").sourcePath!!).readText())
@@ -133,7 +133,7 @@ class KframeArchiverTest {
     }
 
     @Test fun `archive includes actor revision dependencies outside the project directory`() {
-        val files = ActorFileStore(sourceRoot)
+        val files = DocumentFileStore(sourceRoot)
         val actor = com.donnclab.kinetiframe.actors.data.ActorManifest(
             actorId = "alice",
             displayName = "Alice",
@@ -183,7 +183,7 @@ class KframeArchiverTest {
         )
         val archive = File(exportDir, "actor.kframe")
         requireSuccess(KframeArchiver.export(files, "project-a", archive))
-        val destination = ActorFileStore(otherRoot)
+        val destination = DocumentFileStore(otherRoot)
         requireSuccess(
             com.donnclab.kinetiframe.actors.data.ActorRepository(
                 destination,
@@ -215,7 +215,7 @@ class KframeArchiverTest {
     }
 
     @Test fun `archive uses committed snapshot and relocates its thumbnail consistently`() {
-        val files = ActorFileStore(sourceRoot)
+        val files = DocumentFileStore(sourceRoot)
         val thumbnail = File(files.projectDirectory("project-a"), "thumbnail.png")
         thumbnail.parentFile!!.mkdirs()
         thumbnail.writeText("thumbnail")
@@ -229,7 +229,7 @@ class KframeArchiverTest {
         File(files.projectDirectory("project-a"), "manifest.json").writeText("partial")
         val archive = File(exportDir, "committed.kframe")
         requireSuccess(KframeArchiver.export(files, "project-a", archive))
-        val destination = ActorFileStore(otherRoot)
+        val destination = DocumentFileStore(otherRoot)
         requireSuccess(KframeArchiver.import(destination, archive))
         val restored = requireSuccess(ProjectRepository(destination).load("project-a"))
         assertEquals(document("project-a"), restored.second)

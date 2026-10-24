@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.studio.ui.color
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.data.PaletteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,7 +31,7 @@ class PaletteViewModelTest {
     }
 
     @Test fun `load installs real palettes and selection is an MVI intent`() = runTest(dispatcher) {
-        val model = PaletteViewModel(PaletteRepository(ActorFileStore(root)), ioDispatcher = dispatcher)
+        val model = PaletteViewModel(PaletteRepository(DocumentFileStore(root)), ioDispatcher = dispatcher)
         val loaded = model.state.first { !it.loading }
         assertNull(loaded.error)
         assertEquals(8, loaded.palettes.size)
