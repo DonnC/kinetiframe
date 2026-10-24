@@ -23,10 +23,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "KinetiFrame"
-include(":core", ":engine", ":sandbox")
-// -PengineOnly=true skips the Android app and its UI modules, so engine contributors get a small,
-// fast build of core, engine and the sandbox app. -PpublicOnly=true is the old name and still works.
-val engineOnly = providers.gradleProperty("engineOnly").orElse(providers.gradleProperty("publicOnly")).orNull == "true"
-if (!engineOnly) {
-    include(":app", ":data", ":presentation", ":designsystem")
-}
+include(":app", ":core", ":engine", ":data", ":presentation", ":designsystem")

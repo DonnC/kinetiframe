@@ -1,6 +1,6 @@
 # Module boundaries
 
-KinetiFrame has six production modules and one development app. This page lists what each may
+KinetiFrame has six modules. This page lists what each may
 depend on and why. The [architecture overview](README.md) explains what each module does.
 
 | Module | Allowed project dependencies | Must not contain |
@@ -11,7 +11,6 @@ depend on and why. The [architecture overview](README.md) explains what each mod
 | `data` | `core` | Compose, `engine`, `presentation`, `designsystem` |
 | `presentation` | `core`, `engine`, `designsystem` | `data` implementations |
 | `designsystem` | none | Projects, actors, ViewModels, other project modules |
-| `sandbox` | `core`, `engine` | App UI, `data`, `designsystem` |
 
 `./gradlew checkArchitecture` enforces these rules by reading imports and fully qualified names
 in every Kotlin file. It also rejects provider SDKs (Firebase, Play Billing, Appwrite) in shared
@@ -41,7 +40,7 @@ set the SDK levels, Java version and test setup every module shares:
 | --- | --- |
 | `kinetiframe.jvm.library` | Plain Kotlin modules such as `core` |
 | `kinetiframe.android.library` | Android library modules |
-| `kinetiframe.android.application` | The app and the sandbox |
+| `kinetiframe.android.application` | The app |
 | `kinetiframe.android.compose` | Added to either Android plugin for modules with Compose UI |
 
 The build file then only names its namespace and its dependencies.

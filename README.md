@@ -79,12 +79,8 @@ The APK is written to `app/build/outputs/apk/debug/`. To build and run every che
 ./gradlew verify
 ```
 
-Working only on rigging or deformation math? The engine sandbox builds in a fraction of the
-time and skips the app's artwork:
-
-```sh
-./gradlew -PengineOnly=true :sandbox:installDebug
-```
+Working only on rigging or deformation math? `./gradlew :engine:testDebugUnitTest` runs just the
+engine's tests.
 
 [Development setup](docs/development.md) covers Android Studio, device tests and troubleshooting.
 
@@ -117,7 +113,6 @@ KinetiFrame is a Kotlin and Jetpack Compose app split into a few Gradle modules:
 | [`data`](data/README.md) | Durable file storage |
 | [`presentation`](presentation/README.md) | Shared ViewModel (MVI) infrastructure |
 | [`designsystem`](designsystem/README.md) | Theme, design tokens and reusable Compose controls |
-| [`sandbox`](sandbox/README.md) | A small test app for engine work |
 
 Read the [architecture overview](docs/architecture/README.md) for how a stroke becomes a frame
 and how a performance becomes a pose. Project and pack files are described in

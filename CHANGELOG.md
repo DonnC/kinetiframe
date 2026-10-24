@@ -8,6 +8,8 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ### Removed
 
+- The engine sandbox app and the `-PengineOnly` build. Engine work runs the engine's tests and is
+  checked in the app itself.
 - The placeholder Marketplace tab and every "From Marketplace" entry. Sharing works through the
   library, `.kframe` project files and `.kpack` stamp packs.
 - The internet permission. KinetiFrame works fully offline.

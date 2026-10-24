@@ -215,15 +215,6 @@ internal object KotlinBoundaryScanner {
                         "androidx.lifecycle.",
                     )
 
-            "sandbox" ->
-                sdk +
-                    listOf(
-                        "com.donnclab.kinetiframe.ui.",
-                        "com.donnclab.kinetiframe.data.",
-                        "com.donnclab.kinetiframe.presentation.",
-                        "com.donnclab.kinetiframe.designsystem.",
-                    )
-
             else -> emptyList()
         }
     }

@@ -57,7 +57,6 @@ and UI code that imports a `data` package instead of going through its ViewModel
 | `data` | `core` |
 | `core` | nothing (plain Kotlin, no Android) |
 | `designsystem` | nothing in the project (Compose only) |
-| `sandbox` | `core`, `engine` |
 
 - Dependencies point down this table. No cycles.
 - Engine math packages use no Android or Compose types. Translate geometry at the UI edge.

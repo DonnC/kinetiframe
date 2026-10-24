@@ -29,8 +29,8 @@ class KotlinBoundaryScannerTest {
     @Test fun `new public code cannot import platform UI private storage or exceed size`() {
         fixture("core", "api/Example.kt", "import android.graphics.Bitmap\n" + "// line\n".repeat(500))
         fixture("engine", "math/Example.kt", "import androidx.compose.ui.geometry.Offset")
-        fixture("sandbox", "api/Example.kt", "val store = com.donnclab.kinetiframe.data.storage.DurableFile")
-        val findings = KotlinBoundaryScanner.scan(root, listOf("core", "engine", "sandbox"))
+        fixture("data", "api/Example.kt", "val mesh = com.donnclab.kinetiframe.engine.rigging.Mesh")
+        val findings = KotlinBoundaryScanner.scan(root, listOf("core", "engine", "data"))
         assertEquals(4, findings.size)
         assertTrue(findings.keys.any { it.startsWith("lines|core/") })
         assertEquals(3, findings.keys.count { it.startsWith("dependency|") })
@@ -80,10 +80,10 @@ class KotlinBoundaryScannerTest {
     }
 
     @Test fun `non UI modules cannot depend on design system types`() {
-        listOf("core", "engine", "data", "sandbox").forEach { module ->
+        listOf("core", "engine", "data").forEach { module ->
             fixture(module, "Bad.kt", "import com.donnclab.kinetiframe.designsystem.theme.EditorTokens")
         }
-        assertEquals(4, KotlinBoundaryScanner.scan(root, listOf("core", "engine", "data", "sandbox")).size)
+        assertEquals(3, KotlinBoundaryScanner.scan(root, listOf("core", "engine", "data")).size)
     }
 
     @Test fun `Windows and Unix source have the same declared parameter counts`() {

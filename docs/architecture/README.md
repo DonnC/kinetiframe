@@ -14,7 +14,6 @@ flowchart TD
     engine["engine<br/><small>rigging, IK, skinning, motion</small>"]
     data["data<br/><small>durable file writes</small>"]
     core["core<br/><small>models, codecs, validation</small>"]
-    sandbox["sandbox<br/><small>engine test app</small>"]
 
     app --> presentation
     app --> designsystem
@@ -26,8 +25,6 @@ flowchart TD
     presentation --> core
     engine --> core
     data --> core
-    sandbox --> engine
-    sandbox --> core
 ```
 
 | Module | Type | Responsibility |
@@ -38,7 +35,6 @@ flowchart TD
 | [`data`](../../data/README.md) | Android library | `DurableFile`: atomic, crash-safe file writes |
 | [`presentation`](../../presentation/README.md) | Android library | `BaseViewModel` and shared MVI plumbing |
 | [`designsystem`](../../designsystem/README.md) | Android library | Compose theme, design tokens and reusable controls |
-| [`sandbox`](../../sandbox/README.md) | Android app | A small app for trying engine changes without the full app |
 
 Dependencies only point downward. `./gradlew checkArchitecture` fails the build if code imports
 across a boundary it shouldn't, for example Android types in `core` or Compose in engine math.
