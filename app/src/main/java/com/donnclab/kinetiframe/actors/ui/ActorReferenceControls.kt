@@ -41,9 +41,9 @@ import com.composables.icons.lucide.Move
 import com.composables.icons.lucide.Spline
 import com.composables.icons.lucide.Text
 import com.composables.icons.lucide.Trash2
-import com.donnclab.kinetiframe.common.ui.ContextIconAction
-import com.donnclab.kinetiframe.common.ui.ContextSliderButton
-import com.donnclab.kinetiframe.common.ui.IconContextMenu
+import com.donnclab.kinetiframe.presentation.common.ContextIconAction
+import com.donnclab.kinetiframe.presentation.common.ContextSliderButton
+import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

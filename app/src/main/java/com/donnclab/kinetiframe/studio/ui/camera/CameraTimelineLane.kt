@@ -18,9 +18,9 @@ import com.composables.icons.lucide.List
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Play
 import com.composables.icons.lucide.Trash2
-import com.donnclab.kinetiframe.common.ui.ContextIconAction
-import com.donnclab.kinetiframe.common.ui.IconContextMenu
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.presentation.common.ContextIconAction
+import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.ui.timeline.TRACK_HEIGHT
 import com.donnclab.kinetiframe.studio.ui.timeline.TimelineAssetClip

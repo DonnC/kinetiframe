@@ -62,10 +62,6 @@ import com.donnclab.kinetiframe.actors.ui.ActorManagerMessage
 import com.donnclab.kinetiframe.actors.ui.ActorManagerState
 import com.donnclab.kinetiframe.actors.ui.ActorNameDialog
 import com.donnclab.kinetiframe.actors.ui.AddActorScreen
-import com.donnclab.kinetiframe.common.ui.BrandBadge
-import com.donnclab.kinetiframe.common.ui.BrandWordmark
-import com.donnclab.kinetiframe.common.ui.CompactTextField
-import com.donnclab.kinetiframe.common.ui.FullScreenDialog
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.data.project.ProjectManifest
@@ -79,8 +75,12 @@ import com.donnclab.kinetiframe.library.ui.packs.PacksTabCallbacks
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabIntent
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabState
 import com.donnclab.kinetiframe.navigation.AppBottomNavBar
-import com.donnclab.kinetiframe.navigation.AppBrandBar
 import com.donnclab.kinetiframe.navigation.BottomNavDestination
+import com.donnclab.kinetiframe.presentation.common.AppBrandBar
+import com.donnclab.kinetiframe.presentation.common.BrandBadge
+import com.donnclab.kinetiframe.presentation.common.BrandWordmark
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
+import com.donnclab.kinetiframe.presentation.common.FullScreenDialog
 import com.donnclab.kinetiframe.project.ui.AddProjectRoute
 import com.donnclab.kinetiframe.project.ui.ProjectManagerIntent
 import com.donnclab.kinetiframe.project.ui.ProjectManagerState

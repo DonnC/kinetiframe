@@ -54,10 +54,10 @@ import com.composables.icons.lucide.Save
 import com.composables.icons.lucide.Spline
 import com.composables.icons.lucide.Undo
 import com.donnclab.kinetiframe.actors.ui.rigging.StudioModePill
-import com.donnclab.kinetiframe.common.ui.ContextIconAction
-import com.donnclab.kinetiframe.common.ui.ContextIconButton
-import com.donnclab.kinetiframe.common.ui.IconContextMenu
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.common.ContextIconAction
+import com.donnclab.kinetiframe.presentation.common.ContextIconButton
+import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.actorDefinition

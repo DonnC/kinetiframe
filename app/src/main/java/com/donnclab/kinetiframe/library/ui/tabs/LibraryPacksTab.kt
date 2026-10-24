@@ -8,12 +8,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.common.ui.AssetSummary
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.ui.LibraryIntent
 import com.donnclab.kinetiframe.library.ui.catalog.FlatListNote
 import com.donnclab.kinetiframe.library.ui.catalog.PackGridCard
+import com.donnclab.kinetiframe.presentation.common.AssetSummary
 import com.donnclab.kinetiframe.preview.PreviewCatalog
 
 /** Library's "Component Packs" tab -- deliberately flat, one continuous scroll of every pack the

@@ -6,7 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PorterDuff
 import androidx.collection.LruCache
-import com.donnclab.kinetiframe.common.coroutines.PendingJobs
+import com.donnclab.kinetiframe.core.coroutines.PendingJobs
 import com.donnclab.kinetiframe.core.document.CelExposureIndex
 import com.donnclab.kinetiframe.data.storage.DurableFile
 import kotlinx.coroutines.CoroutineScope

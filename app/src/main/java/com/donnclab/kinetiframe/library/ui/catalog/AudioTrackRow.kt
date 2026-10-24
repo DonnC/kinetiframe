@@ -25,9 +25,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.common.ui.AudioTrackSummary
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.common.AudioTrackSummary
 import com.donnclab.kinetiframe.preview.PreviewCatalog
 
 /** One row in an Audio tab's list: a play button, the title, duration and a small kind tag. */

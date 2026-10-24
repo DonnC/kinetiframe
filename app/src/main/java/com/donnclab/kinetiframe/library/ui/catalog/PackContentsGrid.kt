@@ -38,9 +38,9 @@ import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.ClipboardPlus
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.R
-import com.donnclab.kinetiframe.common.ui.StampAsset
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.common.StampAsset
 import com.donnclab.kinetiframe.preview.PreviewCatalog
 
 /** The title + stamp list [PackContentsGrid] renders -- bundled so the screen stays a

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KinetiFrame</string>
+    <string name="app_name" translatable="false">@string/brand_name</string>
 
     <!-- Shared -->
     <string name="action_back">Back</string>

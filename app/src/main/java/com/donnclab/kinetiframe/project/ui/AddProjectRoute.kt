@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.donnclab.kinetiframe.common.ui.FullScreenDialog
+import com.donnclab.kinetiframe.presentation.common.FullScreenDialog
 
 /**
  * Hosts Home's "New Project" flow as its own full screen: [AddProjectFormState] lives here for

@@ -58,6 +58,7 @@ import com.donnclab.kinetiframe.navigation.LibraryKey
 import com.donnclab.kinetiframe.navigation.PackCreatorKey
 import com.donnclab.kinetiframe.navigation.ProjectGalleryKey
 import com.donnclab.kinetiframe.navigation.SettingsKey
+import com.donnclab.kinetiframe.presentation.common.LocalShowMenuLabels
 import com.donnclab.kinetiframe.settings.AppPreferencesStore
 import com.donnclab.kinetiframe.settings.AppTheme
 import com.donnclab.kinetiframe.settings.LocalAppPreferences
@@ -89,7 +90,10 @@ class MainActivity : ComponentActivity() {
                 AppTheme.LIGHT -> false
                 AppTheme.DARK -> true
             }
-            CompositionLocalProvider(LocalAppPreferences provides preferences) {
+            CompositionLocalProvider(
+                LocalAppPreferences provides preferences,
+                LocalShowMenuLabels provides preferences.showMenuLabels,
+            ) {
                 KinetiFrameTheme(darkTheme = dark, dynamicColor = false) {
                     ScreenColorPickerHost {
                         Surface(

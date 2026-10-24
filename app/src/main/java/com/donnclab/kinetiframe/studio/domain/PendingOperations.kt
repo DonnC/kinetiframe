@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.studio.domain
 
-import com.donnclab.kinetiframe.common.coroutines.PendingJobs
+import com.donnclab.kinetiframe.core.coroutines.PendingJobs
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart

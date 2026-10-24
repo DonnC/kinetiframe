@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.R
-import com.donnclab.kinetiframe.common.ui.CompactTextField
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.ui.catalog.AssetDetailsContext
@@ -42,6 +41,7 @@ import com.donnclab.kinetiframe.library.ui.tabs.LibraryPacksTab
 import com.donnclab.kinetiframe.library.ui.tabs.LibraryProjectsTab
 import com.donnclab.kinetiframe.navigation.AppBottomNavBar
 import com.donnclab.kinetiframe.navigation.BottomNavDestination
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.preview.PreviewCatalog
 
 /**
@@ -61,7 +61,7 @@ fun LibraryScreen(
     var previewColor by remember { mutableStateOf(androidx.compose.ui.graphics.Color.Black) }
     Box(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            com.donnclab.kinetiframe.navigation.AppBrandBar()
+            com.donnclab.kinetiframe.presentation.common.AppBrandBar()
             LibraryTopBar(state.query, onIntent, { showPalettes = true })
             TopTabRow(TopTabs.all, state.selectedTab, onSelect = { onIntent(LibraryIntent.SelectTab(it)) })
             Box(Modifier.weight(1f)) {

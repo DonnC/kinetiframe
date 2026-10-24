@@ -14,8 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.common.ui.ContextIconAction
-import com.donnclab.kinetiframe.common.ui.IconContextMenu
+import com.donnclab.kinetiframe.presentation.common.ContextIconAction
+import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 
 /** Persistent background actions belong together, not mixed with canvas display preferences. */
 @Composable

@@ -18,10 +18,10 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.common.ui.CompactTextField
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.ui.catalog.PackContentsData
 import com.donnclab.kinetiframe.library.ui.catalog.PackContentsGrid
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.studio.ui.EditorTopBar
 import com.donnclab.kinetiframe.studio.ui.color.ScreenColorIntent
 import com.donnclab.kinetiframe.studio.ui.color.ScreenColorOverlay

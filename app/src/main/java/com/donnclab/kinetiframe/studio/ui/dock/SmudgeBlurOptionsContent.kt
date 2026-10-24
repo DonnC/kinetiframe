@@ -15,8 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.common.ui.StandardSlider
 import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.presentation.common.StandardSlider
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.ToolConfig

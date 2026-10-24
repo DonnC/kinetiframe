@@ -17,9 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.Circle
 import com.composables.icons.lucide.Lucide
-import com.donnclab.kinetiframe.common.ui.StampAsset
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.common.StampAsset
 
 /** One tile in a pack's contents drill-down grid -- a tinted icon over a light surface, with the
  * stamp's name underneath. */

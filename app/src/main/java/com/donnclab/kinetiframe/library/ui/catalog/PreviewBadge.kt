@@ -25,7 +25,7 @@ import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 
 /** The small pill in an Asset Details Card's preview area saying what kind of preview this is --
  * "Live preview -- loops", "Static preview", or "Preview" for audio. Text is passed in rather than
- * derived here, since the exact copy differs slightly by [com.donnclab.kinetiframe.common.ui.PreviewKind]. */
+ * derived here, since the exact copy differs slightly by [com.donnclab.kinetiframe.presentation.common.PreviewKind]. */
 @Composable
 fun PreviewBadge(label: String, icon: ImageVector = Icons.Filled.PlayArrow, modifier: Modifier = Modifier) {
     Row(

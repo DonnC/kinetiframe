@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.donnclab.kinetiframe.common.ui.FullScreenDialog
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.document.Layer
@@ -36,6 +35,7 @@ import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArchiver
 import com.donnclab.kinetiframe.library.data.PackItemEntry
 import com.donnclab.kinetiframe.library.data.PackManifest
+import com.donnclab.kinetiframe.presentation.common.FullScreenDialog
 import com.donnclab.kinetiframe.studio.EditorScreen
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import kotlinx.coroutines.Dispatchers

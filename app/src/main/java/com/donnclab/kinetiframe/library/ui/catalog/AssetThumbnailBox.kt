@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.common.ui.CardThumbnail
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.common.CardThumbnail
 
 /**
  * Renders one [CardThumbnail] variant -- a single centered icon on a gradient, a 2x2 icon collage

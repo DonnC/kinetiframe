@@ -40,9 +40,9 @@ import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.EyeOff
 import com.composables.icons.lucide.GripVertical
 import com.composables.icons.lucide.Lucide
-import com.donnclab.kinetiframe.common.ui.DenseTextField
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.common.DenseTextField
 
 @Composable
 fun LayerItem(

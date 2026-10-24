@@ -30,12 +30,12 @@ import com.composables.icons.lucide.Unlink
 import com.composables.icons.lucide.Video
 import com.composables.icons.lucide.Volume2
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
-import com.donnclab.kinetiframe.common.ui.ContextIconAction
-import com.donnclab.kinetiframe.common.ui.ContextSliderButton
-import com.donnclab.kinetiframe.common.ui.IconContextMenu
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.VideoClipPlacement
+import com.donnclab.kinetiframe.presentation.common.ContextIconAction
+import com.donnclab.kinetiframe.presentation.common.ContextSliderButton
+import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 

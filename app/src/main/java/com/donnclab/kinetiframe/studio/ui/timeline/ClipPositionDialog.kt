@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.common.ui.CompactTextField
 import com.donnclab.kinetiframe.core.document.MAX_AUDIO_TRACKS
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 /** Frame numbers are one-based in the UI, zero-based at the intent boundary. */
 @Composable

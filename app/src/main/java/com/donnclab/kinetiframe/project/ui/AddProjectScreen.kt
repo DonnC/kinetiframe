@@ -22,10 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.ChevronRight
 import com.composables.icons.lucide.Lucide
-import com.donnclab.kinetiframe.common.ui.AddFlowBottomBar
-import com.donnclab.kinetiframe.common.ui.AddFlowTopBar
-import com.donnclab.kinetiframe.common.ui.CompactTextField
-import com.donnclab.kinetiframe.common.ui.StandardSlider
+import com.donnclab.kinetiframe.presentation.common.AddFlowBottomBar
+import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
+import com.donnclab.kinetiframe.presentation.common.StandardSlider
 
 /**
  * Home's "New Project" flow: a name, the canvas size chosen on [AddProjectCanvasSizeScreen] (a

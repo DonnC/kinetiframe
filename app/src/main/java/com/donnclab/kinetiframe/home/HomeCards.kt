@@ -51,12 +51,12 @@ import coil.compose.AsyncImage
 import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.R
-import com.donnclab.kinetiframe.common.ui.ContextIconAction
-import com.donnclab.kinetiframe.common.ui.IconContextMenu
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.data.project.ProjectManifest
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
+import com.donnclab.kinetiframe.presentation.common.ContextIconAction
+import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 import java.io.File
 
 /** One Home dashboard card, shared shape across all three tabs: a full-bleed thumbnail, a small

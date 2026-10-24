@@ -32,8 +32,8 @@ import com.composables.icons.lucide.ListTree
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Paintbrush
 import com.composables.icons.lucide.Save
-import com.donnclab.kinetiframe.common.ui.ContextIconAction
-import com.donnclab.kinetiframe.common.ui.IconContextMenu
+import com.donnclab.kinetiframe.presentation.common.ContextIconAction
+import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 import com.donnclab.kinetiframe.studio.ActorEditTarget
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode

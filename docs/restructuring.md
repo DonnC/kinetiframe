@@ -24,7 +24,9 @@ actor documents (see Discoveries):
 - **4c, done (#23).** The shared Room database moved to `data.db` and project storage to
   `data.project`. `CelExposureIndex` moved to `core.document`. The `.kframe` archiver stays in
   `app` (see Discoveries).
-- **4d.** Move the shared app UI in `common` into `presentation`, next to `BaseViewModel`.
+- **4d, in review.** The shared app UI in `common` moved to `presentation.common`, with the brand
+  images it draws and the brand bar. `PendingJobs` moved to `core.coroutines`. The unused
+  `JsonSerializer` was deleted, so `app` no longer has a `common` package.
 
 ## Next
 
@@ -48,7 +50,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
   check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
-  code, and the 206 places where UI code imports a `data` package. Screens should reach storage
+  code, and the 144 places where UI code imports a `data` package. Screens should reach storage
   through their ViewModel, as in strict MVI.
 - **Parameter limits.** 53 functions still take more than the allowed number of parameters.
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
@@ -133,6 +135,7 @@ fixed after the module work, unless one blocks testing.
 | #19 | Started this tracker |
 | #20 | Moved generic storage and crash reports into `data` (step 4a) |
 | #21 | Moved the actor documents into `core` (step 4b) |
+| #22 | Ran CI only for pull requests and pushes to `main` during the restructuring |
 | #23 | Moved the Room database and project storage into `data` (step 4c) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
@@ -164,11 +167,11 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Debt counts
 
-From `.architecture/` after 4c. Each count may only go down.
+From `.architecture/` after 4d. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| References to a feature above | 216 | 69 |
+| References to a feature above | 211 | 67 |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 144 | 46 |
 | Functions over the parameter limit | 53 | — |

@@ -22,8 +22,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Folder
 import com.composables.icons.lucide.Lucide
-import com.donnclab.kinetiframe.common.ui.CompactTextField
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.studio.StudioIntent
 
 /** The actor's name, tap-to-rename. One of the sections composed by [PuppetInspector]. */
