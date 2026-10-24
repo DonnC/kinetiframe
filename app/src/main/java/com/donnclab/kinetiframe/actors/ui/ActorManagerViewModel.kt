@@ -2,12 +2,12 @@ package com.donnclab.kinetiframe.actors.ui
 
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.actors.data.ActorBundleRepository
-import com.donnclab.kinetiframe.actors.data.ActorManifest
 import com.donnclab.kinetiframe.actors.data.ActorReferenceIndex
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorRevision
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.ui.BaseViewModel
@@ -71,9 +71,9 @@ class ActorManagerViewModel(
             ActorTemplate.CUSTOM -> ActorManifest.CUSTOM_TEMPLATE_ID
         }
         val view = when (template) {
-            ActorTemplate.HUMAN -> com.donnclab.kinetiframe.actors.rig.model.ActorView.FRONT
-            ActorTemplate.ANIMAL -> com.donnclab.kinetiframe.actors.rig.model.ActorView.PROFILE
-            ActorTemplate.CUSTOM -> com.donnclab.kinetiframe.actors.rig.model.ActorView.ORIGINAL
+            ActorTemplate.HUMAN -> com.donnclab.kinetiframe.core.actor.rigging.ActorView.FRONT
+            ActorTemplate.ANIMAL -> com.donnclab.kinetiframe.core.actor.rigging.ActorView.PROFILE
+            ActorTemplate.CUSTOM -> com.donnclab.kinetiframe.core.actor.rigging.ActorView.ORIGINAL
         }
         repository.save(
             ActorManifest(

@@ -47,8 +47,9 @@ class ActorFrameRenderer(
     private val bitmapCache =
         SharedResourceCache<String, Bitmap>(cacheCapacity, cacheBytes) { it.allocationByteCount.toLong() }
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
-    private val revisionCache = ActorDocumentCache<com.donnclab.kinetiframe.actors.data.ActorRevision>()
-    private val performanceCache = ActorDocumentCache<com.donnclab.kinetiframe.actors.data.PerformanceDocument>()
+    private val revisionCache = ActorDocumentCache<com.donnclab.kinetiframe.core.actor.document.ActorRevision>()
+    private val performanceCache =
+        ActorDocumentCache<com.donnclab.kinetiframe.core.actor.document.PerformanceDocument>()
     private val resolver = ResolveActorRenderUseCase(
         actors,
         performances,

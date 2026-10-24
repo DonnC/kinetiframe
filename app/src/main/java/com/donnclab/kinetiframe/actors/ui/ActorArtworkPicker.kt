@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.actors.data.ActorArtworkDecoder
-import com.donnclab.kinetiframe.actors.data.LibraryItemKind
-import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArtworkRegistration

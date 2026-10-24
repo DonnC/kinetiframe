@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
 import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawing
 import com.donnclab.kinetiframe.core.actor.artwork.ArtworkSkin
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingBinding
@@ -17,6 +16,7 @@ import com.donnclab.kinetiframe.core.actor.artwork.SkinVertex
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.actor.validation.ActorGraphValidation
 import com.donnclab.kinetiframe.core.geometry.Point2
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf

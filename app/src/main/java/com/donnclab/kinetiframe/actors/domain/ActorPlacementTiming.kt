@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.ActorPlacement
+import com.donnclab.kinetiframe.core.actor.document.ActorPlacement
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 
 /** Maps a project frame to a local performance time without evaluating rig data. */

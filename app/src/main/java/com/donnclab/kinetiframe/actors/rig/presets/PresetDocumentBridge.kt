@@ -1,11 +1,11 @@
 package com.donnclab.kinetiframe.actors.rig.presets
 
-import com.donnclab.kinetiframe.actors.rig.model.ActorView
 import com.donnclab.kinetiframe.core.actor.presets.PresetAuthoredView
 import com.donnclab.kinetiframe.core.actor.presets.PresetRecipe
 import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeChannels
 import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeDocument
 import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeMetadata
+import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 
 internal fun ActorView.neutral(): PresetAuthoredView = when (this) {
     ActorView.ORIGINAL -> PresetAuthoredView.ORIGINAL

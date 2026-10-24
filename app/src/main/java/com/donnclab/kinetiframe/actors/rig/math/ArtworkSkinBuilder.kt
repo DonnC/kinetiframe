@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
 import com.donnclab.kinetiframe.core.actor.artwork.ArtworkSkin
 import com.donnclab.kinetiframe.core.actor.artwork.SkinBone
 import com.donnclab.kinetiframe.core.actor.artwork.SkinGrid
@@ -9,6 +8,7 @@ import com.donnclab.kinetiframe.core.actor.artwork.SkinSourceSize
 import com.donnclab.kinetiframe.core.actor.artwork.SkinVertex
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.actor.validation.ActorGraphValidation
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.min

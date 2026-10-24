@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.library.ui.packs
 
-import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.library.data.AssetCategory
 import com.donnclab.kinetiframe.library.data.AssetOrganization
 import com.donnclab.kinetiframe.library.data.BrowseMode
@@ -9,7 +9,7 @@ import com.donnclab.kinetiframe.library.data.BrowserPosition
 /** Pure browsing/search policy shared by Home and the insertion picker. No raster decoding. */
 object PackBrowserIndex {
     fun key(pack: LibraryItemManifest): String = if (pack.scope ==
-        com.donnclab.kinetiframe.actors.data.LibraryScope.PERSONAL
+        com.donnclab.kinetiframe.core.actor.document.LibraryScope.PERSONAL
     ) {
         pack.libraryItemId
     } else {

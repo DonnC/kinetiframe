@@ -1,5 +1,8 @@
 package com.donnclab.kinetiframe.actors.data
 
+import com.donnclab.kinetiframe.core.actor.document.ActorDocumentValidation
+import com.donnclab.kinetiframe.core.actor.document.ActorPlacement
+import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.encodeToString

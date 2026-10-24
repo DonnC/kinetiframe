@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.library.data
 
-import com.donnclab.kinetiframe.actors.data.LibraryItemKind
-import com.donnclab.kinetiframe.actors.data.LibraryScope
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
+import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.StoreResult
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -153,7 +153,7 @@ class LibraryRepositoryTest {
         requireSuccess(repository.exportAsset(LibraryItemKind.AUDIO, "lib-audio", "Sting", source, nowEpochMs = 1L))
 
         val json = kotlinx.serialization.json.Json { prettyPrint = true }
-        val actorManifest = com.donnclab.kinetiframe.actors.data.LibraryItemManifest(
+        val actorManifest = com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest(
             libraryItemId = "lib-actor",
             kind = LibraryItemKind.ACTOR,
             displayName = "Alice",
@@ -162,7 +162,10 @@ class LibraryRepositoryTest {
         )
         files.writeAtomically(
             File(files.libraryDirectory("lib-actor"), "manifest.json"),
-            json.encodeToString(com.donnclab.kinetiframe.actors.data.LibraryItemManifest.serializer(), actorManifest),
+            json.encodeToString(
+                com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest.serializer(),
+                actorManifest,
+            ),
         )
 
         val listed = requireSuccess(repository.list())

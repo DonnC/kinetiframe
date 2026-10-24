@@ -2,7 +2,7 @@
 package com.donnclab.kinetiframe.studio.editor
 
 import androidx.compose.runtime.Composable
-import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.library.ui.LibraryPickerDialog
 import com.donnclab.kinetiframe.library.ui.LibraryScopeDialog
 import com.donnclab.kinetiframe.studio.StudioIntent

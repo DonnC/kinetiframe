@@ -1,10 +1,8 @@
-package com.donnclab.kinetiframe.actors.data
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.core.actor.document
 
-import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
-import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
-import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.rig.model.ActorView
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
+import com.donnclab.kinetiframe.core.actor.artwork.SceneArtwork
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
@@ -12,13 +10,12 @@ import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 import com.donnclab.kinetiframe.core.actor.presets.PresetValidationDiagnostics
+import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.actor.validation.ActorGraphValidation
+import com.donnclab.kinetiframe.core.document.StorageIds
 import com.donnclab.kinetiframe.core.geometry.Affine2D
-import com.donnclab.kinetiframe.data.storage.StorageIds
-import com.donnclab.kinetiframe.library.data.LibraryRepository
-import com.donnclab.kinetiframe.library.data.PackManifest
-import com.donnclab.kinetiframe.project.data.KframeArchiver
 import kotlinx.serialization.Serializable
 
 /** Stable actor identity and its currently editable structural revision. */
@@ -58,7 +55,7 @@ data class ActorManifest(
         const val ANIMAL_TEMPLATE_ID = "animal-v1"
 
         /** A blank single-root rig the animator builds bone-by-bone from scratch in Actor Studio --
-         *  see [ActorTemplates] for the minimal starting graph. */
+         *  the actor templates hold the minimal starting graph. */
         const val CUSTOM_TEMPLATE_ID = "custom-v1"
         val VALID_TEMPLATE_IDS = setOf(HUMAN_TEMPLATE_ID, ANIMAL_TEMPLATE_ID, CUSTOM_TEMPLATE_ID)
     }
@@ -84,7 +81,7 @@ data class ActorRevision(
         require(sceneGraph.rootBoneIds.isNotEmpty()) { "Actor revision must have a root part" }
         require(sceneGraph.bones.keys.containsAll(sceneGraph.rootBoneIds)) { "Actor revision has unknown root part" }
         val validArtworkAddresses =
-            sceneGraph.bones.keys + ActorArtwork.bindings(sceneGraph).keys
+            sceneGraph.bones.keys + SceneArtwork.bindings(sceneGraph).keys
         // Legacy revisions may retain source artwork for an unbound part. Preserve that contract.
         require(artworkAssetPaths.keys.all(validArtworkAddresses::contains)) {
             "Artwork points to an unknown actor part or variant"
@@ -251,7 +248,7 @@ data class ActorPlacement(
  * a single raw file instead (see [LibraryItemManifest.payloadFileName]) so common file types don't
  * need a bespoke JSON shape just to sit in the same library. PACK is a third shape: a named,
  * tagged collection of several stamp-ready raster drawings (a mouth pack, a hand-gesture pack --
- * see [PackManifest]), always consumed as an independent copy pasted
+ * see the pack manifest), always consumed as an independent copy pasted
  * onto the current frame. Actor setup may also copy a chosen drawing into revision-owned
  * artwork, align its pivot and optionally make it an expression variant. Performance keys
  * select those actor-owned variants, never live pack entries: editing/deleting the original
@@ -264,7 +261,7 @@ enum class LibraryItemKind { ACTOR, PERFORMANCE, BUNDLE, AUDIO, BACKGROUND_IMAGE
  * Where a library item physically lives and who can see it. PROJECT-scoped
  * items are stored inside that project's own working directory (`projects/<id>/vault/`), so they
  * automatically ride along for free in every `.kframe` export/import --
- * [KframeArchiver] already zips the whole project directory, so a
+ * the `.kframe` archiver already zips the whole project directory, so a
  * project-scoped item stays with the project file when it's shared with no archiver change
  * needed. PERSONAL items live in the existing shared `library/` root and are available across
  * every one of the user's projects.
@@ -281,14 +278,14 @@ data class LibraryItemManifest(
     val sourcePerformanceId: String? = null,
     /** The project this item was captured from, for provenance -- never required for import,
      *  unlike [sourceActorId]/[sourcePerformanceId]. Also the physical storage location when
-     *  [scope] is [LibraryScope.PROJECT] (see [LibraryRepository]). */
+     *  [scope] is [LibraryScope.PROJECT]. */
     val sourceProjectId: String? = null,
     /** Defaults to PERSONAL so every manifest written before this field existed (every item from
      *  the first Library pass) still deserializes as exactly what it always was: a personal,
      *  cross-project item. */
     val scope: LibraryScope = LibraryScope.PERSONAL,
     /** Relative filename under this item's own `payload/` directory, for the four "raw asset"
-     *  kinds in [RAW_ASSET_KINDS] -- see [LibraryRepository]. Null
+     *  kinds in [RAW_ASSET_KINDS]. Null
      *  for ACTOR/PERFORMANCE/BUNDLE, which keep their existing structured JSON payload files
      *  (actor.json/performance.json/revision.json) instead. */
     val payloadFileName: String? = null,
@@ -339,6 +336,6 @@ data class LibraryItemManifest(
     }
 }
 
-internal object ActorDocumentValidation {
+object ActorDocumentValidation {
     fun requireId(value: String, label: String) = StorageIds.requireValid(value, label)
 }

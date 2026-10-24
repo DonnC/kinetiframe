@@ -1,6 +1,7 @@
 package com.donnclab.kinetiframe.actors.data
 
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
+import com.donnclab.kinetiframe.core.actor.document.validate
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals

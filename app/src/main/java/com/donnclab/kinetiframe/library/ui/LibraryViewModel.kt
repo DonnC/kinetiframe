@@ -15,7 +15,7 @@ class LibraryViewModel(
     private val catalog: LocalLibraryCatalog,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<LibraryState, LibraryIntent, LibraryEffect>(LibraryState()) {
-    private var items = emptyMap<String, com.donnclab.kinetiframe.actors.data.LibraryItemManifest>()
+    private var items = emptyMap<String, com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest>()
     private var loadJob: Job? = null
     private var packJob: Job? = null
     private val organizationWrites = kotlinx.coroutines.sync.Mutex()
@@ -139,7 +139,7 @@ class LibraryViewModel(
                         audio = loaded.audio,
                         packManifests = loaded.items.filterValues { item ->
                             item.kind ==
-                                com.donnclab.kinetiframe.actors.data.LibraryItemKind.PACK
+                                com.donnclab.kinetiframe.core.actor.document.LibraryItemKind.PACK
                         },
                         packItemNames = loaded.packItemNames, organization = loaded.organization,
                         packBrowser = if (revisionAtStart !=

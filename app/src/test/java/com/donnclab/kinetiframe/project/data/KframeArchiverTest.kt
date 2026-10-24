@@ -134,15 +134,15 @@ class KframeArchiverTest {
 
     @Test fun `archive includes actor revision dependencies outside the project directory`() {
         val files = DocumentFileStore(sourceRoot)
-        val actor = com.donnclab.kinetiframe.actors.data.ActorManifest(
+        val actor = com.donnclab.kinetiframe.core.actor.document.ActorManifest(
             actorId = "alice",
             displayName = "Alice",
-            templateId = com.donnclab.kinetiframe.actors.data.ActorManifest.HUMAN_TEMPLATE_ID,
+            templateId = com.donnclab.kinetiframe.core.actor.document.ActorManifest.HUMAN_TEMPLATE_ID,
             currentRevisionId = "revision-one",
             createdAtEpochMs = 1,
             updatedAtEpochMs = 1,
         )
-        val revision = com.donnclab.kinetiframe.actors.data.ActorRevision(
+        val revision = com.donnclab.kinetiframe.core.actor.document.ActorRevision(
             actorId = "alice",
             revisionId = "revision-one",
             sceneGraph = com.donnclab.kinetiframe.actors.rig.model.ActorTemplates.create(
@@ -152,7 +152,7 @@ class KframeArchiverTest {
             createdAtEpochMs = 1,
         )
         requireSuccess(com.donnclab.kinetiframe.actors.data.ActorRepository(files).save(actor, revision))
-        val performance = com.donnclab.kinetiframe.actors.data.PerformanceDocument(
+        val performance = com.donnclab.kinetiframe.core.actor.document.PerformanceDocument(
             performanceId = "wave",
             projectId = "project-a",
             actorId = "alice",

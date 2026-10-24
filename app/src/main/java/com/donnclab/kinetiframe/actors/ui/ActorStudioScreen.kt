@@ -24,9 +24,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.studio.EditorScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -65,7 +65,7 @@ fun ActorStudioScreen(
     var writingArtwork by remember { mutableStateOf(false) }
     val references =
         remember(actorId) {
-            mutableMapOf<com.donnclab.kinetiframe.actors.rig.model.ActorView, ActorReferenceSession>()
+            mutableMapOf<com.donnclab.kinetiframe.core.actor.rigging.ActorView, ActorReferenceSession>()
         }
     var error by remember { mutableStateOf<String?>(null) }
     var showDiscardConfirmation by remember { mutableStateOf(false) }

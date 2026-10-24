@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.actors.rig.model
 
 import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
+import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
