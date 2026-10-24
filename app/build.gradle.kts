@@ -33,6 +33,9 @@ android {
         // Regenerate it with ./gradlew :app:updateLintBaseline only when removing entries.
         baseline = file("lint-baseline.xml")
         checkDependencies = false
+        // Dependabot reports dependency updates. These checks change with every upstream release,
+        // which would make the same commit pass one day and report new issues the next.
+        disable += setOf("AndroidGradlePluginVersion", "GradleDependency", "NewerVersionAvailable")
     }
 }
 

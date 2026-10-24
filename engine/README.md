@@ -5,8 +5,8 @@ transforms, pose and artwork editing, contact following, skin deformation, artwo
 pose and curve sampling, performance clocks, motion composition and motion presets. It depends
 only on `core`.
 
-This is a good place to contribute if you like geometry and graphics. You can try changes in the
-[sandbox](../sandbox/README.md) app without building the full product.
+This is a good place to contribute if you like geometry and graphics. `./gradlew
+:engine:testDebugUnitTest` runs its tests without the rest of the app.
 
 ## Things to know
 
@@ -20,8 +20,7 @@ This is a good place to contribute if you like geometry and graphics. You can tr
 - **Presets compile lazily.** `AppliedPresetProgram` compiles rotation channels on first use, and
   duration or root-only queries don't touch them.
 
-Algorithm changes need deterministic tests and a check in the product, not only a sandbox
-screenshot.
+Algorithm changes need deterministic tests and a check in the app on a device.
 
 ```sh
 ./gradlew :engine:testDebugUnitTest

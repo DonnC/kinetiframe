@@ -55,7 +55,6 @@ references are in `.architecture/layering-baseline.properties`, under the same r
 | `data` | `core` |
 | `core` | nothing (plain Kotlin, no Android) |
 | `designsystem` | nothing in the project (Compose only) |
-| `sandbox` | `core`, `engine` |
 
 - Dependencies point down this table. No cycles.
 - Engine math packages use no Android or Compose types. Translate geometry at the UI edge.

@@ -18,14 +18,7 @@ spotless {
 
 val architectureParser by configurations.creating
 dependencies { architectureParser("org.jetbrains.kotlin:kotlin-compiler-embeddable:${libs.versions.kotlin.get()}") }
-// -PengineOnly=true builds only core, engine and the sandbox app (see settings.gradle.kts).
-// -PpublicOnly=true is the old name for the same option and still works.
-val engineOnly = providers.gradleProperty("engineOnly").orElse(providers.gradleProperty("publicOnly")).orNull == "true"
-val auditedModules = if (engineOnly) {
-    listOf("core", "engine", "sandbox")
-} else {
-    listOf("app", "core", "engine", "data", "presentation", "designsystem", "sandbox")
-}
+val auditedModules = listOf("app", "core", "engine", "data", "presentation", "designsystem")
 tasks.register<quality.ArchitectureCheckTask>("checkArchitecture") {
     repository.set(layout.projectDirectory)
     modules.set(auditedModules)
@@ -43,20 +36,15 @@ tasks.register<quality.ArchitectureCheckTask>("reportArchitectureDebt") {
 // Device tests (connectedDebugAndroidTest) still need an emulator or phone and run separately.
 tasks.register("verify") {
     group = "verification"
-    description = "Runs formatting, the architecture check, host tests and lint for the modules in this build."
+    description = "Runs formatting, the architecture check, host tests and lint."
     dependsOn(
         "spotlessCheck",
         "checkArchitecture",
         ":core:test",
         ":engine:testDebugUnitTest",
-        ":sandbox:testDebugUnitTest",
+        ":data:testDebugUnitTest",
+        ":designsystem:testDebugUnitTest",
+        ":app:testDebugUnitTest",
+        ":app:lintDebug",
     )
-    if (!engineOnly) {
-        dependsOn(
-            ":data:testDebugUnitTest",
-            ":designsystem:testDebugUnitTest",
-            ":app:testDebugUnitTest",
-            ":app:lintDebug",
-        )
-    }
 }

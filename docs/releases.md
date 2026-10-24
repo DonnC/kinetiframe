@@ -18,8 +18,7 @@ Feature and fix branches are deleted after they are merged.
 
 ## Development builds
 
-The Android checks workflow tests and builds the app and sandbox. Each successful matrix job
-uploads its debug APK, full commit ID and SHA-256 checksum as an artifact retained for 14 days.
+The Android checks workflow tests and builds the app. A successful run uploads the debug APK, full commit ID and SHA-256 checksum as an artifact retained for 14 days.
 Test reports are uploaded even when tests fail, unless the run is cancelled. Pull requests and
 manual runs can produce artifacts but cannot publish a release.
 
@@ -66,7 +65,7 @@ do not paste internal refactoring transcripts or claim tests that were not run.
 1. Choose and review the exact commit. Ensure the working tree is clean and CI passes.
 2. Update app version fields and changelog. Review resolved dependency licenses and required
    notices, asset provenance and archived-file contents. Check for secrets in the full history.
-3. Build the app and sandbox, run host and device tests, and test install/update, drawing,
+3. Build the app, run host and device tests, and test install/update, drawing,
    save/reopen, import/export, actor playback, audio and camera effects on physical hardware.
 4. Test older sample archives and document any migration or incompatibility. Measure memory,
    playback and export behavior on representative hardware; do not infer this from host tests.

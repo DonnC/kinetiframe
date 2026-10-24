@@ -15,13 +15,9 @@ concurrency:
 
 jobs:
   build:
-    name: ${{ matrix.scope }}
+    name: app
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    strategy:
-      fail-fast: false
-      matrix:
-        scope: [app, sandbox]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -33,7 +29,6 @@ jobs:
       - name: Install Android platform
         run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-37.0' > /dev/null
       - name: Test architecture checker
-        if: matrix.scope == 'app'
         run: |
           chmod +x gradlew
           ./gradlew -p buildSrc test --no-daemon
@@ -41,26 +36,20 @@ jobs:
         shell: bash
         run: |
           chmod +x gradlew
-          if [ '${{ matrix.scope }}' = 'app' ]; then
-            ./gradlew verify :app:assembleDebug :app:compileDebugAndroidTestKotlin :designsystem:compileDebugAndroidTestKotlin --no-daemon
-          else
-            ./gradlew -PengineOnly=true verify :sandbox:assembleDebug :sandbox:compileDebugAndroidTestKotlin --no-daemon
-          fi
+          ./gradlew verify :app:assembleDebug :app:compileDebugAndroidTestKotlin :designsystem:compileDebugAndroidTestKotlin --no-daemon
       - name: Collect development APK
         if: success()
         shell: bash
-        env:
-          SCOPE: ${{ matrix.scope }}
         run: |
           mkdir -p distribution
-          cp "$SCOPE/build/outputs/apk/debug/$SCOPE-debug.apk" "distribution/kinetiframe-$SCOPE-dev-${GITHUB_SHA:0:12}.apk"
+          cp app/build/outputs/apk/debug/app-debug.apk "distribution/kinetiframe-app-dev-${GITHUB_SHA:0:12}.apk"
           printf '%s\n' "$GITHUB_SHA" > distribution/COMMIT.txt
           (cd distribution && sha256sum *.apk > SHA256SUMS.txt)
       - name: Upload development APK
         if: success()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          name: development-${{ matrix.scope }}-${{ github.sha }}
+          name: development-app-${{ github.sha }}
           path: distribution/
           if-no-files-found: error
           retention-days: 14
@@ -68,7 +57,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          name: reports-${{ matrix.scope }}-${{ github.sha }}
+          name: reports-app-${{ github.sha }}
           path: |
             **/build/reports/tests/
             **/build/test-results/

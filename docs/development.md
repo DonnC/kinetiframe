@@ -84,17 +84,15 @@ Android lint runs as part of `verify`. Existing warnings are recorded in `app/li
 so only new problems fail the build. Open `app/build/reports/lint-results-debug.html` to read the
 report.
 
-## Engine-only build
+## Engine work
 
-If you are working on rigging, IK or deformation, you can skip the app and its artwork entirely:
+If you are working on rigging, IK or deformation, run the engine's tests on their own:
 
 ```sh
-./gradlew -PengineOnly=true :sandbox:installDebug
-./gradlew -PengineOnly=true verify
+./gradlew :core:test :engine:testDebugUnitTest
 ```
 
-This builds only `core`, `engine` and the [sandbox](../sandbox/README.md) app, which lets you drag
-procedural joints and see the deformation live. The older name `-PpublicOnly=true` still works.
+Check the result in the app's Actor Studio before opening a pull request.
 
 ## Tests and test data
 
