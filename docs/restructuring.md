@@ -13,11 +13,8 @@ Keep this page current:
 
 ## Now
 
-**Step 5: media module, in review.** `audio`, `video` and the image decoders are now the `media`
-module (`media.audio`, `media.video`, `media.image`). The playback managers that drive
-`StudioState` moved to `studio.media`, the audio mixer moved from `export` to `media.audio`, and
-the clip waveform moved from the studio timeline. Step 4 (data and presentation) finished with
-#20, #21, #23 and #24.
+**Actors split**, the first step under Next, starts after this. Step 5 (the media module) finished
+with #25.
 
 ## Next
 
@@ -82,6 +79,11 @@ fixed after the module work, unless one blocks testing.
 
 **Editor**
 
+- **Blocks voice-over.** In landscape the audio recorder dialog is taller than the screen and
+  doesn't scroll, so its "Add to timeline" button is out of reach and a recorded take can't be
+  used. Seen on a Galaxy A73.
+- The asset menu cuts off "Actor perfor…" and "Import audio …".
+- The asset tracks panel covers the whole stage and says only "No clips yet".
 - "Save before leaving?" appears even right after saving with nothing changed. In that dialog,
   Discard looks like the safe buttons although it throws work away.
 - A successful save opens a blocking dialog that needs OK. A short message would do.
@@ -100,6 +102,9 @@ fixed after the module work, unless one blocks testing.
   views" in the title, and the last card sits under the + button.
 - Actor views are listed alphabetically; Front should come first.
 - Leaving Actor Studio returns to the Projects tab, not the Actors tab it was opened from.
+- On a fresh install the Library's Audio tab says "No matching items. Try another filter or
+  search." with no filter or search applied.
+- Settings is a bottom bar tab but shows a back arrow and a second header under the brand bar.
 
 **System bars**
 
@@ -130,6 +135,7 @@ fixed after the module work, unless one blocks testing.
 | #22 | Ran CI only for pull requests and pushes to `main` during the restructuring |
 | #23 | Moved the Room database and project storage into `data` (step 4c) |
 | #24 | Moved the shared app UI into `presentation` (step 4d) |
+| #25 | Moved studio media code into `studio.media` and extracted the `media` module (step 5) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
