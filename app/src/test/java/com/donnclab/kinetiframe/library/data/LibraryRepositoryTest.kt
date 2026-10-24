@@ -68,10 +68,10 @@ class LibraryRepositoryTest {
     }
 
     @Test fun `a populated library index cannot hide another saved resource`() {
-        val rows = mutableMapOf<String, com.donnclab.kinetiframe.actors.data.db.LibraryItemEntity>()
-        val dao = object : com.donnclab.kinetiframe.actors.data.db.LibraryItemDao {
+        val rows = mutableMapOf<String, com.donnclab.kinetiframe.data.db.LibraryItemEntity>()
+        val dao = object : com.donnclab.kinetiframe.data.db.LibraryItemDao {
             override fun list(scope: String, projectId: String?) = rows.values.toList()
-            override fun upsert(entity: com.donnclab.kinetiframe.actors.data.db.LibraryItemEntity) {
+            override fun upsert(entity: com.donnclab.kinetiframe.data.db.LibraryItemEntity) {
                 rows[entity.libraryItemId] =
                     entity
             }

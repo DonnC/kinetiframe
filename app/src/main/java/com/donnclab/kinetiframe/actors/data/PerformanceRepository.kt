@@ -20,7 +20,7 @@ class PerformanceRepository(
         ignoreUnknownKeys = false
         prettyPrint = true
     },
-    private val dao: com.donnclab.kinetiframe.actors.data.db.PerformanceDao? = null,
+    private val dao: com.donnclab.kinetiframe.data.db.PerformanceDao? = null,
 ) {
     /** Discover motions across projects; placements keep an independent local snapshot. */
     fun listForActor(actorId: String): StoreResult<List<PerformanceDocument>> = runCatching {
@@ -154,7 +154,7 @@ class PerformanceRepository(
         }
     }
 
-    private fun toEntity(document: PerformanceDocument) = com.donnclab.kinetiframe.actors.data.db.PerformanceEntity(
+    private fun toEntity(document: PerformanceDocument) = com.donnclab.kinetiframe.data.db.PerformanceEntity(
         performanceId = document.performanceId, projectId = document.projectId, actorId = document.actorId,
         actorRevisionId = document.actorRevisionId, displayName = document.displayName,
         durationMicros = document.durationMicros, playback = document.playback.name,
@@ -165,16 +165,15 @@ class PerformanceRepository(
      *  call site (name, duration, actor/revision identity) -- pose keys and rotation curves stay
      *  empty, since nothing that reads a *listed* performance touches them; a caller that needs
      *  the real animation data always [load]s the full document by ID separately before using it. */
-    private fun toIndexOnlyDocument(entity: com.donnclab.kinetiframe.actors.data.db.PerformanceEntity) =
-        PerformanceDocument(
-            performanceId = entity.performanceId, projectId = entity.projectId, actorId = entity.actorId,
-            actorRevisionId = entity.actorRevisionId, displayName = entity.displayName,
-            durationMicros = entity.durationMicros,
-            playback = runCatching {
-                PerformancePlayback.valueOf(entity.playback)
-            }.getOrDefault(PerformancePlayback.LOOP),
-            createdAtEpochMs = entity.createdAtEpochMs, updatedAtEpochMs = entity.updatedAtEpochMs,
-        )
+    private fun toIndexOnlyDocument(entity: com.donnclab.kinetiframe.data.db.PerformanceEntity) = PerformanceDocument(
+        performanceId = entity.performanceId, projectId = entity.projectId, actorId = entity.actorId,
+        actorRevisionId = entity.actorRevisionId, displayName = entity.displayName,
+        durationMicros = entity.durationMicros,
+        playback = runCatching {
+            PerformancePlayback.valueOf(entity.playback)
+        }.getOrDefault(PerformancePlayback.LOOP),
+        createdAtEpochMs = entity.createdAtEpochMs, updatedAtEpochMs = entity.updatedAtEpochMs,
+    )
 
     private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
     private fun failure(error: Throwable): StoreResult.Failure =

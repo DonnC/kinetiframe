@@ -1,5 +1,10 @@
+// SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.project.data
 
+import com.donnclab.kinetiframe.data.project.ProjectManifest
+import com.donnclab.kinetiframe.data.project.ProjectRepository
+import com.donnclab.kinetiframe.data.project.ProjectSaveDocument
+import com.donnclab.kinetiframe.data.project.ProjectSnapshot
 import com.donnclab.kinetiframe.data.storage.ContainedPaths
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.DurableFile
@@ -174,10 +179,10 @@ object KframeArchiver {
             val document = json.decodeFromString<ProjectSaveDocument>(File(stagingDir, "document.json").readText())
             require(document.project.id == manifest.projectId && document.totalFrames > 0)
             require(document.project.stage == manifest.stage && document.project.fps == manifest.fps)
-            com.donnclab.kinetiframe.studio.render.CelExposureIndex.validate(document.linkedCels, document.totalFrames)
+            com.donnclab.kinetiframe.core.document.CelExposureIndex.validate(document.linkedCels, document.totalFrames)
             document.linkedCels.forEach { (layer, exposures) ->
                 exposures.values.distinct().forEach { cel ->
-                    val key = com.donnclab.kinetiframe.studio.render.CelExposureIndex.storageKey(layer, cel)
+                    val key = com.donnclab.kinetiframe.core.document.CelExposureIndex.storageKey(layer, cel)
                     require(File(stagingDir, "frames/frame_v2_$key.png").isFile) { "Held drawing pixels are missing" }
                 }
             }

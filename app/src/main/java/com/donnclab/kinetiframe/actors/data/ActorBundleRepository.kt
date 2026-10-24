@@ -28,7 +28,7 @@ class ActorBundleRepository(
     /** Best-effort index write for the ACTOR/PERFORMANCE library items this class creates, same
      *  contract as [com.donnclab.kinetiframe.library.data.LibraryRepository]'s own [dao] -- a listing that
      *  hasn't seen this write yet just self-heals from disk next time it comes back empty. */
-    private val libraryDao: com.donnclab.kinetiframe.actors.data.db.LibraryItemDao? = null,
+    private val libraryDao: com.donnclab.kinetiframe.data.db.LibraryItemDao? = null,
 ) {
     fun exportActor(
         actorId: String,
@@ -274,7 +274,7 @@ class ActorBundleRepository(
         val d = libraryDao ?: return
         runCatching {
             d.upsert(
-                com.donnclab.kinetiframe.actors.data.db.LibraryItemEntity(
+                com.donnclab.kinetiframe.data.db.LibraryItemEntity(
                     libraryItemId = manifest.libraryItemId,
                     kind = manifest.kind.name,
                     displayName = manifest.displayName,

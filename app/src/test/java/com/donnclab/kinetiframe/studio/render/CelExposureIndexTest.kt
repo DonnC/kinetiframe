@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.studio.render
 
+import com.donnclab.kinetiframe.core.document.CelExposureIndex
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test

@@ -3,6 +3,9 @@ package com.donnclab.kinetiframe.project.data
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.project.ProjectManifest
+import com.donnclab.kinetiframe.data.project.ProjectRepository
+import com.donnclab.kinetiframe.data.project.ProjectSaveDocument
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.StoreResult
 import org.junit.jupiter.api.Assertions.assertEquals

@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.export.data.db
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.data.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,7 +10,7 @@ import androidx.room.PrimaryKey
  * over the real file on disk, never the source of truth: [filePath] pointing at a file that no longer exists just means the row is stale and
  * should be dropped, not that anything is corrupted.
  *
- * Keeping this as its own table rather than cramming fields onto [com.donnclab.kinetiframe.project.data.db.ProjectEntity]
+ * Keeping this as its own table rather than cramming fields onto [com.donnclab.kinetiframe.data.db.ProjectEntity]
  * matters because a project can be exported more than once (different presets, re-exports after
  * edits) -- a 1:1 field would either overwrite history or need its own array-in-a-column hack.
  */

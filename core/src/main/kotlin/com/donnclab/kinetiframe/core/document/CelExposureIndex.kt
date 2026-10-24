@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.studio.render
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.core.document
 
 /** A stable cel ID owns pixels; frame positions only expose it. Never alias mutable Bitmaps by
  * numeric frame index: deleting the first exposure must not delete a held drawing's owner. */

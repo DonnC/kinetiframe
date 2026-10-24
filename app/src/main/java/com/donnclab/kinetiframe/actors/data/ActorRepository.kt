@@ -1,7 +1,5 @@
 package com.donnclab.kinetiframe.actors.data
 
-import com.donnclab.kinetiframe.actors.data.db.ActorDao
-import com.donnclab.kinetiframe.actors.data.db.ActorEntity
 import com.donnclab.kinetiframe.actors.domain.ActorTemplateContract
 import com.donnclab.kinetiframe.actors.render.ActorThumbnailMaker
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
@@ -14,6 +12,8 @@ import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.db.ActorDao
+import com.donnclab.kinetiframe.data.db.ActorEntity
 import com.donnclab.kinetiframe.data.storage.ContainedPaths
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.StoreResult

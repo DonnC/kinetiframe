@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.project.data
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.data.project
 
 import com.donnclab.kinetiframe.data.storage.DurableFile
 import java.io.File

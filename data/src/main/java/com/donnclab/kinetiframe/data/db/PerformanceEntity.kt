@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.actors.data.db
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.data.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -28,8 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.core.document.StageDimensions
-import com.donnclab.kinetiframe.project.data.ProjectManifest
-import com.donnclab.kinetiframe.project.data.ProjectRepository
+import com.donnclab.kinetiframe.data.project.ProjectManifest
+import com.donnclab.kinetiframe.data.project.ProjectRepository
 
 /** One dashboard card. Shows the project's real frame-0 thumbnail once one has been generated
  *  (see [ProjectRepository.thumbnailFile] and EditorScreen's
