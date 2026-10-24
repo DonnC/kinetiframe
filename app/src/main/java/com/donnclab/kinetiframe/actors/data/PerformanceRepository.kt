@@ -1,6 +1,8 @@
 package com.donnclab.kinetiframe.actors.data
 
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -10,7 +12,7 @@ import java.io.File
  * lightweight fields, but returning a document must never silently strip its authored motion.
  */
 class PerformanceRepository(
-    private val files: ActorFileStore,
+    private val files: DocumentFileStore,
     private val json: Json = Json {
         ignoreUnknownKeys = false
         prettyPrint = true
@@ -18,22 +20,22 @@ class PerformanceRepository(
     private val dao: com.donnclab.kinetiframe.actors.data.db.PerformanceDao? = null,
 ) {
     /** Discover motions across projects; placements keep an independent local snapshot. */
-    fun listForActor(actorId: String): ActorStoreResult<List<PerformanceDocument>> = runCatching {
+    fun listForActor(actorId: String): StoreResult<List<PerformanceDocument>> = runCatching {
         ActorDocumentValidation.requireId(actorId, "actor ID")
         files.projectsRoot().listFiles().orEmpty().filter(File::isDirectory).flatMap { directory ->
             when (val result = list(directory.name, actorId)) {
-                is ActorStoreResult.Value -> result.value
-                is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+                is StoreResult.Value -> result.value
+                is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
             }
         }.sortedBy { it.displayName.lowercase() }
     }.fold(::value, ::failure)
 
     /** Copy, never relocate: later edits cannot alter the original project's motion. */
-    fun copyIntoProject(source: PerformanceDocument, projectId: String): ActorStoreResult<PerformanceDocument> {
+    fun copyIntoProject(source: PerformanceDocument, projectId: String): StoreResult<PerformanceDocument> {
         if (source.projectId == projectId) return load(projectId, source.performanceId)
         val existing = when (val result = list(projectId, source.actorId)) {
-            is ActorStoreResult.Value -> result.value
-            is ActorStoreResult.Failure -> return result
+            is StoreResult.Value -> result.value
+            is StoreResult.Failure -> return result
         }
         var name = source.displayName
         var suffix = 2
@@ -46,15 +48,15 @@ class PerformanceRepository(
             ),
         )
     }
-    fun save(document: PerformanceDocument): ActorStoreResult<PerformanceDocument> = runCatching {
+    fun save(document: PerformanceDocument): StoreResult<PerformanceDocument> = runCatching {
         document.validate()
         val duplicateName = when (val existing = list(document.projectId, document.actorId)) {
-            is ActorStoreResult.Value -> existing.value.any {
+            is StoreResult.Value -> existing.value.any {
                 it.performanceId != document.performanceId &&
                     it.displayName.equals(document.displayName, ignoreCase = true)
             }
 
-            is ActorStoreResult.Failure -> throw IllegalStateException(existing.message, existing.cause)
+            is StoreResult.Failure -> throw IllegalStateException(existing.message, existing.cause)
         }
         require(!duplicateName) {
             "An actor performance named '${document.displayName}' already exists in this project"
@@ -67,7 +69,7 @@ class PerformanceRepository(
         document
     }.fold(::value, ::failure)
 
-    fun list(projectId: String, actorId: String? = null): ActorStoreResult<List<PerformanceDocument>> = runCatching {
+    fun list(projectId: String, actorId: String? = null): StoreResult<List<PerformanceDocument>> = runCatching {
         ActorDocumentValidation.requireId(projectId, "project ID")
         val cached = dao?.let { d -> runCatching { d.getForProject(projectId) }.getOrNull() }
         val fromDisk = File(files.projectDirectory(projectId), "performances").listFiles().orEmpty()
@@ -86,7 +88,7 @@ class PerformanceRepository(
         fromDisk.filter { actorId == null || it.actorId == actorId }.sortedBy { it.displayName.lowercase() }
     }.fold(::value, ::failure)
 
-    fun load(projectId: String, performanceId: String): ActorStoreResult<PerformanceDocument> = runCatching {
+    fun load(projectId: String, performanceId: String): StoreResult<PerformanceDocument> = runCatching {
         ActorDocumentValidation.requireId(projectId, "project ID")
         ActorDocumentValidation.requireId(performanceId, "performance ID")
         json.decodeFromString<PerformanceDocument>(
@@ -103,7 +105,7 @@ class PerformanceRepository(
         performanceId: String,
         name: String,
         nowEpochMs: Long,
-    ): ActorStoreResult<PerformanceDocument> = runCatching {
+    ): StoreResult<PerformanceDocument> = runCatching {
         val original = loadValue(projectId, performanceId)
         val renamed = original.copy(displayName = name.trim(), updatedAtEpochMs = nowEpochMs).validate()
         saveValue(renamed)
@@ -115,7 +117,7 @@ class PerformanceRepository(
         performanceId: String,
         newPerformanceId: String,
         nowEpochMs: Long,
-    ): ActorStoreResult<PerformanceDocument> = runCatching {
+    ): StoreResult<PerformanceDocument> = runCatching {
         val original = loadValue(projectId, performanceId)
         val duplicate = original.copy(
             performanceId = newPerformanceId,
@@ -127,7 +129,7 @@ class PerformanceRepository(
         duplicate
     }.fold(::value, ::failure)
 
-    fun archive(projectId: String, performanceId: String): ActorStoreResult<Result<Unit>?> = runCatching {
+    fun archive(projectId: String, performanceId: String): StoreResult<Result<Unit>?> = runCatching {
         require(files.performanceFile(projectId, performanceId).isFile) { "Performance not found" }
         files.move(
             files.performanceFile(projectId, performanceId),
@@ -138,14 +140,14 @@ class PerformanceRepository(
 
     private fun loadValue(projectId: String, performanceId: String): PerformanceDocument =
         when (val result = load(projectId, performanceId)) {
-            is ActorStoreResult.Value -> result.value
-            is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+            is StoreResult.Value -> result.value
+            is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
         }
 
     private fun saveValue(document: PerformanceDocument) {
         when (val result = save(document)) {
-            is ActorStoreResult.Value -> Unit
-            is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+            is StoreResult.Value -> Unit
+            is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
         }
     }
 
@@ -171,7 +173,7 @@ class PerformanceRepository(
             createdAtEpochMs = entity.createdAtEpochMs, updatedAtEpochMs = entity.updatedAtEpochMs,
         )
 
-    private fun <T> value(value: T): ActorStoreResult<T> = ActorStoreResult.Value(value)
-    private fun failure(error: Throwable): ActorStoreResult.Failure =
-        ActorStoreResult.Failure(error.message ?: "Performance storage failed", error)
+    private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
+    private fun failure(error: Throwable): StoreResult.Failure =
+        StoreResult.Failure(error.message ?: "Performance storage failed", error)
 }

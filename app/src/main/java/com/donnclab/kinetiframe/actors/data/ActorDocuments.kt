@@ -14,6 +14,7 @@ import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import com.donnclab.kinetiframe.core.geometry.Affine2D
+import com.donnclab.kinetiframe.data.storage.StorageIds
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackManifest
 import com.donnclab.kinetiframe.project.data.KframeArchiver
@@ -338,6 +339,5 @@ data class LibraryItemManifest(
 }
 
 internal object ActorDocumentValidation {
-    private val idPattern = Regex("[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}")
-    fun requireId(value: String, label: String) = require(value.matches(idPattern)) { "Invalid $label" }
+    fun requireId(value: String, label: String) = StorageIds.requireValid(value, label)
 }

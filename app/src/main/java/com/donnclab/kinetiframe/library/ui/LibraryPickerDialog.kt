@@ -51,10 +51,10 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Music
 import com.composables.icons.lucide.Shapes
 import com.composables.icons.lucide.Square
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.LibraryScope
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -104,8 +104,8 @@ fun LibraryPickerDialog(
         loading = true
         error = null
         when (val result = withContext(Dispatchers.IO) { library.list(scope, projectId) }) {
-            is ActorStoreResult.Value -> items = result.value
-            is ActorStoreResult.Failure -> error = result.message
+            is StoreResult.Value -> items = result.value
+            is StoreResult.Failure -> error = result.message
         }
         loading = false
     }
@@ -249,12 +249,12 @@ internal fun LibraryItemCard(
                                 item.libraryItemId,
                                 item.scope,
                                 item.sourceProjectId,
-                            ) as? ActorStoreResult.Value
+                            ) as? StoreResult.Value
                             )?.value?.second?.items?.firstOrNull()?.let {
                             localLibrary.packItemFile(item.libraryItemId, it.file, item.scope, item.sourceProjectId)
                         }
                     } else {
-                        (localLibrary.assetFile(item) as? ActorStoreResult.Value)?.value
+                        (localLibrary.assetFile(item) as? StoreResult.Value)?.value
                     }
                 }
             } else {

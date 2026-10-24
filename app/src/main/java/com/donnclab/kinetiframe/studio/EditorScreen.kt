@@ -17,13 +17,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.actors.data.ActorPresetRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.actors.ui.ActorReferenceSession
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.ui.packs.PackCreatorConfig
 import com.donnclab.kinetiframe.project.data.ProjectFrameDraft
 import com.donnclab.kinetiframe.project.data.ProjectSaveDocument
@@ -138,11 +138,11 @@ fun EditorScreen(
         if (projectId == null || initialEditorState != null) return@LaunchedEffect
         val result = withContext(Dispatchers.IO) {
             val loaded = repositories.projects.load(projectId)
-            if (loaded is ActorStoreResult.Value && projectDraft?.state?.value?.ready == false) {
+            if (loaded is StoreResult.Value && projectDraft?.state?.value?.ready == false) {
                 try {
                     ProjectFrameDraft.open(File(actorStore.projectDirectory(projectId), "frames"), editorCacheDir)
                 } catch (failure: Exception) {
-                    return@withContext ActorStoreResult.Failure(
+                    return@withContext StoreResult.Failure(
                         failure.message ?: "Could not open frame draft",
                         failure,
                     )
@@ -151,12 +151,12 @@ fun EditorScreen(
             loaded
         }
         when (result) {
-            is ActorStoreResult.Value -> {
+            is StoreResult.Value -> {
                 loadedProjectDocument = result.value.second
                 projectDraft?.handleIntent(ProjectDraftSessionIntent.Prepared)
             }
 
-            is ActorStoreResult.Failure -> projectLoadError = result.message
+            is StoreResult.Failure -> projectLoadError = result.message
         }
         projectLoading = false
     }

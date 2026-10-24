@@ -5,6 +5,8 @@ import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.actors.rig.model.ActorView
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -17,12 +19,12 @@ import java.io.File
 
 class ActorViewsTest {
     @TempDir lateinit var root: File
-    private fun <T> value(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> throw AssertionError(result.message, result.cause)
+    private fun <T> value(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> throw AssertionError(result.message, result.cause)
     }
     private fun seed(template: ActorTemplate = ActorTemplate.HUMAN): ActorRepository {
-        val repository = ActorRepository(ActorFileStore(root))
+        val repository = ActorRepository(DocumentFileStore(root))
         val type = when (template) {
             ActorTemplate.HUMAN -> ActorManifest.HUMAN_TEMPLATE_ID
             ActorTemplate.ANIMAL -> ActorManifest.ANIMAL_TEMPLATE_ID
@@ -70,7 +72,7 @@ class ActorViewsTest {
             mapOf(ActorView.ORIGINAL to "original", ActorView.PROFILE to "profile-edited"),
             saved.first.authoredViews(),
         )
-        val fresh = ActorRepository(ActorFileStore(root))
+        val fresh = ActorRepository(DocumentFileStore(root))
         assertEquals(
             profile.copy(revisionId = "profile-edited", createdAtEpochMs = 3),
             value(fresh.load("sample")).second,
@@ -95,7 +97,7 @@ class ActorViewsTest {
     @Test fun `character hierarchy retains project ownership and pinned revisions across views`() {
         val repository = seed()
         val profile = value(repository.createView("sample", ActorView.PROFILE, "profile", 2)).second
-        val performances = PerformanceRepository(ActorFileStore(root))
+        val performances = PerformanceRepository(DocumentFileStore(root))
         val talk = PerformanceDocument(
             performanceId = "talk",
             projectId = "episode-one",
@@ -116,13 +118,13 @@ class ActorViewsTest {
         value(performances.save(run))
         assertEquals(setOf(talk, run), repository.relatedPerformances().toSet())
         value(repository.selectView("sample", ActorView.ORIGINAL, 3))
-        assertEquals(setOf(talk, run), ActorRepository(ActorFileStore(root)).relatedPerformances().toSet())
+        assertEquals(setOf(talk, run), ActorRepository(DocumentFileStore(root)).relatedPerformances().toSet())
         assertEquals(talk, value(performances.load("episode-one", "talk")))
     }
 
     @Test fun `library round trip retains all views and separate same named artwork`() {
         val repository = seed()
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val original = value(repository.load("sample")).second
         File(files.actorDirectory("sample"), "front/head.png").apply {
             requireNotNull(parentFile).mkdirs()
@@ -150,7 +152,7 @@ class ActorViewsTest {
     @Test fun `duplicates preserve non human template and every view`() {
         for (template in listOf(ActorTemplate.ANIMAL, ActorTemplate.CUSTOM)) {
             val folder = File(root, template.name)
-            val repository = ActorRepository(ActorFileStore(folder))
+            val repository = ActorRepository(DocumentFileStore(folder))
             val type = if (template ==
                 ActorTemplate.ANIMAL
             ) {
@@ -190,7 +192,7 @@ class ActorViewsTest {
         val repository = seed()
         val original = value(repository.load("sample"))
         val corrupt = original.first.copy(viewRevisions = mapOf(ActorView.FRONT to "original"))
-        assertTrue(repository.save(corrupt, original.second) is ActorStoreResult.Failure)
+        assertTrue(repository.save(corrupt, original.second) is StoreResult.Failure)
         assertTrue(
             repository.save(
                 original.first.copy(
@@ -200,9 +202,9 @@ class ActorViewsTest {
                     ),
                 ),
                 original.second,
-            ) is ActorStoreResult.Failure,
+            ) is StoreResult.Failure,
         )
         assertEquals(original, value(repository.load("sample")))
-        assertTrue(repository.createView("sample", ActorView.ORIGINAL, "bad", 2) is ActorStoreResult.Failure)
+        assertTrue(repository.createView("sample", ActorView.ORIGINAL, "bad", 2) is StoreResult.Failure)
     }
 }

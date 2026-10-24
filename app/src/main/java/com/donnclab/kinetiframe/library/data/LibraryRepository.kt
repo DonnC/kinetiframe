@@ -1,10 +1,10 @@
 package com.donnclab.kinetiframe.library.data
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.LibraryScope
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -28,7 +28,7 @@ import java.io.File
  * lists and deletes over a directory of manifests.
  */
 class LibraryRepository(
-    private val files: ActorFileStore,
+    private val files: DocumentFileStore,
     private val json: Json = Json {
         ignoreUnknownKeys = true
         prettyPrint = true
@@ -63,7 +63,7 @@ class LibraryRepository(
     fun list(
         scope: LibraryScope = LibraryScope.PERSONAL,
         projectId: String? = null,
-    ): ActorStoreResult<List<LibraryItemManifest>> = runCatching {
+    ): StoreResult<List<LibraryItemManifest>> = runCatching {
         val queryProjectId = if (scope == LibraryScope.PROJECT) projectId else null
         val cached = dao?.let { d -> runCatching { d.list(scope.name, queryProjectId) }.getOrNull() }
         val fromDisk = rootDirectory(
@@ -92,7 +92,7 @@ class LibraryRepository(
         itemId: String,
         scope: LibraryScope = LibraryScope.PERSONAL,
         projectId: String? = null,
-    ): ActorStoreResult<Result<Unit>?> = runCatching {
+    ): StoreResult<Result<Unit>?> = runCatching {
         val directory = itemDirectory(scope, projectId, itemId)
         require(directory.isDirectory) { "Library item not found" }
         require(directory.deleteRecursively()) { "Could not delete this library item" }
@@ -115,7 +115,7 @@ class LibraryRepository(
         projectId: String? = null,
         tags: Set<String> = emptySet(),
         nowEpochMs: Long,
-    ): ActorStoreResult<LibraryItemManifest> = runCatching {
+    ): StoreResult<LibraryItemManifest> = runCatching {
         require(kind in LibraryItemManifest.RAW_ASSET_KINDS) { "$kind is not a raw-asset library kind" }
         require(sourceFile.isFile) { "Source file not found" }
         val payloadFileName = "asset.${sourceFile.extension.ifBlank { "bin" }}"
@@ -139,11 +139,11 @@ class LibraryRepository(
     }.fold(::value, ::failure)
 
     /** Read-only preview access. The validated manifest supplies a contained payload path. */
-    fun assetFile(item: LibraryItemManifest): ActorStoreResult<File> = runCatching {
+    fun assetFile(item: LibraryItemManifest): StoreResult<File> = runCatching {
         item.validate()
         require(item.kind in LibraryItemManifest.RAW_ASSET_KINDS) { "Not a raw asset" }
         val directory = itemDirectory(item.scope, item.sourceProjectId, item.libraryItemId)
-        val source = com.donnclab.kinetiframe.actors.data.ActorPathPolicy.resolveWithin(
+        val source = com.donnclab.kinetiframe.data.storage.ContainedPaths.resolveWithin(
             directory,
             "payload/${requireNotNull(item.payloadFileName)}",
             "Library payload",
@@ -163,7 +163,7 @@ class LibraryRepository(
         destination: File,
         scope: LibraryScope = LibraryScope.PERSONAL,
         projectId: String? = null,
-    ): ActorStoreResult<Pair<LibraryItemManifest, File>> = runCatching {
+    ): StoreResult<Pair<LibraryItemManifest, File>> = runCatching {
         val directory = itemDirectory(scope, projectId, itemId)
         val manifest = json.decodeFromString<LibraryItemManifest>(
             requireNotNull(files.readOrNull(File(directory, MANIFEST))) { "Library item not found" },
@@ -191,7 +191,7 @@ class LibraryRepository(
         projectId: String? = null,
         tags: Set<String> = emptySet(),
         nowEpochMs: Long,
-    ): ActorStoreResult<LibraryItemManifest> = runCatching {
+    ): StoreResult<LibraryItemManifest> = runCatching {
         val validPack = packManifest.validate()
         val expectedFiles = validPack.items.map { it.file }.toSet()
         require(frameFiles.keys == expectedFiles) { "Pack frame files do not match its own item list" }
@@ -234,13 +234,13 @@ class LibraryRepository(
         itemId: String,
         scope: LibraryScope = LibraryScope.PERSONAL,
         projectId: String? = null,
-    ): ActorStoreResult<Pair<LibraryItemManifest, PackManifest>> = runCatching {
+    ): StoreResult<Pair<LibraryItemManifest, PackManifest>> = runCatching {
         val directory = itemDirectory(scope, projectId, itemId)
         readPackCommit(directory, refresh = true)?.let { committed ->
             committed.manifest.validate()
             committed.pack.validate()
             require(committed.manifest.libraryItemId == itemId && committed.manifest.kind == LibraryItemKind.PACK)
-            val payload = com.donnclab.kinetiframe.actors.data.ActorPathPolicy.resolveWithin(
+            val payload = com.donnclab.kinetiframe.data.storage.ContainedPaths.resolveWithin(
                 directory,
                 committed.payloadDirectory,
                 "Pack payload",
@@ -272,14 +272,14 @@ class LibraryRepository(
         destination: File,
         scope: LibraryScope = LibraryScope.PERSONAL,
         projectId: String? = null,
-    ): ActorStoreResult<File> = runCatching {
+    ): StoreResult<File> = runCatching {
         val directory = itemDirectory(scope, projectId, itemId)
         val pack = when (val loaded = loadPack(itemId, scope, projectId)) {
-            is ActorStoreResult.Value -> loaded.value.second
-            is ActorStoreResult.Failure -> throw IllegalStateException(loaded.message, loaded.cause)
+            is StoreResult.Value -> loaded.value.second
+            is StoreResult.Failure -> throw IllegalStateException(loaded.message, loaded.cause)
         }
         require(pack.items.any { it.file == fileName }) { "Drawing is not a member of this pack" }
-        val source = com.donnclab.kinetiframe.actors.data.ActorPathPolicy.resolveWithin(
+        val source = com.donnclab.kinetiframe.data.storage.ContainedPaths.resolveWithin(
             packPayloadDirectory(itemId, scope, projectId),
             fileName,
             "Pack drawing",
@@ -298,7 +298,7 @@ class LibraryRepository(
         fileName: String,
         scope: LibraryScope = LibraryScope.PERSONAL,
         projectId: String? = null,
-    ): File = com.donnclab.kinetiframe.actors.data.ActorPathPolicy.resolveWithin(
+    ): File = com.donnclab.kinetiframe.data.storage.ContainedPaths.resolveWithin(
         packPayloadDirectory(itemId, scope, projectId),
         fileName,
         "Pack drawing",
@@ -310,7 +310,7 @@ class LibraryRepository(
         projectId: String? = null,
     ): File {
         val directory = itemDirectory(scope, projectId, itemId)
-        return com.donnclab.kinetiframe.actors.data.ActorPathPolicy.resolveWithin(
+        return com.donnclab.kinetiframe.data.storage.ContainedPaths.resolveWithin(
             directory,
             readPackCommit(directory)?.payloadDirectory ?: "payload",
             "Pack payload",
@@ -353,9 +353,9 @@ class LibraryRepository(
         createdAtEpochMs = entity.createdAtEpochMs,
     )
 
-    private fun <T> value(value: T): ActorStoreResult<T> = ActorStoreResult.Value(value)
-    private fun failure(error: Throwable): ActorStoreResult.Failure =
-        ActorStoreResult.Failure(error.message ?: "Library operation failed", error)
+    private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
+    private fun failure(error: Throwable): StoreResult.Failure =
+        StoreResult.Failure(error.message ?: "Library operation failed", error)
     private companion object {
         const val MANIFEST = "manifest.json"
         const val PACK_META = "meta.json"

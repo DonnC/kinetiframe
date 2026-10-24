@@ -49,6 +49,7 @@ fun SettingsScreen(
     onIntent: (SettingsIntent) -> Unit,
     onBack: () -> Unit,
     onNavigate: ((com.donnclab.kinetiframe.navigation.BottomNavDestination) -> Unit)? = null,
+    onShareDiagnostics: () -> Unit = {},
 ) {
     Scaffold(topBar = {
         Column {
@@ -129,12 +130,11 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             HorizontalDivider()
-            val context = androidx.compose.ui.platform.LocalContext.current
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Diagnostics", Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
                 ContextIconButton(
                     ContextIconAction(Icons.Filled.BugReport, "Share diagnostics", {
-                        com.donnclab.kinetiframe.diagnostics.shareDiagnostics(context)
+                        onShareDiagnostics()
                     }),
                 )
             }

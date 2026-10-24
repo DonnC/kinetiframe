@@ -36,9 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.actors.data.ActorArtworkDecoder
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArtworkRegistration
 import com.donnclab.kinetiframe.library.data.PackItemEntry
@@ -63,7 +63,7 @@ fun ActorArtworkPicker(
     var busy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    fun read(name: String, registration: PackArtworkRegistration? = null, copy: (File) -> ActorStoreResult<*>) {
+    fun read(name: String, registration: PackArtworkRegistration? = null, copy: (File) -> StoreResult<*>) {
         if (busy) return
         busy = true
         scope.launch {
@@ -73,9 +73,9 @@ fun ActorArtworkPicker(
                     val target = File.createTempFile("actor-artwork-", ".png", temporaryDirectory)
                     try {
                         when (val result = copy(target)) {
-                            is ActorStoreResult.Failure -> throw IllegalStateException(result.message)
+                            is StoreResult.Failure -> throw IllegalStateException(result.message)
 
-                            is ActorStoreResult.Value -> ActorArtworkDecoder.decode(
+                            is StoreResult.Value -> ActorArtworkDecoder.decode(
                                 target,
                                 preservePadding =
                                 registration != null,
@@ -123,8 +123,8 @@ fun ActorArtworkPicker(
                         library.loadPack(selectedPack.libraryItemId, selectedPack.scope, selectedPack.sourceProjectId)
                     }
             ) {
-                is ActorStoreResult.Value -> items = result.value.second.items
-                is ActorStoreResult.Failure -> error = result.message
+                is StoreResult.Value -> items = result.value.second.items
+                is StoreResult.Failure -> error = result.message
             }
         }
         Dialog(onDismissRequest = { if (!busy) onDismiss() }) {

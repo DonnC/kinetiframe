@@ -154,7 +154,7 @@ class BackgroundManagerTest {
         manager().handle(StudioIntent.Background.SetImage(image))
         testScope.advanceUntilIdle()
         val id = requireNotNull(state.project.backgroundAssetId)
-        val files = com.donnclab.kinetiframe.actors.data.ActorFileStore(File(storageDir, "documents"))
+        val files = com.donnclab.kinetiframe.data.storage.DocumentFileStore(File(storageDir, "documents"))
         val repository = com.donnclab.kinetiframe.project.data.ProjectRepository(files)
         val project = state.project
         val manifest = com.donnclab.kinetiframe.project.data.ProjectManifest(
@@ -173,8 +173,8 @@ class BackgroundManagerTest {
                 totalFrames = 1,
             ),
         )
-        assertTrue(saved is com.donnclab.kinetiframe.actors.data.ActorStoreResult.Value)
-        val reopened = repository.load(project.id) as com.donnclab.kinetiframe.actors.data.ActorStoreResult.Value
+        assertTrue(saved is com.donnclab.kinetiframe.data.storage.StoreResult.Value)
+        val reopened = repository.load(project.id) as com.donnclab.kinetiframe.data.storage.StoreResult.Value
         state = StudioState(project = reopened.value.second.project)
         assets = ProjectAssetManager()
         val revision = assets.revision.value

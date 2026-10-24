@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.library.bundled
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -18,7 +18,7 @@ class LooseSignalPackTest {
     private val assets = File("src/main/assets").takeIf(File::isDirectory) ?: File("app/src/main/assets")
     private val sharedIds = listOf("ls-expressions-v3", "ls-eyes-v3", "ls-mouths-v3", "ls-studio-items-v3")
 
-    private fun packOnlyInstaller(files: ActorFileStore): BundledDemoInstaller {
+    private fun packOnlyInstaller(files: DocumentFileStore): BundledDemoInstaller {
         // Existing demo payloads are covered by BundledDemoInstallerTest. Occupied targets
         // model an upgrade, avoiding thousands of unrelated frame extractions in these tests.
         BundledDemoInstaller.projectIds.forEach { files.projectDirectory(it).mkdirs() }
@@ -31,20 +31,20 @@ class LooseSignalPackTest {
     }
 
     @Test fun `shipping packs install reopen and expose real transparent drawings`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val result = packOnlyInstaller(files).install()
         assertTrue(result.errors.isEmpty(), result.errors.toString())
         assertEquals(4, result.installed)
         val expected = listOf(12, 6, 14, 11)
         var count = 0
         // Recreate the repository to exercise persisted storage, not in-memory authoring data.
-        val reopened = LibraryRepository(ActorFileStore(root))
+        val reopened = LibraryRepository(DocumentFileStore(root))
         sharedIds.zip(expected).forEach { (id, total) ->
             val loaded = reopened.loadPack(id)
-            assertTrue(loaded is ActorStoreResult.Value, loaded.toString())
+            assertTrue(loaded is StoreResult.Value, loaded.toString())
             val (item, manifest) = when (loaded) {
-                is ActorStoreResult.Value -> loaded.value
-                is ActorStoreResult.Failure -> throw AssertionError(loaded.message, loaded.cause)
+                is StoreResult.Value -> loaded.value
+                is StoreResult.Failure -> throw AssertionError(loaded.message, loaded.cause)
             }
             assertTrue(manifest.packName.isNotBlank())
             assertTrue(item.tags.contains("loose-signal"))
@@ -68,7 +68,7 @@ class LooseSignalPackTest {
     }
 
     @Test fun `deleted Loose Signal packs stay deleted while untouched packs remain available`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val installer = packOnlyInstaller(files)
         val result = installer.install()
         assertTrue(result.errors.isEmpty())

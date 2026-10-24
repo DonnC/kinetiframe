@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.library.data
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.LibraryScope
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.util.UUID
@@ -28,16 +28,16 @@ object PackArchiver {
      *  [destination]. The `payload/` prefix is dropped so those files sit at the archive root,
      *  which is the `.kpack` layout. */
     fun export(
-        files: ActorFileStore,
+        files: DocumentFileStore,
         library: LibraryRepository,
         itemId: String,
         destination: File,
         scope: LibraryScope = LibraryScope.PERSONAL,
         projectId: String? = null,
-    ): ActorStoreResult<File> = runCatching {
+    ): StoreResult<File> = runCatching {
         when (val loaded = library.loadPack(itemId, scope, projectId)) {
-            is ActorStoreResult.Failure -> throw IllegalStateException(loaded.message, loaded.cause)
-            is ActorStoreResult.Value -> Unit
+            is StoreResult.Failure -> throw IllegalStateException(loaded.message, loaded.cause)
+            is StoreResult.Value -> Unit
         }
         val itemDirectory = when (scope) {
             LibraryScope.PERSONAL -> files.libraryDirectory(itemId)
@@ -67,7 +67,7 @@ object PackArchiver {
      *  freshly minted local ID -- imported packs never reuse the sharer's own item ID, since two
      *  people's exports of "my_mouth_pack.kpack" are otherwise indistinguishable collisions. */
     fun import(
-        files: ActorFileStore,
+        files: DocumentFileStore,
         library: LibraryRepository,
         source: File,
         itemId: String,
@@ -75,7 +75,7 @@ object PackArchiver {
         projectId: String? = null,
         tags: Set<String> = emptySet(),
         nowEpochMs: Long,
-    ): ActorStoreResult<LibraryItemManifest> = runCatching {
+    ): StoreResult<LibraryItemManifest> = runCatching {
         require(source.isFile) { "Pack file not found" }
         val stagingDir = File(files.libraryRoot(), "_pack-import-${UUID.randomUUID()}")
         require(stagingDir.mkdirs()) { "Could not prepare a location to unpack this pack" }
@@ -109,15 +109,15 @@ object PackArchiver {
                     nowEpochMs = nowEpochMs,
                 )
             ) {
-                is ActorStoreResult.Value -> exported.value
-                is ActorStoreResult.Failure -> throw IllegalStateException(exported.message, exported.cause)
+                is StoreResult.Value -> exported.value
+                is StoreResult.Failure -> throw IllegalStateException(exported.message, exported.cause)
             }
         } finally {
             stagingDir.deleteRecursively()
         }
     }.fold(::value, ::failure)
 
-    private fun <T> value(value: T): ActorStoreResult<T> = ActorStoreResult.Value(value)
-    private fun failure(error: Throwable): ActorStoreResult.Failure =
-        ActorStoreResult.Failure(error.message ?: "Pack archive operation failed", error)
+    private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
+    private fun failure(error: Throwable): StoreResult.Failure =
+        StoreResult.Failure(error.message ?: "Pack archive operation failed", error)
 }

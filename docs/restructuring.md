@@ -13,11 +13,16 @@ Keep this page current:
 
 ## Now
 
-**Step 4: data and presentation modules.**
+**Step 4: data and presentation modules**, in four parts, because project storage depends on the
+actor documents (see Discoveries):
 
-- Move project storage (Room, project files, `.kframe` and `.kpack` archives) from `project.data`
-  into the `data` module, along with crash reports from `diagnostics`.
-- Move the shared app UI in `common` into `presentation`, alongside `BaseViewModel`.
+- **4a, done (#20).** The generic document store, its result type, path checks, ID rule and crash
+  reports moved into `data`.
+- **4b, next.** Replace the app's actor preset types with the `core` ones, then move the actor documents
+  (`ActorRevision`, `PerformanceDocument`, `LibraryItemManifest` and the rest) into `core`.
+- **4c.** Move the shared Room database, project storage and the `.kframe` and `.kpack` archives
+  into `data`.
+- **4d.** Move the shared app UI in `common` into `presentation`, next to `BaseViewModel`.
 
 ## Next
 
@@ -46,9 +51,6 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Parameter limits.** 53 functions still take more than the allowed number of parameters.
 - **Preview fixtures.** Give each module its own `preview` package and split up the shared one
   in `app`.
-- **Actor preset types.** Finish replacing the app's preset types (`ActorMotionPreset`,
-  `RotationChannel`, `ActorView`) with the `core` ones they bridge to, and delete the parity tests
-  that compare them.
 - **Dependency updates.** Work through the Dependabot pull requests (#1 to #5) one family at a
   time, with a full check and a device check after each. The Compose BOM (2024.09.00) is the
   furthest behind.
@@ -120,12 +122,21 @@ fixed after the module work, unless one blocks testing.
 | #16 | Checked that Compose stays in UI code and UI reaches storage through ViewModels (step 2) |
 | #17 | Shared module build settings through convention plugins (step 3) |
 | #18 | Removed the engine sandbox app; CI runs one job |
+| #19 | Started this tracker |
+| #20 | Moved generic storage and crash reports into `data` (step 4a) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
 
 ## Discoveries
 
+- **Project storage depends on actors.** One Room database holds the actor, performance, library,
+  export and project tables. One file store, named `ActorFileStore` until 4a, serves every
+  feature. `.kframe` archives check actor dependencies through `ActorRevision`, which pulls in
+  the actor documents and the app's preset types. Step 4 is split into 4a to 4d because of this.
+- **Duplicate actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and
+  `ActorView` mirror `core` types, with bridge functions and parity tests between them. #14 moved
+  the saved field to the `core` type; 4b removes the rest.
 - **`DurableFileTest` on Windows.** Its concurrent-writer test can fail with a file-lock error on
   Windows. It passes on rerun and in CI.
 - **Local Windows builds.** The IDE's Java language server and Gradle daemons can hold files in
@@ -139,11 +150,11 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Debt counts
 
-From `.architecture/` on `develop` after #18. Each count may only go down.
+From `.architecture/` after 4a. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| References to a feature above | 238 | 81 |
+| References to a feature above | 232 | 73 |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 206 | 60 |
 | Functions over the parameter limit | 53 | — |

@@ -34,10 +34,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.export.data.ExportPresets
 import com.donnclab.kinetiframe.export.data.ProjectExporter
 import com.donnclab.kinetiframe.project.data.ProjectRepository
@@ -67,7 +67,7 @@ fun ExportRoute(storageRoot: File, projectId: String, onExit: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackbar = remember { SnackbarHostState() }
-    val actorStore = remember(storageRoot) { ActorFileStore(storageRoot) }
+    val actorStore = remember(storageRoot) { DocumentFileStore(storageRoot) }
     val appDatabase = remember(context) { AppDatabase.getInstance(context) }
     val exporter = remember(storageRoot, appDatabase) {
         ProjectExporter(
@@ -90,8 +90,8 @@ fun ExportRoute(storageRoot: File, projectId: String, onExit: () -> Unit) {
                 ProjectRepository(actorStore).load(projectId)
             }
         ) {
-            is ActorStoreResult.Value -> loaded.value.first
-            is ActorStoreResult.Failure -> null
+            is StoreResult.Value -> loaded.value.first
+            is StoreResult.Failure -> null
         }
         displayName = manifest?.displayName ?: projectId
     }
@@ -104,8 +104,8 @@ fun ExportRoute(storageRoot: File, projectId: String, onExit: () -> Unit) {
                     progress = fraction
                 }
             ) {
-                is ActorStoreResult.Value -> phase = ExportPhase.Done(result.value, displayName)
-                is ActorStoreResult.Failure -> phase = ExportPhase.Failed(result.message)
+                is StoreResult.Value -> phase = ExportPhase.Done(result.value, displayName)
+                is StoreResult.Failure -> phase = ExportPhase.Failed(result.message)
             }
         }
     }
@@ -214,7 +214,7 @@ fun ExportRoute(storageRoot: File, projectId: String, onExit: () -> Unit) {
 
 private suspend fun saveToGallery(exporter: ProjectExporter, done: ExportPhase.Done, snackbar: SnackbarHostState) {
     when (val result = withContext(Dispatchers.IO) { exporter.saveToGallery(done.file, done.displayName) }) {
-        is ActorStoreResult.Value -> snackbar.showSnackbar("Saved to your gallery")
-        is ActorStoreResult.Failure -> snackbar.showSnackbar(result.message)
+        is StoreResult.Value -> snackbar.showSnackbar("Saved to your gallery")
+        is StoreResult.Failure -> snackbar.showSnackbar(result.message)
     }
 }

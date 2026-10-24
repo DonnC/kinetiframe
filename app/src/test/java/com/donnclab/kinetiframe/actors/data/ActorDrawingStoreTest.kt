@@ -24,6 +24,7 @@ import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertThrows
@@ -119,7 +120,7 @@ class ActorDrawingStoreTest {
                     eraseColor(Color.CYAN)
                 },
             )
-            val store = ActorArtworkStore(ActorFileStore(directory))
+            val store = ActorArtworkStore(DocumentFileStore(directory))
             val paths = store.save("actor", "rev", graph, assets)
             assets.clear()
             assertTrue(store.restore("actor", paths, graph, restored).isEmpty())

@@ -1,11 +1,11 @@
 package com.donnclab.kinetiframe.library.bundled
 
 import com.donnclab.kinetiframe.actors.data.ActorBundleRepository
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.project.data.KframeArchiver
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -18,13 +18,13 @@ import java.io.File
 class BundledActorSampleInstallerTest {
     @TempDir lateinit var root: File
     private val assets = File("src/main/assets").takeIf(File::isDirectory) ?: File("app/src/main/assets")
-    private fun <T> value(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> throw AssertionError(result.message, result.cause)
+    private fun <T> value(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> throw AssertionError(result.message, result.cause)
     }
 
     @Test fun `library samples use originals retain views and never reinstall deleted items`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val installer =
             BundledActorSampleInstaller(files) {
                 com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures.file(assets, it).inputStream()

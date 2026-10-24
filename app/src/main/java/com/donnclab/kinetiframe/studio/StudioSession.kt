@@ -211,7 +211,7 @@ internal class StudioSession(
         trimHistory = { drawingManager.trimHistory() },
     )
 
-    val diagnosticReports = com.donnclab.kinetiframe.diagnostics.CrashReportStore(directories.diagnostics)
+    val diagnosticReports = com.donnclab.kinetiframe.data.diagnostics.CrashReportStore(directories.diagnostics)
     fun recordPlaybackFailure(error: Throwable, operation: String) {
         android.util.Log.e("KinetiFramePlayback", operation, error)
         val state = store.state

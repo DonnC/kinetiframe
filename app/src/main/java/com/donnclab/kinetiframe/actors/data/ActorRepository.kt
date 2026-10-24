@@ -9,6 +9,9 @@ import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.actors.rig.model.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.ContainedPaths
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -22,7 +25,7 @@ import java.nio.file.StandardCopyOption
  * indexed library is still non-empty and must not conceal successfully committed resources.
  */
 class ActorRepository(
-    private val files: ActorFileStore,
+    private val files: DocumentFileStore,
     private val json: Json = Json {
         ignoreUnknownKeys = false
         prettyPrint = true
@@ -34,17 +37,17 @@ class ActorRepository(
         val performances = PerformanceRepository(files)
         return files.projectsRoot().listFiles().orEmpty().filter(File::isDirectory).flatMap { directory ->
             when (val result = performances.list(directory.name)) {
-                is ActorStoreResult.Value -> result.value
-                is ActorStoreResult.Failure -> emptyList()
+                is StoreResult.Value -> result.value
+                is StoreResult.Failure -> emptyList()
             }
         }
     }
-    fun list(): ActorStoreResult<List<ActorManifest>> = runCatching {
+    fun list(): StoreResult<List<ActorManifest>> = runCatching {
         listWithThumbnailsValue().map { it.first }
     }.fold(::value, ::failure)
 
     /** Validated disk listing paired with available revision-owned dashboard artwork. */
-    fun listWithThumbnails(): ActorStoreResult<List<Pair<ActorManifest, String?>>> = runCatching {
+    fun listWithThumbnails(): StoreResult<List<Pair<ActorManifest, String?>>> = runCatching {
         listWithThumbnailsValue()
     }.fold(::value, ::failure)
 
@@ -65,32 +68,31 @@ class ActorRepository(
         return withThumbnails
     }
 
-    fun isDisplayNameAvailable(displayName: String, excludingActorId: String? = null): ActorStoreResult<Boolean> =
+    fun isDisplayNameAvailable(displayName: String, excludingActorId: String? = null): StoreResult<Boolean> =
         runCatching {
             val normalized = displayName.trim().lowercase()
             require(normalized.isNotBlank()) { "Actor name cannot be blank" }
             when (val result = list()) {
-                is ActorStoreResult.Value -> result.value.none {
+                is StoreResult.Value -> result.value.none {
                     it.actorId != excludingActorId &&
                         it.displayName.trim().lowercase() == normalized
                 }
 
-                is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+                is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
             }
         }.fold(::value, ::failure)
 
-    fun save(manifest: ActorManifest, revision: ActorRevision): ActorStoreResult<ActorManifest> = runCatching {
+    fun save(manifest: ActorManifest, revision: ActorRevision): StoreResult<ActorManifest> = runCatching {
         require(manifest.currentRevisionId == revision.revisionId) { "Manifest must point to saved revision" }
         saveViewsValue(manifest, listOf(revision))
         manifest
     }.fold(::value, ::failure)
 
     /** Commits every immutable view snapshot before publishing the catalog once. */
-    fun saveViews(manifest: ActorManifest, revisions: List<ActorRevision>): ActorStoreResult<ActorManifest> =
-        runCatching {
-            saveViewsValue(manifest, revisions)
-            manifest
-        }.fold(::value, ::failure)
+    fun saveViews(manifest: ActorManifest, revisions: List<ActorRevision>): StoreResult<ActorManifest> = runCatching {
+        saveViewsValue(manifest, revisions)
+        manifest
+    }.fold(::value, ::failure)
 
     private fun saveViewsValue(manifest: ActorManifest, revisions: List<ActorRevision>) {
         manifest.validate()
@@ -99,8 +101,8 @@ class ActorRepository(
         val catalog = manifest.authoredViews().map { (view, revisionId) ->
             val revision = revisions.firstOrNull { it.revisionId == revisionId }
                 ?: when (val loaded = loadRevision(manifest.actorId, revisionId)) {
-                    is ActorStoreResult.Value -> loaded.value
-                    is ActorStoreResult.Failure -> error(loaded.message)
+                    is StoreResult.Value -> loaded.value
+                    is StoreResult.Failure -> error(loaded.message)
                 }
             revision.validate()
             ActorTemplateContract.validate(manifest.templateId, revision.sceneGraph)
@@ -126,7 +128,7 @@ class ActorRepository(
         indexInDao(manifest, catalog.first { it.revisionId == manifest.currentRevisionId })
     }
 
-    fun load(actorId: String): ActorStoreResult<Pair<ActorManifest, ActorRevision>> = runCatching {
+    fun load(actorId: String): StoreResult<Pair<ActorManifest, ActorRevision>> = runCatching {
         ActorDocumentValidation.requireId(actorId, "actor ID")
         val directory = files.actorDirectory(actorId)
         val manifest = json.decodeFromString<ActorManifest>(
@@ -148,8 +150,8 @@ class ActorRepository(
                 revision
             } else {
                 when (val loaded = loadRevision(actorId, id)) {
-                    is ActorStoreResult.Value -> loaded.value
-                    is ActorStoreResult.Failure -> error(loaded.message)
+                    is StoreResult.Value -> loaded.value
+                    is StoreResult.Failure -> error(loaded.message)
                 }
             }
             require(snapshot.view == view) { "Actor view revision mismatch" }
@@ -158,7 +160,7 @@ class ActorRepository(
         manifest to revision
     }.fold(::value, ::failure)
 
-    fun loadRevision(actorId: String, revisionId: String): ActorStoreResult<ActorRevision> = runCatching {
+    fun loadRevision(actorId: String, revisionId: String): StoreResult<ActorRevision> = runCatching {
         ActorDocumentValidation.requireId(actorId, "actor ID")
         ActorDocumentValidation.requireId(revisionId, "revision ID")
         val revision = json.decodeFromString<ActorRevision>(
@@ -171,14 +173,14 @@ class ActorRepository(
     }.fold(::value, ::failure)
 
     /** Returns a stable file thumbnail for dashboard-only use; absence is not an error. */
-    fun characterPreview(actorId: String): ActorStoreResult<String?> = runCatching {
+    fun characterPreview(actorId: String): StoreResult<String?> = runCatching {
         ActorThumbnailMaker.create(
             files.actorDirectory(actorId),
             loadValue(actorId).second,
         )
     }.fold(::value, ::failure)
 
-    fun thumbnailPath(actorId: String): ActorStoreResult<String?> = runCatching {
+    fun thumbnailPath(actorId: String): StoreResult<String?> = runCatching {
         val (_, revision) = loadValue(actorId)
         revision.artworkAssetPaths.toSortedMap().values
             .asSequence()
@@ -187,7 +189,7 @@ class ActorRepository(
             ?.absolutePath
     }.fold(::value, ::failure)
 
-    fun rename(actorId: String, displayName: String, nowEpochMs: Long): ActorStoreResult<ActorManifest> = runCatching {
+    fun rename(actorId: String, displayName: String, nowEpochMs: Long): StoreResult<ActorManifest> = runCatching {
         val (manifest, revision) = loadValue(actorId)
         val renamed = manifest.copy(displayName = displayName.trim(), updatedAtEpochMs = nowEpochMs).validate()
         saveValue(renamed, revision)
@@ -201,15 +203,15 @@ class ActorRepository(
         nowEpochMs: Long,
         artworkAssetPaths: Map<String, String>? = null,
         view: ActorView? = null,
-    ): ActorStoreResult<Pair<ActorManifest, ActorRevision>> = runCatching {
+    ): StoreResult<Pair<ActorManifest, ActorRevision>> = runCatching {
         val (manifest, selected) = loadValue(actorId)
         val current = if (view == null || selected.view == view) {
             selected
         } else {
             val revisionId = requireNotNull(manifest.authoredViews()[view]) { "View is not authored" }
             when (val loaded = loadRevision(actorId, revisionId)) {
-                is ActorStoreResult.Value -> loaded.value
-                is ActorStoreResult.Failure -> error(loaded.message)
+                is StoreResult.Value -> loaded.value
+                is StoreResult.Failure -> error(loaded.message)
             }
         }
         ActorDocumentValidation.requireId(newRevisionId, "revision ID")
@@ -233,12 +235,12 @@ class ActorRepository(
         actorId: String,
         view: ActorView,
         nowEpochMs: Long,
-    ): ActorStoreResult<Pair<ActorManifest, ActorRevision>> = runCatching {
+    ): StoreResult<Pair<ActorManifest, ActorRevision>> = runCatching {
         val (manifest, _) = loadValue(actorId)
         val revisionId = requireNotNull(manifest.authoredViews()[view]) { "View is not authored" }
         val revision = when (val loaded = loadRevision(actorId, revisionId)) {
-            is ActorStoreResult.Value -> loaded.value
-            is ActorStoreResult.Failure -> error(loaded.message)
+            is StoreResult.Value -> loaded.value
+            is StoreResult.Failure -> error(loaded.message)
         }
         val next = manifest.copy(currentRevisionId = revisionId, updatedAtEpochMs = nowEpochMs)
         saveValue(next, revision)
@@ -251,7 +253,7 @@ class ActorRepository(
         view: ActorView,
         revisionId: String,
         nowEpochMs: Long,
-    ): ActorStoreResult<Pair<ActorManifest, ActorRevision>> = runCatching {
+    ): StoreResult<Pair<ActorManifest, ActorRevision>> = runCatching {
         val (manifest, _) = loadValue(actorId)
         require(
             view != ActorView.ORIGINAL && view !in manifest.authoredViews(),
@@ -290,13 +292,13 @@ class ActorRepository(
         duplicateRevisionId: String,
         displayName: String,
         nowEpochMs: Long,
-    ): ActorStoreResult<ActorManifest> = runCatching {
+    ): StoreResult<ActorManifest> = runCatching {
         require(!files.actorDirectory(duplicateActorId).exists()) { "Actor duplicate ID already exists" }
         val (sourceManifest, source) = loadValue(sourceActorId)
         val copies = sourceManifest.authoredViews().map { (view, revisionId) ->
             val original = when (val loaded = loadRevision(sourceActorId, revisionId)) {
-                is ActorStoreResult.Value -> loaded.value
-                is ActorStoreResult.Failure -> error(loaded.message)
+                is StoreResult.Value -> loaded.value
+                is StoreResult.Failure -> error(loaded.message)
             }
             val targetId = if (revisionId ==
                 source.revisionId
@@ -332,7 +334,7 @@ class ActorRepository(
     }.fold(::value, ::failure)
 
     /** Archive is recoverable and refuses to move a referenced actor. */
-    fun archive(actorId: String, isReferenced: (String) -> Boolean): ActorStoreResult<Result<Unit>?> = runCatching {
+    fun archive(actorId: String, isReferenced: (String) -> Boolean): StoreResult<Result<Unit>?> = runCatching {
         ActorDocumentValidation.requireId(actorId, "actor ID")
         require(!isReferenced(actorId)) { "Actor is used by a project or library item" }
         val source = files.actorDirectory(actorId)
@@ -342,14 +344,14 @@ class ActorRepository(
     }.fold(::value, ::failure)
 
     private fun loadValue(actorId: String): Pair<ActorManifest, ActorRevision> = when (val result = load(actorId)) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
     }
 
     private fun saveValue(manifest: ActorManifest, revision: ActorRevision) {
         when (val result = save(manifest, revision)) {
-            is ActorStoreResult.Value -> Unit
-            is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+            is StoreResult.Value -> Unit
+            is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
         }
     }
 
@@ -366,8 +368,8 @@ class ActorRepository(
     }
 
     private fun thumbnailPathFor(actorId: String): String? = when (val result = thumbnailPath(actorId)) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> null
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> null
     }
 
     private fun toEntity(manifest: ActorManifest, thumbnail: String?) = ActorEntity(
@@ -407,11 +409,11 @@ class ActorRepository(
     }.toMap()
 
     private fun safeArtworkFile(root: File, relativePath: String): File =
-        ActorPathPolicy.resolveWithin(root, relativePath, "Artwork")
+        ContainedPaths.resolveWithin(root, relativePath, "Artwork")
 
-    private fun <T> value(value: T): ActorStoreResult<T> = ActorStoreResult.Value(value)
-    private fun failure(error: Throwable): ActorStoreResult.Failure =
-        ActorStoreResult.Failure(error.message ?: "Actor storage failed", error)
+    private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
+    private fun failure(error: Throwable): StoreResult.Failure =
+        StoreResult.Failure(error.message ?: "Actor storage failed", error)
     private companion object {
         const val MANIFEST = "manifest.json"
     }

@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.project.data
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorPathPolicy
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.data.storage.ContainedPaths
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.DurableFile
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -38,12 +38,12 @@ object KframeArchiver {
     /** Zips every file under [projectId]'s working directory into [destination]. Entry paths are
      *  relative to that directory's root, so re-importing recreates the same manifest.json /
      *  document.json / frames/ / project-assets/ / performances/ layout. */
-    fun export(files: ActorFileStore, projectId: String, destination: File): ActorStoreResult<File> = runCatching {
+    fun export(files: DocumentFileStore, projectId: String, destination: File): StoreResult<File> = runCatching {
         val sourceDir = files.projectDirectory(projectId)
         require(sourceDir.isDirectory) { "Project not found" }
         val saved = when (val loaded = ProjectRepository(files).load(projectId)) {
-            is ActorStoreResult.Value -> loaded.value
-            is ActorStoreResult.Failure -> throw IllegalStateException(loaded.message, loaded.cause)
+            is StoreResult.Value -> loaded.value
+            is StoreResult.Failure -> throw IllegalStateException(loaded.message, loaded.cause)
         }
         val document = saved.second
         require(!destination.canonicalPath.startsWith(sourceDir.canonicalPath + File.separator)) {
@@ -55,16 +55,16 @@ object KframeArchiver {
                     files,
                 ).loadRevision(placement.actorId, placement.actorRevisionId)
             ) {
-                is ActorStoreResult.Value -> loaded.value
-                is ActorStoreResult.Failure -> throw IllegalStateException(loaded.message, loaded.cause)
+                is StoreResult.Value -> loaded.value
+                is StoreResult.Failure -> throw IllegalStateException(loaded.message, loaded.cause)
             }
             val performance = when (
                 val loaded = com.donnclab.kinetiframe.actors.data.PerformanceRepository(
                     files,
                 ).load(projectId, placement.performanceId)
             ) {
-                is ActorStoreResult.Value -> loaded.value
-                is ActorStoreResult.Failure -> throw IllegalStateException(loaded.message, loaded.cause)
+                is StoreResult.Value -> loaded.value
+                is StoreResult.Failure -> throw IllegalStateException(loaded.message, loaded.cause)
             }
             com.donnclab.kinetiframe.actors.domain.PerformanceCompatibility.validate(performance, revision)
         }
@@ -128,7 +128,7 @@ object KframeArchiver {
     /** Unzips [source] into a fresh project directory, named after the project ID embedded in
      *  its own manifest.json -- never [source]'s filename or a freshly minted ID. Returns that
      *  project ID on success so the caller can immediately open or list the imported project. */
-    fun import(files: ActorFileStore, source: File): ActorStoreResult<String> = runCatching {
+    fun import(files: DocumentFileStore, source: File): StoreResult<String> = runCatching {
         require(source.isFile) { "Archive not found" }
         val stagingDir = File(files.projectsRoot(), "_import-${UUID.randomUUID()}")
         require(stagingDir.mkdirs()) { "Could not prepare a location to unpack this project" }
@@ -158,7 +158,7 @@ object KframeArchiver {
             }
             if (paths != null) {
                 require(paths.sourceDirectory.isNotBlank()) { "Archive source path is missing" }
-                paths.externalAssets.values.forEach { ActorPathPolicy.resolveWithin(finalDir, it, "Portable asset") }
+                paths.externalAssets.values.forEach { ContainedPaths.resolveWithin(finalDir, it, "Portable asset") }
                 listOf("manifest.json", "document.json", "snapshot.json").forEach { name ->
                     val file = File(stagingDir, name)
                     if (file.isFile) {
@@ -188,30 +188,30 @@ object KframeArchiver {
                 }
             }
             val dependencyRepository = com.donnclab.kinetiframe.actors.data.ActorRepository(
-                ActorFileStore(File(stagingDir, "dependencies")),
+                DocumentFileStore(File(stagingDir, "dependencies")),
             )
             File(stagingDir, "dependencies/actors").listFiles().orEmpty().filter(File::isDirectory).forEach { actor ->
                 when (val checked = dependencyRepository.load(actor.name)) {
-                    is ActorStoreResult.Value -> checked.value.first.authoredViews().values.forEach { revisionId ->
+                    is StoreResult.Value -> checked.value.first.authoredViews().values.forEach { revisionId ->
                         val revision = when (val snapshot = dependencyRepository.loadRevision(actor.name, revisionId)) {
-                            is ActorStoreResult.Value -> snapshot.value
-                            is ActorStoreResult.Failure -> error(snapshot.message)
+                            is StoreResult.Value -> snapshot.value
+                            is StoreResult.Failure -> error(snapshot.message)
                         }
                         revision.artworkAssetPaths.values.forEach { path ->
-                            require(ActorPathPolicy.resolveWithin(actor, path, "Actor artwork").isFile) {
+                            require(ContainedPaths.resolveWithin(actor, path, "Actor artwork").isFile) {
                                 "Actor dependency artwork is missing"
                             }
                         }
                     }
 
-                    is ActorStoreResult.Failure -> throw IllegalStateException(checked.message, checked.cause)
+                    is StoreResult.Failure -> throw IllegalStateException(checked.message, checked.cause)
                 }
                 val target = files.actorDirectory(actor.name)
                 // Immutable revisions must agree semantically; pixel assets must agree byte-for-byte.
                 // Never overwrite either matching payloads or the user's current actor catalog.
                 actor.walkTopDown().filter(File::isFile).forEach { sourceFile ->
                     val relative = sourceFile.relativeTo(actor).invariantSeparatorsPath
-                    val targetFile = ActorPathPolicy.resolveWithin(target, relative, "Actor dependency")
+                    val targetFile = ContainedPaths.resolveWithin(target, relative, "Actor dependency")
                     if (targetFile.exists() && relative != "manifest.json") {
                         require(
                             sameBytes(sourceFile, targetFile) ||
@@ -222,7 +222,7 @@ object KframeArchiver {
                     }
                 }
                 actor.walkTopDown().filter(File::isFile).sortedBy { it.name == "manifest.json" }.forEach { sourceFile ->
-                    val targetFile = ActorPathPolicy.resolveWithin(
+                    val targetFile = ContainedPaths.resolveWithin(
                         target,
                         sourceFile.relativeTo(actor).invariantSeparatorsPath,
                         "Actor dependency",
@@ -267,7 +267,7 @@ object KframeArchiver {
         }
     }
 
-    private fun <T> value(value: T): ActorStoreResult<T> = ActorStoreResult.Value(value)
-    private fun failure(error: Throwable): ActorStoreResult.Failure =
-        ActorStoreResult.Failure(error.message ?: "Project archive operation failed", error)
+    private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
+    private fun failure(error: Throwable): StoreResult.Failure =
+        StoreResult.Failure(error.message ?: "Project archive operation failed", error)
 }

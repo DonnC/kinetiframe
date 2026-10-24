@@ -19,9 +19,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.audio.ui.AudioPreview
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -38,8 +38,8 @@ fun LibraryAudioPreviewDialog(
     var error by remember(item) { mutableStateOf<String?>(null) }
     LaunchedEffect(item) {
         when (val result = withContext(Dispatchers.IO) { library.assetFile(item) }) {
-            is ActorStoreResult.Value -> path = result.value.absolutePath
-            is ActorStoreResult.Failure -> error = result.message
+            is StoreResult.Value -> path = result.value.absolutePath
+            is StoreResult.Failure -> error = result.message
         }
     }
     Dialog(onDismissRequest = onDismiss) {

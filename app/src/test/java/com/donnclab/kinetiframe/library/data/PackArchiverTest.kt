@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.library.data
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -15,17 +15,17 @@ class PackArchiverTest {
 
     @TempDir lateinit var work: File
 
-    private fun <T> requireSuccess(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
+    private fun <T> requireSuccess(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
 
-        is ActorStoreResult.Failure -> throw AssertionError(
+        is StoreResult.Failure -> throw AssertionError(
             "Expected success but got failure: ${result.message}",
             result.cause,
         )
     }
 
     @Test fun `export zips exactly the pack's payload files flat, and import round trips it under a new id`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val library = LibraryRepository(files)
         val frame = File(work, "frame_001.png").apply { writeText("pixels") }
         val pack = PackManifest(
@@ -59,10 +59,10 @@ class PackArchiverTest {
     }
 
     @Test fun `importing a file with no metadata JSON is refused`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val library = LibraryRepository(files)
         val notAPack = File(work, "not-a-pack.kpack").apply { writeText("just some bytes, not a zip") }
         val result = PackArchiver.import(files, library, notAPack, "lib-x", nowEpochMs = 1L)
-        assertTrue(result is ActorStoreResult.Failure)
+        assertTrue(result is StoreResult.Failure)
     }
 }

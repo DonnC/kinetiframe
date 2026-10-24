@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.diagnostics
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.data.diagnostics
 
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue

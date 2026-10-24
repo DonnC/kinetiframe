@@ -6,10 +6,10 @@ import com.donnclab.kinetiframe.actors.data.ActorManifest
 import com.donnclab.kinetiframe.actors.data.ActorReferenceIndex
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.ActorRevision
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -52,8 +52,8 @@ class ActorManagerViewModel(
                         repository.selectView(intent.actorId, intent.view, now())
                     }
                 ) {
-                    is ActorStoreResult.Value -> sendEffect(ActorManagerEffect.OpenActorStudio(intent.actorId))
-                    is ActorStoreResult.Failure -> sendEffect(ActorManagerEffect.ShowError(result.message))
+                    is StoreResult.Value -> sendEffect(ActorManagerEffect.OpenActorStudio(intent.actorId))
+                    is StoreResult.Failure -> sendEffect(ActorManagerEffect.ShowError(result.message))
                 }
             }
             Unit
@@ -102,8 +102,8 @@ class ActorManagerViewModel(
 
     private fun duplicate(actorId: String) = mutate {
         val source = when (val loaded = repository.load(actorId)) {
-            is ActorStoreResult.Value -> loaded.value.first
-            is ActorStoreResult.Failure -> return@mutate loaded
+            is StoreResult.Value -> loaded.value.first
+            is StoreResult.Failure -> return@mutate loaded
         }
         var copyIndex = 1
         var name = "${source.displayName} copy"
@@ -116,8 +116,8 @@ class ActorManagerViewModel(
 
     private fun export(actorId: String) = mutate {
         val actor = when (val loaded = repository.load(actorId)) {
-            is ActorStoreResult.Value -> loaded.value.first
-            is ActorStoreResult.Failure -> return@mutate loaded
+            is StoreResult.Value -> loaded.value.first
+            is StoreResult.Failure -> return@mutate loaded
         }
         bundles.exportActor(actorId, "library-${id()}", actor.displayName, now())
     }
@@ -128,8 +128,8 @@ class ActorManagerViewModel(
 
     private fun nameIsAvailable(name: String, excludingActorId: String?): Boolean =
         when (val result = repository.isDisplayNameAvailable(name, excludingActorId)) {
-            is ActorStoreResult.Value -> result.value
-            is ActorStoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
+            is StoreResult.Value -> result.value
+            is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
         }
 
     private fun reload() {
@@ -139,13 +139,13 @@ class ActorManagerViewModel(
             // attached -- no per-actor artwork-file walk on every dashboard open, unlike before
             // this repository had a Room-backed index.
             when (val result = withContext(ioDispatcher) { repository.listWithThumbnails() }) {
-                is ActorStoreResult.Value -> {
+                is StoreResult.Value -> {
                     val actors = result.value.map { it.first }
                     val thumbnails = withContext(ioDispatcher) {
                         actors.mapNotNull { actor ->
                             when (val preview = repository.characterPreview(actor.actorId)) {
-                                is ActorStoreResult.Value -> preview.value?.let { actor.actorId to it }
-                                is ActorStoreResult.Failure -> null
+                                is StoreResult.Value -> preview.value?.let { actor.actorId to it }
+                                is StoreResult.Failure -> null
                             }
                         }.toMap()
                     }
@@ -160,12 +160,12 @@ class ActorManagerViewModel(
                     }
                 }
 
-                is ActorStoreResult.Failure -> updateState { it.copy(loading = false, error = result.message) }
+                is StoreResult.Failure -> updateState { it.copy(loading = false, error = result.message) }
             }
         }
     }
 
-    private fun mutate(action: () -> ActorStoreResult<*>) {
+    private fun mutate(action: () -> StoreResult<*>) {
         viewModelScope.launch {
             when (
                 val result = withContext(ioDispatcher) {
@@ -178,12 +178,12 @@ class ActorManagerViewModel(
                     } catch (
                         error: Exception,
                     ) {
-                        ActorStoreResult.Failure(error.message ?: "Actor operation failed", error)
+                        StoreResult.Failure(error.message ?: "Actor operation failed", error)
                     }
                 }
             ) {
-                is ActorStoreResult.Value -> reload()
-                is ActorStoreResult.Failure -> sendEffect(ActorManagerEffect.ShowError(result.message))
+                is StoreResult.Value -> reload()
+                is StoreResult.Failure -> sendEffect(ActorManagerEffect.ShowError(result.message))
             }
         }
     }

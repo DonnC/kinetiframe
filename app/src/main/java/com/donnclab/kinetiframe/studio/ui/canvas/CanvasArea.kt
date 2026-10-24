@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
@@ -36,6 +35,7 @@ import com.donnclab.kinetiframe.actors.ui.rigging.ActorWorkflowHint
 import com.donnclab.kinetiframe.actors.ui.rigging.ProjectActorRenderLayer
 import com.donnclab.kinetiframe.actors.ui.rigging.PuppetStudioCanvas
 import com.donnclab.kinetiframe.actors.ui.rigging.RigSkeletonOverlay
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.studio.AnimationState
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -56,7 +56,7 @@ fun CanvasArea(
     modifier: Modifier = Modifier,
     cacheManager: FrameCacheManager? = null,
     rigAssetManager: RigAssetManager? = null,
-    actorFiles: ActorFileStore? = null,
+    actorFiles: DocumentFileStore? = null,
     actorRepository: ActorRepository? = null,
     performanceRepository: PerformanceRepository? = null,
     projectAssetManager: com.donnclab.kinetiframe.media.ProjectAssetManager? = null,
@@ -177,7 +177,7 @@ private fun CanvasAreaContents(
     modifier: Modifier = Modifier,
     cacheManager: FrameCacheManager? = null,
     rigAssetManager: RigAssetManager? = null,
-    actorFiles: ActorFileStore? = null,
+    actorFiles: DocumentFileStore? = null,
     actorRepository: ActorRepository? = null,
     performanceRepository: PerformanceRepository? = null,
     /** Owns the decoded bitmap for the project's persistent background image, if one is set

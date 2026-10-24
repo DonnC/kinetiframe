@@ -13,12 +13,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.composables.icons.lucide.Clapperboard
 import com.composables.icons.lucide.Lucide
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.common.ui.ContextIconAction
 import com.donnclab.kinetiframe.common.ui.ContextIconButton
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,12 +38,12 @@ internal fun SwitchPerformanceButton(
     LaunchedEffect(menuOpen, placement.actorId) {
         if (!menuOpen) return@LaunchedEffect
         when (val result = withContext(Dispatchers.IO) { performanceRepository.listForActor(placement.actorId) }) {
-            is ActorStoreResult.Value -> {
+            is StoreResult.Value -> {
                 performances = result.value
                 error = null
             }
 
-            is ActorStoreResult.Failure -> error = result.message
+            is StoreResult.Failure -> error = result.message
         }
     }
     Box {
@@ -69,13 +69,13 @@ internal fun SwitchPerformanceButton(
                                         performanceRepository.copyIntoProject(performance, projectId)
                                     }
                             ) {
-                                is ActorStoreResult.Value -> {
+                                is StoreResult.Value -> {
                                     onSwitchPerformance(placement, result.value)
                                     menuOpen =
                                         false
                                 }
 
-                                is ActorStoreResult.Failure -> error = result.message
+                                is StoreResult.Failure -> error = result.message
                             }
                         }
                     },

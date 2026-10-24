@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.actors.render
 
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.attribute.FileTime
@@ -11,7 +11,7 @@ internal class ActorDocumentCache<T>(private val capacity: Int = 24) {
     private data class Entry<T>(val stamp: Stamp, val value: T)
     private val entries = LinkedHashMap<String, Entry<T>>(16, .75f, true)
 
-    @Synchronized fun load(file: File, decode: () -> ActorStoreResult<T>): ActorStoreResult<T> {
+    @Synchronized fun load(file: File, decode: () -> StoreResult<T>): StoreResult<T> {
         if (!file.isFile) return decode()
         // A concurrent replace/delete should resolve through the repository's normal error path.
         val stamp = try {
@@ -22,9 +22,9 @@ internal class ActorDocumentCache<T>(private val capacity: Int = 24) {
             return decode()
         }
         val key = file.absolutePath
-        entries[key]?.takeIf { it.stamp == stamp }?.let { return ActorStoreResult.Value(it.value) }
+        entries[key]?.takeIf { it.stamp == stamp }?.let { return StoreResult.Value(it.value) }
         val result = decode()
-        if (result is ActorStoreResult.Value) {
+        if (result is StoreResult.Value) {
             entries[key] = Entry(stamp, result.value)
             while (entries.size > capacity) entries.remove(entries.keys.first())
         }

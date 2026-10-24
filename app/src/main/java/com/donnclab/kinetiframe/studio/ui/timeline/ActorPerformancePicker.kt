@@ -21,10 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.actors.data.ActorManifest
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -76,14 +76,14 @@ fun ActorPerformancePicker(
     LaunchedEffect(showActorPicker, selectedActor?.actorId) {
         if (!showActorPicker) return@LaunchedEffect
         when (val result = withContext(Dispatchers.IO) { actors.list() }) {
-            is ActorStoreResult.Value -> actorItems = result.value
-            is ActorStoreResult.Failure -> error = result.message
+            is StoreResult.Value -> actorItems = result.value
+            is StoreResult.Failure -> error = result.message
         }
         performanceItems = emptyList()
         selectedActor?.let { actor ->
             when (val result = withContext(Dispatchers.IO) { performances.listForActor(actor.actorId) }) {
-                is ActorStoreResult.Value -> performanceItems = result.value
-                is ActorStoreResult.Failure -> error = result.message
+                is StoreResult.Value -> performanceItems = result.value
+                is StoreResult.Failure -> error = result.message
             }
         }
     }
@@ -144,9 +144,9 @@ fun ActorPerformancePicker(
                                 val copied =
                                     withContext(Dispatchers.IO) { performances.copyIntoProject(performance, projectId) }
                             ) {
-                                is ActorStoreResult.Failure -> error = copied.message
+                                is StoreResult.Failure -> error = copied.message
 
-                                is ActorStoreResult.Value -> {
+                                is StoreResult.Value -> {
                                     val local = copied.value
                                     onPlace(
                                         ActorPlacementReference(

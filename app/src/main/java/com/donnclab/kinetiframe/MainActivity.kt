@@ -34,7 +34,6 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.LibraryScope
 import com.donnclab.kinetiframe.actors.data.PerformanceDocument
@@ -42,6 +41,7 @@ import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.ui.ActorStudioRepositories
 import com.donnclab.kinetiframe.actors.ui.ActorStudioScreen
 import com.donnclab.kinetiframe.actors.ui.ActorStudioTarget
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.export.ui.ExportRoute
 import com.donnclab.kinetiframe.home.HomeRoute
@@ -241,6 +241,7 @@ class MainActivity : ComponentActivity() {
                                             settingsState,
                                             settings::handleIntent,
                                             goBack,
+                                            onShareDiagnostics = { shareDiagnostics(this@MainActivity) },
                                             onNavigate = { destination ->
                                                 goHome()
                                                 when (destination) {
@@ -297,7 +298,7 @@ class MainActivity : ComponentActivity() {
                                         val db = AppDatabase.getInstance(
                                             this@MainActivity,
                                         )
-                                        val actorStore = ActorFileStore(File(filesDir, "actor-studio"))
+                                        val actorStore = DocumentFileStore(File(filesDir, "actor-studio"))
                                         ActorStudioScreen(
                                             target = ActorStudioTarget(
                                                 actorId = key.actorId,

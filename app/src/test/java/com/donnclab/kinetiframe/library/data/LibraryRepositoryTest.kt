@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.library.data
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
 import com.donnclab.kinetiframe.actors.data.LibraryScope
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -16,7 +16,7 @@ class LibraryRepositoryTest {
     @TempDir lateinit var sourceDir: File
 
     @Test fun `audio preview reads owned bytes without exporting a copy`() {
-        val repo = LibraryRepository(ActorFileStore(root))
+        val repo = LibraryRepository(DocumentFileStore(root))
         val source = File(sourceDir, "sound.wav").apply { writeText("audio bytes") }
         val manifest =
             requireSuccess(repo.exportAsset(LibraryItemKind.AUDIO, "preview", "Sound", source, nowEpochMs = 1))
@@ -26,20 +26,20 @@ class LibraryRepositoryTest {
         assertEquals("audio bytes", preview.readText())
         assertEquals(before, root.walkTopDown().filter(File::isFile).map { it.relativeTo(root).path }.toList())
         preview.delete()
-        assertTrue(repo.assetFile(manifest) is ActorStoreResult.Failure)
+        assertTrue(repo.assetFile(manifest) is StoreResult.Failure)
     }
 
-    private fun <T> requireSuccess(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
+    private fun <T> requireSuccess(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
 
-        is ActorStoreResult.Failure -> throw AssertionError(
+        is StoreResult.Failure -> throw AssertionError(
             "Expected success but got failure: ${result.message}",
             result.cause,
         )
     }
 
     @Test fun `editing a pack switches complete payload versions while preserving identity`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val pack = PackManifest(
             packName = "Hands",
             totalItems = 1,
@@ -51,7 +51,7 @@ class LibraryRepositoryTest {
         requireSuccess(repo.exportPack("hands", "Hands", pack, mapOf("frame_001.png" to image), nowEpochMs = 1))
         image.writeText("new drawing")
         requireSuccess(repo.exportPack("hands", "Hands revised", pack, mapOf("frame_001.png" to image), nowEpochMs = 1))
-        val reopened = LibraryRepository(ActorFileStore(root))
+        val reopened = LibraryRepository(DocumentFileStore(root))
         assertEquals("Hands revised", requireSuccess(reopened.loadPack("hands")).first.displayName)
         assertEquals("new drawing", reopened.packItemFile("hands", "frame_001.png").readText())
         image.delete()
@@ -62,7 +62,7 @@ class LibraryRepositoryTest {
                 pack,
                 mapOf("frame_001.png" to image),
                 nowEpochMs = 2,
-            ) is ActorStoreResult.Failure,
+            ) is StoreResult.Failure,
         )
         assertEquals("Hands revised", requireSuccess(reopened.loadPack("hands")).first.displayName)
     }
@@ -80,7 +80,7 @@ class LibraryRepositoryTest {
             }
         }
         val source = File(sourceDir, "sound.m4a").apply { writeText("audio") }
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         requireSuccess(
             LibraryRepository(
                 files,
@@ -91,12 +91,12 @@ class LibraryRepositoryTest {
             LibraryRepository(files).exportAsset(LibraryItemKind.AUDIO, "two", "Two", source, nowEpochMs = 2),
         )
         assertEquals(1, rows.size)
-        assertEquals(2, requireSuccess(LibraryRepository(ActorFileStore(root), dao = dao).list()).size)
+        assertEquals(2, requireSuccess(LibraryRepository(DocumentFileStore(root), dao = dao).list()).size)
         assertEquals(2, rows.size)
     }
 
     @Test fun `exporting a raw asset copies it in, and it round trips through list and copyAssetTo`() {
-        val repository = LibraryRepository(ActorFileStore(root))
+        val repository = LibraryRepository(DocumentFileStore(root))
         val source = File(sourceDir, "clip.m4a").apply { writeText("audio-bytes") }
 
         val manifest = requireSuccess(
@@ -128,14 +128,14 @@ class LibraryRepositoryTest {
     }
 
     @Test fun `exporting a non-raw-asset kind is refused`() {
-        val repository = LibraryRepository(ActorFileStore(root))
+        val repository = LibraryRepository(DocumentFileStore(root))
         val source = File(sourceDir, "x.json").apply { writeText("{}") }
         val result = repository.exportAsset(LibraryItemKind.ACTOR, "lib-a", "Nope", source, nowEpochMs = 1L)
-        assertTrue(result is ActorStoreResult.Failure)
+        assertTrue(result is StoreResult.Failure)
     }
 
     @Test fun `deleting a library item removes it from the listing`() {
-        val repository = LibraryRepository(ActorFileStore(root))
+        val repository = LibraryRepository(DocumentFileStore(root))
         val source = File(sourceDir, "bg.png").apply { writeText("png-bytes") }
         requireSuccess(
             repository.exportAsset(LibraryItemKind.BACKGROUND_IMAGE, "lib-bg", "Sunset", source, nowEpochMs = 1L),
@@ -147,7 +147,7 @@ class LibraryRepositoryTest {
     @Test fun `listing tolerates a mix of library items written by different exporters`() {
         // Simulates ActorBundleRepository and LibraryRepository both writing into the same
         // library/ root -- list() must surface both regardless of which one wrote a given item.
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         val repository = LibraryRepository(files)
         val source = File(sourceDir, "sting.mp3").apply { writeText("bytes") }
         requireSuccess(repository.exportAsset(LibraryItemKind.AUDIO, "lib-audio", "Sting", source, nowEpochMs = 1L))
@@ -170,7 +170,7 @@ class LibraryRepositoryTest {
     }
 
     @Test fun `PROJECT-scoped items are isolated to their own project vault, PERSONAL items are shared`() {
-        val repository = LibraryRepository(ActorFileStore(root))
+        val repository = LibraryRepository(DocumentFileStore(root))
         val source = File(sourceDir, "clip.wav").apply { writeText("bytes") }
 
         requireSuccess(
@@ -204,7 +204,7 @@ class LibraryRepositoryTest {
     }
 
     @Test fun `exporting a four-item PACK writes every frame plus meta json and round trips every item`() {
-        val repository = LibraryRepository(ActorFileStore(root))
+        val repository = LibraryRepository(DocumentFileStore(root))
         val frameA = File(sourceDir, "a.png").apply { writeText("pixels-a") }
         val frameB = File(sourceDir, "b.png").apply { writeText("pixels-b") }
         val frameC = File(sourceDir, "c.png").apply { writeText("pixels-c") }
@@ -256,7 +256,7 @@ class LibraryRepositoryTest {
     }
 
     @Test fun `exporting a PACK with frame files that don't match its own item list is refused`() {
-        val repository = LibraryRepository(ActorFileStore(root))
+        val repository = LibraryRepository(DocumentFileStore(root))
         val frameA = File(sourceDir, "a.png").apply { writeText("bytes") }
         val pack = PackManifest(
             packName = "Bad Pack",
@@ -271,6 +271,6 @@ class LibraryRepositoryTest {
             mapOf("wrong_name.png" to frameA),
             nowEpochMs = 1L,
         )
-        assertTrue(result is ActorStoreResult.Failure)
+        assertTrue(result is StoreResult.Failure)
     }
 }

@@ -2,11 +2,11 @@ package com.donnclab.kinetiframe.library.bundled
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.project.data.KframeArchiver
 import com.donnclab.kinetiframe.project.data.ProjectRepository
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
@@ -34,9 +34,9 @@ import java.io.File
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class BundledDemoRenderTest {
     @get:Rule val temporary = TemporaryFolder()
-    private fun <T> value(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> throw AssertionError(result.message, result.cause)
+    private fun <T> value(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> throw AssertionError(result.message, result.cause)
     }
 
     @Test fun everyDemoRendersDistinctStageSizedFramesThroughTheRealExportCompositor() = runBlocking {
@@ -48,7 +48,7 @@ class BundledDemoRenderTest {
     }
 
     private suspend fun renderProjects(projectIds: List<String>) {
-        val files = ActorFileStore(temporary.newFolder())
+        val files = DocumentFileStore(temporary.newFolder())
         val assets = File("src/main/assets").takeIf(File::isDirectory) ?: File("app/src/main/assets")
         projectIds.forEach { id ->
             val path = BundledDemoInstaller.projectAssetPath(id)

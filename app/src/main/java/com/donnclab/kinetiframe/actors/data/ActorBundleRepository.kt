@@ -1,5 +1,8 @@
 package com.donnclab.kinetiframe.actors.data
 
+import com.donnclab.kinetiframe.data.storage.ContainedPaths
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -8,7 +11,7 @@ import java.nio.file.StandardCopyOption
 
 /** Local library payloads are validated documents, not executable archives or filename-based imports. */
 class ActorBundleRepository(
-    private val files: ActorFileStore,
+    private val files: DocumentFileStore,
     private val actors: ActorRepository,
     private val performances: PerformanceRepository,
     private val json: Json = Json {
@@ -25,7 +28,7 @@ class ActorBundleRepository(
         itemId: String,
         name: String,
         nowEpochMs: Long,
-    ): ActorStoreResult<LibraryItemManifest> = runCatching {
+    ): StoreResult<LibraryItemManifest> = runCatching {
         val (actor, revision) = requireActor(actorId)
         val manifest = LibraryItemManifest(
             libraryItemId = itemId,
@@ -44,8 +47,8 @@ class ActorBundleRepository(
         )
         val views = actor.authoredViews().values.map { revisionId ->
             val snapshot = when (val loaded = actors.loadRevision(actorId, revisionId)) {
-                is ActorStoreResult.Value -> loaded.value
-                is ActorStoreResult.Failure -> error(loaded.message)
+                is StoreResult.Value -> loaded.value
+                is StoreResult.Failure -> error(loaded.message)
             }
             snapshot.copy(artworkAssetPaths = exportArtwork(actorId, snapshot, directory))
         }
@@ -61,7 +64,7 @@ class ActorBundleRepository(
         itemId: String,
         name: String,
         nowEpochMs: Long,
-    ): ActorStoreResult<LibraryItemManifest> = runCatching {
+    ): StoreResult<LibraryItemManifest> = runCatching {
         val performance = requirePerformance(projectId, performanceId)
         val manifest = LibraryItemManifest(
             libraryItemId = itemId,
@@ -85,7 +88,7 @@ class ActorBundleRepository(
         newActorId: String,
         newRevisionId: String,
         nowEpochMs: Long,
-    ): ActorStoreResult<ActorManifest> = runCatching {
+    ): StoreResult<ActorManifest> = runCatching {
         val directory = files.libraryDirectory(itemId)
         val library = json.decodeFromString<LibraryItemManifest>(
             requireNotNull(files.readOrNull(File(directory, "manifest.json"))) {
@@ -184,7 +187,7 @@ class ActorBundleRepository(
         targetProjectId: String,
         newPerformanceId: String,
         nowEpochMs: Long,
-    ): ActorStoreResult<PerformanceDocument> = runCatching {
+    ): StoreResult<PerformanceDocument> = runCatching {
         val directory = files.libraryDirectory(itemId)
         val library = json.decodeFromString<LibraryItemManifest>(
             requireNotNull(files.readOrNull(File(directory, "manifest.json"))) { "Library item not found" },
@@ -198,9 +201,9 @@ class ActorBundleRepository(
             },
         ).validate()
         val revision = when (val loaded = actors.loadRevision(source.actorId, source.actorRevisionId)) {
-            is ActorStoreResult.Value -> loaded.value
+            is StoreResult.Value -> loaded.value
 
-            is ActorStoreResult.Failure -> throw IllegalStateException(
+            is StoreResult.Failure -> throw IllegalStateException(
                 "Import the matching actor revision before importing this performance",
                 loaded.cause,
             )
@@ -218,16 +221,16 @@ class ActorBundleRepository(
 
     private fun requireActor(actorId: String): Pair<ActorManifest, ActorRevision> =
         when (val value = actors.load(actorId)) {
-            is ActorStoreResult.Value -> value.value
-            is ActorStoreResult.Failure -> throw IllegalStateException(value.message, value.cause)
+            is StoreResult.Value -> value.value
+            is StoreResult.Failure -> throw IllegalStateException(value.message, value.cause)
         }
     private fun requirePerformance(projectId: String, performanceId: String): PerformanceDocument =
         when (val value = performances.load(projectId, performanceId)) {
-            is ActorStoreResult.Value -> value.value
-            is ActorStoreResult.Failure -> throw IllegalStateException(value.message, value.cause)
+            is StoreResult.Value -> value.value
+            is StoreResult.Failure -> throw IllegalStateException(value.message, value.cause)
         }
-    private fun requireSuccess(value: ActorStoreResult<*>) {
-        if (value is ActorStoreResult.Failure) throw IllegalStateException(value.message, value.cause)
+    private fun requireSuccess(value: StoreResult<*>) {
+        if (value is StoreResult.Failure) throw IllegalStateException(value.message, value.cause)
     }
 
     /** Makes library payloads self-contained: revisions never retain source-actor file paths. */
@@ -258,7 +261,7 @@ class ActorBundleRepository(
     }.toMap()
 
     private fun safeFile(root: File, relativePath: String): File =
-        ActorPathPolicy.resolveWithin(root, relativePath, "Bundle artwork")
+        ContainedPaths.resolveWithin(root, relativePath, "Bundle artwork")
 
     private fun indexInDao(manifest: LibraryItemManifest) {
         val d = libraryDao ?: return
@@ -282,7 +285,7 @@ class ActorBundleRepository(
         }
     }
 
-    private fun <T> value(value: T): ActorStoreResult<T> = ActorStoreResult.Value(value)
-    private fun failure(error: Throwable): ActorStoreResult.Failure =
-        ActorStoreResult.Failure(error.message ?: "Library operation failed", error)
+    private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
+    private fun failure(error: Throwable): StoreResult.Failure =
+        StoreResult.Failure(error.message ?: "Library operation failed", error)
 }

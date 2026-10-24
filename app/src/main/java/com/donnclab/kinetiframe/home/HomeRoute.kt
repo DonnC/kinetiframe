@@ -23,10 +23,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.actors.data.ActorBundleRepository
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorReferenceIndex
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.LibraryItemKind
 import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.data.LibraryScope
@@ -34,6 +32,8 @@ import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.ui.ActorManagerEffect
 import com.donnclab.kinetiframe.actors.ui.ActorManagerIntent
 import com.donnclab.kinetiframe.actors.ui.ActorManagerViewModel
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArchiver
 import com.donnclab.kinetiframe.library.ui.LibraryPickerDialog
@@ -69,7 +69,7 @@ fun HomeRoute(
     onOpenSettings: () -> Unit = {},
 ) {
     val context = LocalContext.current
-    val files = remember(storageRoot) { ActorFileStore(storageRoot) }
+    val files = remember(storageRoot) { DocumentFileStore(storageRoot) }
     val db = remember(context) { AppDatabase.getInstance(context) }
 
     val projectModel: ProjectManagerViewModel = viewModel(
@@ -178,14 +178,14 @@ fun HomeRoute(
                                     com.donnclab.kinetiframe.library.bundled.CuratedLibraryMigration(files).migrate()
                                 }
                         ) {
-                            is ActorStoreResult.Value -> {
+                            is StoreResult.Value -> {
                                 projectModel.handleIntent(ProjectManagerIntent.Reload)
                                 actorModel.handleIntent(ActorManagerIntent.Reload)
                                 packModel.handleIntent(PacksTabIntent.Reload)
                                 snackbar.showSnackbar("Trial library archived. Your curated library is ready.")
                             }
 
-                            is ActorStoreResult.Failure -> snackbar.showSnackbar(result.message)
+                            is StoreResult.Failure -> snackbar.showSnackbar(result.message)
                         }
                     }
                 }) { androidx.compose.material3.Text("Clean up") }
@@ -238,7 +238,7 @@ fun HomeRoute(
             val destination = File(File(context.filesDir, "kframe-exports"), "${project.projectId}.kframe")
             val result = withContext(Dispatchers.IO) { KframeArchiver.export(files, project.projectId, destination) }
             when (result) {
-                is ActorStoreResult.Value -> {
+                is StoreResult.Value -> {
                     val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", result.value)
                     val sendIntent = Intent(Intent.ACTION_SEND).apply {
                         type = "application/octet-stream"
@@ -248,7 +248,7 @@ fun HomeRoute(
                     context.startActivity(Intent.createChooser(sendIntent, "Share ${project.displayName}"))
                 }
 
-                is ActorStoreResult.Failure -> snackbar.showSnackbar(result.message)
+                is StoreResult.Failure -> snackbar.showSnackbar(result.message)
             }
         }
     }
@@ -263,16 +263,16 @@ fun HomeRoute(
                         tempFile.outputStream().use { output -> input.copyTo(output) }
                     } ?: throw IllegalStateException("Could not read the selected file")
                     KframeArchiver.import(files, tempFile)
-                }.getOrElse { ActorStoreResult.Failure(it.message ?: "Could not import this project") }
+                }.getOrElse { StoreResult.Failure(it.message ?: "Could not import this project") }
                     .also { tempFile.delete() }
             }
             when (result) {
-                is ActorStoreResult.Value -> {
+                is StoreResult.Value -> {
                     projectModel.handleIntent(ProjectManagerIntent.Reload)
                     snackbar.showSnackbar("Project imported")
                 }
 
-                is ActorStoreResult.Failure -> snackbar.showSnackbar(result.message)
+                is StoreResult.Failure -> snackbar.showSnackbar(result.message)
             }
         }
     }
@@ -283,8 +283,8 @@ fun HomeRoute(
                 runCatching {
                     val tempFile = File(context.cacheDir, "library-project-${System.currentTimeMillis()}.kframe")
                     when (val exported = KframeArchiver.export(files, project.projectId, tempFile)) {
-                        is ActorStoreResult.Value -> Unit
-                        is ActorStoreResult.Failure -> throw IllegalStateException(exported.message, exported.cause)
+                        is StoreResult.Value -> Unit
+                        is StoreResult.Failure -> throw IllegalStateException(exported.message, exported.cause)
                     }
                     libraryRepository.exportAsset(
                         kind = LibraryItemKind.PROJECT,
@@ -294,11 +294,11 @@ fun HomeRoute(
                         projectId = project.projectId,
                         nowEpochMs = System.currentTimeMillis(),
                     ).also { tempFile.delete() }
-                }.getOrElse { ActorStoreResult.Failure(it.message ?: "Could not save this project to your library") }
+                }.getOrElse { StoreResult.Failure(it.message ?: "Could not save this project to your library") }
             }
             when (result) {
-                is ActorStoreResult.Value -> snackbar.showSnackbar("Saved ${project.displayName} to your library")
-                is ActorStoreResult.Failure -> snackbar.showSnackbar(result.message)
+                is StoreResult.Value -> snackbar.showSnackbar("Saved ${project.displayName} to your library")
+                is StoreResult.Failure -> snackbar.showSnackbar(result.message)
             }
         }
     }
@@ -310,20 +310,20 @@ fun HomeRoute(
             val result = withContext(Dispatchers.IO) {
                 runCatching {
                     when (val copied = libraryRepository.copyAssetTo(manifest.libraryItemId, tempFile)) {
-                        is ActorStoreResult.Value -> Unit
-                        is ActorStoreResult.Failure -> throw IllegalStateException(copied.message, copied.cause)
+                        is StoreResult.Value -> Unit
+                        is StoreResult.Failure -> throw IllegalStateException(copied.message, copied.cause)
                     }
                     KframeArchiver.import(files, tempFile)
-                }.getOrElse { ActorStoreResult.Failure(it.message ?: "Could not import this project") }
+                }.getOrElse { StoreResult.Failure(it.message ?: "Could not import this project") }
                     .also { tempFile.delete() }
             }
             when (result) {
-                is ActorStoreResult.Value -> {
+                is StoreResult.Value -> {
                     projectModel.handleIntent(ProjectManagerIntent.Reload)
                     snackbar.showSnackbar("Project imported")
                 }
 
-                is ActorStoreResult.Failure -> snackbar.showSnackbar(result.message)
+                is StoreResult.Failure -> snackbar.showSnackbar(result.message)
             }
         }
     }
@@ -336,7 +336,7 @@ fun HomeRoute(
                 PackArchiver.export(files, libraryRepository, pack.libraryItemId, destination, LibraryScope.PERSONAL)
             }
             when (result) {
-                is ActorStoreResult.Value -> {
+                is StoreResult.Value -> {
                     val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", result.value)
                     val sendIntent = Intent(Intent.ACTION_SEND).apply {
                         type = "application/octet-stream"
@@ -346,7 +346,7 @@ fun HomeRoute(
                     context.startActivity(Intent.createChooser(sendIntent, "Share ${pack.displayName}"))
                 }
 
-                is ActorStoreResult.Failure -> snackbar.showSnackbar(result.message)
+                is StoreResult.Failure -> snackbar.showSnackbar(result.message)
             }
         }
     }

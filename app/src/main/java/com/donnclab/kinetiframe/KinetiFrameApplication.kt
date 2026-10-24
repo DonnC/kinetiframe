@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe
 
 import android.app.Application
-import com.donnclab.kinetiframe.diagnostics.CrashReportStore
+import com.donnclab.kinetiframe.data.diagnostics.CrashReportStore
 
 class KinetiFrameApplication : Application() {
     override fun onCreate() {

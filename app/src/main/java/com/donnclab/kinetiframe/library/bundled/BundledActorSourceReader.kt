@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.library.bundled
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorPathPolicy
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.data.storage.ContainedPaths
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import java.io.File
 import java.util.zip.ZipFile
 
@@ -13,7 +13,7 @@ import java.util.zip.ZipFile
 internal object BundledActorSourceReader {
     const val ASSET_PATH = "actor/starter-actors-v4.zip"
 
-    fun read(archive: File, files: ActorFileStore, expectedIds: Set<String>) {
+    fun read(archive: File, files: DocumentFileStore, expectedIds: Set<String>) {
         var total = 0L
         val names = mutableSetOf<String>()
         ZipFile(archive).use { zip ->
@@ -25,7 +25,7 @@ internal object BundledActorSourceReader {
                 val id = relative.substringBefore('/')
                 if (id !in expectedIds) continue
                 require(names.add(relative)) { "Duplicate bundled actor file" }
-                val destination = ActorPathPolicy.resolveWithin(files.actorsRoot(), relative, "Bundled actor")
+                val destination = ContainedPaths.resolveWithin(files.actorsRoot(), relative, "Bundled actor")
                 destination.parentFile?.mkdirs()
                 zip.getInputStream(entry).use { input ->
                     destination.outputStream().buffered().use { output ->
@@ -44,12 +44,12 @@ internal object BundledActorSourceReader {
         val repository = ActorRepository(files)
         expectedIds.forEach { id ->
             val loaded = repository.load(id)
-            require(loaded is ActorStoreResult.Value) { "Incomplete bundled actor $id" }
+            require(loaded is StoreResult.Value) { "Incomplete bundled actor $id" }
             loaded.value.first.authoredViews().values.forEach { revisionId ->
                 val revision = repository.loadRevision(id, revisionId)
-                require(revision is ActorStoreResult.Value)
+                require(revision is StoreResult.Value)
                 revision.value.artworkAssetPaths.values.forEach { relative ->
-                    val artwork = ActorPathPolicy.resolveWithin(files.actorDirectory(id), relative, "Bundled artwork")
+                    val artwork = ContainedPaths.resolveWithin(files.actorDirectory(id), relative, "Bundled artwork")
                     require(artwork.isFile && artwork.length() > 0) { "Missing bundled artwork" }
                 }
             }

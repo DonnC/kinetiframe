@@ -13,7 +13,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.width
 import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneArtwork
@@ -21,6 +20,7 @@ import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -63,7 +63,7 @@ class ActorReferenceControlsTest {
                         ),
                 ),
             )
-            val files = ActorFileStore(directory)
+            val files = DocumentFileStore(directory)
             val paths = ActorArtworkStore(
                 files,
             ).save("actor", "revision", graph, runtime)

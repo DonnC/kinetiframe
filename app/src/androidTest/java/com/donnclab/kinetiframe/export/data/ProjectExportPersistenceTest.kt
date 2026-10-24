@@ -7,9 +7,7 @@ import android.media.MediaFormat
 import android.media.MediaMuxer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.core.document.AssetKind
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
@@ -17,6 +15,8 @@ import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.project.data.ProjectManifest
 import com.donnclab.kinetiframe.project.data.ProjectRepository
 import com.donnclab.kinetiframe.project.data.ProjectSaveDocument
@@ -47,7 +47,7 @@ class ProjectExportPersistenceTest {
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         var videoFile: File? = null
         try {
-            val files = ActorFileStore(root)
+            val files = DocumentFileStore(root)
             val id = "project-test"
             val stage = StageDimensions(160, 128)
             val layer = Layer(name = "Main", id = "main")
@@ -122,7 +122,7 @@ class ProjectExportPersistenceTest {
                 )
             requireValue(repository.save(manifest, document))
             // Recreate every repository: export must use disk, not the editor's state or bitmap RAM.
-            val freshFiles = ActorFileStore(root)
+            val freshFiles = DocumentFileStore(root)
             videoFile = withContext(Dispatchers.IO) {
                 requireValue(
                     ProjectExporter(
@@ -167,8 +167,8 @@ class ProjectExportPersistenceTest {
         }
     }
 
-    private fun <T> requireValue(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> throw AssertionError(result.message, result.cause)
+    private fun <T> requireValue(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> throw AssertionError(result.message, result.cause)
     }
 }

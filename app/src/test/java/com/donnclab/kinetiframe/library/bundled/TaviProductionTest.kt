@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.library.bundled
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.project.data.KframeArchiver
 import com.donnclab.kinetiframe.project.data.ProjectRepository
@@ -18,11 +18,11 @@ import javax.imageio.ImageIO
 class TaviProductionTest {
     @TempDir lateinit var root: File
     private val assets = File("src/main/assets").takeIf(File::isDirectory) ?: File("app/src/main/assets")
-    private fun <T> value(result: ActorStoreResult<T>): T = when (result) {
-        is ActorStoreResult.Value -> result.value
-        is ActorStoreResult.Failure -> throw AssertionError(result.message, result.cause)
+    private fun <T> value(result: StoreResult<T>): T = when (result) {
+        is StoreResult.Value -> result.value
+        is StoreResult.Failure -> throw AssertionError(result.message, result.cause)
     }
-    private fun installer(files: ActorFileStore, includeProject: Boolean = true): BundledDemoInstaller {
+    private fun installer(files: DocumentFileStore, includeProject: Boolean = true): BundledDemoInstaller {
         (BundledDemoInstaller.projectIds - BundledDemoInstaller.TAVI_PRESENTATION_ID).forEach {
             files.projectDirectory(it).mkdirs()
         }
@@ -36,10 +36,10 @@ class TaviProductionTest {
     }
 
     @Test fun `silent editable scene reopens and exports with its exact persistent room plate`() {
-        val files = ActorFileStore(root)
+        val files = DocumentFileStore(root)
         assertTrue(installer(files).install().errors.isEmpty())
         val id = BundledDemoInstaller.TAVI_PRESENTATION_ID
-        val (manifest, saved) = value(ProjectRepository(ActorFileStore(root)).load(id))
+        val (manifest, saved) = value(ProjectRepository(DocumentFileStore(root)).load(id))
         assertEquals(1280, manifest.stage.width)
         assertEquals(720, manifest.stage.height)
         assertEquals(12, manifest.fps)
@@ -85,7 +85,7 @@ class TaviProductionTest {
         assertTrue(bodyProofs.size >= 4)
         assertTrue(mouthProofs.size >= 3)
         val archive = value(KframeArchiver.export(files, id, File(root, "tavi.kframe")))
-        val importedFiles = ActorFileStore(File(root, "reimport"))
+        val importedFiles = DocumentFileStore(File(root, "reimport"))
         assertEquals(id, value(KframeArchiver.import(importedFiles, archive)))
         val reopened = value(ProjectRepository(importedFiles).load(id)).second
         assertEquals(saved.project.layers.map { it.name }, reopened.project.layers.map { it.name })

@@ -1,11 +1,12 @@
 package com.donnclab.kinetiframe.actors.data
 
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import kotlinx.serialization.json.Json
 import java.io.File
 
 /** Read-only reference scan used to make actor archive/delete decisions safe. */
 class ActorReferenceIndex(
-    private val files: ActorFileStore,
+    private val files: DocumentFileStore,
     private val json: Json = Json { ignoreUnknownKeys = false },
 ) {
     fun isReferenced(actorId: String): Boolean = runCatching {

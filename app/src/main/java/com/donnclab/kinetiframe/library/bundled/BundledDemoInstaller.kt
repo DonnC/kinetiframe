@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.library.bundled
 
-import com.donnclab.kinetiframe.actors.data.ActorFileStore
-import com.donnclab.kinetiframe.actors.data.ActorStoreResult
+import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.DurableFile
+import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArchiver
 import com.donnclab.kinetiframe.project.data.KframeArchiver
@@ -17,7 +17,7 @@ import java.io.InputStream
  * Call on Dispatchers.IO; the injected stream opener keeps storage policy JVM-testable.
  */
 class BundledDemoInstaller(
-    private val files: ActorFileStore,
+    private val files: DocumentFileStore,
     private val openAsset: (String) -> InputStream,
     private val library: LibraryRepository = LibraryRepository(files),
 ) {
@@ -67,12 +67,12 @@ class BundledDemoInstaller(
                             KframeArchiver.import(files, temporary)
                         }
                         when (result) {
-                            is ActorStoreResult.Value -> {
+                            is StoreResult.Value -> {
                                 if (!demo.pack) check(result.value == demo.id) { "Unexpected demo project identity" }
                                 installed++
                             }
 
-                            is ActorStoreResult.Failure -> error(result.message)
+                            is StoreResult.Failure -> error(result.message)
                         }
                     } finally {
                         temporary.delete()
