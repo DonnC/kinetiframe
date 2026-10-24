@@ -286,7 +286,7 @@ class ActorStudioDocumentViewModel(
                             },
                             poseKeys = keys,
                             artworkKeys = artworkKeys,
-                            presetSnapshot = preset,
+                            presetSnapshot = preset?.document(),
                             poseInterpolation = interpolation,
                             rotationCurves = retainedCurves.ifEmpty {
                                 PerformanceAuthoring.rotationCurves(keys, duration, interpolation)

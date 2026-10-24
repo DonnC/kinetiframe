@@ -178,7 +178,7 @@ class DirectionalMotionRenderTest {
                             actorRevisionId = revision.revisionId,
                             displayName = motion,
                             durationMicros = applied.durationMicros,
-                            presetSnapshot = applied, createdAtEpochMs = 1, updatedAtEpochMs = 1,
+                            presetSnapshot = applied.document(), createdAtEpochMs = 1, updatedAtEpochMs = 1,
                         )
                     value(performances.save(document))
                     repeat(8) { phase ->

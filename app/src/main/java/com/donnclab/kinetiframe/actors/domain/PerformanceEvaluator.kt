@@ -4,6 +4,7 @@ import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
+import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.motion.PerformanceTiming
 import com.donnclab.kinetiframe.core.actor.motion.PresetClockMode
@@ -44,7 +45,7 @@ object PerformanceEvaluator {
             rest,
             PoseSampling(periodicKeys(document), document.poseInterpolation.engineInterpolation()),
         )
-        val preset = document.presetSnapshot?.offsets(time).orEmpty()
+        val preset = document.appliedPreset?.offsets(time).orEmpty()
         val curves = curveRotations(document.rotationCurves, time, curveSampling(document))
         return MotionComposition.rotations(rest, legacy, preset, curves)
     }
@@ -60,7 +61,7 @@ object PerformanceEvaluator {
             rest,
             PoseSampling(periodicKeys(document), document.poseInterpolation.engineInterpolation()),
         ),
-        document.presetSnapshot?.rootTranslations(time, rest).orEmpty(),
+        document.appliedPreset?.rootTranslations(time, rest).orEmpty(),
         RootMotionEvaluator.sample(document.rootMotionCurves, time, curveSampling(document)),
     )
 
@@ -70,7 +71,7 @@ object PerformanceEvaluator {
         standalonePreset(document),
     )
 
-    private fun standalonePreset(document: PerformanceDocument): PresetTiming? = document.presetSnapshot?.takeIf {
+    private fun standalonePreset(document: PerformanceDocument): PresetTiming? = document.appliedPreset?.takeIf {
         document.poseKeys.isEmpty() && document.rotationCurves.isEmpty() && document.artworkKeys.isEmpty() &&
             document.rootMotionCurves.isEmpty()
     }?.let { preset ->
@@ -96,3 +97,7 @@ object PerformanceEvaluator {
         if (document.presetSnapshot != null) BeforeTake.PRESERVE_PRESET else BeforeTake.HOLD_FIRST_VALUE,
     )
 }
+
+/** The saved preset snapshot as an evaluator, shared across frames for the same document. */
+internal val PerformanceDocument.appliedPreset: AppliedActorPreset?
+    get() = presetSnapshot?.let(AppliedActorPreset::of)

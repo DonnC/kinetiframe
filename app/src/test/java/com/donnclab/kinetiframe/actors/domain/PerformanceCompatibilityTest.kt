@@ -49,7 +49,7 @@ class PerformanceCompatibilityTest {
             PerformanceDocument(
                 performanceId = "performance-a", projectId = "project-a", actorId = "actor-a",
                 actorRevisionId = "revision-a", displayName = "Wave", durationMicros = 1_000_000,
-                presetSnapshot = preset("torso", "head"), createdAtEpochMs = 1, updatedAtEpochMs = 1,
+                presetSnapshot = preset("torso", "head").document(), createdAtEpochMs = 1, updatedAtEpochMs = 1,
             )
         PerformanceCompatibility.validate(performance, revision) // must not throw
     }
@@ -59,7 +59,7 @@ class PerformanceCompatibilityTest {
             PerformanceDocument(
                 performanceId = "performance-a", projectId = "project-a", actorId = "actor-a",
                 actorRevisionId = "revision-a", displayName = "Wave", durationMicros = 1_000_000,
-                presetSnapshot = preset("torso", "tail"), createdAtEpochMs = 1, updatedAtEpochMs = 1,
+                presetSnapshot = preset("torso", "tail").document(), createdAtEpochMs = 1, updatedAtEpochMs = 1,
             )
         assertThrows(IllegalArgumentException::class.java) { PerformanceCompatibility.validate(performance, revision) }
     }

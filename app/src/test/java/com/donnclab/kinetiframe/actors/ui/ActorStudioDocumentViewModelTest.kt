@@ -257,7 +257,7 @@ class ActorStudioDocumentViewModelTest {
         val effect = model.effect.first {
             it is ActorStudioDocumentEffect.PerformanceSaved
         } as ActorStudioDocumentEffect.PerformanceSaved
-        assertEquals(preset, effect.document.presetSnapshot)
+        assertEquals(preset.document(), effect.document.presetSnapshot)
         // durationSeconds 2f at speed 2x plays out in 1 real second -- the saved clip must reflect
         // that, not the hardcoded 1-second fallback used when there is truly no motion at all.
         assertEquals(1_000_000L, effect.document.durationMicros)

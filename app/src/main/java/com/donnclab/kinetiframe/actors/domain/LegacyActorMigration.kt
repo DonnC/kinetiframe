@@ -53,7 +53,7 @@ object LegacyActorMigration {
             performanceId = performanceId, projectId = projectId, actorId = actorId,
             actorRevisionId = revisionId, displayName = name, durationMicros = duration,
             playback = if (preset?.recipe?.loop == false) PerformancePlayback.END_HOLD else PerformancePlayback.LOOP,
-            poseKeys = instance.poseKeys, presetSnapshot = preset,
+            poseKeys = instance.poseKeys, presetSnapshot = preset?.document(),
             rotationCurves = instance.rotationCurves, poseInterpolation = instance.poseInterpolation,
             artworkKeys = instance.artworkKeys, rootMotionCurves = instance.rootMotionCurves,
             createdAtEpochMs = nowEpochMs, updatedAtEpochMs = nowEpochMs,

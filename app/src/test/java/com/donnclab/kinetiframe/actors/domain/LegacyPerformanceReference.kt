@@ -27,7 +27,7 @@ internal object LegacyPerformanceReference {
                     rest,
                     PoseSampling(periodicKeys(document), document.poseInterpolation.engineInterpolation()),
                 ) +
-                    document.presetSnapshot?.rootTranslations(time, rest).orEmpty() +
+                    document.appliedPreset?.rootTranslations(time, rest).orEmpty() +
                     RootMotionEvaluator.sample(document.rootMotionCurves, time, curveSampling(document)),
                 ActorPoseTrack.contacts(document.poseKeys, time),
             ),
@@ -43,7 +43,7 @@ internal object LegacyPerformanceReference {
             rest,
             PoseSampling(periodicKeys(document), document.poseInterpolation.engineInterpolation()),
         )
-        val preset = document.presetSnapshot?.offsets(time)?.mapValues { (boneId, offset) ->
+        val preset = document.appliedPreset?.offsets(time)?.mapValues { (boneId, offset) ->
             (rest.bones[boneId]?.localTransform?.rotationDegrees ?: 0f) + offset
         }.orEmpty()
         val curves = curveRotations(document.rotationCurves, time, curveSampling(document))
@@ -54,7 +54,7 @@ internal object LegacyPerformanceReference {
     fun normalizeTime(document: PerformanceDocument, timeMicros: Long): Long {
         // Older saved preset clips used the default 2 s LOOP container even for an 0.8 s
         // one-shot. The recipe owns its motion clock; do not restart it at that outer seam.
-        val preset = document.presetSnapshot
+        val preset = document.appliedPreset
         if (preset != null && document.poseKeys.isEmpty() && document.rotationCurves.isEmpty() &&
             document.artworkKeys.isEmpty() &&
             document.rootMotionCurves.isEmpty()

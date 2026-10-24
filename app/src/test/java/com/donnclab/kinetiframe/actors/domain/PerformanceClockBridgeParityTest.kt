@@ -100,7 +100,7 @@ class PerformanceClockBridgeParityTest {
                 presetSnapshot = AppliedActorPreset(
                     recipe,
                     speed = 1.25f,
-                ),
+                ).document(),
                 createdAtEpochMs = 1, updatedAtEpochMs = 1,
             )
         val endpoint = rest.bones.values.firstOrNull { it.ikChainRootId != null }?.id

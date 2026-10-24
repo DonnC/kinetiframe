@@ -4,13 +4,14 @@ import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
 import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.actors.rig.model.ActorView
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
+import com.donnclab.kinetiframe.core.actor.presets.PresetValidationDiagnostics
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import com.donnclab.kinetiframe.core.geometry.Affine2D
@@ -109,7 +110,7 @@ data class PerformanceDocument(
     val poseKeys: List<ActorPoseKey> = emptyList(),
     val rotationCurves: List<RotationCurve> = emptyList(),
     /** Exact snapshot of a legacy procedural recipe; never resolved from a mutable asset pack. */
-    val presetSnapshot: AppliedActorPreset? = null,
+    val presetSnapshot: AppliedPresetDocument? = null,
     val poseInterpolation: CurveInterpolation = CurveInterpolation.SMOOTH,
     val createdAtEpochMs: Long,
     val updatedAtEpochMs: Long,
@@ -183,7 +184,7 @@ data class PerformanceDocument(
         ) { "Invalid root motion channels" }
         rootMotionCurves.forEach { it.validate(durationMicros) }
         presetSnapshot?.let { preset ->
-            preset.recipe.validate()
+            PresetValidationDiagnostics.requireValidRecipe(preset.recipe.recipe)
             require(preset.intensity.isFinite() && preset.intensity in 0f..2f) { "Invalid preset intensity" }
             require(preset.speed.isFinite() && preset.speed in 0.25f..3f) { "Invalid preset speed" }
         }

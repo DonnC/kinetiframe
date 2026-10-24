@@ -26,7 +26,7 @@ class PerformanceEvaluatorTest {
         val preset = com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset(recipe)
         val document = performance().copy(
             durationMicros = 5_000_000,
-            presetSnapshot = preset,
+            presetSnapshot = preset.document(),
             rotationCurves = listOf(
                 RotationCurve(
                     "head",
@@ -52,7 +52,7 @@ class PerformanceEvaluatorTest {
             ),
         )
         val applied = com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset(recipe)
-        val document = performance().copy(durationMicros = 2_000_000, presetSnapshot = applied)
+        val document = performance().copy(durationMicros = 2_000_000, presetSnapshot = applied.document())
         val base = rest.bones.getValue("head").localTransform.rotationDegrees
         for (time in listOf(1_999_999L, 2_000_000L, 2_000_001L, 10_000_000L)) {
             assertEquals(
@@ -69,7 +69,7 @@ class PerformanceEvaluatorTest {
                 ),
             ),
         )
-        val saved = document.copy(presetSnapshot = oneShot)
+        val saved = document.copy(presetSnapshot = oneShot.document())
         assertEquals(base + 30f, PerformanceEvaluator.rotations(saved, 2_000_000L, rest).getValue("head"), .001f)
         assertEquals(base + 30f, PerformanceEvaluator.rotations(saved, 10_000_000L, rest).getValue("head"), .001f)
     }
@@ -121,7 +121,7 @@ class PerformanceEvaluatorTest {
                 ),
             ),
         )
-        val document = performance().copy(durationMicros = 2_000_000, presetSnapshot = preset)
+        val document = performance().copy(durationMicros = 2_000_000, presetSnapshot = preset.document())
         val restTorsoDegrees = rest.bones.getValue("torso").localTransform.rotationDegrees
         val expected = restTorsoDegrees + preset.offsets(500_000).getValue("torso")
         assertEquals(expected, PerformanceEvaluator.rotations(document, 500_000, rest).getValue("torso"), 0.001f)
