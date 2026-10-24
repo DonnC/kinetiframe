@@ -79,9 +79,6 @@ fixed after the module work, unless one blocks testing.
 
 **Editor**
 
-- **Blocks voice-over.** In landscape the audio recorder dialog is taller than the screen and
-  doesn't scroll, so its "Add to timeline" button is out of reach and a recorded take can't be
-  used. Seen on a Galaxy A73.
 - The asset menu cuts off "Actor perfor…" and "Import audio …".
 - The asset tracks panel covers the whole stage and says only "No clips yet".
 - "Save before leaving?" appears even right after saving with nothing changed. In that dialog,

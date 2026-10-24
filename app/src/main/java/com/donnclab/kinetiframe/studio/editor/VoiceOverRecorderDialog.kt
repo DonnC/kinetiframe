@@ -1,13 +1,18 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.studio.editor
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.media.audio.VoiceRecorder
 import com.donnclab.kinetiframe.media.audio.ui.AudioRecorderActions
 import com.donnclab.kinetiframe.media.audio.ui.AudioRecorderSheet
@@ -29,8 +34,10 @@ internal fun VoiceOverRecorderDialog(scope: CoroutineScope, onClose: () -> Unit,
         voiceRecorder.release()
         onClose()
     }
-    Dialog(onDismissRequest = close) {
+    // The platform default dialog width is too narrow for the recorder's control row.
+    Dialog(onDismissRequest = close, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         AudioRecorderSheet(
+            modifier = Modifier.widthIn(max = Dimens.recorderSheetMaxWidth).padding(horizontal = Dimens.spaceL),
             state = recorderState,
             actions = AudioRecorderActions(
                 onRecord = { voiceRecorder.start(takeFile) },
