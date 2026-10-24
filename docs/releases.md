@@ -18,11 +18,13 @@ Feature and fix branches are deleted after they are merged.
 
 ## Development builds
 
-The Android checks workflow tests and builds the app. A successful run uploads the debug APK, full commit ID and SHA-256 checksum as an artifact retained for 14 days.
-Test reports are uploaded even when tests fail, unless the run is cancelled. Pull requests and
-manual runs can produce artifacts but cannot publish a release.
+The Android checks workflow tests and builds the app. It runs for pull requests into `main`,
+pushes to `main`, and runs started by hand from the Actions tab. While the restructuring is under
+way, pull requests into `develop` are checked locally with `./gradlew verify` instead. A
+successful run uploads the debug APK, full commit ID and SHA-256 checksum as an artifact retained
+for 14 days. Test reports are uploaded even when tests fail, unless the run is cancelled.
 
-After both matrix jobs pass for a push to `develop`, a separate job publishes the app APK under a
+When a run started by hand on `develop` passes, a separate job publishes the app APK under a
 `dev-<full-commit-sha>` prerelease. Names include the commit; rerunning the same commit replaces
 its development assets rather than creating another version. These are never marked Latest.
 Release assets remain until the maintainer removes them; artifact retention does not remove them.
