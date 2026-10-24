@@ -22,16 +22,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.common.ui.AddFlowBottomBar
-import com.donnclab.kinetiframe.common.ui.AddFlowTopBar
-import com.donnclab.kinetiframe.common.ui.CompactTextField
+import com.donnclab.kinetiframe.presentation.common.AddFlowBottomBar
+import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.studio.ui.dialogs.SelectionDot
 
 /**
  * Home's "New Pack" flow: a name plus a square canvas size -- collected together up front, unlike
  * [PackCreatorRoute]'s older size-first-then-name-at-save-time flow, so a pack creator sees and
  * commits to both choices before drawing ever starts. Presented full-screen via
- * [com.donnclab.kinetiframe.common.ui.FullScreenDialog], matching the New Project / New Actor
+ * [com.donnclab.kinetiframe.presentation.common.FullScreenDialog], matching the New Project / New Actor
  * screens.
  */
 @Composable

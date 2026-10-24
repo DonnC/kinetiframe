@@ -10,14 +10,14 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Shapes
 import com.composables.icons.lucide.Square
 import com.composables.icons.lucide.Triangle
-import com.donnclab.kinetiframe.common.ui.AssetDetails
-import com.donnclab.kinetiframe.common.ui.AssetKind
-import com.donnclab.kinetiframe.common.ui.AssetSummary
-import com.donnclab.kinetiframe.common.ui.AudioTrackSummary
-import com.donnclab.kinetiframe.common.ui.CardChips
-import com.donnclab.kinetiframe.common.ui.CardThumbnail
-import com.donnclab.kinetiframe.common.ui.PreviewKind
-import com.donnclab.kinetiframe.common.ui.StampAsset
+import com.donnclab.kinetiframe.presentation.common.AssetDetails
+import com.donnclab.kinetiframe.presentation.common.AssetKind
+import com.donnclab.kinetiframe.presentation.common.AssetSummary
+import com.donnclab.kinetiframe.presentation.common.AudioTrackSummary
+import com.donnclab.kinetiframe.presentation.common.CardChips
+import com.donnclab.kinetiframe.presentation.common.CardThumbnail
+import com.donnclab.kinetiframe.presentation.common.PreviewKind
+import com.donnclab.kinetiframe.presentation.common.StampAsset
 
 /**
  * Sample Library content for Compose previews only. The running app reads real items through

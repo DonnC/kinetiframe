@@ -9,12 +9,12 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.R
-import com.donnclab.kinetiframe.common.ui.AssetSummary
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.ui.LibraryIntent
 import com.donnclab.kinetiframe.library.ui.catalog.AssetGridCard
 import com.donnclab.kinetiframe.library.ui.catalog.FilterChipRow
+import com.donnclab.kinetiframe.presentation.common.AssetSummary
 import com.donnclab.kinetiframe.preview.PreviewCatalog
 
 private val filters = listOf(
@@ -30,9 +30,9 @@ private val filters = listOf(
 @Composable
 fun LibraryProjectsTab(projects: List<AssetSummary>, selectedFilter: Int, onIntent: (LibraryIntent) -> Unit) {
     val kind = when (selectedFilter) {
-        1 -> com.donnclab.kinetiframe.common.ui.AssetKind.PROJECT
-        2 -> com.donnclab.kinetiframe.common.ui.AssetKind.BACKGROUND_IMAGE
-        3 -> com.donnclab.kinetiframe.common.ui.AssetKind.FRAME
+        1 -> com.donnclab.kinetiframe.presentation.common.AssetKind.PROJECT
+        2 -> com.donnclab.kinetiframe.presentation.common.AssetKind.BACKGROUND_IMAGE
+        3 -> com.donnclab.kinetiframe.presentation.common.AssetKind.FRAME
         else -> null
     }
     val filtered = projects.filter { kind == null || it.details.kind == kind }

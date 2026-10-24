@@ -16,7 +16,7 @@ import androidx.compose.runtime.toString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.audio.AudioTrimSelection
-import com.donnclab.kinetiframe.common.ui.CompactTextField
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 /** Exact millisecond entry complements the waveform without permanently adding controls. */
 @Composable

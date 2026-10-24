@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.common.ui.CompactTextField
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 @Composable
 fun ActorPerformanceNameDialog(

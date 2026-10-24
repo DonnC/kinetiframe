@@ -12,13 +12,6 @@ import androidx.compose.material.icons.filled.ViewModule
 import androidx.compose.ui.graphics.Color
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
-import com.donnclab.kinetiframe.common.ui.AssetDetails
-import com.donnclab.kinetiframe.common.ui.AssetKind
-import com.donnclab.kinetiframe.common.ui.AssetSummary
-import com.donnclab.kinetiframe.common.ui.AudioTrackSummary
-import com.donnclab.kinetiframe.common.ui.CardThumbnail
-import com.donnclab.kinetiframe.common.ui.PreviewKind
-import com.donnclab.kinetiframe.common.ui.StampAsset
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
@@ -28,6 +21,13 @@ import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryOrganization
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.ui.packs.PackBrowserIndex
+import com.donnclab.kinetiframe.presentation.common.AssetDetails
+import com.donnclab.kinetiframe.presentation.common.AssetKind
+import com.donnclab.kinetiframe.presentation.common.AssetSummary
+import com.donnclab.kinetiframe.presentation.common.AudioTrackSummary
+import com.donnclab.kinetiframe.presentation.common.CardThumbnail
+import com.donnclab.kinetiframe.presentation.common.PreviewKind
+import com.donnclab.kinetiframe.presentation.common.StampAsset
 import java.io.File
 
 /** IO-only projection. Working projects/actors and captured reusable items are separate stores.

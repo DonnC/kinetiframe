@@ -80,8 +80,8 @@ private fun SelectionAction(
     selected: Boolean = false,
     toggle: Boolean = false,
 ) {
-    com.donnclab.kinetiframe.common.ui.ContextIconButton(
-        com.donnclab.kinetiframe.common.ui.ContextIconAction(
+    com.donnclab.kinetiframe.presentation.common.ContextIconButton(
+        com.donnclab.kinetiframe.presentation.common.ContextIconAction(
             icon,
             label,
             onClick,

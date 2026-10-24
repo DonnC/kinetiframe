@@ -20,15 +20,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
-import com.donnclab.kinetiframe.common.ui.AddFlowBottomBar
-import com.donnclab.kinetiframe.common.ui.AddFlowTopBar
-import com.donnclab.kinetiframe.common.ui.CompactTextField
+import com.donnclab.kinetiframe.presentation.common.AddFlowBottomBar
+import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 /**
  * Home's "New Actor" flow: a name plus a starting skeleton template. This is the only place a
  * template is chosen; an actor's template is fixed when it is created.
  *
- * Presented full-screen via [com.donnclab.kinetiframe.common.ui.FullScreenDialog] rather than
+ * Presented full-screen via [com.donnclab.kinetiframe.presentation.common.FullScreenDialog] rather than
  * an [androidx.compose.material3.AlertDialog], matching the New Project / New Pack screens.
  */
 @Composable

@@ -23,12 +23,12 @@ import com.composables.icons.lucide.Music
 import com.composables.icons.lucide.Square
 import com.composables.icons.lucide.SquarePlus
 import com.donnclab.kinetiframe.R
-import com.donnclab.kinetiframe.common.ui.AssetDetails
-import com.donnclab.kinetiframe.common.ui.AssetKind
-import com.donnclab.kinetiframe.common.ui.CardThumbnail
-import com.donnclab.kinetiframe.common.ui.PreviewKind
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.common.AssetDetails
+import com.donnclab.kinetiframe.presentation.common.AssetKind
+import com.donnclab.kinetiframe.presentation.common.CardThumbnail
+import com.donnclab.kinetiframe.presentation.common.PreviewKind
 
 /** How [AssetDetailsSheet]'s action button behaves. [openLabel] replaces "Add to project" with an
  *  open action for items that are documents in their own right (projects and actors). */

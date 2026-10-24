@@ -73,7 +73,7 @@ fun PresetAuditionControls(
 private fun PresetDial(label: String, value: Float, range: ClosedFloatingPointRange<Float>, onValue: (Float) -> Unit) {
     var draft by remember(value) { mutableFloatStateOf(value) }
     // One clock restart on release, not a job cancel/relaunch for every slider sample.
-    com.donnclab.kinetiframe.common.ui.StandardSlider(
+    com.donnclab.kinetiframe.presentation.common.StandardSlider(
         draft, { draft = it }, range, label,
         valueDisplay = { String.format(java.util.Locale.ROOT, "%.2f×", it) },
         accentColor = ActorStudioTokens.accent, labelColor = ActorStudioTokens.onPanelMuted,

@@ -44,11 +44,11 @@ import com.composables.icons.lucide.Square
 import com.composables.icons.lucide.Triangle
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.R
-import com.donnclab.kinetiframe.common.ui.StandardSlider
 import com.donnclab.kinetiframe.core.document.BrushCatalog
 import com.donnclab.kinetiframe.core.document.BrushId
 import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.common.StandardSlider
 import com.donnclab.kinetiframe.studio.RulerMode
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState

@@ -72,7 +72,7 @@ All paths are under `app/src/main/java/com/donnclab/kinetiframe/`.
 | Video export | `export/data`, `export/ui` |
 | Audio | `audio` |
 | Imported video clips | `video` |
-| Shared app UI and strings | `common` |
+| Shared app UI | `presentation` module, `presentation/common` |
 
 ## How the app is structured
 

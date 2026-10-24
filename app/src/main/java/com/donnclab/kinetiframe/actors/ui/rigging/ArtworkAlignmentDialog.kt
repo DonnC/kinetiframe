@@ -37,11 +37,11 @@ import androidx.compose.ui.unit.isFinite
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.width
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.common.ui.CompactTextField
 import com.donnclab.kinetiframe.core.actor.artwork.ArtworkAlignment
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 /** A non-mutating touch audition; Check commits alignment and Cancel preserves the actor. */
 @Composable

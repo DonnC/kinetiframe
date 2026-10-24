@@ -24,7 +24,7 @@ import androidx.compose.runtime.toString
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.common.ui.CompactTextField
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 @Composable
 fun HoldDrawingDialog(firstFrame: Int, totalFrames: Int, onDismiss: () -> Unit, onHold: (Int) -> Unit) {

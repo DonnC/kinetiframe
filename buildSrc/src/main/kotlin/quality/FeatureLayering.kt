@@ -13,10 +13,9 @@ internal object FeatureLayering {
     private const val ROOT = "com.donnclab.kinetiframe"
 
     private val direct: Map<String, Set<String>> = mapOf(
-        "common" to emptySet(),
         // Preview fixtures build sample data of every kind.
         "preview" to setOf("home"),
-        "project" to setOf("common"),
+        "project" to emptySet(),
         // Images, sound and video form one media module, so they may use each other.
         "media" to setOf("project", "audio", "video"),
         "audio" to setOf("media"),

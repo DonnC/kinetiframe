@@ -11,14 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.common.ui.AssetDetails
-import com.donnclab.kinetiframe.common.ui.AssetKind
-import com.donnclab.kinetiframe.common.ui.AssetSummary
-import com.donnclab.kinetiframe.common.ui.CardChips
-import com.donnclab.kinetiframe.common.ui.CardThumbnail
-import com.donnclab.kinetiframe.common.ui.PreviewKind
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.common.AssetDetails
+import com.donnclab.kinetiframe.presentation.common.AssetKind
+import com.donnclab.kinetiframe.presentation.common.AssetSummary
+import com.donnclab.kinetiframe.presentation.common.CardChips
+import com.donnclab.kinetiframe.presentation.common.CardThumbnail
+import com.donnclab.kinetiframe.presentation.common.PreviewKind
 
 /**
  * "Overlay" style grid card -- the thumbnail fills the whole card, spec chips float in its top

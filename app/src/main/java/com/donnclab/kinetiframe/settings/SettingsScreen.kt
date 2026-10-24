@@ -36,9 +36,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.common.ui.ContextIconAction
-import com.donnclab.kinetiframe.common.ui.ContextIconButton
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.common.ContextIconAction
+import com.donnclab.kinetiframe.presentation.common.ContextIconButton
 
 val LocalAppPreferences = staticCompositionLocalOf { AppPreferences() }
 
@@ -53,7 +53,7 @@ fun SettingsScreen(
 ) {
     Scaffold(topBar = {
         Column {
-            com.donnclab.kinetiframe.navigation.AppBrandBar()
+            com.donnclab.kinetiframe.presentation.common.AppBrandBar()
             TopAppBar(title = { Text("Settings") }, navigationIcon = {
                 IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") }
             })
