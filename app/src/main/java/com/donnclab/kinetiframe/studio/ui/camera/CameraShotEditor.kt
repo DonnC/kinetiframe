@@ -51,10 +51,10 @@ import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.core.document.camera.CameraPose
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.engine.camera.SceneCamera
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.camera.CameraFraming
 import com.donnclab.kinetiframe.studio.camera.CameraRanges
-import com.donnclab.kinetiframe.studio.camera.SceneCamera
 import kotlinx.coroutines.delay
 
 @Composable

@@ -20,7 +20,7 @@ class ProjectRepositoryTest {
     @Test fun `camera shots and faded audio survive a fresh repository reopen`() {
         val files = DocumentFileStore(root)
         val base = document("effects")
-        val shot = com.donnclab.kinetiframe.studio.camera.SceneCamera.preset(
+        val shot = com.donnclab.kinetiframe.engine.camera.SceneCamera.preset(
             "pan",
             com.donnclab.kinetiframe.core.document.camera.CameraAction.PAN,
             0,

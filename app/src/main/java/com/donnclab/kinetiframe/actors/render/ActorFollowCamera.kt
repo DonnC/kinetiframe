@@ -2,7 +2,7 @@ package com.donnclab.kinetiframe.actors.render
 
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.camera.CameraPose
-import com.donnclab.kinetiframe.studio.camera.SceneCamera
+import com.donnclab.kinetiframe.engine.camera.SceneCamera
 
 /** Causal, bounded sampling instead of a stateful spring: seeking backwards gives the same shot.
  * This runs during frame preparation, never in a Compose draw callback. */

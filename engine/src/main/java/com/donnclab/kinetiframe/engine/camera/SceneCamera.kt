@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.studio.camera
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.engine.camera
 
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.core.document.camera.CameraEasing

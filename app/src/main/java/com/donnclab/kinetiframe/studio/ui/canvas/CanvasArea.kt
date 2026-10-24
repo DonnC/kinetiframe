@@ -76,7 +76,7 @@ fun CanvasArea(
         actorFiles,
         enabled && cameraPoseOverride == null,
     )
-    val pose = cameraPoseOverride ?: followed ?: com.donnclab.kinetiframe.studio.camera.SceneCamera.evaluate(
+    val pose = cameraPoseOverride ?: followed ?: com.donnclab.kinetiframe.engine.camera.SceneCamera.evaluate(
         state.project.cameraShots,
         state.animation.displayFrame(),
         state.project.fps,
@@ -110,7 +110,7 @@ fun CanvasArea(
                     values[2],
                     values[5],
                 ) *
-                    com.donnclab.kinetiframe.studio.camera.SceneCamera.matrix(pose, stage.width, stage.height)
+                    com.donnclab.kinetiframe.engine.camera.SceneCamera.matrix(pose, stage.width, stage.height)
                 ).androidValues()
         }
     }

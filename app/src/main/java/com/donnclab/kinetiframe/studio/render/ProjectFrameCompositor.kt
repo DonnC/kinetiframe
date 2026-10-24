@@ -91,7 +91,7 @@ class ProjectFrameCompositor(
         canvas.clipRect(stageRect)
         if (project.cameraShots.isNotEmpty()) canvas.drawColor(Color.BLACK)
         cameraMatrix.setValues(
-            com.donnclab.kinetiframe.studio.camera.SceneCamera.matrix(
+            com.donnclab.kinetiframe.engine.camera.SceneCamera.matrix(
                 pose,
                 project.stage.width,
                 project.stage.height,

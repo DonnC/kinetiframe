@@ -9,7 +9,7 @@ import com.donnclab.kinetiframe.core.document.VideoFit
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.core.document.camera.CameraPose
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
-import com.donnclab.kinetiframe.studio.camera.SceneCamera
+import com.donnclab.kinetiframe.engine.camera.SceneCamera
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

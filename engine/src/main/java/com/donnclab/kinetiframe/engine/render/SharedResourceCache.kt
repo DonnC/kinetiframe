@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.studio.render
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.engine.render
 
 import java.lang.ref.WeakReference
 
@@ -7,7 +8,7 @@ import java.lang.ref.WeakReference
  * Eviction must not destroy a resource borrowed by a render snapshot or the Android display
  * list. Weak entries also let subsequent frames reuse those still-live resources after eviction.
  */
-internal class SharedResourceCache<K, V : Any>(
+class SharedResourceCache<K, V : Any>(
     private val maxEntries: Int,
     private val maxBytes: Long,
     private val sizeOf: (V) -> Long,
