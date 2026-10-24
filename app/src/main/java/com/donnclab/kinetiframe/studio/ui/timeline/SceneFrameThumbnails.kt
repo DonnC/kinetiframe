@@ -2,7 +2,7 @@ package com.donnclab.kinetiframe.studio.ui.timeline
 
 import android.graphics.Bitmap
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
-import com.donnclab.kinetiframe.media.FrameImageDecoder
+import com.donnclab.kinetiframe.media.image.FrameImageDecoder
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.layersForFrame
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager

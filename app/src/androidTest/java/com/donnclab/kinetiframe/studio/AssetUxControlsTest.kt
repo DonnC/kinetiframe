@@ -6,10 +6,10 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.donnclab.kinetiframe.audio.ui.AudioPreviewControls
-import com.donnclab.kinetiframe.audio.ui.AudioPreviewIntent
-import com.donnclab.kinetiframe.audio.ui.AudioPreviewState
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.media.audio.ui.AudioPreviewControls
+import com.donnclab.kinetiframe.media.audio.ui.AudioPreviewIntent
+import com.donnclab.kinetiframe.media.audio.ui.AudioPreviewState
 import com.donnclab.kinetiframe.studio.ui.dock.SelectionActionMenu
 import org.junit.Assert.assertEquals
 import org.junit.Rule

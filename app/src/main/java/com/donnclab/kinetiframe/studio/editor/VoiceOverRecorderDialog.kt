@@ -8,10 +8,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.donnclab.kinetiframe.audio.VoiceRecorder
-import com.donnclab.kinetiframe.audio.ui.AudioRecorderActions
-import com.donnclab.kinetiframe.audio.ui.AudioRecorderSheet
-import com.donnclab.kinetiframe.audio.ui.PendingAudioTake
+import com.donnclab.kinetiframe.media.audio.VoiceRecorder
+import com.donnclab.kinetiframe.media.audio.ui.AudioRecorderActions
+import com.donnclab.kinetiframe.media.audio.ui.AudioRecorderSheet
+import com.donnclab.kinetiframe.media.audio.ui.PendingAudioTake
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 

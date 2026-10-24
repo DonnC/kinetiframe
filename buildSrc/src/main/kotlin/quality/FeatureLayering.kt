@@ -16,11 +16,7 @@ internal object FeatureLayering {
         // Preview fixtures build sample data of every kind.
         "preview" to setOf("home"),
         "project" to emptySet(),
-        // Images, sound and video form one media module, so they may use each other.
-        "media" to setOf("project", "audio", "video"),
-        "audio" to setOf("media"),
-        "video" to setOf("media"),
-        "actors" to setOf("media"),
+        "actors" to setOf("project"),
         "library" to setOf("actors"),
         "export" to setOf("actors"),
         "studio" to setOf("library", "export", "settings"),

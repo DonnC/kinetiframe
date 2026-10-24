@@ -13,30 +13,22 @@ Keep this page current:
 
 ## Now
 
-**Step 4: data and presentation modules**, in four parts, because project storage depends on the
-actor documents (see Discoveries):
-
-- **4a, done (#20).** The generic document store, its result type, path checks, ID rule and crash
-  reports moved into `data`.
-- **4b, done (#21).** Performance preset snapshots are saved as the `core` preset document, and
-  the actor documents (`ActorRevision`, `PerformanceDocument`, `LibraryItemManifest` and the rest)
-  moved into `core.actor.document`.
-- **4c, done (#23).** The shared Room database moved to `data.db` and project storage to
-  `data.project`. `CelExposureIndex` moved to `core.document`. The `.kframe` archiver stays in
-  `app` (see Discoveries).
-- **4d, in review.** The shared app UI in `common` moved to `presentation.common`, with the brand
-  images it draws and the brand bar. `PendingJobs` moved to `core.coroutines`. The unused
-  `JsonSerializer` was deleted, so `app` no longer has a `common` package.
+**Step 5: media module, in review.** `audio`, `video` and the image decoders are now the `media`
+module (`media.audio`, `media.video`, `media.image`). The playback managers that drive
+`StudioState` moved to `studio.media`, the audio mixer moved from `export` to `media.audio`, and
+the clip waveform moved from the studio timeline. Step 4 (data and presentation) finished with
+#20, #21, #23 and #24.
 
 ## Next
 
 The remaining steps of the feature modules decision, in order:
 
-1. **Media and export modules.** Move `audio`, `video` and `media` into one `media` module and
-   `export` into its own module.
-2. **Actors split.** The actor domain (rig, posing, rendering, storage) becomes the `actors`
+1. **Actors split.** The actor domain (rig, posing, rendering, storage) becomes the `actors`
    module. Actor Studio screens that use `StudioState` move under `studio`. Today `actors` makes
    173 references into `studio`; this step removes them.
+2. **Export module.** `ProjectExporter` renders frames through `studio.render`,
+   `studio.drawing` and `actors.render`, so `export` becomes a module once the frame compositor and
+   actor rendering sit below it (see Discoveries).
 3. **Library, then studio.** Extract each module once it only references modules below it.
 4. **Home and settings.** Extract them and move navigation into `app`, so `app` holds only the
    entry point and wiring.
@@ -137,6 +129,7 @@ fixed after the module work, unless one blocks testing.
 | #21 | Moved the actor documents into `core` (step 4b) |
 | #22 | Ran CI only for pull requests and pushes to `main` during the restructuring |
 | #23 | Moved the Room database and project storage into `data` (step 4c) |
+| #24 | Moved the shared app UI into `presentation` (step 4d) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -151,6 +144,10 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   together with the actors and performances it uses, through the actor repositories and
   `PerformanceCompatibility`. It stays in `app` until the actors module exists, then belongs above
   it.
+- **Export renders through the studio.** `ProjectExporter` draws each frame with the studio's
+  `ProjectFrameCompositor`, `FrameCacheManager` and `FontRegistry`, and the actor renderer. The
+  compositor belongs below both `studio` and `export`, which is why export moves after the actors
+  split instead of with media.
 - **Duplicate actor preset types.** The app's preset types mirror `core` types. #14 and #21 moved
   the two saved fields that used them to the `core` types, which was all the document move needed.
   Merging the rest is listed under Later.
@@ -167,11 +164,11 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Debt counts
 
-From `.architecture/` after 4d. Each count may only go down.
+From `.architecture/` after step 5. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| References to a feature above | 211 | 67 |
+| References to a feature above | 201 | 60 |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 144 | 46 |
 | Functions over the parameter limit | 53 | — |

@@ -19,10 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.donnclab.kinetiframe.audio.ui.AudioPreview
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
+import com.donnclab.kinetiframe.media.audio.ui.AudioPreview
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
