@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -73,7 +75,10 @@ fun AudioRecorderSheet(
         shape = RoundedCornerShape(Dimens.radiusL),
         tonalElevation = Dimens.elevationS,
     ) {
-        Column(Modifier.padding(Dimens.spaceL), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            Modifier.verticalScroll(rememberScrollState()).padding(Dimens.spaceL),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(stringResource(R.string.audio_recorder_title), style = MaterialTheme.typography.titleMedium)
                 Box(Modifier.weight(1f))
@@ -109,27 +114,30 @@ fun AudioRecorderSheet(
                 modifier = Modifier.padding(top = Dimens.spaceXs),
             )
 
+            // Discard and add sit beside the record control rather than below it, so a landscape
+            // dialog never pushes them off screen. Equal side slots keep the record control centred.
+            val takeReady = state.hasTake && !state.isRecording
             Row(
                 Modifier.fillMaxWidth().padding(top = Dimens.spaceL),
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                if (state.hasTake && !state.isRecording) {
-                    IconButton(onClick = actions.onDiscard) {
-                        Icon(Lucide.Trash2, contentDescription = stringResource(R.string.audio_discard_take))
+                Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+                    if (takeReady) {
+                        IconButton(onClick = actions.onDiscard) {
+                            Icon(Lucide.Trash2, contentDescription = stringResource(R.string.audio_discard_take))
+                        }
                     }
                 }
                 RecordControl(
                     isRecording = state.isRecording,
                     onClick = if (state.isRecording) actions.onStop else actions.onRecord,
                 )
-            }
-
-            if (state.hasTake && !state.isRecording) {
-                TextButton(
-                    onClick = actions.onUse,
-                    modifier = Modifier.padding(top = Dimens.spaceS),
-                ) { Text(stringResource(R.string.audio_add_to_timeline)) }
+                Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                    if (takeReady) {
+                        TextButton(onClick = actions.onUse) { Text(stringResource(R.string.audio_add_to_timeline)) }
+                    }
+                }
             }
         }
     }
@@ -187,6 +195,22 @@ private fun AudioRecorderSheetPreview() {
                         (0.2f + 0.7f * kotlin.math.abs(kotlin.math.sin(index / 5f))).coerceIn(0f, 1f)
                     },
                 ),
+            ),
+            actions = AudioRecorderActions({}, {}, {}, {}),
+            onClose = {},
+        )
+    }
+}
+
+@Preview(name = "Recorder -- take ready", showBackground = true, widthDp = 360)
+@Composable
+private fun AudioRecorderTakeReadyPreview() {
+    KinetiFrameTheme {
+        AudioRecorderSheet(
+            state = VoiceRecorder.State(
+                hasTake = true,
+                elapsedMicros = 15_900_000L,
+                waveform = Waveform(List(70) { index -> (0.3f + 0.5f * kotlin.math.abs(kotlin.math.cos(index / 4f))) }),
             ),
             actions = AudioRecorderActions({}, {}, {}, {}),
             onClose = {},
