@@ -13,11 +13,8 @@ Keep this page current:
 
 ## Now
 
-**Step 5: media module, in review.** `audio`, `video` and the image decoders are now the `media`
-module (`media.audio`, `media.video`, `media.image`). The playback managers that drive
-`StudioState` moved to `studio.media`, the audio mixer moved from `export` to `media.audio`, and
-the clip waveform moved from the studio timeline. Step 4 (data and presentation) finished with
-#20, #21, #23 and #24.
+**Actors split**, the first step under Next, starts after this. Step 5 (the media module) finished
+with #25.
 
 ## Next
 
@@ -138,6 +135,7 @@ fixed after the module work, unless one blocks testing.
 | #22 | Ran CI only for pull requests and pushes to `main` during the restructuring |
 | #23 | Moved the Room database and project storage into `data` (step 4c) |
 | #24 | Moved the shared app UI into `presentation` (step 4d) |
+| #25 | Moved studio media code into `studio.media` and extracted the `media` module (step 5) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
