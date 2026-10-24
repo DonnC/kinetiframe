@@ -55,8 +55,8 @@ import com.donnclab.kinetiframe.common.ui.ContextIconAction
 import com.donnclab.kinetiframe.common.ui.IconContextMenu
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.data.project.ProjectManifest
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
-import com.donnclab.kinetiframe.project.data.ProjectManifest
 import java.io.File
 
 /** One Home dashboard card, shared shape across all three tabs: a full-bleed thumbnail, a small

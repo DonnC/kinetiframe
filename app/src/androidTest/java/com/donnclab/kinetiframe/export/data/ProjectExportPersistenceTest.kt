@@ -15,11 +15,11 @@ import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.project.ProjectManifest
+import com.donnclab.kinetiframe.data.project.ProjectRepository
+import com.donnclab.kinetiframe.data.project.ProjectSaveDocument
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.StoreResult
-import com.donnclab.kinetiframe.project.data.ProjectManifest
-import com.donnclab.kinetiframe.project.data.ProjectRepository
-import com.donnclab.kinetiframe.project.data.ProjectSaveDocument
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

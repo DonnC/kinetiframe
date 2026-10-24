@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.project.data.db
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.data.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -11,9 +12,9 @@ import androidx.room.PrimaryKey
  * table), [ProjectManagerViewModel]'s reload() re-derives this table from the filesystem rather
  * than trusting it blindly -- see that class's reindexing fallback.
  *
- * [createdAtEpochMs] mirrors what [com.donnclab.kinetiframe.project.data.ProjectManifest] already tracks,
+ * [createdAtEpochMs] mirrors what [com.donnclab.kinetiframe.data.project.ProjectManifest] already tracks,
  * for gallery sort-by-created. [thumbnailPath] is a frame-0 preview PNG path, regenerated on every
- * project save (see [com.donnclab.kinetiframe.project.data.ProjectRepository.thumbnailFile]) -- null means
+ * project save (see [com.donnclab.kinetiframe.data.project.ProjectRepository.thumbnailFile]) -- null means
  * no thumbnail has been generated yet, not that the project has no background.
  */
 @Entity(tableName = "projects")

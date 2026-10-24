@@ -68,6 +68,7 @@ import com.donnclab.kinetiframe.common.ui.CompactTextField
 import com.donnclab.kinetiframe.common.ui.FullScreenDialog
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.data.project.ProjectManifest
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.designsystem.theme.LibraryAccent
 import com.donnclab.kinetiframe.library.data.PackItemEntry
@@ -80,7 +81,6 @@ import com.donnclab.kinetiframe.library.ui.packs.PacksTabState
 import com.donnclab.kinetiframe.navigation.AppBottomNavBar
 import com.donnclab.kinetiframe.navigation.AppBrandBar
 import com.donnclab.kinetiframe.navigation.BottomNavDestination
-import com.donnclab.kinetiframe.project.data.ProjectManifest
 import com.donnclab.kinetiframe.project.ui.AddProjectRoute
 import com.donnclab.kinetiframe.project.ui.ProjectManagerIntent
 import com.donnclab.kinetiframe.project.ui.ProjectManagerState

@@ -24,7 +24,7 @@ import java.io.File
  * Every operation is scope-aware ([LibraryScope]): PERSONAL items live under the shared
  * `library/` root (available to every project); PROJECT items live nested inside one specific
  * project's own working directory (`projects/<id>/vault/`), which is why every PROJECT-scoped
- * method requires a [projectId]. Like [com.donnclab.kinetiframe.project.data.ProjectRepository], it
+ * method requires a [projectId]. Like [com.donnclab.kinetiframe.data.project.ProjectRepository], it
  * lists and deletes over a directory of manifests.
  */
 class LibraryRepository(
@@ -34,7 +34,7 @@ class LibraryRepository(
         prettyPrint = true
     },
     /** Rebuildable search index; list reconciles it with committed files even when non-empty. */
-    private val dao: com.donnclab.kinetiframe.actors.data.db.LibraryItemDao? = null,
+    private val dao: com.donnclab.kinetiframe.data.db.LibraryItemDao? = null,
 ) {
     private val packCommits = java.util.concurrent.ConcurrentHashMap<String, PackCommit>()
     fun organizationStore() =
@@ -324,7 +324,7 @@ class LibraryRepository(
         }
     }
 
-    private fun toEntity(manifest: LibraryItemManifest) = com.donnclab.kinetiframe.actors.data.db.LibraryItemEntity(
+    private fun toEntity(manifest: LibraryItemManifest) = com.donnclab.kinetiframe.data.db.LibraryItemEntity(
         libraryItemId = manifest.libraryItemId, kind = manifest.kind.name, displayName = manifest.displayName,
         sourceActorId = manifest.sourceActorId, sourcePerformanceId = manifest.sourcePerformanceId,
         sourceProjectId = manifest.sourceProjectId,
@@ -334,7 +334,7 @@ class LibraryRepository(
         createdAtEpochMs = manifest.createdAtEpochMs,
     )
 
-    private fun toManifest(entity: com.donnclab.kinetiframe.actors.data.db.LibraryItemEntity) = LibraryItemManifest(
+    private fun toManifest(entity: com.donnclab.kinetiframe.data.db.LibraryItemEntity) = LibraryItemManifest(
         libraryItemId = entity.libraryItemId,
         kind = LibraryItemKind.valueOf(
             entity.kind,

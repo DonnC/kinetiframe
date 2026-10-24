@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.project.data
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.data.project
 
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.StoreResult
@@ -8,9 +9,9 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 /**
- * Project persistence boundary -- mirrors [com.donnclab.kinetiframe.actors.data.ActorRepository]'s
+ * Project persistence boundary -- mirrors the actor repository's
  * manifest/document split and [StoreResult] error handling exactly, and deliberately reuses
- * [DocumentFileStore]'s existing `projects/<id>/` root: [com.donnclab.kinetiframe.actors.data.PerformanceRepository]
+ * [DocumentFileStore]'s existing `projects/<id>/` root: the performance repository
  * already writes a project's performances under that same directory, and the editor points the
  * frame-pixel cache and the persistent background's storage there too, so a project's manifest,
  * document, performances, frame cache and background asset all live under one directory and a
@@ -65,7 +66,7 @@ class ProjectRepository(
             "Manifest and document disagree on which project this is"
         }
         require(document.totalFrames > 0) { "Project must contain frames" }
-        com.donnclab.kinetiframe.studio.render.CelExposureIndex.validate(document.linkedCels, document.totalFrames)
+        com.donnclab.kinetiframe.core.document.CelExposureIndex.validate(document.linkedCels, document.totalFrames)
         require(manifest.stage == document.project.stage && manifest.fps == document.project.fps) {
             "Project canvas or FPS differs from its manifest"
         }
@@ -92,7 +93,7 @@ class ProjectRepository(
                 snapshot.document.totalFrames > 0 && snapshot.manifest.stage == snapshot.document.project.stage &&
                     snapshot.manifest.fps == snapshot.document.project.fps,
             ) { "Invalid project snapshot" }
-            com.donnclab.kinetiframe.studio.render.CelExposureIndex.validate(
+            com.donnclab.kinetiframe.core.document.CelExposureIndex.validate(
                 snapshot.document.linkedCels,
                 snapshot.document.totalFrames,
             )
@@ -109,7 +110,7 @@ class ProjectRepository(
             },
         )
         require(document.project.id == manifest.projectId) { "Project document does not match its manifest" }
-        com.donnclab.kinetiframe.studio.render.CelExposureIndex.validate(document.linkedCels, document.totalFrames)
+        com.donnclab.kinetiframe.core.document.CelExposureIndex.validate(document.linkedCels, document.totalFrames)
         manifest to document
     }.fold(::value, ::failure)
 
@@ -122,7 +123,7 @@ class ProjectRepository(
 
     /**
      * Hard delete: the project's whole directory (manifest, document, performances, frame cache,
-     * background asset) is removed in one shot. Unlike [com.donnclab.kinetiframe.actors.data.ActorRepository.archive]
+     * background asset) is removed in one shot. Unlike archived actors,
      * projects have no recoverable archive, so callers must confirm with the user first. There is
      * also no "in use" guard: nothing else in the app references a project the
      * way a placement references an actor, so archiving-to-protect-referenced-data does not apply here.
@@ -159,4 +160,4 @@ class ProjectRepository(
 }
 
 @Serializable
-internal data class ProjectSnapshot(val manifest: ProjectManifest, val document: ProjectSaveDocument)
+data class ProjectSnapshot(val manifest: ProjectManifest, val document: ProjectSaveDocument)

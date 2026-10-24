@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.export.data.db
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.data.db
 
 import androidx.room.Dao
 import androidx.room.Delete

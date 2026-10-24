@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.project.data
 
 import kotlinx.serialization.Serializable

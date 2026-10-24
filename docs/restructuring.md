@@ -21,8 +21,9 @@ actor documents (see Discoveries):
 - **4b, done (#21).** Performance preset snapshots are saved as the `core` preset document, and
   the actor documents (`ActorRevision`, `PerformanceDocument`, `LibraryItemManifest` and the rest)
   moved into `core.actor.document`.
-- **4c, next.** Move the shared Room database, project storage and the `.kframe` and `.kpack` archives
-  into `data`.
+- **4c, done (#23).** The shared Room database moved to `data.db` and project storage to
+  `data.project`. `CelExposureIndex` moved to `core.document`. The `.kframe` archiver stays in
+  `app` (see Discoveries).
 - **4d.** Move the shared app UI in `common` into `presentation`, next to `BaseViewModel`.
 
 ## Next
@@ -132,6 +133,7 @@ fixed after the module work, unless one blocks testing.
 | #19 | Started this tracker |
 | #20 | Moved generic storage and crash reports into `data` (step 4a) |
 | #21 | Moved the actor documents into `core` (step 4b) |
+| #23 | Moved the Room database and project storage into `data` (step 4c) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -142,6 +144,10 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   export and project tables. One file store, named `ActorFileStore` until 4a, serves every
   feature. `.kframe` archives check actor dependencies through `ActorRevision`, which pulls in
   the actor documents and the app's preset types. Step 4 is split into 4a to 4d because of this.
+- **The `.kframe` archiver bundles actors.** `KframeArchiver` exports and imports a project
+  together with the actors and performances it uses, through the actor repositories and
+  `PerformanceCompatibility`. It stays in `app` until the actors module exists, then belongs above
+  it.
 - **Duplicate actor preset types.** The app's preset types mirror `core` types. #14 and #21 moved
   the two saved fields that used them to the `core` types, which was all the document move needed.
   Merging the rest is listed under Later.
@@ -158,11 +164,11 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Debt counts
 
-From `.architecture/` after 4b. Each count may only go down.
+From `.architecture/` after 4c. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| References to a feature above | 229 | 71 |
+| References to a feature above | 216 | 69 |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 144 | 46 |
 | Functions over the parameter limit | 53 | — |

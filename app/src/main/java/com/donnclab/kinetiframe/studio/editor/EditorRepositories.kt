@@ -8,10 +8,10 @@ import com.donnclab.kinetiframe.actors.data.ActorBundleRepository
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
+import com.donnclab.kinetiframe.data.db.AppDatabase
+import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.data.LibraryRepository
-import com.donnclab.kinetiframe.project.data.ProjectRepository
-import com.donnclab.kinetiframe.project.data.db.AppDatabase
 import java.io.File
 
 /** The on-disk stores the editor reads and writes, all rooted in the same actor-studio directory. */

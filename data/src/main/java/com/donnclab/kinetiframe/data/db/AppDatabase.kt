@@ -1,17 +1,10 @@
-package com.donnclab.kinetiframe.project.data.db
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.data.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.donnclab.kinetiframe.actors.data.db.ActorDao
-import com.donnclab.kinetiframe.actors.data.db.ActorEntity
-import com.donnclab.kinetiframe.actors.data.db.LibraryItemDao
-import com.donnclab.kinetiframe.actors.data.db.LibraryItemEntity
-import com.donnclab.kinetiframe.actors.data.db.PerformanceDao
-import com.donnclab.kinetiframe.actors.data.db.PerformanceEntity
-import com.donnclab.kinetiframe.export.data.db.ExportDao
-import com.donnclab.kinetiframe.export.data.db.ExportEntity
 
 /**
  * Singleton holder, mirroring the standard Room "one instance per process" pattern. Every table

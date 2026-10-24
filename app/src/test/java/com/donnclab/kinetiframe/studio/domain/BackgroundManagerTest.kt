@@ -155,9 +155,9 @@ class BackgroundManagerTest {
         testScope.advanceUntilIdle()
         val id = requireNotNull(state.project.backgroundAssetId)
         val files = com.donnclab.kinetiframe.data.storage.DocumentFileStore(File(storageDir, "documents"))
-        val repository = com.donnclab.kinetiframe.project.data.ProjectRepository(files)
+        val repository = com.donnclab.kinetiframe.data.project.ProjectRepository(files)
         val project = state.project
-        val manifest = com.donnclab.kinetiframe.project.data.ProjectManifest(
+        val manifest = com.donnclab.kinetiframe.data.project.ProjectManifest(
             projectId = project.id,
             displayName = "Saved",
             stage = project.stage,
@@ -167,7 +167,7 @@ class BackgroundManagerTest {
         )
         val saved = repository.save(
             manifest,
-            com.donnclab.kinetiframe.project.data.ProjectSaveDocument(
+            com.donnclab.kinetiframe.data.project.ProjectSaveDocument(
                 project = project,
                 frameLayers = emptyMap(),
                 totalFrames = 1,

@@ -27,15 +27,15 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.project.ProjectManifest
+import com.donnclab.kinetiframe.data.project.ProjectRepository
+import com.donnclab.kinetiframe.data.project.ProjectSaveDocument
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArchiver
 import com.donnclab.kinetiframe.library.data.PackItemEntry
 import com.donnclab.kinetiframe.library.data.PackManifest
-import com.donnclab.kinetiframe.project.data.ProjectManifest
-import com.donnclab.kinetiframe.project.data.ProjectRepository
-import com.donnclab.kinetiframe.project.data.ProjectSaveDocument
 import com.donnclab.kinetiframe.studio.EditorScreen
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import kotlinx.coroutines.Dispatchers
@@ -88,7 +88,7 @@ fun PackCreatorRoute(
     val libraryRepository = remember(files, context) {
         LibraryRepository(
             files,
-            dao = com.donnclab.kinetiframe.project.data.db.AppDatabase.getInstance(context).libraryItemDao(),
+            dao = com.donnclab.kinetiframe.data.db.AppDatabase.getInstance(context).libraryItemDao(),
         )
     }
     val scope = rememberCoroutineScope()

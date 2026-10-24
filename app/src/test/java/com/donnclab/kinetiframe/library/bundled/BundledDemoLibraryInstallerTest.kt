@@ -79,8 +79,8 @@ class BundledDemoLibraryInstallerTest {
         for (id in listOf("first", "second")) {
             val project = com.donnclab.kinetiframe.core.document.ProjectDocument(id = id)
             value(
-                com.donnclab.kinetiframe.project.data.ProjectRepository(files).save(
-                    com.donnclab.kinetiframe.project.data.ProjectManifest(
+                com.donnclab.kinetiframe.data.project.ProjectRepository(files).save(
+                    com.donnclab.kinetiframe.data.project.ProjectManifest(
                         projectId = id,
                         displayName = id,
                         stage = project.stage,
@@ -88,7 +88,7 @@ class BundledDemoLibraryInstallerTest {
                         createdAtEpochMs = 1,
                         updatedAtEpochMs = 1,
                     ),
-                    com.donnclab.kinetiframe.project.data.ProjectSaveDocument(
+                    com.donnclab.kinetiframe.data.project.ProjectSaveDocument(
                         project = project,
                         frameLayers = emptyMap(),
                         totalFrames = 1,

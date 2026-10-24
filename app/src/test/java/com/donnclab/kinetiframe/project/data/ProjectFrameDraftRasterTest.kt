@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.project.data
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import com.donnclab.kinetiframe.data.project.ProjectFrameDraft
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

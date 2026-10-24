@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.project.data
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.data.project
 
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
@@ -11,7 +12,7 @@ import kotlinx.serialization.Serializable
  * unless [linkedCels] explicitly maps their frame positions to one stable shared cel ID.
  *
  * Frame *pixel* content is deliberately NOT part of this document -- it lives in
- * [com.donnclab.kinetiframe.studio.render.FrameCacheManager]'s per-project "frames/" directory, which is
+ * the frame cache's per-project "frames/" directory, which is
  * never evicted and is addressed by layer ID and frame index. Copying those PNGs into this JSON
  * would duplicate storage that already exists.
  *

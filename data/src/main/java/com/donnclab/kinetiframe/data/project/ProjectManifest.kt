@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.project.data
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.data.project
 
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import kotlinx.serialization.Serializable
@@ -21,7 +22,7 @@ data class ProjectManifest(
     val totalFrames: Int = 1,
     /** True only for a Pack Creator scratch draft (see PackCreatorRoute) -- a real project
      *  directory under the same `projects/` root, reusing all the same frame-drawing machinery,
-     *  but deliberately never surfaced in [com.donnclab.kinetiframe.project.data.ProjectRepository.list]'s
+     *  but deliberately never surfaced in [com.donnclab.kinetiframe.data.project.ProjectRepository.list]'s
      *  gallery listing (or backfilled into the Room index) since it isn't a project a person
      *  would open from their gallery. Deleted outright once its pack is successfully bundled. */
     val isPackDraft: Boolean = false,

@@ -32,7 +32,7 @@ fun LibraryRoute(
     val repository = remember(files) {
         com.donnclab.kinetiframe.library.data.LibraryRepository(
             files,
-            dao = com.donnclab.kinetiframe.project.data.db.AppDatabase.getInstance(context).libraryItemDao(),
+            dao = com.donnclab.kinetiframe.data.db.AppDatabase.getInstance(context).libraryItemDao(),
         )
     }
     val viewModel: LibraryViewModel = viewModel(

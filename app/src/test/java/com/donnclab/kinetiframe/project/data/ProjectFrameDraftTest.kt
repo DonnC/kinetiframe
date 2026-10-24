@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.project.data
 
+import com.donnclab.kinetiframe.data.project.ProjectFrameDraft
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test

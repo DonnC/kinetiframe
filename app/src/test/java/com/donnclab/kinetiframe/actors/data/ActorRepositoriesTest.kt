@@ -1,9 +1,5 @@
 package com.donnclab.kinetiframe.actors.data
 
-import com.donnclab.kinetiframe.actors.data.db.ActorDao
-import com.donnclab.kinetiframe.actors.data.db.ActorEntity
-import com.donnclab.kinetiframe.actors.data.db.PerformanceDao
-import com.donnclab.kinetiframe.actors.data.db.PerformanceEntity
 import com.donnclab.kinetiframe.actors.domain.PerformanceCompatibility
 import com.donnclab.kinetiframe.actors.domain.ResolveActorRenderUseCase
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
@@ -17,6 +13,10 @@ import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.data.db.ActorDao
+import com.donnclab.kinetiframe.data.db.ActorEntity
+import com.donnclab.kinetiframe.data.db.PerformanceDao
+import com.donnclab.kinetiframe.data.db.PerformanceEntity
 import com.donnclab.kinetiframe.data.storage.ContainedPaths
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.StoreResult
