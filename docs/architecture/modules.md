@@ -34,6 +34,18 @@ Prefer a new package inside an existing module. Don't create a module per screen
 feature. A new module needs an [architecture decision record](decisions) that shows the benefit,
 the new dependency graph and the build cost, and it needs maintainer approval.
 
+A module's build file applies one of the convention plugins in `buildSrc/src/main/kotlin`, which
+set the SDK levels, Java version and test setup every module shares:
+
+| Plugin | For |
+| --- | --- |
+| `kinetiframe.jvm.library` | Plain Kotlin modules such as `core` |
+| `kinetiframe.android.library` | Android library modules |
+| `kinetiframe.android.application` | The app and the sandbox |
+| `kinetiframe.android.compose` | Added to either Android plugin for modules with Compose UI |
+
+The build file then only names its namespace and its dependencies.
+
 ## Moving code between modules
 
 Most product code still lives in `app`. When moving a piece into its target module:

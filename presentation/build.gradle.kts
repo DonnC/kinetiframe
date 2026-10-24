@@ -1,4 +1,4 @@
-plugins { alias(libs.plugins.android.library) }
+plugins { id("kinetiframe.android.library") }
 android { namespace = "com.donnclab.kinetiframe.presentation" }
 dependencies {
     api(project(":core"))

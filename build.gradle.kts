@@ -1,11 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.kotlin.jvm) apply false
-    alias(libs.plugins.kotlin.compose) apply false
-    alias(libs.plugins.google.devtools.ksp) apply false
-    alias(libs.plugins.jetbrains.kotlin.plugin.serialization) apply false
     alias(libs.plugins.spotless)
 }
 
@@ -20,21 +14,6 @@ spotless {
         target("*.gradle.kts", "*/*.gradle.kts")
         ktlint(libs.versions.ktlint.get())
     }
-}
-
-// One convention entry point for the extracted Android libraries; no per-module version drift.
-subprojects {
-    pluginManager.withPlugin("com.android.library") {
-        extensions.configure<com.android.build.api.dsl.LibraryExtension> {
-            compileSdk = 37
-            defaultConfig { minSdk = 28 }
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_11
-                targetCompatibility = JavaVersion.VERSION_11
-            }
-        }
-    }
-    tasks.withType<Test>().configureEach { useJUnitPlatform() }
 }
 
 val architectureParser by configurations.creating
