@@ -1,5 +1,12 @@
 package com.donnclab.kinetiframe.actors.data
 
+import com.donnclab.kinetiframe.core.actor.document.ActorDocumentValidation
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.data.storage.ContainedPaths
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.StoreResult

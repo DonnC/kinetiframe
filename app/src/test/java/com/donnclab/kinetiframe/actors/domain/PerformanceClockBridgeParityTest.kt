@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
@@ -8,6 +7,7 @@ import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
@@ -100,7 +100,7 @@ class PerformanceClockBridgeParityTest {
                 presetSnapshot = AppliedActorPreset(
                     recipe,
                     speed = 1.25f,
-                ),
+                ).document(),
                 createdAtEpochMs = 1, updatedAtEpochMs = 1,
             )
         val endpoint = rest.bones.values.firstOrNull { it.ikChainRootId != null }?.id

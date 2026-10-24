@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.project.data
 
-import com.donnclab.kinetiframe.actors.data.ActorRevision
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
 import kotlinx.serialization.json.Json
 import java.io.File
 

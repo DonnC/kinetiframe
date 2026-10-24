@@ -1,10 +1,10 @@
 package com.donnclab.kinetiframe.library.ui
 
-import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.common.ui.AssetDetails
 import com.donnclab.kinetiframe.common.ui.AssetSummary
 import com.donnclab.kinetiframe.common.ui.AudioTrackSummary
 import com.donnclab.kinetiframe.common.ui.StampAsset
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.library.data.BrowserPosition
 import com.donnclab.kinetiframe.library.data.LibraryOrganization
 import com.donnclab.kinetiframe.ui.ViewEffect

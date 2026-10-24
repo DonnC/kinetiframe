@@ -25,10 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.render.ActorPlacementPreparation
 import com.donnclab.kinetiframe.actors.ui.hasActorStudioChanges
 import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchEditor
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioIntent

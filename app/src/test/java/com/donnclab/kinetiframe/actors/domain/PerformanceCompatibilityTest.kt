@@ -1,10 +1,10 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.ActorRevision
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
-import com.donnclab.kinetiframe.actors.data.validate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -49,7 +49,7 @@ class PerformanceCompatibilityTest {
             PerformanceDocument(
                 performanceId = "performance-a", projectId = "project-a", actorId = "actor-a",
                 actorRevisionId = "revision-a", displayName = "Wave", durationMicros = 1_000_000,
-                presetSnapshot = preset("torso", "head"), createdAtEpochMs = 1, updatedAtEpochMs = 1,
+                presetSnapshot = preset("torso", "head").document(), createdAtEpochMs = 1, updatedAtEpochMs = 1,
             )
         PerformanceCompatibility.validate(performance, revision) // must not throw
     }
@@ -59,7 +59,7 @@ class PerformanceCompatibilityTest {
             PerformanceDocument(
                 performanceId = "performance-a", projectId = "project-a", actorId = "actor-a",
                 actorRevisionId = "revision-a", displayName = "Wave", durationMicros = 1_000_000,
-                presetSnapshot = preset("torso", "tail"), createdAtEpochMs = 1, updatedAtEpochMs = 1,
+                presetSnapshot = preset("torso", "tail").document(), createdAtEpochMs = 1, updatedAtEpochMs = 1,
             )
         assertThrows(IllegalArgumentException::class.java) { PerformanceCompatibility.validate(performance, revision) }
     }

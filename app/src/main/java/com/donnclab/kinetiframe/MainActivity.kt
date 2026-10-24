@@ -35,12 +35,12 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.LibraryScope
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.ui.ActorStudioRepositories
 import com.donnclab.kinetiframe.actors.ui.ActorStudioScreen
 import com.donnclab.kinetiframe.actors.ui.ActorStudioTarget
+import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.export.ui.ExportRoute

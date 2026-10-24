@@ -1,7 +1,5 @@
 package com.donnclab.kinetiframe.studio
 
-import com.donnclab.kinetiframe.actors.data.ActorManifest
-import com.donnclab.kinetiframe.actors.data.ActorRevision
 import com.donnclab.kinetiframe.actors.domain.ActorStudioManager
 import com.donnclab.kinetiframe.actors.rig.math.ActorDrawingBinder
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
@@ -14,6 +12,8 @@ import com.donnclab.kinetiframe.core.actor.artwork.DrawingExtent
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingPlacement
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingSource
 import com.donnclab.kinetiframe.core.actor.artwork.SkinSourceSize
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.core.document.StageDimensions

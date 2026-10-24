@@ -1,11 +1,11 @@
 package com.donnclab.kinetiframe.actors.ui
 
-import com.donnclab.kinetiframe.actors.data.ActorManifest
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorRevision
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import kotlinx.coroutines.flow.first
@@ -102,7 +102,7 @@ class ActorStudioDocumentViewModelTest {
                 createdAtEpochMs = 1,
             ),
         )
-        repository.createView("sample", com.donnclab.kinetiframe.actors.rig.model.ActorView.PROFILE, "profile", 2)
+        repository.createView("sample", com.donnclab.kinetiframe.core.actor.rigging.ActorView.PROFILE, "profile", 2)
         return repository
     }
 
@@ -122,14 +122,14 @@ class ActorStudioDocumentViewModelTest {
         model.state.first { !it.loading }
         model.handleIntent(ActorStudioDocumentIntent.SetDirty(true))
         model.handleIntent(
-            ActorStudioDocumentIntent.SelectView(com.donnclab.kinetiframe.actors.rig.model.ActorView.ORIGINAL),
+            ActorStudioDocumentIntent.SelectView(com.donnclab.kinetiframe.core.actor.rigging.ActorView.ORIGINAL),
         )
         val error = model.effect.first() as ActorStudioDocumentEffect.ShowError
         assertEquals("Save your edits before changing views.", error.message)
         assertEquals("profile", model.state.value.revision?.revisionId)
         model.handleIntent(ActorStudioDocumentIntent.SetDirty(false))
         model.handleIntent(
-            ActorStudioDocumentIntent.SelectView(com.donnclab.kinetiframe.actors.rig.model.ActorView.ORIGINAL),
+            ActorStudioDocumentIntent.SelectView(com.donnclab.kinetiframe.core.actor.rigging.ActorView.ORIGINAL),
         )
         model.state.first { !it.loading && it.revision?.revisionId == "original" }
         model.handleIntent(ActorStudioDocumentIntent.SavePerformance("Talk", emptyList()))
@@ -141,7 +141,7 @@ class ActorStudioDocumentViewModelTest {
         val repository = actorWithViews()
         val performances = PerformanceRepository(DocumentFileStore(root))
         performances.save(
-            com.donnclab.kinetiframe.actors.data.PerformanceDocument(
+            com.donnclab.kinetiframe.core.actor.document.PerformanceDocument(
                 performanceId = "talk",
                 projectId = "film",
                 actorId = "sample",
@@ -160,7 +160,7 @@ class ActorStudioDocumentViewModelTest {
         assertEquals("profile", state.manifest?.currentRevisionId)
         assertEquals("original", state.revision?.revisionId)
         model.handleIntent(
-            ActorStudioDocumentIntent.SelectView(com.donnclab.kinetiframe.actors.rig.model.ActorView.PROFILE),
+            ActorStudioDocumentIntent.SelectView(com.donnclab.kinetiframe.core.actor.rigging.ActorView.PROFILE),
         )
         model.effect.first { it is ActorStudioDocumentEffect.ShowError }
         assertEquals("original", model.state.value.revision?.revisionId)
@@ -257,7 +257,7 @@ class ActorStudioDocumentViewModelTest {
         val effect = model.effect.first {
             it is ActorStudioDocumentEffect.PerformanceSaved
         } as ActorStudioDocumentEffect.PerformanceSaved
-        assertEquals(preset, effect.document.presetSnapshot)
+        assertEquals(preset.document(), effect.document.presetSnapshot)
         // durationSeconds 2f at speed 2x plays out in 1 real second -- the saved clip must reflect
         // that, not the hardcoded 1-second fallback used when there is truly no motion at all.
         assertEquals(1_000_000L, effect.document.durationMicros)
@@ -291,7 +291,7 @@ class ActorStudioDocumentViewModelTest {
             ActorRevision(revisionId = "revision-1", actorId = "actor-alice", sceneGraph = graph, createdAtEpochMs = 1),
         )
         val performanceRepository = PerformanceRepository(store)
-        val original = com.donnclab.kinetiframe.actors.data.PerformanceDocument(
+        val original = com.donnclab.kinetiframe.core.actor.document.PerformanceDocument(
             performanceId = "performance-wave",
             projectId = "project-film",
             actorId = "actor-alice",

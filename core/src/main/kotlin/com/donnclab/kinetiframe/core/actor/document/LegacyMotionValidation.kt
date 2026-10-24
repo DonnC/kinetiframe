@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.actors.data
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.core.actor.document
 
 import com.donnclab.kinetiframe.core.actor.motion.MotionValidationException
 import com.donnclab.kinetiframe.core.actor.motion.MotionValidationIssue

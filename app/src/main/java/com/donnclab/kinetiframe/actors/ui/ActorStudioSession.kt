@@ -1,12 +1,12 @@
 package com.donnclab.kinetiframe.actors.ui
 
 import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
-import com.donnclab.kinetiframe.actors.data.ActorManifest
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.ActorRevision
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
 

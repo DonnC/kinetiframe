@@ -20,9 +20,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
-import com.donnclab.kinetiframe.actors.data.LibraryScope
 import com.donnclab.kinetiframe.common.ui.CompactTextField
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.ui.packs.PackBrowserControls
 import com.donnclab.kinetiframe.library.ui.packs.PackBrowserIndex

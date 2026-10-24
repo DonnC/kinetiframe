@@ -56,8 +56,6 @@ import com.composables.icons.lucide.Clapperboard
 import com.composables.icons.lucide.Folder
 import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
-import com.donnclab.kinetiframe.actors.data.ActorManifest
-import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.actors.ui.ActorManagerIntent
 import com.donnclab.kinetiframe.actors.ui.ActorManagerMessage
 import com.donnclab.kinetiframe.actors.ui.ActorManagerState
@@ -65,6 +63,8 @@ import com.donnclab.kinetiframe.actors.ui.ActorNameDialog
 import com.donnclab.kinetiframe.actors.ui.AddActorScreen
 import com.donnclab.kinetiframe.common.ui.CompactTextField
 import com.donnclab.kinetiframe.common.ui.FullScreenDialog
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.designsystem.theme.LibraryAccent
 import com.donnclab.kinetiframe.library.data.AssetOrganization

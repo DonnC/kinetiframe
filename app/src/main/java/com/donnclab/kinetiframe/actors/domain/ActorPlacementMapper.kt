@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.ActorPlacement
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.document.ActorPlacement
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 
 /** Maps project UI references to compact durable documents without duplicating rig mathematics. */

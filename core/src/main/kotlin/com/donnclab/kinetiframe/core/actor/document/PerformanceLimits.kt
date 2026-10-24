@@ -1,4 +1,5 @@
-package com.donnclab.kinetiframe.actors.data
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.core.actor.document
 
 /** Time is not a memory budget. Short capture transactions can compose a longer performance,
  * while point/channel limits continue to bound decoded documents and undo history.

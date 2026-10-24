@@ -17,7 +17,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.library.ui.packs.PackDragEvent
 import com.donnclab.kinetiframe.library.ui.packs.PackTray
 import com.donnclab.kinetiframe.library.ui.packs.PackTrayItem

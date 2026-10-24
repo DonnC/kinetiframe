@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.actors.data
 
 import android.content.res.AssetManager
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
+import com.donnclab.kinetiframe.core.actor.document.validate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json

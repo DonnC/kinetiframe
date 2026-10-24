@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.PerformanceLimits
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
+import com.donnclab.kinetiframe.core.actor.document.PerformanceLimits
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase

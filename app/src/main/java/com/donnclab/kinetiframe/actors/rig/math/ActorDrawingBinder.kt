@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
 import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawingRegion
 import com.donnclab.kinetiframe.core.actor.artwork.ArtworkSkin
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingPlacement
@@ -10,6 +9,7 @@ import com.donnclab.kinetiframe.core.actor.artwork.SkinMesh
 import com.donnclab.kinetiframe.core.actor.artwork.SkinSourceSize
 import com.donnclab.kinetiframe.core.actor.artwork.SkinVertex
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.actor.validation.ActorGraphValidation
 import kotlin.math.hypot
 
 /** Initial automatic bind for a separated neutral sketch. Only a connected joint neighbourhood

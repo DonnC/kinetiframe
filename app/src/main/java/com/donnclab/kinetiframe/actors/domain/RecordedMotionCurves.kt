@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.validate
+import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint

@@ -4,10 +4,10 @@ package com.donnclab.kinetiframe.studio.editor
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.donnclab.kinetiframe.actors.data.LibraryItemKind
-import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
-import com.donnclab.kinetiframe.actors.data.LibraryScope
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.ProjectDocument

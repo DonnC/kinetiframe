@@ -5,7 +5,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.donnclab.kinetiframe.actors.data.LibraryScope
+import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 
 /** An "Add to Library" request waiting for the animator to choose where the item is saved. */
 internal data class LibraryExportRequest(val itemLabel: String, val export: (LibraryScope) -> Unit)

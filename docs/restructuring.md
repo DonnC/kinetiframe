@@ -18,9 +18,10 @@ actor documents (see Discoveries):
 
 - **4a, done (#20).** The generic document store, its result type, path checks, ID rule and crash
   reports moved into `data`.
-- **4b, next.** Replace the app's actor preset types with the `core` ones, then move the actor documents
-  (`ActorRevision`, `PerformanceDocument`, `LibraryItemManifest` and the rest) into `core`.
-- **4c.** Move the shared Room database, project storage and the `.kframe` and `.kpack` archives
+- **4b, done (#21).** Performance preset snapshots are saved as the `core` preset document, and
+  the actor documents (`ActorRevision`, `PerformanceDocument`, `LibraryItemManifest` and the rest)
+  moved into `core.actor.document`.
+- **4c, next.** Move the shared Room database, project storage and the `.kframe` and `.kpack` archives
   into `data`.
 - **4d.** Move the shared app UI in `common` into `presentation`, next to `BaseViewModel`.
 
@@ -49,6 +50,12 @@ Tracks that run alongside the module work, a screen or feature at a time:
   code, and the 206 places where UI code imports a `data` package. Screens should reach storage
   through their ViewModel, as in strict MVI.
 - **Parameter limits.** 53 functions still take more than the allowed number of parameters.
+- **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
+  still mirror `core` types, with bridges and parity tests between them, and `ActorView` duplicates
+  `core`'s `PresetAuthoredView`. Merge each pair and delete the parity tests.
+- **Typed errors in `core`.** `ActorGraphValidation` and `PresetValidationDiagnostics` turn typed
+  validation issues into English sentences inside `core`. Return the typed issue and let the UI
+  map it to string resources.
 - **Preview fixtures.** Give each module its own `preview` package and split up the shared one
   in `app`.
 - **Dependency updates.** Work through the Dependabot pull requests (#1 to #5) one family at a
@@ -124,6 +131,7 @@ fixed after the module work, unless one blocks testing.
 | #18 | Removed the engine sandbox app; CI runs one job |
 | #19 | Started this tracker |
 | #20 | Moved generic storage and crash reports into `data` (step 4a) |
+| #21 | Moved the actor documents into `core` (step 4b) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -134,9 +142,9 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   export and project tables. One file store, named `ActorFileStore` until 4a, serves every
   feature. `.kframe` archives check actor dependencies through `ActorRevision`, which pulls in
   the actor documents and the app's preset types. Step 4 is split into 4a to 4d because of this.
-- **Duplicate actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and
-  `ActorView` mirror `core` types, with bridge functions and parity tests between them. #14 moved
-  the saved field to the `core` type; 4b removes the rest.
+- **Duplicate actor preset types.** The app's preset types mirror `core` types. #14 and #21 moved
+  the two saved fields that used them to the `core` types, which was all the document move needed.
+  Merging the rest is listed under Later.
 - **`DurableFileTest` on Windows.** Its concurrent-writer test can fail with a file-lock error on
   Windows. It passes on rerun and in CI.
 - **Local Windows builds.** The IDE's Java language server and Gradle daemons can hold files in
@@ -150,13 +158,13 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Debt counts
 
-From `.architecture/` after 4a. Each count may only go down.
+From `.architecture/` after 4b. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| References to a feature above | 232 | 73 |
+| References to a feature above | 229 | 71 |
 | Compose imports outside UI code | 38 | 25 |
-| UI imports of `data` packages | 206 | 60 |
+| UI imports of `data` packages | 144 | 46 |
 | Functions over the parameter limit | 53 | — |
 | Inline text values | 298 | 95 |
 | Inline colours | 64 | 24 |

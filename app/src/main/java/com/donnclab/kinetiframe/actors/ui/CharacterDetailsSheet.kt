@@ -36,9 +36,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.donnclab.kinetiframe.actors.data.ActorManifest
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
-import com.donnclab.kinetiframe.actors.rig.model.ActorView
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

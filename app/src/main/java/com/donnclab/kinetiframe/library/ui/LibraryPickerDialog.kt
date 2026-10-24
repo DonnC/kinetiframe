@@ -51,9 +51,9 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Music
 import com.composables.icons.lucide.Shapes
 import com.composables.icons.lucide.Square
-import com.donnclab.kinetiframe.actors.data.LibraryItemKind
-import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
-import com.donnclab.kinetiframe.actors.data.LibraryScope
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import kotlinx.coroutines.Dispatchers

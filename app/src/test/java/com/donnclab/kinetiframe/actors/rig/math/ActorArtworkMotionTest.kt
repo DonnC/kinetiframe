@@ -1,15 +1,15 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.data.ActorRevision
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
-import com.donnclab.kinetiframe.actors.data.PerformanceLimits
-import com.donnclab.kinetiframe.actors.data.validate
 import com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.artwork.ArtworkVariant
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.document.PerformanceLimits
+import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.rigging.BoneArtwork
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy

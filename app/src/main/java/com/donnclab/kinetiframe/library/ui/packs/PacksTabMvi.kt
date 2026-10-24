@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.library.ui.packs
 
-import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.library.data.AssetOrganization
 import com.donnclab.kinetiframe.library.data.BrowserPosition
 import com.donnclab.kinetiframe.library.data.LibraryOrganization

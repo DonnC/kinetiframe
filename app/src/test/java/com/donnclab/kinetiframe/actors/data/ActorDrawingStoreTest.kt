@@ -5,7 +5,6 @@ import android.graphics.Color
 import com.donnclab.kinetiframe.actors.render.PuppetRenderPlan
 import com.donnclab.kinetiframe.actors.rig.math.ActorDrawingBinder
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
-import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawing
@@ -16,11 +15,13 @@ import com.donnclab.kinetiframe.core.actor.artwork.DrawingPlacement
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingSource
 import com.donnclab.kinetiframe.core.actor.artwork.SkinSourceSize
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
+import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.rigging.BoneArtwork
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.actor.validation.ActorGraphValidation
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.core.geometry.Point2

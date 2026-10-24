@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.rig.model.ActorView
+import com.donnclab.kinetiframe.core.actor.rigging.ActorView
+import com.donnclab.kinetiframe.core.actor.validation.ActorGraphValidation
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.geometry.Point2
 import org.junit.jupiter.api.Assertions.assertThrows

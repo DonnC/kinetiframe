@@ -2,20 +2,20 @@ package com.donnclab.kinetiframe.actors.ui
 
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
-import com.donnclab.kinetiframe.actors.data.validate
 import com.donnclab.kinetiframe.actors.domain.PerformanceAuthoring
 import com.donnclab.kinetiframe.actors.domain.PerformanceCompatibility
 import com.donnclab.kinetiframe.actors.domain.PerformanceDuration
-import com.donnclab.kinetiframe.actors.rig.model.ActorView
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.ui.BaseViewModel
@@ -286,7 +286,7 @@ class ActorStudioDocumentViewModel(
                             },
                             poseKeys = keys,
                             artworkKeys = artworkKeys,
-                            presetSnapshot = preset,
+                            presetSnapshot = preset?.document(),
                             poseInterpolation = interpolation,
                             rotationCurves = retainedCurves.ifEmpty {
                                 PerformanceAuthoring.rotationCurves(keys, duration, interpolation)

@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.ActorRevision
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
-import com.donnclab.kinetiframe.actors.data.validate
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
@@ -53,7 +53,7 @@ object LegacyActorMigration {
             performanceId = performanceId, projectId = projectId, actorId = actorId,
             actorRevisionId = revisionId, displayName = name, durationMicros = duration,
             playback = if (preset?.recipe?.loop == false) PerformancePlayback.END_HOLD else PerformancePlayback.LOOP,
-            poseKeys = instance.poseKeys, presetSnapshot = preset,
+            poseKeys = instance.poseKeys, presetSnapshot = preset?.document(),
             rotationCurves = instance.rotationCurves, poseInterpolation = instance.poseInterpolation,
             artworkKeys = instance.artworkKeys, rootMotionCurves = instance.rootMotionCurves,
             createdAtEpochMs = nowEpochMs, updatedAtEpochMs = nowEpochMs,

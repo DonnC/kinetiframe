@@ -4,10 +4,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.donnclab.kinetiframe.actors.data.ActorManifest
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
-import com.donnclab.kinetiframe.actors.rig.model.ActorView
 import com.donnclab.kinetiframe.actors.ui.CharacterDetailsSheet
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

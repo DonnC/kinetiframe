@@ -1,10 +1,20 @@
-package com.donnclab.kinetiframe.actors.rig.presets
+// SPDX-License-Identifier: Apache-2.0
+package com.donnclab.kinetiframe.core.actor.presets
 
-import com.donnclab.kinetiframe.core.actor.presets.PresetChannelIssue
-import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeIssue
-
-internal object PresetValidationDiagnostics {
+/** Messages for preset validation failures, as saved files and the preset library report them. */
+object PresetValidationDiagnostics {
     private const val REQUIREMENT_FAILURE = "Failed requirement."
+
+    /** Throws [IllegalArgumentException] with the matching message when [recipe] is invalid. */
+    fun requireValidRecipe(recipe: PresetRecipe) {
+        try {
+            PresetRecipeValidation.requireValid(recipe)
+        } catch (failure: PresetRecipeValidationException) {
+            throw IllegalArgumentException(recipe(failure.issue, recipe.metadata.schemaVersion))
+        } catch (failure: PresetChannelValidationException) {
+            throw IllegalArgumentException(channel(failure.issue))
+        }
+    }
 
     fun channel(issue: PresetChannelIssue): String = when (issue) {
         PresetChannelIssue.LEGACY_AUTHORED_FIELDS -> "Authored curves require schema 2"

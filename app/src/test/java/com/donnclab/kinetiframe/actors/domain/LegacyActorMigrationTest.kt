@@ -78,7 +78,7 @@ class LegacyActorMigrationTest {
             ),
         )
 
-        assertEquals(preset, migrated.presetSnapshot)
+        assertEquals(preset.document(), migrated.presetSnapshot)
         assertEquals(1_000_000L, migrated.durationMicros)
     }
 }

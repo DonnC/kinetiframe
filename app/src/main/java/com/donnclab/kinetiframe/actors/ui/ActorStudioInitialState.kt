@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.actors.ui
 
-import com.donnclab.kinetiframe.actors.data.ActorManifest
-import com.donnclab.kinetiframe.actors.data.ActorRevision
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.document.DrawingTool
@@ -31,7 +31,7 @@ fun actorStudioInitialState(
         id = "studio-instance-${manifest.actorId}",
         definitionId = manifest.actorId,
         poseKeys = performance?.poseKeys.orEmpty(),
-        motionPreset = performance?.presetSnapshot?.document(),
+        motionPreset = performance?.presetSnapshot,
         rotationCurves = performance?.rotationCurves.orEmpty(),
         rootMotionCurves = performance?.rootMotionCurves.orEmpty(),
         poseInterpolation =

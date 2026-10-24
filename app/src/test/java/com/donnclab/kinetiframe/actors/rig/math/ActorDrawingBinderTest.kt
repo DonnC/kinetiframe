@@ -1,7 +1,6 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
-import com.donnclab.kinetiframe.actors.rig.model.ActorGraphValidation
 import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawing
 import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawingRegion
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingBinding
@@ -13,6 +12,7 @@ import com.donnclab.kinetiframe.core.actor.artwork.SkinSourceSize
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.actor.validation.ActorGraphValidation
 import com.donnclab.kinetiframe.core.geometry.Point2
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

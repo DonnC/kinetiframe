@@ -8,7 +8,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.data.LibraryScope
+import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 
 /**
  * The Project-vs-Personal save choice -- shown right before an export actually runs, so every

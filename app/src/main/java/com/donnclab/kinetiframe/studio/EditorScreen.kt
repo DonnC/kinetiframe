@@ -17,9 +17,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.actors.data.ActorPresetRepository
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.actors.ui.ActorReferenceSession
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance

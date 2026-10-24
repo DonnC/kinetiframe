@@ -6,7 +6,12 @@ import com.donnclab.kinetiframe.actors.domain.ActorTemplateContract
 import com.donnclab.kinetiframe.actors.render.ActorThumbnailMaker
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.rig.model.ActorView
+import com.donnclab.kinetiframe.core.actor.document.ActorDocumentValidation
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.document.validate
+import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.data.storage.ContainedPaths

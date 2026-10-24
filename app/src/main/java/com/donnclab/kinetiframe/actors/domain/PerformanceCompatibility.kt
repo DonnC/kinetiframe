@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.data.ActorRevision
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 
 /** Rejects motion data that refers to parts absent from the pinned actor revision. */
 object PerformanceCompatibility {
@@ -46,12 +46,12 @@ object PerformanceCompatibility {
         // a preset is offered on, so a mismatch here means the actor's rig itself changed after
         // the preset was applied -- surface that distinctly rather than folding it into the
         // generic message below.
-        val missingPresetBones = document.presetSnapshot?.recipe?.missingBones(parts).orEmpty()
-        require(document.presetSnapshot?.recipe?.supportsView(revision.view) != false) {
+        val missingPresetBones = document.appliedPreset?.recipe?.missingBones(parts).orEmpty()
+        require(document.appliedPreset?.recipe?.supportsView(revision.view) != false) {
             "Preset was authored for a different actor view"
         }
         require(
-            document.presetSnapshot?.recipe?.rootMotion.orEmpty().all {
+            document.appliedPreset?.recipe?.rootMotion.orEmpty().all {
                 it.boneId in revision.sceneGraph.rootBoneIds
             },
         ) { "Preset translation must target a root part" }

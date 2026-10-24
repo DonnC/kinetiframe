@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.studio.editor
 
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.audio.AudioTrimSelection
 import com.donnclab.kinetiframe.audio.Waveform
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.AssetKind
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement

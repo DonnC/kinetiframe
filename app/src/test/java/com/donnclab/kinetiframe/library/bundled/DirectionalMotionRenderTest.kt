@@ -7,14 +7,14 @@ import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
 import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
-import com.donnclab.kinetiframe.actors.data.validate
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
 import com.donnclab.kinetiframe.actors.rig.math.ArtworkAttachmentBlend
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
@@ -178,7 +178,7 @@ class DirectionalMotionRenderTest {
                             actorRevisionId = revision.revisionId,
                             displayName = motion,
                             durationMicros = applied.durationMicros,
-                            presetSnapshot = applied, createdAtEpochMs = 1, updatedAtEpochMs = 1,
+                            presetSnapshot = applied.document(), createdAtEpochMs = 1, updatedAtEpochMs = 1,
                         )
                     value(performances.save(document))
                     repeat(8) { phase ->

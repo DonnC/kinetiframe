@@ -4,7 +4,7 @@ Storage building blocks shared across the app. It depends only on `core`.
 
 | Package | Contents |
 | --- | --- |
-| `storage` | `DurableFile`, which writes to a temporary file, syncs it and then moves it into place, so a crash never leaves a half-written file. `DocumentFileStore`, the app-private folder for actors, projects and the library. `StoreResult`, `ContainedPaths` and `StorageIds` |
+| `storage` | `DurableFile`, which writes to a temporary file, syncs it and then moves it into place, so a crash never leaves a half-written file. `DocumentFileStore`, the app-private folder for actors, projects and the library. `StoreResult` and `ContainedPaths` |
 | `diagnostics` | `CrashReportStore`, one small private report of the last error |
 
 Most repositories still live in `app` (`app/.../data`) and move here as the

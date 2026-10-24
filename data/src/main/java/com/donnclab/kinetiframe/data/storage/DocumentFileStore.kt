@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.data.storage
 
+import com.donnclab.kinetiframe.core.document.StorageIds
 import java.io.File
 import java.nio.file.AtomicMoveNotSupportedException
 import java.nio.file.Files

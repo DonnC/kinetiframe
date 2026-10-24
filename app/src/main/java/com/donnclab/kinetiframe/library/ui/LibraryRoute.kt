@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 fun LibraryRoute(
     onNavigate: (BottomNavDestination) -> Unit,
     onOpenDocument: (LibraryOpenTarget) -> Unit = {},
-    onEditPack: (com.donnclab.kinetiframe.actors.data.LibraryItemManifest) -> Unit = {},
+    onEditPack: (com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest) -> Unit = {},
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val files =

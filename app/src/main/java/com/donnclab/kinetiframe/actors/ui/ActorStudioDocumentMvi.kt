@@ -1,15 +1,15 @@
 package com.donnclab.kinetiframe.actors.ui
 
-import com.donnclab.kinetiframe.actors.data.ActorManifest
-import com.donnclab.kinetiframe.actors.data.ActorRevision
-import com.donnclab.kinetiframe.actors.data.PerformanceDocument
-import com.donnclab.kinetiframe.actors.rig.model.ActorView
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
 import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent

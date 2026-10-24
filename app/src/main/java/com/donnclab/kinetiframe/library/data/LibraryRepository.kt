@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.library.data
 
-import com.donnclab.kinetiframe.actors.data.LibraryItemKind
-import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
-import com.donnclab.kinetiframe.actors.data.LibraryScope
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.Serializable

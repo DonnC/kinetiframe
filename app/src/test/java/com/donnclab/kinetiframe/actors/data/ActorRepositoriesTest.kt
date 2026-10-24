@@ -8,6 +8,11 @@ import com.donnclab.kinetiframe.actors.domain.PerformanceCompatibility
 import com.donnclab.kinetiframe.actors.domain.ResolveActorRenderUseCase
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.actor.document.ActorPlacement
+import com.donnclab.kinetiframe.core.actor.document.ActorRevision
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint

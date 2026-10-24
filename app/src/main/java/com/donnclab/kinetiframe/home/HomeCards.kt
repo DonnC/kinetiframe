@@ -51,10 +51,10 @@ import coil.compose.AsyncImage
 import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.R
-import com.donnclab.kinetiframe.actors.data.ActorManifest
-import com.donnclab.kinetiframe.actors.data.LibraryItemManifest
 import com.donnclab.kinetiframe.common.ui.ContextIconAction
 import com.donnclab.kinetiframe.common.ui.IconContextMenu
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.project.data.ProjectManifest
 import java.io.File
