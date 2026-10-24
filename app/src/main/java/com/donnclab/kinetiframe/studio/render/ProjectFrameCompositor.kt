@@ -11,8 +11,8 @@ import com.donnclab.kinetiframe.actors.render.ActorFollowCamera
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.media.video.SceneVideoRenderer
 import com.donnclab.kinetiframe.studio.drawing.LayerCompositor
-import com.donnclab.kinetiframe.video.SceneVideoRenderer
 
 /**
  * Headless per-frame flattener: background + raster layers ([LayerCompositor], shared with the
@@ -72,7 +72,7 @@ class ProjectFrameCompositor(
     private val identity = Matrix()
     private val cameraMatrix = Matrix()
     private val fadePaint = Paint().apply { color = Color.BLACK }
-    private val videoDecoder = com.donnclab.kinetiframe.video.VideoFrameDecoder(outputMaxEdge)
+    private val videoDecoder = com.donnclab.kinetiframe.media.video.VideoFrameDecoder(outputMaxEdge)
     private val videoRenderer = SceneVideoRenderer()
 
     init {

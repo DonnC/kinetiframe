@@ -3,8 +3,8 @@ package com.donnclab.kinetiframe.export.data
 import android.media.MediaCodec
 import android.media.MediaFormat
 import android.media.MediaMuxer
-import com.donnclab.kinetiframe.audio.AudioMixer
-import com.donnclab.kinetiframe.audio.StreamingAudioMix
+import com.donnclab.kinetiframe.media.audio.AudioMixer
+import com.donnclab.kinetiframe.media.audio.StreamingAudioMix
 import java.nio.ByteBuffer
 
 /**

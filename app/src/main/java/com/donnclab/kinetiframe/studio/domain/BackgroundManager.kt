@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import com.donnclab.kinetiframe.core.document.AssetKind
 import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.data.storage.DurableFile
-import com.donnclab.kinetiframe.media.BackgroundImageDecoder
+import com.donnclab.kinetiframe.media.image.BackgroundImageDecoder
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.media.ProjectAssetManager

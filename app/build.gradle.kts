@@ -42,6 +42,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":engine"))
     implementation(project(":data"))
+    implementation(project(":media"))
     implementation(project(":presentation"))
     implementation(project(":designsystem"))
     testImplementation("org.robolectric:robolectric:4.16")

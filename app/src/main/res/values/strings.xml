@@ -64,20 +64,7 @@
     <string name="actor_hint_drawing_part">Drawing %1$s · strokes attach automatically</string>
     <string name="actor_hint_selected_part">selected part</string>
 
-    <!-- Audio recorder and trimmer -->
-    <string name="audio_recorder_title">Audio Recorder</string>
-    <string name="audio_start_hint">Tap the button to start recording</string>
-    <string name="audio_recording">Recording</string>
-    <string name="audio_take_ready">Take ready</string>
-    <string name="audio_stop_recording">Stop recording</string>
-    <string name="audio_discard_take">Discard take</string>
-    <string name="audio_add_to_timeline">Add to timeline</string>
-    <string name="audio_trim_title">Trim audio</string>
-    <string name="audio_preview_selection">Preview selection</string>
-    <string name="audio_stop_preview">Stop preview</string>
-    <string name="audio_trim_in">In</string>
-    <string name="audio_trim_out">Out</string>
-    <string name="audio_trim_length">Length  %1$s</string>
+    <!-- Audio lanes -->
     <string name="audio_mute_lane">Mute this audio lane</string>
     <string name="audio_unmute_lane">Unmute this audio lane</string>
     <string name="audio_lock_lane">Lock this audio lane</string>

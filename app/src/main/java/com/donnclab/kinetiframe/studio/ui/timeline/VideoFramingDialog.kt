@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.IntSize
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 import com.donnclab.kinetiframe.core.document.VideoFit
-import com.donnclab.kinetiframe.video.VideoFrameDecoder
+import com.donnclab.kinetiframe.media.video.VideoFrameDecoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

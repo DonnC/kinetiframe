@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 import com.donnclab.kinetiframe.core.geometry.Affine2D
-import com.donnclab.kinetiframe.video.SceneVideoRenderer
+import com.donnclab.kinetiframe.media.video.SceneVideoRenderer
 
 /** Pointer input belongs to the shared lasso surface, not to the video renderer. */
 @Composable

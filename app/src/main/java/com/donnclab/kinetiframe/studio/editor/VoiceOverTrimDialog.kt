@@ -9,13 +9,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.donnclab.kinetiframe.audio.AudioTrimSelection
-import com.donnclab.kinetiframe.audio.TrimPreviewPlayer
-import com.donnclab.kinetiframe.audio.Waveform
-import com.donnclab.kinetiframe.audio.ui.AudioTrimActions
-import com.donnclab.kinetiframe.audio.ui.AudioTrimScreen
-import com.donnclab.kinetiframe.audio.ui.AudioTrimState
-import com.donnclab.kinetiframe.audio.ui.PendingAudioTake
+import com.donnclab.kinetiframe.media.audio.AudioTrimSelection
+import com.donnclab.kinetiframe.media.audio.TrimPreviewPlayer
+import com.donnclab.kinetiframe.media.audio.Waveform
+import com.donnclab.kinetiframe.media.audio.ui.AudioTrimActions
+import com.donnclab.kinetiframe.media.audio.ui.AudioTrimScreen
+import com.donnclab.kinetiframe.media.audio.ui.AudioTrimState
+import com.donnclab.kinetiframe.media.audio.ui.PendingAudioTake
 import kotlinx.coroutines.CoroutineScope
 
 /**

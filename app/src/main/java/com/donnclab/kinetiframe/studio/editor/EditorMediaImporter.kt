@@ -6,10 +6,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import com.donnclab.kinetiframe.audio.WaveformExtractor
-import com.donnclab.kinetiframe.audio.ui.PendingAudioTake
-import com.donnclab.kinetiframe.media.FrameImageDecoder
-import com.donnclab.kinetiframe.video.ImportedVideoMetadata
+import com.donnclab.kinetiframe.media.audio.WaveformExtractor
+import com.donnclab.kinetiframe.media.audio.ui.PendingAudioTake
+import com.donnclab.kinetiframe.media.image.FrameImageDecoder
+import com.donnclab.kinetiframe.media.video.ImportedVideoMetadata
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

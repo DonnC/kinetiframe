@@ -54,7 +54,7 @@ class SelectionManager(
                 SelectedContent(
                     videos = mapOf(id to clip),
                     audio = linkedSound(listOf(clip)),
-                    bounds = com.donnclab.kinetiframe.video.SceneVideoGeometry.bounds(clip),
+                    bounds = com.donnclab.kinetiframe.media.video.SceneVideoGeometry.bounds(clip),
                 ),
             )
             updateState {
@@ -123,7 +123,7 @@ class SelectionManager(
                         clip.isSceneContent &&
                         state.animation.currentFrame in clip.timelineStartFrame until clip.timelineEndFrame &&
                         area.matches(
-                            listOf(com.donnclab.kinetiframe.video.SceneVideoGeometry.corners(clip)),
+                            listOf(com.donnclab.kinetiframe.media.video.SceneVideoGeometry.corners(clip)),
                             state.selection.partialInclude,
                         )
                 }
@@ -165,7 +165,7 @@ class SelectionManager(
                 }
                 val actorBounds = actorHits.flatMap { it.quads.flatten() }.let(::pointsBounds)
                 val videoBounds = selectedVideos.values.flatMap {
-                    com.donnclab.kinetiframe.video.SceneVideoGeometry.corners(it)
+                    com.donnclab.kinetiframe.media.video.SceneVideoGeometry.corners(it)
                 }.let(::pointsBounds)
                 val bounds =
                     union(
@@ -389,7 +389,7 @@ class SelectionManager(
                             audioId != null
                         ) {
                             audioCopies[audioId] =
-                                com.donnclab.kinetiframe.video.VideoAudioLink.synchronize(
+                                com.donnclab.kinetiframe.media.video.VideoAudioLink.synchronize(
                                     copied,
                                     linked.copy(clipId = audioId),
                                     getState().project.fps,

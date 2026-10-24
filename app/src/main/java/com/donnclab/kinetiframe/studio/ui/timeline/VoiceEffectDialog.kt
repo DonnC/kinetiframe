@@ -82,7 +82,7 @@ internal fun VoiceEffectDialog(
                         val duration =
                             clip.sourceDurationMicros.takeIf { it > 0 }
                                 ?: (clip.trimStartMicros + clip.durationFrames * 1_000_000L / project.fps)
-                        com.donnclab.kinetiframe.audio.data.VoiceEffectProxy().create(
+                        com.donnclab.kinetiframe.media.audio.data.VoiceEffectProxy().create(
                             File(original),
                             duration,
                             selected,

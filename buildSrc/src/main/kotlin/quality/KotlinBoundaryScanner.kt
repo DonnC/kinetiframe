@@ -202,6 +202,8 @@ internal object KotlinBoundaryScanner {
 
             "presentation" -> listOf("com.donnclab.kinetiframe.data.")
 
+            "media" -> listOf("com.donnclab.kinetiframe.data.", "com.donnclab.kinetiframe.engine.")
+
             "designsystem" ->
                 sdk +
                     listOf(
@@ -221,8 +223,8 @@ internal object KotlinBoundaryScanner {
 
     // Feature packages of the app module. Library modules sit below app and never reference them.
     private val APP_PACKAGES = listOf(
-        "actors", "audio", "export", "home", "library", "media", "navigation",
-        "preview", "project", "settings", "studio", "video",
+        "actors", "export", "home", "library", "navigation", "preview", "project", "settings",
+        "studio",
     ).map { "com.donnclab.kinetiframe.$it." }
 
     // Layer-named packages the app module no longer uses. `engine`, `data` and `core` are module

@@ -2,7 +2,7 @@ package com.donnclab.kinetiframe.studio.media
 
 import android.media.MediaPlayer
 import android.util.Log
-import com.donnclab.kinetiframe.audio.AudioTrackSync
+import com.donnclab.kinetiframe.media.audio.AudioTrackSync
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.domain.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
@@ -143,7 +143,7 @@ class AudioPlaybackManager(
                                     if (newSession.player.isPlaying && !newSession.seekPending) {
                                         val relative =
                                             newSession.player.currentPosition * 1000L - placed.trimStartMicros
-                                        val gain = com.donnclab.kinetiframe.audio.AudioEnvelope.gain(
+                                        val gain = com.donnclab.kinetiframe.media.audio.AudioEnvelope.gain(
                                             placed,
                                             relative,
                                             current.fps,
@@ -183,7 +183,7 @@ class AudioPlaybackManager(
             if (!session.prepared) return@forEach
             val player = session.player
             runCatching {
-                val gain = com.donnclab.kinetiframe.audio.AudioEnvelope.gain(
+                val gain = com.donnclab.kinetiframe.media.audio.AudioEnvelope.gain(
                     clip,
                     (frame - clip.startFrame) * 1_000_000L / project.fps,
                     project.fps,

@@ -52,7 +52,7 @@ class AudioManager(
         val existing = getState().project.audioClips[clipId] ?: return
         if (isLocked(existing.trackIndex)) return
         replace(
-            com.donnclab.kinetiframe.audio.AudioClipTrimming.shorten(
+            com.donnclab.kinetiframe.media.audio.AudioClipTrimming.shorten(
                 existing,
                 startFrame,
                 durationFrames,
@@ -161,7 +161,7 @@ class AudioManager(
 
     /** Silences or restores a whole lane. Honoured by both the editor's monitoring
      *  ([com.donnclab.kinetiframe.studio.media.AudioPlaybackManager]) and the exported mix
-     *  ([com.donnclab.kinetiframe.audio.AudioMixer]), so what the animator hears while working is
+     *  ([com.donnclab.kinetiframe.media.audio.AudioMixer]), so what the animator hears while working is
      *  what renders. */
     fun setTrackMuted(trackIndex: Int, muted: Boolean) = updateTrack(trackIndex) { it.copy(isMuted = muted) }
 

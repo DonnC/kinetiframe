@@ -126,7 +126,7 @@ class VideoTrackManager(
                         state.project.audioClips +
                             (
                                 audio.clipId to
-                                    com.donnclab.kinetiframe.video.VideoAudioLink.synchronize(
+                                    com.donnclab.kinetiframe.media.video.VideoAudioLink.synchronize(
                                         updated,
                                         audio,
                                         fps,

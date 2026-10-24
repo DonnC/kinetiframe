@@ -1,14 +1,15 @@
 # Module boundaries
 
-KinetiFrame has six modules. This page lists what each may
+KinetiFrame has seven modules. This page lists what each may
 depend on and why. The [architecture overview](README.md) explains what each module does.
 
 | Module | Allowed project dependencies | Must not contain |
 | --- | --- | --- |
-| `app` | `core`, `engine`, `data`, `presentation`, `designsystem` | Nothing other modules need |
+| `app` | `core`, `engine`, `data`, `media`, `presentation`, `designsystem` | Nothing other modules need |
 | `core` | none | Android, Compose, or any other project module |
 | `engine` | `core` | Compose, app UI, storage. Math packages: no Android at all |
 | `data` | `core` | Compose, `engine`, `presentation`, `designsystem` |
+| `media` | `core`, `presentation`, `designsystem` | `data`, `engine`, studio or actor state |
 | `presentation` | `core`, `engine`, `designsystem` | `data` implementations |
 | `designsystem` | none | Projects, actors, ViewModels, other project modules |
 

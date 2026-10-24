@@ -100,7 +100,7 @@ class SceneEffectsManager(
         ) {
             return@edit project
         }
-        val (first, second) = com.donnclab.kinetiframe.audio.AudioCrossfade.apply(a, b, frames)
+        val (first, second) = com.donnclab.kinetiframe.media.audio.AudioCrossfade.apply(a, b, frames)
         if (project.audioClips.values.any {
                 it.clipId != id && it.clipId != nextId && it.trackIndex == second.trackIndex &&
                     second.startFrame < it.startFrame + it.durationFrames &&
@@ -145,7 +145,7 @@ class SceneEffectsManager(
         } else {
             project.audioClips +
                 (
-                    audio.clipId to com.donnclab.kinetiframe.video.VideoAudioLink.synchronize(
+                    audio.clipId to com.donnclab.kinetiframe.media.video.VideoAudioLink.synchronize(
                         left,
                         audio,
                         project.fps,
@@ -153,7 +153,7 @@ class SceneEffectsManager(
                     ) +
                 (
                     requireNotNull(right.linkedAudioClipId) to
-                        com.donnclab.kinetiframe.video.VideoAudioLink.synchronize(
+                        com.donnclab.kinetiframe.media.video.VideoAudioLink.synchronize(
                             right,
                             audio.copy(clipId = requireNotNull(right.linkedAudioClipId)),
                             project.fps,

@@ -8,31 +8,37 @@ and how data moves through the app when you draw, animate an actor, save and exp
 
 ```mermaid
 flowchart TD
-    app["app<br/><small>screens, editor, media, persistence, wiring</small>"]
+    app["app<br/><small>screens, editor, persistence, wiring</small>"]
     presentation["presentation<br/><small>BaseViewModel, MVI</small>"]
     designsystem["designsystem<br/><small>theme, tokens, controls</small>"]
     engine["engine<br/><small>rigging, IK, skinning, motion</small>"]
-    data["data<br/><small>durable file writes</small>"]
+    data["data<br/><small>storage, Room database</small>"]
+    media["media<br/><small>audio, video, images</small>"]
     core["core<br/><small>models, codecs, validation</small>"]
 
     app --> presentation
     app --> designsystem
     app --> engine
     app --> data
+    app --> media
     app --> core
     presentation --> designsystem
     presentation --> engine
     presentation --> core
     engine --> core
     data --> core
+    media --> presentation
+    media --> designsystem
+    media --> core
 ```
 
 | Module | Type | Responsibility |
 | --- | --- | --- |
-| [`app`](../../app/README.md) | Android app | Entry point, navigation, the studio and other screens, rendering and media adapters, repositories, Room database, bundled assets |
+| [`app`](../../app/README.md) | Android app | Entry point, navigation, the studio and other screens, rendering, feature repositories, bundled assets |
 | [`core`](../../core/README.md) | Kotlin/JVM | The project document and platform-neutral records for actors, rigs, motion and presets; JSON codecs; validation; service contracts; the MVI `StateStore` |
 | [`engine`](../../engine/README.md) | Android library | IK (FABRIK and two-bone), world transforms, skin deformation, artwork registration, pose and curve sampling, performance clocks, motion presets |
-| [`data`](../../data/README.md) | Android library | `DurableFile`: atomic, crash-safe file writes |
+| [`data`](../../data/README.md) | Android library | Crash-safe file writes, the document file store, the Room database, project storage and crash reports |
+| [`media`](../../media/README.md) | Android library | Audio decoding, mixing, recording and trimming; imported video decoding and framing; background image decoding |
 | [`presentation`](../../presentation/README.md) | Android library | `BaseViewModel` and shared MVI plumbing |
 | [`designsystem`](../../designsystem/README.md) | Android library | Compose theme, design tokens and reusable controls |
 
@@ -70,8 +76,8 @@ All paths are under `app/src/main/java/com/donnclab/kinetiframe/`.
 | Projects on disk | `project/data` |
 | Actors and performances on disk | `actors/data` |
 | Video export | `export/data`, `export/ui` |
-| Audio | `audio` |
-| Imported video clips | `video` |
+| Audio and imported video clips | `media` module, `media/audio` and `media/video` |
+| Studio audio and video playback | `studio/media` |
 | Shared app UI | `presentation` module, `presentation/common` |
 
 ## How the app is structured
