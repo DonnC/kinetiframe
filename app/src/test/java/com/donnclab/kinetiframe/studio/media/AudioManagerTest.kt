@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.audio
+package com.donnclab.kinetiframe.studio.media
 
 import com.donnclab.kinetiframe.core.document.AssetKind
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement

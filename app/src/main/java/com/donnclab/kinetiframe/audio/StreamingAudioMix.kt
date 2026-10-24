@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.export.data
+package com.donnclab.kinetiframe.audio
 
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.ProjectAsset

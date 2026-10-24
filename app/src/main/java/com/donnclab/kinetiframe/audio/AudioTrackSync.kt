@@ -3,10 +3,9 @@ package com.donnclab.kinetiframe.audio
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 
 /**
- * Pure frame<->audio-offset math, kept separate from [AudioPlaybackManager] the same way
- * [com.donnclab.kinetiframe.studio.ui.timeline.TimelineScrollSync] is kept separate from the Compose
- * scroll wiring it drives: no Android runtime dependency, so it can be exercised directly by a
- * plain JVM unit test rather than only indirectly through `android.media.MediaPlayer` behavior.
+ * Pure frame<->audio-offset math, kept separate from the audio playback manager. It has no
+ * Android runtime dependency, so a plain JVM unit test can exercise it directly rather than only
+ * indirectly through `android.media.MediaPlayer` behavior.
  */
 object AudioTrackSync {
     /** [clipId] is playing, and should be positioned at [offsetMicros] into its source file. */

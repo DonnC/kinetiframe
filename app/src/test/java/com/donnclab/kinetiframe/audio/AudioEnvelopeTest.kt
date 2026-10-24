@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.audio
 
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.studio.StudioState
+import com.donnclab.kinetiframe.studio.media.AudioManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

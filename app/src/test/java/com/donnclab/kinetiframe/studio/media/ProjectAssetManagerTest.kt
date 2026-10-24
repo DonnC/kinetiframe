@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.media
+package com.donnclab.kinetiframe.studio.media
 
 import android.graphics.Bitmap
 import org.junit.Assert.assertEquals

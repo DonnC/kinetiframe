@@ -1,7 +1,8 @@
-package com.donnclab.kinetiframe.audio
+package com.donnclab.kinetiframe.studio.media
 
 import android.media.MediaPlayer
 import android.util.Log
+import com.donnclab.kinetiframe.audio.AudioTrackSync
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.domain.PlaybackManager
 import kotlinx.coroutines.CoroutineScope

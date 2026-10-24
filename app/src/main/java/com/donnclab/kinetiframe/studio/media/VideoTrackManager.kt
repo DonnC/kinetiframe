@@ -1,6 +1,5 @@
-package com.donnclab.kinetiframe.video
+package com.donnclab.kinetiframe.studio.media
 
-import com.donnclab.kinetiframe.audio.AudioManager
 import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 import com.donnclab.kinetiframe.studio.StudioState

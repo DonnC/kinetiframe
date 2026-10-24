@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.export.data
+package com.donnclab.kinetiframe.audio
 
 import android.media.MediaCodec
 import android.media.MediaExtractor

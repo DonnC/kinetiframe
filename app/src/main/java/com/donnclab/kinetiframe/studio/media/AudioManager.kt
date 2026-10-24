@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.audio
+package com.donnclab.kinetiframe.studio.media
 
 import com.donnclab.kinetiframe.actors.domain.ActorPlacementManager
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
@@ -160,8 +160,8 @@ class AudioManager(
     }
 
     /** Silences or restores a whole lane. Honoured by both the editor's monitoring
-     *  ([com.donnclab.kinetiframe.audio.AudioPlaybackManager]) and the exported mix
-     *  ([com.donnclab.kinetiframe.export.data.AudioMixer]), so what the animator hears while working is
+     *  ([com.donnclab.kinetiframe.studio.media.AudioPlaybackManager]) and the exported mix
+     *  ([com.donnclab.kinetiframe.audio.AudioMixer]), so what the animator hears while working is
      *  what renders. */
     fun setTrackMuted(trackIndex: Int, muted: Boolean) = updateTrack(trackIndex) { it.copy(isMuted = muted) }
 

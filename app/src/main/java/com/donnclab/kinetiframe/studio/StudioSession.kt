@@ -5,8 +5,6 @@ import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.domain.ActorAuthoringCoordinator
 import com.donnclab.kinetiframe.actors.domain.ActorPlacementManager
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.audio.AudioManager
-import com.donnclab.kinetiframe.audio.AudioPlaybackManager
 import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.studio.domain.AnimationEngine
 import com.donnclab.kinetiframe.studio.domain.BackgroundManager
@@ -22,9 +20,11 @@ import com.donnclab.kinetiframe.studio.domain.SelectionManager
 import com.donnclab.kinetiframe.studio.domain.TextManager
 import com.donnclab.kinetiframe.studio.domain.ViewManager
 import com.donnclab.kinetiframe.studio.drawing.LayerCompositor
+import com.donnclab.kinetiframe.studio.media.AudioManager
+import com.donnclab.kinetiframe.studio.media.AudioPlaybackManager
+import com.donnclab.kinetiframe.studio.media.VideoFrameProvider
+import com.donnclab.kinetiframe.studio.media.VideoTrackManager
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
-import com.donnclab.kinetiframe.video.VideoFrameProvider
-import com.donnclab.kinetiframe.video.VideoTrackManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,7 +59,7 @@ internal class StudioSession(
      * Decoded bitmap for the project's persistent background image, if one is set. It is kept apart
      * from [rigAssetManager] because the background has one bitmap and no undo history.
      */
-    val projectAssetManager = com.donnclab.kinetiframe.media.ProjectAssetManager()
+    val projectAssetManager = com.donnclab.kinetiframe.studio.media.ProjectAssetManager()
     val bakeMutex = Mutex()
     val frameOperationMutex = Mutex()
     val pendingOperations = PendingOperations()
@@ -225,12 +225,12 @@ internal class StudioSession(
             }
         }
     }
-    val audioPlaybackManager = com.donnclab.kinetiframe.audio.AudioPlaybackManager(
+    val audioPlaybackManager = com.donnclab.kinetiframe.studio.media.AudioPlaybackManager(
         getState = { store.state },
         scope = store.scope,
         onAudioError = { recordPlaybackFailure(it, "Audio playback failed") },
     )
-    val audioManager = com.donnclab.kinetiframe.audio.AudioManager(
+    val audioManager = com.donnclab.kinetiframe.studio.media.AudioManager(
         getState = { store.state },
         updateState = { store.update(it) },
     )
@@ -238,8 +238,8 @@ internal class StudioSession(
     /** Public (like [audioPlaybackManager]) so EditorScreen/CanvasArea can pull the current
      *  video reference frame straight from it on every recomposition, the same way it already
      *  reads [audioPlaybackManager] indirectly through the playback callbacks below. */
-    val videoFrameProvider = com.donnclab.kinetiframe.video.VideoFrameProvider(getState = { store.state })
-    val videoTrackManager = com.donnclab.kinetiframe.video.VideoTrackManager(
+    val videoFrameProvider = com.donnclab.kinetiframe.studio.media.VideoFrameProvider(getState = { store.state })
+    val videoTrackManager = com.donnclab.kinetiframe.studio.media.VideoTrackManager(
         getState = { store.state },
         updateState = { store.update(it) },
     )

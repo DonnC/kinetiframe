@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.studio.ui.timeline.audio
+package com.donnclab.kinetiframe.audio.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box

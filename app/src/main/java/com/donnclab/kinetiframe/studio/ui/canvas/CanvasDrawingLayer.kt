@@ -39,12 +39,12 @@ fun CanvasDrawingLayer(
     docHeight: Int,
     canvasMatrix: android.graphics.Matrix,
     /** The project's persistent background image, already decoded and cached by
-     *  [com.donnclab.kinetiframe.media.ProjectAssetManager] -- drawn once per frame, scaled to
+     *  [com.donnclab.kinetiframe.studio.media.ProjectAssetManager] -- drawn once per frame, scaled to
      *  cover the sheet, behind onion skin and the current frame's raster content. Null means no
      *  background is set; the sheet's existing shadow/border fill shows through as before. */
     backgroundBitmap: Bitmap?,
     /** The video reference track's decoded frame for the current playhead position, if any video
-     *  clip covers it -- see [com.donnclab.kinetiframe.video.VideoFrameProvider]. Drawn on top of
+     *  clip covers it -- see [com.donnclab.kinetiframe.studio.media.VideoFrameProvider]. Drawn on top of
      *  [backgroundBitmap] at [videoOpacity] so the artist can trace over it (a "rotoscope" aid);
      *  still well behind the current frame's own raster content and outside
      *  the eraser save-layer group, same as the background image above it in this file. */

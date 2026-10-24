@@ -27,13 +27,13 @@ import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.StudioViewModel
+import com.donnclab.kinetiframe.studio.media.VideoFrameProvider
 import com.donnclab.kinetiframe.studio.ui.camera.CameraWorkspaceControls
 import com.donnclab.kinetiframe.studio.ui.camera.CameraWorkspacePolicy
 import com.donnclab.kinetiframe.studio.ui.canvas.CanvasArea
 import com.donnclab.kinetiframe.studio.ui.dock.SelectionDock
 import com.donnclab.kinetiframe.studio.ui.dock.ToolDock
 import com.donnclab.kinetiframe.studio.ui.timeline.StudioFocusControls
-import com.donnclab.kinetiframe.video.VideoFrameProvider
 
 /** The canvas and everything layered over it, back to front. */
 @Composable

@@ -1,13 +1,13 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.media.MediaPlayer
-import com.donnclab.kinetiframe.audio.AudioPlaybackManager
 import com.donnclab.kinetiframe.core.document.AssetKind
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.studio.AnimationState
 import com.donnclab.kinetiframe.studio.StudioState
+import com.donnclab.kinetiframe.studio.media.AudioPlaybackManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent

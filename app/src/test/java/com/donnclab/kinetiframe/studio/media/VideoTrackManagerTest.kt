@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.video
+package com.donnclab.kinetiframe.studio.media
 
 import com.donnclab.kinetiframe.core.document.AssetKind
 import com.donnclab.kinetiframe.core.document.ProjectAsset

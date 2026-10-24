@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.studio.domain
 
-import com.donnclab.kinetiframe.audio.AudioManager
 import com.donnclab.kinetiframe.core.document.AssetKind
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.AudioTrackSettings
@@ -9,7 +8,8 @@ import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 import com.donnclab.kinetiframe.core.document.VoiceEffect
 import com.donnclab.kinetiframe.studio.StudioState
-import com.donnclab.kinetiframe.video.VideoTrackManager
+import com.donnclab.kinetiframe.studio.media.AudioManager
+import com.donnclab.kinetiframe.studio.media.VideoTrackManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

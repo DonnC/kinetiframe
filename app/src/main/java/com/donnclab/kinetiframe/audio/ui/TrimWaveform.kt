@@ -27,7 +27,6 @@ import com.donnclab.kinetiframe.audio.AudioTrimSelection
 import com.donnclab.kinetiframe.audio.Waveform
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.studio.ui.timeline.audio.AudioClipWaveform
 
 /**
  * The take's whole waveform with the kept region highlighted between two draggable handles, and a

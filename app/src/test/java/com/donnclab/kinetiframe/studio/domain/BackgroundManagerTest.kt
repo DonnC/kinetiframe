@@ -2,9 +2,9 @@ package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
 import com.donnclab.kinetiframe.core.document.AssetKind
-import com.donnclab.kinetiframe.media.ProjectAssetManager
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
+import com.donnclab.kinetiframe.studio.media.ProjectAssetManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

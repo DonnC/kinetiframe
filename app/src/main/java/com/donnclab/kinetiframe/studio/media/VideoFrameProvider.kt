@@ -1,8 +1,10 @@
-package com.donnclab.kinetiframe.video
+package com.donnclab.kinetiframe.studio.media
 
 import android.graphics.Bitmap
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.studio.StudioState
+import com.donnclab.kinetiframe.video.VideoFrameDecoder
+import com.donnclab.kinetiframe.video.VideoTrackSync
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

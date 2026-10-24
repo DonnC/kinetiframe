@@ -59,8 +59,8 @@ fun CanvasArea(
     actorFiles: DocumentFileStore? = null,
     actorRepository: ActorRepository? = null,
     performanceRepository: PerformanceRepository? = null,
-    projectAssetManager: com.donnclab.kinetiframe.media.ProjectAssetManager? = null,
-    videoFrameProvider: com.donnclab.kinetiframe.video.VideoFrameProvider? = null,
+    projectAssetManager: com.donnclab.kinetiframe.studio.media.ProjectAssetManager? = null,
+    videoFrameProvider: com.donnclab.kinetiframe.studio.media.VideoFrameProvider? = null,
 ) {
     val enabled = cameraPreview && (state.project.cameraShots.isNotEmpty() || cameraPoseOverride != null)
     val raster = com.donnclab.kinetiframe.studio.ui.camera.cameraRasterFrame(
@@ -182,9 +182,9 @@ private fun CanvasAreaContents(
     performanceRepository: PerformanceRepository? = null,
     /** Owns the decoded bitmap for the project's persistent background image, if one is set
      *  (managed by [com.donnclab.kinetiframe.studio.domain.BackgroundManager]). */
-    projectAssetManager: com.donnclab.kinetiframe.media.ProjectAssetManager? = null,
+    projectAssetManager: com.donnclab.kinetiframe.studio.media.ProjectAssetManager? = null,
     /** Bounded asynchronous decoder shared by embedded scene video and legacy tracing clips. */
-    videoFrameProvider: com.donnclab.kinetiframe.video.VideoFrameProvider? = null,
+    videoFrameProvider: com.donnclab.kinetiframe.studio.media.VideoFrameProvider? = null,
     cameraPreview: Boolean = false,
 ) {
     // Do not use currentFrame here: PlaybackManager deliberately keeps it stable so the editor's
