@@ -23,4 +23,7 @@ Then:
 - Don't trade studio drawing space, gestures or accessibility for code structure.
 - Run `./gradlew spotlessApply`, then `./gradlew verify` and the owning module's tests. Say which device checks you did not run.
 - Put plans and scratch notes in `notes/`, which Git ignores. Don't commit them.
+- When a pull request starts or finishes a task in the
+  [restructuring tracker](docs/restructuring.md), update the tracker in that pull request. Add
+  anything you discover that needs later work, and refresh the debt counts the change lowers.
 - All project code and assets are Apache-2.0. Keep existing license and third-party notices.
