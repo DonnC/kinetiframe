@@ -45,7 +45,7 @@ dependencies {
     implementation(project(":media"))
     implementation(project(":presentation"))
     implementation(project(":designsystem"))
-    testImplementation("org.robolectric:robolectric:4.16")
+    testImplementation("org.robolectric:robolectric:4.17")
     // Runs the existing JUnit 4 tests alongside JUnit 5 ones.
     testRuntimeOnly(libs.junit5.vintage)
     implementation(libs.androidx.activity.compose)
