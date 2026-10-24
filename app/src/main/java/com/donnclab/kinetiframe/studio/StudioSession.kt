@@ -2,8 +2,6 @@ package com.donnclab.kinetiframe.studio
 
 import android.graphics.Bitmap
 import androidx.compose.ui.geometry.Offset
-import com.donnclab.kinetiframe.actors.domain.ActorAuthoringCoordinator
-import com.donnclab.kinetiframe.actors.domain.ActorPlacementManager
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.studio.domain.AnimationEngine
@@ -19,6 +17,8 @@ import com.donnclab.kinetiframe.studio.domain.SceneEffectsManager
 import com.donnclab.kinetiframe.studio.domain.SelectionManager
 import com.donnclab.kinetiframe.studio.domain.TextManager
 import com.donnclab.kinetiframe.studio.domain.ViewManager
+import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorAuthoringCoordinator
+import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorPlacementManager
 import com.donnclab.kinetiframe.studio.drawing.LayerCompositor
 import com.donnclab.kinetiframe.studio.media.AudioManager
 import com.donnclab.kinetiframe.studio.media.AudioPlaybackManager

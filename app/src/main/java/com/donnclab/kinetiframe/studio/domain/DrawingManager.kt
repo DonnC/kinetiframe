@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.toArgb
-import com.donnclab.kinetiframe.actors.domain.RiggingManager
 import com.donnclab.kinetiframe.core.document.BrushSnapshot
 import com.donnclab.kinetiframe.core.document.DrawCommand
 import com.donnclab.kinetiframe.core.document.DrawingTool
@@ -16,6 +15,7 @@ import com.donnclab.kinetiframe.studio.EraserType
 import com.donnclab.kinetiframe.studio.RulerMode
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers
+import com.donnclab.kinetiframe.studio.domain.actorstudio.RiggingManager
 import com.donnclab.kinetiframe.studio.drawing.FloodFill
 import com.donnclab.kinetiframe.studio.drawing.RulerStrokeConstraintSession
 import com.donnclab.kinetiframe.studio.drawing.StrokeHitTest

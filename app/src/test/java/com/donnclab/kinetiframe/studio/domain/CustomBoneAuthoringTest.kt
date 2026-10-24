@@ -1,7 +1,5 @@
 package com.donnclab.kinetiframe.studio.domain
 
-import com.donnclab.kinetiframe.actors.domain.ActorStudioManager
-import com.donnclab.kinetiframe.actors.domain.RiggingManager
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
@@ -10,6 +8,8 @@ import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.actorDefinition
+import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorStudioManager
+import com.donnclab.kinetiframe.studio.domain.actorstudio.RiggingManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.ui.ActorReferenceControls
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.settings.LocalAppPreferences
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -28,6 +27,7 @@ import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.StudioViewModel
 import com.donnclab.kinetiframe.studio.media.VideoFrameProvider
+import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorReferenceControls
 import com.donnclab.kinetiframe.studio.ui.camera.CameraWorkspaceControls
 import com.donnclab.kinetiframe.studio.ui.camera.CameraWorkspacePolicy
 import com.donnclab.kinetiframe.studio.ui.canvas.CanvasArea

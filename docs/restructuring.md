@@ -13,16 +13,18 @@ Keep this page current:
 
 ## Now
 
-**Actors split**, the first step under Next, starts after this. Step 5 (the media module) finished
-with #25.
+**Step 6: actors split, part 1, in review.** Actor Studio is a mode of the studio, so its screens
+moved to `studio.ui.actorstudio` (with `rigging` and `sketch`) and its managers to
+`studio.domain.actorstudio`: 42 files and their tests. `SceneCamera` and `SharedResourceCache`
+moved to `engine`, so actor rendering no longer uses the studio. The `actors` package now makes
+no references to a feature above it. Part 2 extracts it as the `actors` module.
 
 ## Next
 
 The remaining steps of the feature modules decision, in order:
 
-1. **Actors split.** The actor domain (rig, posing, rendering, storage) becomes the `actors`
-   module. Actor Studio screens that use `StudioState` move under `studio`. Today `actors` makes
-   173 references into `studio`; this step removes them.
+1. **Actors module.** Extract the actor domain (rig, posing, rendering, storage) and the actor
+   library screens as the `actors` module.
 2. **Export module.** `ProjectExporter` renders frames through `studio.render`,
    `studio.drawing` and `actors.render`, so `export` becomes a module once the frame compositor and
    actor rendering sit below it (see Discoveries).
@@ -151,6 +153,9 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   `ProjectFrameCompositor`, `FrameCacheManager` and `FontRegistry`, and the actor renderer. The
   compositor belongs below both `studio` and `export`, which is why export moves after the actors
   split instead of with media.
+- **The UI rules read package names.** `uidata` counts UI code by its `ui` segment, and `compose`
+  counts domain code by its `domain` segment. A move that leaves those segments hides debt, so
+  moved screens go under a `ui` package and managers under `domain`.
 - **Duplicate actor preset types.** The app's preset types mirror `core` types. #14 and #21 moved
   the two saved fields that used them to the `core` types, which was all the document move needed.
   Merging the rest is listed under Later.
@@ -167,11 +172,11 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Debt counts
 
-From `.architecture/` after step 5. Each count may only go down.
+From `.architecture/` after step 6, part 1. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| References to a feature above | 201 | 60 |
+| References to a feature above | 31 | 17 |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 144 | 46 |
 | Functions over the parameter limit | 53 | — |

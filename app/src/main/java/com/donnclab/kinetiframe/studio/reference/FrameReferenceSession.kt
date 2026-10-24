@@ -5,7 +5,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
-import com.donnclab.kinetiframe.actors.ui.ActorReferenceSession
+import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorReferenceSession
 
 /** Main-thread UI resources, never part of StudioState, disk caches or saved-state handles. */
 @Stable

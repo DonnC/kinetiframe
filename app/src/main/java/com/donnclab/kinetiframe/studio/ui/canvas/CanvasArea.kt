@@ -31,10 +31,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.actors.ui.rigging.ActorWorkflowHint
-import com.donnclab.kinetiframe.actors.ui.rigging.ProjectActorRenderLayer
-import com.donnclab.kinetiframe.actors.ui.rigging.PuppetStudioCanvas
-import com.donnclab.kinetiframe.actors.ui.rigging.RigSkeletonOverlay
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.studio.AnimationState
@@ -44,13 +40,17 @@ import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.actorDefinition
 import com.donnclab.kinetiframe.studio.displayFrame
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
+import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.ActorWorkflowHint
+import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.ProjectActorRenderLayer
+import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.PuppetStudioCanvas
+import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.RigSkeletonOverlay
 
 @Composable
 fun CanvasArea(
     cameraPreview: Boolean = false,
     cameraPoseOverride: com.donnclab.kinetiframe.core.document.camera.CameraPose? = null,
     fitStage: Boolean = false,
-    actorReference: com.donnclab.kinetiframe.actors.ui.ActorReferenceSession? = null,
+    actorReference: com.donnclab.kinetiframe.studio.ui.actorstudio.ActorReferenceSession? = null,
     state: StudioState,
     onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,
@@ -171,7 +171,7 @@ fun CanvasArea(
 
 @Composable
 private fun CanvasAreaContents(
-    actorReference: com.donnclab.kinetiframe.actors.ui.ActorReferenceSession? = null,
+    actorReference: com.donnclab.kinetiframe.studio.ui.actorstudio.ActorReferenceSession? = null,
     state: StudioState,
     onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,

@@ -1,12 +1,12 @@
 package com.donnclab.kinetiframe.studio.media
 
-import com.donnclab.kinetiframe.actors.domain.ActorPlacementManager
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.AudioTrackSettings
 import com.donnclab.kinetiframe.core.document.MAX_AUDIO_TRACKS
 import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
+import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorPlacementManager
 
 /** Pure project-reference mutations for placed audio clips -- structurally identical to
  *  [ActorPlacementManager], since [AudioClipPlacement] is the audio counterpart to

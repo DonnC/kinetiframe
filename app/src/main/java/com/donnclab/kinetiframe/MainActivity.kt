@@ -37,7 +37,6 @@ import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.ui.ActorStudioRepositories
-import com.donnclab.kinetiframe.actors.ui.ActorStudioScreen
 import com.donnclab.kinetiframe.actors.ui.ActorStudioTarget
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
@@ -66,6 +65,7 @@ import com.donnclab.kinetiframe.settings.SettingsScreen
 import com.donnclab.kinetiframe.settings.SettingsViewModel
 import com.donnclab.kinetiframe.settings.StudioOrientation
 import com.donnclab.kinetiframe.studio.EditorScreen
+import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorStudioScreen
 import com.donnclab.kinetiframe.studio.ui.color.ScreenColorPickerHost
 import java.io.File
 

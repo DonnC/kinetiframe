@@ -2,8 +2,9 @@
 
 The animation math behind actors: inverse kinematics (FABRIK and analytic two-bone), world
 transforms, pose and artwork editing, contact following, skin deformation, artwork registration,
-pose and curve sampling, performance clocks, motion composition and motion presets. It depends
-only on `core`.
+pose and curve sampling, performance clocks, motion composition and motion presets. It also
+evaluates camera shots (`camera.SceneCamera`) and holds the bounded bitmap cache that the studio
+and actor renderers share (`render.SharedResourceCache`). It depends only on `core`.
 
 This is a good place to contribute if you like geometry and graphics. `./gradlew
 :engine:testDebugUnitTest` runs its tests without the rest of the app.
