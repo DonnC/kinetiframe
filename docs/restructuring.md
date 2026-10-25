@@ -19,21 +19,25 @@ moved to `studio.ui.actorstudio` (with `rigging` and `sketch`) and its managers 
 moved to `engine`, so actor rendering no longer uses the studio. The `actors` package now makes
 no references to a feature above it.
 
-**Step 6, part 2, in review.** `actors` is now a module: rig, posing, performances, actor
+**Step 6, part 2, done (#29).** `actors` is now a module: rig, posing, performances, actor
 rendering, storage and the actor library screens, with 59 of its tests. 17 tests stay in `app`
 because they read bundled assets from disk or need Robolectric. The compose and uidata checks now
 run in every module, so code keeps its findings when it leaves `app`.
 
 ## Next
 
-The remaining steps of the feature modules decision, in order:
+The remaining steps, in order, following the
+[UI in presentation](architecture/decisions/ui-in-presentation.md) decision. Nine modules in all:
+no `export`, `library`, `home` or `settings` modules.
 
-1. **Export module.** `ProjectExporter` renders frames through `studio.render`,
-   `studio.drawing` and `actors.render`, so `export` becomes a module once the frame compositor and
-   actor rendering sit below it (see Discoveries).
-2. **Library, then studio.** Extract each module once it only references modules below it.
-3. **Home and settings.** Extract them and move navigation into `app`, so `app` holds only the
-   entry point and wiring.
+1. **UI out of `media` and `actors`.** Move `media.audio.ui` and `actors.ui` into
+   `presentation.media` and `presentation.actors`, so both modules hold logic only. Screens that
+   import `data` read it through their ViewModel first.
+2. **Studio module.** The editor's managers, rendering, drawing tools, camera, export and the
+   library's logic become the `studio` module. Their screens move to `presentation.studio` and
+   `presentation.library`.
+3. **Shell screens.** Home, settings and project creation move to `presentation`. Navigation and
+   wiring stay in `app`, which then holds nothing else.
 
 ## Later
 
@@ -139,6 +143,7 @@ fixed after the module work, unless one blocks testing.
 | #24 | Moved the shared app UI into `presentation` (step 4d) |
 | #25 | Moved studio media code into `studio.media` and extracted the `media` module (step 5) |
 | #28 | Moved Actor Studio under the studio, and the scene camera and render cache into `engine` (step 6, part 1) |
+| #29 | Extracted the `actors` module and ran the UI checks in every module (step 6, part 2) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.

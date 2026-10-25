@@ -1,7 +1,8 @@
 # presentation
 
-Shared ViewModel infrastructure and the app UI that several features use. It depends on `core`,
-`engine` and `designsystem`, never on storage implementations.
+Every screen and component of the app, with their ViewModels, as the
+[UI in presentation](../docs/architecture/decisions/ui-in-presentation.md) decision describes. It
+depends on `core`, `engine` and `designsystem`, never on storage implementations.
 
 | Package | Contents |
 | --- | --- |
@@ -9,9 +10,10 @@ Shared ViewModel infrastructure and the app UI that several features use. It dep
 | `presentation.common` | Stateless UI shared by features: the brand mark and brand bar, the add-flow top and bottom bars, icon context menus, sliders and dialogs. The app provides the user's menu label setting through `LocalShowMenuLabels` |
 
 Controls that know nothing about animation belong in [`designsystem`](../designsystem/README.md).
-Screens still live in `app`. When a screen moves here, it goes into
+Most screens still live in `app`, `actors` and `media`. Each moves into
 `com.donnclab.kinetiframe.presentation.<feature>` together with its route, state mapping and
-ViewModel, once those no longer depend on app-only classes.
+ViewModel, once its storage access goes through the ViewModel. The
+[restructuring tracker](../docs/restructuring.md) lists the order.
 
 ```sh
 ./gradlew :presentation:assembleDebug
