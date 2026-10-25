@@ -19,7 +19,7 @@ moved to `studio.ui.actorstudio` (with `rigging` and `sketch`) and its managers 
 moved to `engine`, so actor rendering no longer uses the studio. The `actors` package now makes
 no references to a feature above it.
 
-**Step 6, part 2, in review.** `actors` is now a module: rig, posing, performances, actor
+**Step 6, part 2, done (#29).** `actors` is now a module: rig, posing, performances, actor
 rendering, storage and the actor library screens, with 59 of its tests. 17 tests stay in `app`
 because they read bundled assets from disk or need Robolectric. The compose and uidata checks now
 run in every module, so code keeps its findings when it leaves `app`.
@@ -143,6 +143,7 @@ fixed after the module work, unless one blocks testing.
 | #24 | Moved the shared app UI into `presentation` (step 4d) |
 | #25 | Moved studio media code into `studio.media` and extracted the `media` module (step 5) |
 | #28 | Moved Actor Studio under the studio, and the scene camera and render cache into `engine` (step 6, part 1) |
+| #29 | Extracted the `actors` module and ran the UI checks in every module (step 6, part 2) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
