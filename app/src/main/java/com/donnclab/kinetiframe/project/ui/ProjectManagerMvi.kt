@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.project.ui
 
+import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.core.document.StageDimensions
-import com.donnclab.kinetiframe.data.project.ProjectManifest
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
 import com.donnclab.kinetiframe.ui.ViewState

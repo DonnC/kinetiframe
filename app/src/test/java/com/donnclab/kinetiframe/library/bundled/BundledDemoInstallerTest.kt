@@ -1,16 +1,13 @@
 package com.donnclab.kinetiframe.library.bundled
 
-import com.donnclab.kinetiframe.actors.domain.PerformanceCompatibility
-import com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.core.document.StageDimensions
-import com.donnclab.kinetiframe.data.project.ProjectManifest
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.project.ProjectSaveDocument
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
-import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.project.data.KframeArchiver
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse

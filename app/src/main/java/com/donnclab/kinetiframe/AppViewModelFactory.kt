@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.donnclab.kinetiframe.actors.data.ActorReferenceIndex
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.home.HomeActionsViewModel
 import com.donnclab.kinetiframe.library.ui.HierarchyBrowserViewModel
 import com.donnclab.kinetiframe.library.ui.LibraryViewModel
 import com.donnclab.kinetiframe.library.ui.LocalLibraryCatalog
@@ -38,6 +39,7 @@ fun appViewModelFactory(container: AppContainer): ViewModelProvider.Factory = vi
         )
     }
     initializer { HierarchyBrowserViewModel(container.library.organizationStore()) }
+    initializer { HomeActionsViewModel(container.bundledContent, container.projectTransfers) }
     initializer {
         PacksTabViewModel(
             container.library,
@@ -54,6 +56,7 @@ fun appViewModelFactory(container: AppContainer): ViewModelProvider.Factory = vi
                 container.scannedActors,
                 container.scannedPerformances,
             ),
+            container.bundledContent,
         )
     }
     initializer { PaletteViewModel(container.palettes) }

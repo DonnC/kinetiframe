@@ -20,13 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
-import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
-import com.donnclab.kinetiframe.core.actor.document.LibraryScope
-import com.donnclab.kinetiframe.core.contracts.StoreResult
-import com.donnclab.kinetiframe.data.project.ProjectManifest
-import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.data.LibraryRepository
-import com.donnclab.kinetiframe.library.data.PackArchiver
 import com.donnclab.kinetiframe.library.ui.LibraryPickerDialog
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabEffect
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabIntent
@@ -34,16 +28,12 @@ import com.donnclab.kinetiframe.library.ui.packs.PacksTabViewModel
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerEffect
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerViewModel
-import com.donnclab.kinetiframe.project.data.KframeArchiver
 import com.donnclab.kinetiframe.project.ui.ProjectManagerEffect
 import com.donnclab.kinetiframe.project.ui.ProjectManagerIntent
 import com.donnclab.kinetiframe.project.ui.ProjectManagerViewModel
 import com.donnclab.kinetiframe.ui.appViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.UUID
 
 /**
  * The app's Home destination: one tabbed dashboard (Projects / Packs / Actors, see [HomeScreen]).
@@ -51,7 +41,7 @@ import java.util.UUID
  */
 @Composable
 fun HomeRoute(
-    files: DocumentFileStore,
+    /** Lists library projects in the import picker, which gets its own ViewModel with the library screens. */
     libraryRepository: LibraryRepository,
     refreshToken: Int = 0,
     onOpenProject: (String) -> Unit,
@@ -75,44 +65,12 @@ fun HomeRoute(
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var showLibraryImportPicker by remember { mutableStateOf(false) }
-    var showCleanupConfirmation by remember { mutableStateOf(false) }
+    val actions: HomeActionsViewModel = appViewModel()
+    val actionsState by actions.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(files) {
-        val demos = withContext(Dispatchers.IO) {
-            com.donnclab.kinetiframe.library.bundled.BundledDemoInstaller(
-                files,
-                context.assets::open,
-                libraryRepository,
-            ).install()
-        }
-        val resources = withContext(Dispatchers.IO) {
-            com.donnclab.kinetiframe.library.bundled.BundledDemoLibraryInstaller(
-                files,
-                context.assets::open,
-                libraryRepository,
-            ).install()
-        }
-        val actorSamples = withContext(Dispatchers.IO) {
-            com.donnclab.kinetiframe.library.bundled.BundledActorSampleInstaller(files, context.assets::open).install()
-        }
-        showCleanupConfirmation = withContext(Dispatchers.IO) {
-            com.donnclab.kinetiframe.library.bundled.CuratedLibraryMigration(files).pending()
-        }
-        if (demos.installed > 0 || actorSamples.installed > 0) {
-            projectModel.handleIntent(ProjectManagerIntent.Reload)
-            actorModel.handleIntent(ActorManagerIntent.Reload)
-            packModel.handleIntent(PacksTabIntent.Reload)
-        }
-        if (demos.errors.isNotEmpty() || resources.errors.isNotEmpty() ||
-            actorSamples.errors.isNotEmpty()
-        ) {
-            snackbar.showSnackbar("Some demo resources could not be installed. Your work was not replaced.")
-        }
-    }
-
-    if (showCleanupConfirmation) {
+    if (actionsState.cleanupOffered) {
         androidx.compose.material3.AlertDialog(
-            onDismissRequest = { showCleanupConfirmation = false },
+            onDismissRequest = { actions.handleIntent(HomeActionsIntent.DismissCleanup) },
             title = { androidx.compose.material3.Text("Clean the trial library?") },
             text = {
                 androidx.compose.material3.Text(
@@ -121,29 +79,12 @@ fun HomeRoute(
             },
             dismissButton = {
                 androidx.compose.material3.TextButton(onClick = {
-                    showCleanupConfirmation = false
+                    actions.handleIntent(HomeActionsIntent.DismissCleanup)
                 }) { androidx.compose.material3.Text("Not now") }
             },
             confirmButton = {
                 androidx.compose.material3.TextButton(onClick = {
-                    showCleanupConfirmation = false
-                    scope.launch {
-                        when (
-                            val result =
-                                withContext(Dispatchers.IO) {
-                                    com.donnclab.kinetiframe.library.bundled.CuratedLibraryMigration(files).migrate()
-                                }
-                        ) {
-                            is StoreResult.Value -> {
-                                projectModel.handleIntent(ProjectManagerIntent.Reload)
-                                actorModel.handleIntent(ActorManagerIntent.Reload)
-                                packModel.handleIntent(PacksTabIntent.Reload)
-                                snackbar.showSnackbar("Trial library archived. Your curated library is ready.")
-                            }
-
-                            is StoreResult.Failure -> snackbar.showSnackbar(result.message)
-                        }
-                    }
+                    actions.handleIntent(HomeActionsIntent.CleanUp)
                 }) { androidx.compose.material3.Text("Clean up") }
             },
         )
@@ -187,130 +128,33 @@ fun HomeRoute(
         }
     }
 
-    // -- Project export/share/import --
+    LaunchedEffect(actions) {
+        actions.effect.collect { effect ->
+            when (effect) {
+                is HomeActionsEffect.Share -> shareFile(context, effect.file, effect.title)
 
-    fun shareProject(project: ProjectManifest) {
-        scope.launch {
-            val destination = File(File(context.filesDir, "kframe-exports"), "${project.projectId}.kframe")
-            val result = withContext(Dispatchers.IO) { KframeArchiver.export(files, project.projectId, destination) }
-            when (result) {
-                is StoreResult.Value -> {
-                    val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", result.value)
-                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                        type = "application/octet-stream"
-                        putExtra(Intent.EXTRA_STREAM, uri)
-                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    }
-                    context.startActivity(Intent.createChooser(sendIntent, "Share ${project.displayName}"))
+                is HomeActionsEffect.ShowMessage -> snackbar.showSnackbar(effect.message)
+
+                HomeActionsEffect.ProjectsChanged -> projectModel.handleIntent(ProjectManagerIntent.Reload)
+
+                HomeActionsEffect.EverythingChanged -> {
+                    projectModel.handleIntent(ProjectManagerIntent.Reload)
+                    actorModel.handleIntent(ActorManagerIntent.Reload)
+                    packModel.handleIntent(PacksTabIntent.Reload)
                 }
-
-                is StoreResult.Failure -> snackbar.showSnackbar(result.message)
             }
         }
     }
 
     val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
-        scope.launch {
-            val tempFile = File(context.cacheDir, "import-${System.currentTimeMillis()}.kframe")
-            val result = withContext(Dispatchers.IO) {
-                runCatching {
-                    context.contentResolver.openInputStream(uri)?.use { input ->
-                        tempFile.outputStream().use { output -> input.copyTo(output) }
-                    } ?: throw IllegalStateException("Could not read the selected file")
-                    KframeArchiver.import(files, tempFile)
-                }.getOrElse { StoreResult.Failure(it.message ?: "Could not import this project") }
-                    .also { tempFile.delete() }
-            }
-            when (result) {
-                is StoreResult.Value -> {
-                    projectModel.handleIntent(ProjectManagerIntent.Reload)
-                    snackbar.showSnackbar("Project imported")
-                }
-
-                is StoreResult.Failure -> snackbar.showSnackbar(result.message)
-            }
-        }
-    }
-
-    fun saveProjectToLibrary(project: ProjectManifest) {
-        scope.launch {
-            val result = withContext(Dispatchers.IO) {
-                runCatching {
-                    val tempFile = File(context.cacheDir, "library-project-${System.currentTimeMillis()}.kframe")
-                    when (val exported = KframeArchiver.export(files, project.projectId, tempFile)) {
-                        is StoreResult.Value -> Unit
-                        is StoreResult.Failure -> throw IllegalStateException(exported.message, exported.cause)
-                    }
-                    libraryRepository.exportAsset(
-                        kind = LibraryItemKind.PROJECT,
-                        itemId = "library-${UUID.randomUUID()}",
-                        displayName = project.displayName,
-                        sourceFile = tempFile,
-                        projectId = project.projectId,
-                        nowEpochMs = System.currentTimeMillis(),
-                    ).also { tempFile.delete() }
-                }.getOrElse { StoreResult.Failure(it.message ?: "Could not save this project to your library") }
-            }
-            when (result) {
-                is StoreResult.Value -> snackbar.showSnackbar("Saved ${project.displayName} to your library")
-                is StoreResult.Failure -> snackbar.showSnackbar(result.message)
-            }
-        }
-    }
-
-    fun importProjectFromPick(manifest: LibraryItemManifest) {
-        showLibraryImportPicker = false
-        scope.launch {
-            val tempFile = File(context.cacheDir, "library-import-${System.currentTimeMillis()}.kframe")
-            val result = withContext(Dispatchers.IO) {
-                runCatching {
-                    when (val copied = libraryRepository.copyAssetTo(manifest.libraryItemId, tempFile)) {
-                        is StoreResult.Value -> Unit
-                        is StoreResult.Failure -> throw IllegalStateException(copied.message, copied.cause)
-                    }
-                    KframeArchiver.import(files, tempFile)
-                }.getOrElse { StoreResult.Failure(it.message ?: "Could not import this project") }
-                    .also { tempFile.delete() }
-            }
-            when (result) {
-                is StoreResult.Value -> {
-                    projectModel.handleIntent(ProjectManagerIntent.Reload)
-                    snackbar.showSnackbar("Project imported")
-                }
-
-                is StoreResult.Failure -> snackbar.showSnackbar(result.message)
-            }
-        }
-    }
-
-    // -- Pack share --
-    fun sharePack(pack: LibraryItemManifest) {
-        scope.launch {
-            val destination = File(File(context.filesDir, "pack-exports"), "${pack.displayName}.kpack")
-            val result = withContext(Dispatchers.IO) {
-                PackArchiver.export(files, libraryRepository, pack.libraryItemId, destination, LibraryScope.PERSONAL)
-            }
-            when (result) {
-                is StoreResult.Value -> {
-                    val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", result.value)
-                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                        type = "application/octet-stream"
-                        putExtra(Intent.EXTRA_STREAM, uri)
-                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    }
-                    context.startActivity(Intent.createChooser(sendIntent, "Share ${pack.displayName}"))
-                }
-
-                is StoreResult.Failure -> snackbar.showSnackbar(result.message)
-            }
-        }
+        actions.handleIntent(HomeActionsIntent.ImportArchive { context.contentResolver.openInputStream(uri) })
     }
 
     // On-disk pack drawings for each Packs-tab card's 2x2 collage, read in place, never copied.
     val packPreviewFiles = remember(packState.previewItems) {
         packState.previewItems.mapValues { (itemId, entries) ->
-            entries.map { libraryRepository.packItemFile(itemId, it.file) }
+            entries.map { packModel.packItemFile(itemId, it.file) }
         }
     }
 
@@ -326,14 +170,14 @@ fun HomeRoute(
                 onPackIntent = packModel::handleIntent,
                 actorState = actorState,
                 onActorIntent = actorModel::handleIntent,
-                onShareProject = ::shareProject,
-                onSaveToLibraryProject = ::saveProjectToLibrary,
+                onShareProject = { actions.handleIntent(HomeActionsIntent.ShareProject(it)) },
+                onSaveToLibraryProject = { actions.handleIntent(HomeActionsIntent.SaveToLibrary(it)) },
                 onExportVideoProject = { project -> onOpenExport(project.projectId) },
-                onSharePack = ::sharePack,
+                onSharePack = { actions.handleIntent(HomeActionsIntent.SharePack(it)) },
                 onImportFromFile = { importLauncher.launch("*/*") },
                 onImportFromLibrary = { showLibraryImportPicker = true },
                 onOpenPackCreator = onOpenPackCreator,
-                detailsPreviewFile = { itemId, entry -> libraryRepository.packItemFile(itemId, entry.file) },
+                detailsPreviewFile = { itemId, entry -> packModel.packItemFile(itemId, entry.file) },
                 // The bottom-nav Library tab opens the full browse screen. The Import sheet's
                 // "From Library" row opens LibraryPickerDialog to pick a single project instead.
                 onBrowseLibrary = onOpenLibrary,
@@ -347,7 +191,21 @@ fun HomeRoute(
             library = libraryRepository,
             allowedKinds = setOf(LibraryItemKind.PROJECT),
             onDismiss = { showLibraryImportPicker = false },
-            onPick = ::importProjectFromPick,
+            onPick = { item ->
+                showLibraryImportPicker = false
+                actions.handleIntent(HomeActionsIntent.ImportFromLibrary(item))
+            },
         )
     }
+}
+
+/** Offers [file] to other apps through the share sheet, through the app's file provider. */
+private fun shareFile(context: android.content.Context, file: File, title: String) {
+    val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "application/octet-stream"
+        putExtra(Intent.EXTRA_STREAM, uri)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    context.startActivity(Intent.createChooser(sendIntent, title))
 }

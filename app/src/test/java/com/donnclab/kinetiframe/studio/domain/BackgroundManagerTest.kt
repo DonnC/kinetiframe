@@ -5,7 +5,6 @@ import com.donnclab.kinetiframe.core.document.AssetKind
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.media.ProjectAssetManager
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -157,7 +156,7 @@ class BackgroundManagerTest {
         val files = com.donnclab.kinetiframe.data.storage.DocumentFileStore(File(storageDir, "documents"))
         val repository = com.donnclab.kinetiframe.data.project.ProjectRepository(files)
         val project = state.project
-        val manifest = com.donnclab.kinetiframe.data.project.ProjectManifest(
+        val manifest = com.donnclab.kinetiframe.core.document.ProjectManifest(
             projectId = project.id,
             displayName = "Saved",
             stage = project.stage,

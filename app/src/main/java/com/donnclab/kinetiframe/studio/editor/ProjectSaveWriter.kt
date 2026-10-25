@@ -5,9 +5,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.donnclab.kinetiframe.core.contracts.StoreResult
+import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.data.db.ProjectEntity
 import com.donnclab.kinetiframe.data.project.ProjectFrameDraft
-import com.donnclab.kinetiframe.data.project.ProjectManifest
 import com.donnclab.kinetiframe.data.project.ProjectSaveDocument
 import com.donnclab.kinetiframe.studio.camera.CameraPosterFrame
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager

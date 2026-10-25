@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
  * table), [ProjectManagerViewModel]'s reload() re-derives this table from the filesystem rather
  * than trusting it blindly -- see that class's reindexing fallback.
  *
- * [createdAtEpochMs] mirrors what [com.donnclab.kinetiframe.data.project.ProjectManifest] already tracks,
+ * [createdAtEpochMs] mirrors what [com.donnclab.kinetiframe.core.document.ProjectManifest] already tracks,
  * for gallery sort-by-created. [thumbnailPath] is a frame-0 preview PNG path, regenerated on every
  * project save (see [com.donnclab.kinetiframe.data.project.ProjectRepository.thumbnailFile]) -- null means
  * no thumbnail has been generated yet, not that the project has no background.

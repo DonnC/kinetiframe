@@ -21,13 +21,10 @@ import kotlinx.coroutines.launch
 /** Wires [LibraryViewModel] to [LibraryScreen]. */
 @Composable
 fun LibraryRoute(
-    files: com.donnclab.kinetiframe.data.storage.DocumentFileStore,
-    repository: com.donnclab.kinetiframe.library.data.LibraryRepository,
     onNavigate: (BottomNavDestination) -> Unit,
     onOpenDocument: (LibraryOpenTarget) -> Unit = {},
     onEditPack: (com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest) -> Unit = {},
 ) {
-    val context = androidx.compose.ui.platform.LocalContext.current
     val viewModel: LibraryViewModel = appViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -35,22 +32,6 @@ fun LibraryRoute(
     LifecycleResumeEffect(viewModel) {
         viewModel.handleIntent(LibraryIntent.Reload)
         onPauseOrDispose { }
-    }
-
-    LaunchedEffect(viewModel, files) {
-        val seeded = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-            com.donnclab.kinetiframe.library.bundled.BundledDemoLibraryInstaller(
-                files,
-                context.assets::open,
-                repository,
-            ).install()
-        }
-        viewModel.handleIntent(LibraryIntent.Reload)
-        if (seeded.errors.isNotEmpty()) {
-            snackbarHostState.showSnackbar(
-                "Some starter assets could not be added to Library; they will retry next launch.",
-            )
-        }
     }
 
     LaunchedEffect(viewModel) {

@@ -11,8 +11,10 @@ import com.donnclab.kinetiframe.data.diagnostics.CrashReportStore
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.export.data.ProjectExporter
+import com.donnclab.kinetiframe.library.bundled.BundledContent
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PaletteRepository
+import com.donnclab.kinetiframe.project.domain.ProjectTransfers
 import com.donnclab.kinetiframe.settings.AppPreferencesStore
 import java.io.File
 
@@ -50,6 +52,10 @@ class AppContainer(context: Context) {
      *  catalog of what is on disk. */
     val scannedActors by lazy { ActorRepository(files) }
     val scannedPerformances by lazy { PerformanceRepository(files) }
+
+    /** The demo projects, library items and sample actors that ship with the app. */
+    val bundledContent by lazy { BundledContent(files, library, appContext.assets::open) }
+    val projectTransfers by lazy { ProjectTransfers(files, library, filesDir, appContext.cacheDir) }
 
     val preferences by lazy { AppPreferencesStore(File(filesDir, "preferences.json")) }
     val crashReports by lazy { CrashReportStore(filesDir) }

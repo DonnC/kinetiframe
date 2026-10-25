@@ -91,7 +91,7 @@ class BundledDemoLibraryInstallerTest {
             val project = com.donnclab.kinetiframe.core.document.ProjectDocument(id = id)
             value(
                 com.donnclab.kinetiframe.data.project.ProjectRepository(files).save(
-                    com.donnclab.kinetiframe.data.project.ProjectManifest(
+                    com.donnclab.kinetiframe.core.document.ProjectManifest(
                         projectId = id,
                         displayName = id,
                         stage = project.stage,
