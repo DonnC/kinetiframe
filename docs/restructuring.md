@@ -13,13 +13,6 @@ Keep this page current:
 
 ## Now
 
-**Step 7: UI out of `media` and `actors`, in review.** The actor library screens moved to
-`presentation.actors` (with `rigging` and `sketch`) and the audio recorder and trimmer to
-`presentation.media.audio`, with their ViewModels, strings and 22 tests. `actors` and `media` no
-longer use Compose screens, `presentation` or `designsystem`, and `checkArchitecture` now keeps
-it that way. `StoreResult` moved to `core.contracts`, so ViewModels read repository results
-without importing `data`.
-
 **Step 8a: studio logic without its screens, in review.** The studio's logic packages, its state
 types, export's and the library's `data`, now reach nothing in the studio's screens. The studio
 session reports frame changes through `FrameStructureListener` instead of owning the reference
@@ -143,6 +136,7 @@ fixed after the module work, unless one blocks testing.
 | #25 | Moved studio media code into `studio.media` and extracted the `media` module (step 5) |
 | #28 | Moved Actor Studio under the studio, and the scene camera and render cache into `engine` (step 6, part 1) |
 | #29 | Extracted the `actors` module and ran the UI checks in every module (step 6, part 2) |
+| #32 | Moved the actor and audio screens into `presentation`, and `StoreResult` into `core` (step 7) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
