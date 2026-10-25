@@ -81,6 +81,9 @@ fixed after the module work, unless one blocks testing.
 **Editor**
 
 - The asset menu cuts off "Actor perfor…" and "Import audio …".
+- In the brush panel, the brush name ("Pen") is white text on the white preview card.
+- The export screen has no back button, and its hint uses "--" for a dash.
+- In portrait, Actor Studio's hint banner runs into the gold asset button.
 - The asset tracks panel covers the whole stage and says only "No clips yet".
 - "Save before leaving?" appears even right after saving with nothing changed. In that dialog,
   Discard looks like the safe buttons although it throws work away.
