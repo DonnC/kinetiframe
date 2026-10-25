@@ -34,7 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.media.audio.Waveform
-import com.donnclab.kinetiframe.media.audio.ui.AudioClipWaveform
+import com.donnclab.kinetiframe.presentation.media.audio.AudioClipWaveform
 import kotlin.math.roundToInt
 
 internal val FRAME_CELL_WIDTH = 40.dp

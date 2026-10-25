@@ -3,9 +3,9 @@ package com.donnclab.kinetiframe.library.bundled
 import com.donnclab.kinetiframe.actors.data.ActorBundleRepository
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.DurableFile
-import com.donnclab.kinetiframe.data.storage.StoreResult
 import java.io.File
 import java.io.InputStream
 import java.nio.file.Files

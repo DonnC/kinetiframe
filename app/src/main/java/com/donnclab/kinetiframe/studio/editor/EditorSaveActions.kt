@@ -8,7 +8,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.donnclab.kinetiframe.data.storage.StoreResult
+import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.studio.StudioViewModel
 import com.donnclab.kinetiframe.studio.ui.dialogs.SaveBeforeExitDialog
 import kotlinx.coroutines.CancellationException

@@ -13,8 +13,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.actors.ui.rigging.ActorToolButton
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
+import com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton
 import com.donnclab.kinetiframe.studio.StudioIntent
 
 /** Variant choices key only this part at the selected performance timestamp. */

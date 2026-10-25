@@ -6,7 +6,7 @@ import com.donnclab.kinetiframe.core.actor.document.ActorPlacement
 import com.donnclab.kinetiframe.core.actor.document.ActorRevision
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
-import com.donnclab.kinetiframe.data.storage.StoreResult
+import com.donnclab.kinetiframe.core.contracts.StoreResult
 
 /** Resolves a placement once into render input; the renderer receives no file-system handles. */
 class ResolveActorRenderUseCase(

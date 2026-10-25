@@ -47,7 +47,7 @@ fun AssetDetailsSheet(
         verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
     ) {
         if (details.kind == AssetKind.AUDIO) {
-            details.audioPath?.let { com.donnclab.kinetiframe.media.audio.ui.AudioPreview(it) }
+            details.audioPath?.let { com.donnclab.kinetiframe.presentation.media.audio.AudioPreview(it) }
                 ?: Text("Audio file is unavailable", color = MaterialTheme.colorScheme.error)
         } else {
             AssetPreviewArea(details)

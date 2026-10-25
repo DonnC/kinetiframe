@@ -32,8 +32,8 @@ import com.composables.icons.lucide.ListTree
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Paintbrush
 import com.composables.icons.lucide.Save
-import com.donnclab.kinetiframe.actors.ui.rigging.ActorPackAttachmentButton
-import com.donnclab.kinetiframe.actors.ui.rigging.ActorToolButton
+import com.donnclab.kinetiframe.presentation.actors.rigging.ActorPackAttachmentButton
+import com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 import com.donnclab.kinetiframe.studio.ActorEditTarget

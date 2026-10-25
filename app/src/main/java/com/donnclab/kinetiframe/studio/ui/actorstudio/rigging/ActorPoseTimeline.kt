@@ -28,10 +28,10 @@ import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.actors.ui.rigging.ActorContactMenu
-import com.donnclab.kinetiframe.actors.ui.rigging.ActorToolButton
-import com.donnclab.kinetiframe.actors.ui.rigging.PerformanceDurationMenu
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.presentation.actors.rigging.ActorContactMenu
+import com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton
+import com.donnclab.kinetiframe.presentation.actors.rigging.PerformanceDurationMenu
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState

@@ -38,7 +38,7 @@ import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.actors.data.ActorArtworkDecoder
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
-import com.donnclab.kinetiframe.data.storage.StoreResult
+import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArtworkRegistration
 import com.donnclab.kinetiframe.library.data.PackItemEntry

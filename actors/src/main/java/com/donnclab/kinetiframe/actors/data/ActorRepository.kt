@@ -11,12 +11,12 @@ import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.data.db.ActorDao
 import com.donnclab.kinetiframe.data.db.ActorEntity
 import com.donnclab.kinetiframe.data.storage.ContainedPaths
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
-import com.donnclab.kinetiframe.data.storage.StoreResult
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File

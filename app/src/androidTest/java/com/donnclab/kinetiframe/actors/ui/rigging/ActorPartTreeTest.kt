@@ -11,6 +11,7 @@ import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.presentation.actors.rigging.ActorPartTree
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

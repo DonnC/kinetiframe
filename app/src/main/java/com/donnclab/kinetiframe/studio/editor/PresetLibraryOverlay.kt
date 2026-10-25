@@ -2,7 +2,7 @@
 package com.donnclab.kinetiframe.studio.editor
 
 import androidx.compose.runtime.Composable
-import com.donnclab.kinetiframe.actors.ui.rigging.PresetLibrarySheet
+import com.donnclab.kinetiframe.presentation.actors.rigging.PresetLibrarySheet
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.activeActor

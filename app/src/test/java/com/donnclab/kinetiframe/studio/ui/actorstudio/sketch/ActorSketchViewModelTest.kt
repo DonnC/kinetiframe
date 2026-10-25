@@ -1,9 +1,6 @@
 package com.donnclab.kinetiframe.studio.ui.actorstudio.sketch
 
 import android.graphics.Color
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchEffect
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchIntent
-import com.donnclab.kinetiframe.actors.ui.sketch.SketchTool
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingExtent
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingPlacement
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingPoint
@@ -13,6 +10,9 @@ import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.validation.ActorGraphValidation
 import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchEffect
+import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchIntent
+import com.donnclab.kinetiframe.presentation.actors.sketch.SketchTool
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

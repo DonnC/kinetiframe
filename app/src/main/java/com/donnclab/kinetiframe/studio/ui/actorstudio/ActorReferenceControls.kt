@@ -41,7 +41,7 @@ import com.composables.icons.lucide.Move
 import com.composables.icons.lucide.Spline
 import com.composables.icons.lucide.Text
 import com.composables.icons.lucide.Trash2
-import com.donnclab.kinetiframe.actors.ui.ReferenceImageSize
+import com.donnclab.kinetiframe.presentation.actors.ReferenceImageSize
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextSliderButton
 import com.donnclab.kinetiframe.presentation.common.IconContextMenu

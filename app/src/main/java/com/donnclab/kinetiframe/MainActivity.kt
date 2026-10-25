@@ -36,8 +36,6 @@ import androidx.navigation3.ui.NavDisplay
 import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
-import com.donnclab.kinetiframe.actors.ui.ActorStudioRepositories
-import com.donnclab.kinetiframe.actors.ui.ActorStudioTarget
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.data.db.AppDatabase
@@ -57,6 +55,8 @@ import com.donnclab.kinetiframe.navigation.LibraryKey
 import com.donnclab.kinetiframe.navigation.PackCreatorKey
 import com.donnclab.kinetiframe.navigation.ProjectGalleryKey
 import com.donnclab.kinetiframe.navigation.SettingsKey
+import com.donnclab.kinetiframe.presentation.actors.ActorStudioRepositories
+import com.donnclab.kinetiframe.presentation.actors.ActorStudioTarget
 import com.donnclab.kinetiframe.presentation.common.LocalShowMenuLabels
 import com.donnclab.kinetiframe.settings.AppPreferencesStore
 import com.donnclab.kinetiframe.settings.AppTheme

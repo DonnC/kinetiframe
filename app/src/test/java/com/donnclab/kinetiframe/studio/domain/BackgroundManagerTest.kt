@@ -173,8 +173,8 @@ class BackgroundManagerTest {
                 totalFrames = 1,
             ),
         )
-        assertTrue(saved is com.donnclab.kinetiframe.data.storage.StoreResult.Value)
-        val reopened = repository.load(project.id) as com.donnclab.kinetiframe.data.storage.StoreResult.Value
+        assertTrue(saved is com.donnclab.kinetiframe.core.contracts.StoreResult.Value)
+        val reopened = repository.load(project.id) as com.donnclab.kinetiframe.core.contracts.StoreResult.Value
         state = StudioState(project = reopened.value.second.project)
         assets = ProjectAssetManager()
         val revision = assets.revision.value

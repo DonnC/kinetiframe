@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.library.bundled
 
 import com.donnclab.kinetiframe.actors.data.ActorRepository
+import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.storage.ContainedPaths
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
-import com.donnclab.kinetiframe.data.storage.StoreResult
 import java.io.File
 import java.util.zip.ZipFile
 

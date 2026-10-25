@@ -45,6 +45,7 @@ tasks.register("verify") {
         ":data:testDebugUnitTest",
         ":media:testDebugUnitTest",
         ":actors:testDebugUnitTest",
+        ":presentation:testDebugUnitTest",
         ":designsystem:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:lintDebug",

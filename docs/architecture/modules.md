@@ -9,9 +9,9 @@ depend on and why. The [architecture overview](README.md) explains what each mod
 | `core` | none | Android, Compose, or any other project module |
 | `engine` | `core` | Compose, app UI, storage. Math packages: no Android at all |
 | `data` | `core` | Compose, `engine`, `presentation`, `designsystem` |
-| `media` | `core`, `presentation`, `designsystem` | `data`, `engine`, studio or actor state |
-| `actors` | `core`, `engine`, `data`, `presentation`, `designsystem` | Studio state, library, export or other app features |
-| `presentation` | `core`, `engine`, `designsystem` | `data` implementations |
+| `media` | `core` | Screens, `data`, `engine`, studio or actor state |
+| `actors` | `core`, `engine`, `data` | Screens, studio state, library, export or other app features |
+| `presentation` | `core`, `engine`, `media`, `actors`, `designsystem` | `data` imports |
 | `designsystem` | none | Projects, actors, ViewModels, other project modules |
 
 `./gradlew checkArchitecture` enforces these rules by reading imports and fully qualified names

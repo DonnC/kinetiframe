@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.actors.render
 
-import com.donnclab.kinetiframe.data.storage.StoreResult
+import com.donnclab.kinetiframe.core.contracts.StoreResult
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.attribute.FileTime

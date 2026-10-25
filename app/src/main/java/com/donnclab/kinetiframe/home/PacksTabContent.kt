@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.ui.ActorManagerMessage
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.library.ui.packs.PackBrowserControls
 import com.donnclab.kinetiframe.library.ui.packs.PackBrowserIndex
@@ -30,6 +29,7 @@ import com.donnclab.kinetiframe.library.ui.packs.PackOrganizationDialog
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabCallbacks
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabIntent
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabState
+import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
 import java.io.File
 
 /**

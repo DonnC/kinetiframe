@@ -1,6 +1,7 @@
 package com.donnclab.kinetiframe.project.ui
 
 import androidx.lifecycle.viewModelScope
+import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
@@ -9,7 +10,6 @@ import com.donnclab.kinetiframe.data.db.ProjectEntity
 import com.donnclab.kinetiframe.data.project.ProjectManifest
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.project.ProjectSaveDocument
-import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

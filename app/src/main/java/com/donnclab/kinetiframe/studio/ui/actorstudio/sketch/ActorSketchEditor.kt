@@ -33,12 +33,12 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchCanvas
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchControls
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchEffect
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchIntent
-import com.donnclab.kinetiframe.actors.ui.sketch.SketchTool
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchCanvas
+import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchControls
+import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchEffect
+import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchIntent
+import com.donnclab.kinetiframe.presentation.actors.sketch.SketchTool
 import com.donnclab.kinetiframe.studio.StudioIntent
 
 /** A draft closes only after the actor document accepts its source IDs; import/budget failures

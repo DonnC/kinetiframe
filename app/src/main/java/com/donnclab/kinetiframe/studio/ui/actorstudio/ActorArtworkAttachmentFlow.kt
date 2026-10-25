@@ -9,9 +9,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
-import com.donnclab.kinetiframe.actors.ui.rigging.ArtworkAlignmentDialog
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.library.data.LibraryRepository
+import com.donnclab.kinetiframe.presentation.actors.rigging.ArtworkAlignmentDialog
 import com.donnclab.kinetiframe.studio.StudioIntent
 import java.io.File
 
