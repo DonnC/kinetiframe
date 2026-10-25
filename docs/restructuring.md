@@ -13,10 +13,8 @@ Keep this page current:
 
 ## Now
 
-**Step 8b: studio module, in review.** The studio's logic is now the `studio` module: 118 files and
-245 of their tests. It holds the studio's state, managers, drawing tools, rendering, camera and playback,
-export's and the library's storage, bundled content and the `.kframe` archiver. Motion rehearsal
-and recording take their frame clock from the ViewModel instead of calling Compose.
+Step 8 continues with the studio screens. Every Android module is now linted by `verify`, each
+against its own `lint-baseline.xml`.
 
 ## Next
 
@@ -136,6 +134,7 @@ fixed after the module work, unless one blocks testing.
 | #29 | Extracted the `actors` module and ran the UI checks in every module (step 6, part 2) |
 | #32 | Moved the actor and audio screens into `presentation`, and `StoreResult` into `core` (step 7) |
 | #34 | Kept the studio's logic free of its screens (step 8a) |
+| #35 | Extracted the `studio` module (step 8b) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -154,9 +153,6 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   `ProjectFrameCompositor`, `FrameCacheManager` and `FontRegistry`, and the actor renderer. The
   compositor belongs below both `studio` and `export`, which is why export moves after the actors
   split instead of with media.
-- **Library modules aren't linted.** `verify` runs `:app:lintDebug` only, so lint never checks
-  code once it leaves `app`. Three baseline entries for files now in `media` no longer match
-  anything. Lint each module in `verify`, with its own baseline.
 - **The UI rules read package names.** `uidata` counts UI code by its `ui` segment, and `compose`
   counts domain code by its `domain` segment. A move that leaves those segments hides debt, so
   moved screens go under a `ui` package and managers under `domain`.
