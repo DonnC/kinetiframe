@@ -1,6 +1,7 @@
 # Feature modules
 
-Accepted by the maintainer on 23 October 2026.
+Accepted by the maintainer on 23 October 2026. Its module list and per-module `ui` packages are
+replaced by [UI in presentation](ui-in-presentation.md).
 
 ## Context
 

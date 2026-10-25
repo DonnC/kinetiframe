@@ -200,6 +200,7 @@ Important choices are recorded as architecture decision records:
 - [Library-only sharing](decisions/library-only-sharing.md)
 - [Standard parameter limits](decisions/parameter-limits.md)
 - [Feature modules](decisions/feature-modules.md)
+- [UI in presentation](decisions/ui-in-presentation.md)
 
 See also [module boundaries](modules.md), [code guidelines](../code-guidelines.md),
 [development setup](../development.md) and [UI contributions](../ui-contributions.md).

@@ -26,14 +26,18 @@ run in every module, so code keeps its findings when it leaves `app`.
 
 ## Next
 
-The remaining steps of the feature modules decision, in order:
+The remaining steps, in order, following the
+[UI in presentation](architecture/decisions/ui-in-presentation.md) decision. Nine modules in all:
+no `export`, `library`, `home` or `settings` modules.
 
-1. **Export module.** `ProjectExporter` renders frames through `studio.render`,
-   `studio.drawing` and `actors.render`, so `export` becomes a module once the frame compositor and
-   actor rendering sit below it (see Discoveries).
-2. **Library, then studio.** Extract each module once it only references modules below it.
-3. **Home and settings.** Extract them and move navigation into `app`, so `app` holds only the
-   entry point and wiring.
+1. **UI out of `media` and `actors`.** Move `media.audio.ui` and `actors.ui` into
+   `presentation.media` and `presentation.actors`, so both modules hold logic only. Screens that
+   import `data` read it through their ViewModel first.
+2. **Studio module.** The editor's managers, rendering, drawing tools, camera, export and the
+   library's logic become the `studio` module. Their screens move to `presentation.studio` and
+   `presentation.library`.
+3. **Shell screens.** Home, settings and project creation move to `presentation`. Navigation and
+   wiring stay in `app`, which then holds nothing else.
 
 ## Later
 
