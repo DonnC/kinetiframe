@@ -34,4 +34,20 @@ class UiLayerRulesTest {
         assertNull(UiLayerRules.violation("$root.studio.domain", "$root.project.data.ProjectRepository"))
         assertNull(UiLayerRules.violation("$root.library.ui", "$root.core.document.ProjectDocument"))
     }
+
+    @Test fun `a view model uses logic module repositories but not the data module`() {
+        assertNull(
+            UiLayerRules.violation("$root.library.ui", "$root.library.data.LibraryRepository", viewModel = true),
+        )
+        assertEquals(
+            UiLayerRules.UI_DATA,
+            UiLayerRules.violation("$root.project.ui", "$root.data.project.ProjectRepository", viewModel = true),
+        )
+        assertEquals(
+            UiLayerRules.UI_DATA,
+            UiLayerRules.violation("$root.library.ui", "$root.library.data.LibraryRepository", viewModel = false),
+        )
+        assertEquals(true, UiLayerRules.isViewModel("app/src/main/java/x/LibraryViewModel.kt"))
+        assertEquals(false, UiLayerRules.isViewModel("app/src/main/java/x/LibraryRoute.kt"))
+    }
 }
