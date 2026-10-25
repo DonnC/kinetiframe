@@ -13,11 +13,10 @@ Keep this page current:
 
 ## Now
 
-**Step 8a: studio logic without its screens, in review.** The studio's logic packages, its state
-types, export's and the library's `data`, now reach nothing in the studio's screens. The studio
-session reports frame changes through `FrameStructureListener` instead of owning the reference
-image session, which moved to `studio.ui.reference`. `rotateVector` and the ruler adapter moved to
-`studio.drawing`, and `PackFrameTag` and tag reindexing to `library.model`.
+**Step 8b: studio module, in review.** The studio's logic is now the `studio` module: 118 files and
+245 of their tests. It holds the studio's state, managers, drawing tools, rendering, camera and playback,
+export's and the library's storage, bundled content and the `.kframe` archiver. Motion rehearsal
+and recording take their frame clock from the ViewModel instead of calling Compose.
 
 ## Next
 
@@ -25,9 +24,8 @@ The remaining steps, in order, following the
 [UI in presentation](architecture/decisions/ui-in-presentation.md) decision. Nine modules in all:
 no `export`, `library`, `home` or `settings` modules.
 
-1. **Studio module.** The editor's managers, rendering, drawing tools, camera, export and the
-   library's logic become the `studio` module. Their screens move to `presentation.studio` and
-   `presentation.library`.
+1. **Studio screens.** The editor's screens, `EditorScreen`, `StudioViewModel`, and the library,
+   export and project screens move to `presentation.studio`, `presentation.library` and so on.
 2. **Shell screens.** Home, settings and project creation move to `presentation`. Navigation and
    wiring stay in `app`, which then holds nothing else.
 
@@ -137,6 +135,7 @@ fixed after the module work, unless one blocks testing.
 | #28 | Moved Actor Studio under the studio, and the scene camera and render cache into `engine` (step 6, part 1) |
 | #29 | Extracted the `actors` module and ran the UI checks in every module (step 6, part 2) |
 | #32 | Moved the actor and audio screens into `presentation`, and `StoreResult` into `core` (step 7) |
+| #34 | Kept the studio's logic free of its screens (step 8a) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -177,11 +176,11 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Debt counts
 
-From `.architecture/` after step 7. Each count may only go down.
+From `.architecture/` after step 8b. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| References to a feature above | 27 | 16 |
+| References to a feature above | 24 | 15 |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 128 | 44 |
 | Functions over the parameter limit | 53 | — |
