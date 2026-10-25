@@ -13,14 +13,8 @@ Keep this page current:
 
 ## Now
 
-**Step 8a: studio logic without its screens, in review.** The studio's logic packages, its state
-types, export's and the library's `data`, now reach nothing in the studio's screens. The studio
-session reports frame changes through `FrameStructureListener` instead of owning the reference
-image session, which moved to `studio.ui.reference`. `rotateVector` and the ruler adapter moved to
-`studio.drawing`, and `PackFrameTag` and tag reindexing to `library.model`.
-
-**Step 8b: studio module, in review.** That logic is now the `studio` module, 118 files with 51
-of their tests: the studio's state, managers, drawing tools, rendering, camera and playback,
+**Step 8b: studio module, in review.** The studio's logic is now the `studio` module: 118 files and
+245 of their tests. It holds the studio's state, managers, drawing tools, rendering, camera and playback,
 export's and the library's storage, bundled content and the `.kframe` archiver. Motion rehearsal
 and recording take their frame clock from the ViewModel instead of calling Compose.
 
@@ -141,6 +135,7 @@ fixed after the module work, unless one blocks testing.
 | #28 | Moved Actor Studio under the studio, and the scene camera and render cache into `engine` (step 6, part 1) |
 | #29 | Extracted the `actors` module and ran the UI checks in every module (step 6, part 2) |
 | #32 | Moved the actor and audio screens into `presentation`, and `StoreResult` into `core` (step 7) |
+| #34 | Kept the studio's logic free of its screens (step 8a) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
