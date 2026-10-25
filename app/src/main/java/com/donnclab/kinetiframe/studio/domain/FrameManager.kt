@@ -101,7 +101,7 @@ class FrameManager(
         }
     }
 
-    fun addFrameAt(index: Int, packTag: com.donnclab.kinetiframe.library.ui.packs.PackFrameTag? = null) {
+    fun addFrameAt(index: Int, packTag: com.donnclab.kinetiframe.library.model.PackFrameTag? = null) {
         val currentState = getState()
         if (currentState.animation.totalFrames >= 1000) return
         val target = index.coerceIn(0, currentState.animation.totalFrames)

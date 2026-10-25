@@ -1,6 +1,7 @@
 package com.donnclab.kinetiframe.library.ui.packs
 
 import com.donnclab.kinetiframe.library.data.PackItemEntry
+import com.donnclab.kinetiframe.library.model.PackFrameTag
 import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue

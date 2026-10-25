@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.studio
 
-import com.donnclab.kinetiframe.library.ui.packs.PackFrameTag
-import com.donnclab.kinetiframe.library.ui.packs.reindexPackTags
+import com.donnclab.kinetiframe.library.model.PackFrameTag
+import com.donnclab.kinetiframe.library.model.reindexPackTags
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

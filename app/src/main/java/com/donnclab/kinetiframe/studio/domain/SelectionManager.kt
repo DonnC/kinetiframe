@@ -14,7 +14,7 @@ import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers
 import com.donnclab.kinetiframe.studio.drawing.FontRegistry
 import com.donnclab.kinetiframe.studio.drawing.MultilineTextRenderer
-import com.donnclab.kinetiframe.studio.ui.canvas.rotateVector
+import com.donnclab.kinetiframe.studio.drawing.rotateVector
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

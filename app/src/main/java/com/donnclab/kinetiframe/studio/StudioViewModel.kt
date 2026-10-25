@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.studio.ui.reference.FrameReferenceSession
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -56,7 +57,7 @@ class StudioViewModel(
     private val sceneIntents = StudioSceneIntents(store, session)
 
     val cacheManager = session.cacheManager
-    val frameReferences = session.frameReferences
+    val frameReferences = FrameReferenceSession().also { session.frameStructureListener = it }
 
     /** Supplied by Actor Studio when reopening a revision with persisted artwork. */
     val rigAssetManager = session.rigAssetManager

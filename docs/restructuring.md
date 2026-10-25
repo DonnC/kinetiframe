@@ -20,6 +20,12 @@ longer use Compose screens, `presentation` or `designsystem`, and `checkArchitec
 it that way. `StoreResult` moved to `core.contracts`, so ViewModels read repository results
 without importing `data`.
 
+**Step 8a: studio logic without its screens, in review.** The studio's logic packages, its state
+types, export's and the library's `data`, now reach nothing in the studio's screens. The studio
+session reports frame changes through `FrameStructureListener` instead of owning the reference
+image session, which moved to `studio.ui.reference`. `rotateVector` and the ruler adapter moved to
+`studio.drawing`, and `PackFrameTag` and tag reindexing to `library.model`.
+
 ## Next
 
 The remaining steps, in order, following the

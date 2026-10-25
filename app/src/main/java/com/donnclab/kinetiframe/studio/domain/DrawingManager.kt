@@ -20,8 +20,8 @@ import com.donnclab.kinetiframe.studio.drawing.FloodFill
 import com.donnclab.kinetiframe.studio.drawing.RulerStrokeConstraintSession
 import com.donnclab.kinetiframe.studio.drawing.StrokeHitTest
 import com.donnclab.kinetiframe.studio.drawing.snapToRuler
+import com.donnclab.kinetiframe.studio.drawing.toConstraintSpec
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
-import com.donnclab.kinetiframe.studio.ui.canvas.toConstraintSpec
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

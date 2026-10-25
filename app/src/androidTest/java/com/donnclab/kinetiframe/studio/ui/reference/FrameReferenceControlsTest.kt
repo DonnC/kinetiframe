@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.studio.reference
+package com.donnclab.kinetiframe.studio.ui.reference
 
 import android.graphics.Bitmap
 import androidx.compose.material3.MaterialTheme

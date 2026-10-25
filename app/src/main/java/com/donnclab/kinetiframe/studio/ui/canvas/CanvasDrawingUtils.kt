@@ -19,6 +19,7 @@ import com.donnclab.kinetiframe.studio.drawing.ManipulationPreview
 import com.donnclab.kinetiframe.studio.drawing.ManipulationStrokeSession
 import com.donnclab.kinetiframe.studio.drawing.PressureStrokeRenderer
 import com.donnclab.kinetiframe.studio.drawing.StrokeGeometry
+import com.donnclab.kinetiframe.studio.drawing.rotateVector
 import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.min
@@ -84,16 +85,6 @@ fun textHit(
     val hitY = local.y / node.scaleY
 
     return hitX in (-halfW)..(halfW) && hitY in (-halfH)..(halfH)
-}
-
-fun rotateVector(value: Offset, degrees: Float): Offset {
-    val radians = Math.toRadians(degrees.toDouble())
-    val cosine = kotlin.math.cos(radians).toFloat()
-    val sine = kotlin.math.sin(radians).toFloat()
-    return Offset(
-        value.x * cosine - value.y * sine,
-        value.x * sine + value.y * cosine,
-    )
 }
 
 fun drawVariableWidthStroke(

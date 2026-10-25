@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.library.ui.packs
+package com.donnclab.kinetiframe.library.model
 
 /** Keep metadata attached to its drawing during the same atomic commit as pixel reindexing. */
 fun reindexPackTags(tags: Map<Int, PackFrameTag>, inserted: Int?, deleted: List<Int>): Map<Int, PackFrameTag> {

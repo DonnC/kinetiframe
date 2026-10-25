@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.library.ui.packs
 
+import com.donnclab.kinetiframe.library.model.PackFrameTag
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
