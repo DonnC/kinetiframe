@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.donnclab.kinetiframe.actors.data.ActorReferenceIndex
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.export.ui.ExportViewModel
 import com.donnclab.kinetiframe.home.HomeActionsViewModel
 import com.donnclab.kinetiframe.library.ui.HierarchyBrowserViewModel
 import com.donnclab.kinetiframe.library.ui.LibraryPickerViewModel
@@ -37,6 +38,12 @@ fun appViewModelFactory(container: AppContainer): ViewModelProvider.Factory = vi
             checkNotNull(this[ActorStudioDocumentViewModel.TargetKey]) { "Actor Studio needs a target" },
             container.actors,
             container.performances,
+        )
+    }
+    initializer {
+        ExportViewModel(
+            container.newProjectExporter(),
+            checkNotNull(this[ExportViewModel.ProjectIdKey]) { "Export needs a project" },
         )
     }
     initializer { HierarchyBrowserViewModel(container.library.organizationStore()) }

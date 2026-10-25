@@ -4,12 +4,12 @@ import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ProjectManifest
-import com.donnclab.kinetiframe.core.mvi.ViewEffect
-import com.donnclab.kinetiframe.core.mvi.ViewIntent
-import com.donnclab.kinetiframe.core.mvi.ViewState
 import com.donnclab.kinetiframe.library.bundled.BundledContent
 import com.donnclab.kinetiframe.project.domain.ProjectTransfers
 import com.donnclab.kinetiframe.ui.BaseViewModel
+import com.donnclab.kinetiframe.ui.ViewEffect
+import com.donnclab.kinetiframe.ui.ViewIntent
+import com.donnclab.kinetiframe.ui.ViewState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

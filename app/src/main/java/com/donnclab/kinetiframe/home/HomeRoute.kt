@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.home
 
-import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -17,7 +16,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.library.ui.LibraryPickerDialog
@@ -27,12 +25,12 @@ import com.donnclab.kinetiframe.library.ui.packs.PacksTabViewModel
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerEffect
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerViewModel
+import com.donnclab.kinetiframe.presentation.common.shareFile
 import com.donnclab.kinetiframe.project.ui.ProjectManagerEffect
 import com.donnclab.kinetiframe.project.ui.ProjectManagerIntent
 import com.donnclab.kinetiframe.project.ui.ProjectManagerViewModel
 import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.launch
-import java.io.File
 
 /**
  * The app's Home destination: one tabbed dashboard (Projects / Packs / Actors, see [HomeScreen]).
@@ -194,15 +192,4 @@ fun HomeRoute(
             },
         )
     }
-}
-
-/** Offers [file] to other apps through the share sheet, through the app's file provider. */
-private fun shareFile(context: android.content.Context, file: File, title: String) {
-    val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-    val sendIntent = Intent(Intent.ACTION_SEND).apply {
-        type = "application/octet-stream"
-        putExtra(Intent.EXTRA_STREAM, uri)
-        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    }
-    context.startActivity(Intent.createChooser(sendIntent, title))
 }

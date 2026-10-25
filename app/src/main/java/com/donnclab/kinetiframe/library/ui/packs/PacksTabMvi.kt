@@ -5,6 +5,7 @@ import com.donnclab.kinetiframe.library.model.AssetOrganization
 import com.donnclab.kinetiframe.library.model.BrowserPosition
 import com.donnclab.kinetiframe.library.model.LibraryOrganization
 import com.donnclab.kinetiframe.library.model.PackItemEntry
+import com.donnclab.kinetiframe.library.model.PackManifest
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
 import com.donnclab.kinetiframe.ui.ViewState
