@@ -13,6 +13,8 @@ import kotlinx.coroutines.withContext
  */
 class LibraryViewModel(
     private val catalog: LocalLibraryCatalog,
+    /** Seeds the demo library items when the Library first opens. */
+    private val bundled: com.donnclab.kinetiframe.library.bundled.BundledContent? = null,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<LibraryState, LibraryIntent, LibraryEffect>(LibraryState()) {
     private var items = emptyMap<String, com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest>()
@@ -20,6 +22,22 @@ class LibraryViewModel(
     private var packJob: Job? = null
     private val organizationWrites = kotlinx.coroutines.sync.Mutex()
     private var browseRevision = 0L
+
+    init {
+        bundled?.let { content ->
+            viewModelScope.launch {
+                val errors = withContext(ioDispatcher) { content.installLibraryItems() }
+                reload()
+                if (errors.isNotEmpty()) {
+                    sendEffect(
+                        LibraryEffect.ShowMessage(
+                            "Some starter assets could not be added to Library; they will retry next launch.",
+                        ),
+                    )
+                }
+            }
+        }
+    }
 
     override fun handleIntent(intent: LibraryIntent) {
         when (intent) {

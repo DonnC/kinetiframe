@@ -36,6 +36,11 @@ class PacksTabViewModel(
     }
 
     private val organizationStore = libraryRepository.organizationStore()
+
+    /** Where [fileName] of the pack [itemId] is stored, for drawing its preview in place. */
+    fun packItemFile(itemId: String, fileName: String): java.io.File =
+        libraryRepository.packItemFile(itemId, fileName, scope, projectId)
+
     private var reloadJob: kotlinx.coroutines.Job? = null
     private val mutations = kotlinx.coroutines.sync.Mutex()
     private var browseRevision = 0L

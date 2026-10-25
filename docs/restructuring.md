@@ -13,12 +13,12 @@ Keep this page current:
 
 ## Now
 
-**Step 8c: one place for the app's services, in review.** `AppContainer` in `app` creates the
-database, the document store, every repository and the preference store once, and
-`AppViewModelFactory` builds the ViewModels from it. Screens get their ViewModel with
-`appViewModel()` instead of building stores, and routes receive the shared stores instead of a
-storage folder. The [dependency wiring](architecture/decisions/dependency-wiring.md) decision
-explains the approach and when to revisit Hilt.
+**Step 8d: Home and the library through their ViewModels, in review.** `HomeActionsViewModel`
+installs the bundled content and handles sharing, importing and saving to the library through
+`ProjectTransfers`, so `HomeRoute` no longer touches stores or archivers. `LibraryViewModel` seeds
+the bundled library items itself, and pack previews come from `PacksTabViewModel`.
+`ProjectManifest` moved to `core.document`, since screens and domain code both read it. The
+library picker, export, pack creation and the editor's repositories still reach stores directly.
 
 ## Next
 
@@ -40,7 +40,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
   check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
-  code, and the 114 places where UI code imports a `data` package. Screens should reach storage
+  code, and the 100 places where UI code imports a `data` package. Screens should reach storage
   through their ViewModel, as in strict MVI.
 - **Parameter limits.** 53 functions still take more than the allowed number of parameters.
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
@@ -106,6 +106,9 @@ fixed after the module work, unless one blocks testing.
 - On a fresh install the Library's Audio tab says "No matching items. Try another filter or
   search." with no filter or search applied.
 - Settings is a bottom bar tab but shows a back arrow and a second header under the brand bar.
+- Sharing the 34 MB demo project took about three and a half minutes on an A73, with no sign
+  that anything was happening after the menu closed. Show progress, and look at why the
+  archive is slow.
 
 **System bars**
 
@@ -142,6 +145,8 @@ fixed after the module work, unless one blocks testing.
 | #32 | Moved the actor and audio screens into `presentation`, and `StoreResult` into `core` (step 7) |
 | #34 | Kept the studio's logic free of its screens (step 8a) |
 | #35 | Extracted the `studio` module (step 8b) |
+| #36 | Linted every module in `verify`, each with its own baseline |
+| #37 | Built the app's services in one container (step 8c) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -176,7 +181,7 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 - **Lint version checks.** Lint's "newer version available" checks are disabled, because their
   findings change with every upstream release. Dependabot reports updates instead.
 - **Editor repositories.** `EditorRepositories` and the voice effect dialog still reach the
-  container through the `Context` (`rememberEditorRepositories`), and Home, the library, export
+  container through the `Context` (`rememberEditorRepositories`), and the library picker, export
   and pack creation still use stores directly for importing, sharing and archiving. Each goes
   through its ViewModel when its screen moves to `presentation`.
 - **Library build defaults.** Library modules relied on default SDK levels until the convention
@@ -184,13 +189,13 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Debt counts
 
-From `.architecture/` after step 8c. Each count may only go down.
+From `.architecture/` after step 8d. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
 | References to a feature above | 24 | 15 |
 | Compose imports outside UI code | 38 | 25 |
-| UI imports of `data` packages | 114 | 44 |
+| UI imports of `data` packages | 100 | 41 |
 | Functions over the parameter limit | 53 | — |
 | Inline text values | 298 | 95 |
 | Inline colours | 64 | 24 |

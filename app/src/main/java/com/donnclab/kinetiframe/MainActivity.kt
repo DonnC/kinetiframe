@@ -187,7 +187,6 @@ class MainActivity : ComponentActivity() {
                                     entry<ProjectGalleryKey> {
                                         // Home is one tabbed dashboard for projects, packs and actors.
                                         HomeRoute(
-                                            container.files,
                                             container.library,
                                             refreshToken = homeRefreshToken,
                                             onOpenProject = { projectId -> backStack.add(EditorKey(projectId)) },
@@ -203,7 +202,7 @@ class MainActivity : ComponentActivity() {
                                     entry<LibraryKey> {
                                         // Top-level destinations share one bottom nav (AppBottomNavBar).
                                         // Home pops the back stack instead of stacking another copy.
-                                        LibraryRoute(container.files, container.library, onEditPack = { item ->
+                                        LibraryRoute(onEditPack = { item ->
                                             backStack.add(
                                                 PackCreatorKey(
                                                     editItemId = item.libraryItemId,
