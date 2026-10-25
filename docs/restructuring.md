@@ -13,12 +13,12 @@ Keep this page current:
 
 ## Now
 
-**Step 8d: Home and the library through their ViewModels, in review.** `HomeActionsViewModel`
-installs the bundled content and handles sharing, importing and saving to the library through
-`ProjectTransfers`, so `HomeRoute` no longer touches stores or archivers. `LibraryViewModel` seeds
-the bundled library items itself, and pack previews come from `PacksTabViewModel`.
-`ProjectManifest` moved to `core.document`, since screens and domain code both read it. The
-library picker, export, pack creation and the editor's repositories still reach stores directly.
+**Step 8d: screens reach storage through their ViewModels, in progress.** #38 moved Home's
+sharing, importing and bundled content into `HomeActionsViewModel`, and the library's seeding
+into `LibraryViewModel`. This pull request moves the pack, palette and organisation documents
+from `library.data` to `library.model`, since screens read them as values and never as storage.
+The library picker, export, pack creation and the editor's repositories still reach stores
+directly.
 
 ## Next
 
@@ -40,7 +40,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
   check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
-  code, and the 100 places where UI code imports a `data` package. Screens should reach storage
+  code, and the 63 places where UI code imports a `data` package. Screens should reach storage
   through their ViewModel, as in strict MVI.
 - **Parameter limits.** 53 functions still take more than the allowed number of parameters.
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
@@ -147,6 +147,7 @@ fixed after the module work, unless one blocks testing.
 | #35 | Extracted the `studio` module (step 8b) |
 | #36 | Linted every module in `verify`, each with its own baseline |
 | #37 | Built the app's services in one container (step 8c) |
+| #38 | Ran Home and the library through their ViewModels (step 8d, part 1) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -195,7 +196,7 @@ From `.architecture/` after step 8d. Each count may only go down.
 | --- | --- | --- |
 | References to a feature above | 24 | 15 |
 | Compose imports outside UI code | 38 | 25 |
-| UI imports of `data` packages | 100 | 41 |
+| UI imports of `data` packages | 63 | 30 |
 | Functions over the parameter limit | 53 | — |
 | Inline text values | 298 | 95 |
 | Inline colours | 64 | 24 |

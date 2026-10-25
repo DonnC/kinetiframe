@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.studio.ui.color
 
 import androidx.lifecycle.viewModelScope
-import com.donnclab.kinetiframe.library.data.PaletteDocument
 import com.donnclab.kinetiframe.library.data.PaletteRepository
+import com.donnclab.kinetiframe.library.model.PaletteDocument
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent

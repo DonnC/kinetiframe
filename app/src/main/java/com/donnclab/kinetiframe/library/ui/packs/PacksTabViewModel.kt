@@ -7,7 +7,7 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
-import com.donnclab.kinetiframe.library.data.PackItemEntry
+import com.donnclab.kinetiframe.library.model.PackItemEntry
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -82,7 +82,7 @@ class PacksTabViewModel(
         }
     }
 
-    private fun persist(write: () -> com.donnclab.kinetiframe.library.data.LibraryOrganization) {
+    private fun persist(write: () -> com.donnclab.kinetiframe.library.model.LibraryOrganization) {
         viewModelScope.launch {
             mutations.lock()
             try {

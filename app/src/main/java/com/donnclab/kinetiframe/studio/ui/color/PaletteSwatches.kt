@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.data.BundledPalettes
-import com.donnclab.kinetiframe.library.data.PaletteDocument
+import com.donnclab.kinetiframe.library.model.PaletteDocument
 
 @Composable
 fun PaletteSwatches(palette: PaletteDocument, selectedColor: Color, onPick: (Color) -> Unit) {

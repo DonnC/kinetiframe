@@ -1,5 +1,8 @@
 package com.donnclab.kinetiframe.library.data
 
+import com.donnclab.kinetiframe.library.model.AssetCategory
+import com.donnclab.kinetiframe.library.model.BrowseMode
+import com.donnclab.kinetiframe.library.model.BrowserPosition
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows

@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.library.data
+package com.donnclab.kinetiframe.library.model
 
 import kotlinx.serialization.Serializable
 

@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.library.ui
 
-import com.donnclab.kinetiframe.library.data.AssetOrganization
-import com.donnclab.kinetiframe.library.data.BrowseMode
-import com.donnclab.kinetiframe.library.data.BrowserPosition
 import com.donnclab.kinetiframe.library.data.LibraryOrganizationStore
+import com.donnclab.kinetiframe.library.model.AssetOrganization
+import com.donnclab.kinetiframe.library.model.BrowseMode
+import com.donnclab.kinetiframe.library.model.BrowserPosition
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

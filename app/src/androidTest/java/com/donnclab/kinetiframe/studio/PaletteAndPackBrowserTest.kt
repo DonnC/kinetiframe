@@ -8,10 +8,10 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
-import com.donnclab.kinetiframe.library.data.AssetOrganization
-import com.donnclab.kinetiframe.library.data.BrowseMode
-import com.donnclab.kinetiframe.library.data.BrowserPosition
 import com.donnclab.kinetiframe.library.data.BundledPalettes
+import com.donnclab.kinetiframe.library.model.AssetOrganization
+import com.donnclab.kinetiframe.library.model.BrowseMode
+import com.donnclab.kinetiframe.library.model.BrowserPosition
 import com.donnclab.kinetiframe.library.ui.packs.PackBrowserControls
 import com.donnclab.kinetiframe.library.ui.packs.PackOrganizationDialog
 import com.donnclab.kinetiframe.studio.ui.color.PaletteSwatches

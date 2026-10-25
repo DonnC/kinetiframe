@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.library.ui
 
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
-import com.donnclab.kinetiframe.library.data.BrowserPosition
-import com.donnclab.kinetiframe.library.data.LibraryOrganization
+import com.donnclab.kinetiframe.library.model.BrowserPosition
+import com.donnclab.kinetiframe.library.model.LibraryOrganization
 import com.donnclab.kinetiframe.presentation.common.AssetDetails
 import com.donnclab.kinetiframe.presentation.common.AssetSummary
 import com.donnclab.kinetiframe.presentation.common.AudioTrackSummary

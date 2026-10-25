@@ -20,9 +20,9 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.library.data.AssetCategory
-import com.donnclab.kinetiframe.library.data.BrowseMode
-import com.donnclab.kinetiframe.library.data.BrowserPosition
+import com.donnclab.kinetiframe.library.model.AssetCategory
+import com.donnclab.kinetiframe.library.model.BrowseMode
+import com.donnclab.kinetiframe.library.model.BrowserPosition
 
 @Composable
 fun CollectionBrowserControls(

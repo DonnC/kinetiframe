@@ -18,8 +18,8 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
-import com.donnclab.kinetiframe.library.data.LibraryOrganization
 import com.donnclab.kinetiframe.library.data.LibraryRepository
+import com.donnclab.kinetiframe.library.model.LibraryOrganization
 import com.donnclab.kinetiframe.library.ui.packs.PackBrowserIndex
 import com.donnclab.kinetiframe.presentation.common.AssetDetails
 import com.donnclab.kinetiframe.presentation.common.AssetKind

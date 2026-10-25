@@ -9,7 +9,7 @@ import com.donnclab.kinetiframe.library.model.PackFrameTag
  * anchor, reviews per-frame tags at save time, and swaps "Save Project" out of scope for a
  * dedicated "Save Pack" action. This is intentionally the *only* thing EditorScreen needs to know
  * about packs -- persistence (writing the draft, reading it back, turning tags + frame bitmaps
- * into a real [com.donnclab.kinetiframe.library.data.PackManifest]) all lives in `PackCreatorRoute`, which
+ * into a real [com.donnclab.kinetiframe.library.model.PackManifest]) all lives in `PackCreatorRoute`, which
  * is the thing that actually builds this config.
  *
  * Saving deliberately stops at writing the PACK library item -- it does not also bundle a

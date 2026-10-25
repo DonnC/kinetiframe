@@ -18,12 +18,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.library.data.AssetCategory
-import com.donnclab.kinetiframe.library.data.AssetOrganization
+import com.donnclab.kinetiframe.library.model.AssetCategory
+import com.donnclab.kinetiframe.library.model.AssetOrganization
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 @Composable

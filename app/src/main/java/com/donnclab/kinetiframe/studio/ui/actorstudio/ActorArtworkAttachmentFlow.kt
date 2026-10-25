@@ -30,7 +30,7 @@ fun ActorArtworkAttachmentFlow(
 ) {
     var selected by remember(partId) { mutableStateOf<Pair<String, Bitmap>?>(null) }
     var registration by remember(partId) {
-        mutableStateOf<com.donnclab.kinetiframe.library.data.PackArtworkRegistration?>(null)
+        mutableStateOf<com.donnclab.kinetiframe.library.model.PackArtworkRegistration?>(null)
     }
     val latest by rememberUpdatedState(selected)
     var transferred by remember(partId) { mutableStateOf(false) }

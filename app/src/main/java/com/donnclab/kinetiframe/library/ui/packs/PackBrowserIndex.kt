@@ -1,10 +1,10 @@
 package com.donnclab.kinetiframe.library.ui.packs
 
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
-import com.donnclab.kinetiframe.library.data.AssetCategory
-import com.donnclab.kinetiframe.library.data.AssetOrganization
-import com.donnclab.kinetiframe.library.data.BrowseMode
-import com.donnclab.kinetiframe.library.data.BrowserPosition
+import com.donnclab.kinetiframe.library.model.AssetCategory
+import com.donnclab.kinetiframe.library.model.AssetOrganization
+import com.donnclab.kinetiframe.library.model.BrowseMode
+import com.donnclab.kinetiframe.library.model.BrowserPosition
 
 /** Pure browsing/search policy shared by Home and the insertion picker. No raster decoding. */
 object PackBrowserIndex {

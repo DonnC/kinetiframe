@@ -4,6 +4,6 @@ package com.donnclab.kinetiframe.library.model
  *  reviewed in the metadata dialog when saving. */
 data class PackFrameTag(val name: String = "", val description: String = "") {
     val isValid: Boolean get() = name.isNotBlank() &&
-        name.length <= com.donnclab.kinetiframe.library.data.PackItemEntry.MAX_NAME_LENGTH &&
-        description.length <= com.donnclab.kinetiframe.library.data.PackItemEntry.MAX_DESCRIPTION_LENGTH
+        name.length <= com.donnclab.kinetiframe.library.model.PackItemEntry.MAX_NAME_LENGTH &&
+        description.length <= com.donnclab.kinetiframe.library.model.PackItemEntry.MAX_DESCRIPTION_LENGTH
 }

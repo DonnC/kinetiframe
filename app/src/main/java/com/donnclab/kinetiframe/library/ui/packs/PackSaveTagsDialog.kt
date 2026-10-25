@@ -56,7 +56,7 @@ fun PackSaveTagsDialog(
                 tag.name,
                 {
                     draft[selected] =
-                        tag.copy(name = it.take(com.donnclab.kinetiframe.library.data.PackItemEntry.MAX_NAME_LENGTH))
+                        tag.copy(name = it.take(com.donnclab.kinetiframe.library.model.PackItemEntry.MAX_NAME_LENGTH))
                 },
                 label = { Text("Item name") },
                 singleLine = true,
@@ -67,7 +67,7 @@ fun PackSaveTagsDialog(
                     draft[selected] =
                         tag.copy(
                             description = it.take(
-                                com.donnclab.kinetiframe.library.data.PackItemEntry.MAX_DESCRIPTION_LENGTH,
+                                com.donnclab.kinetiframe.library.model.PackItemEntry.MAX_DESCRIPTION_LENGTH,
                             ),
                         )
                 },

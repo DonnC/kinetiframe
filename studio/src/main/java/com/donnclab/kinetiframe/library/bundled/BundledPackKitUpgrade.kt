@@ -4,7 +4,7 @@ import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.data.LibraryRepository
-import com.donnclab.kinetiframe.library.data.PackManifest
+import com.donnclab.kinetiframe.library.model.PackManifest
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.InputStream

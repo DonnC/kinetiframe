@@ -1,5 +1,7 @@
 package com.donnclab.kinetiframe.library.data
 
+import com.donnclab.kinetiframe.library.model.PackArtworkRegistration
+import com.donnclab.kinetiframe.library.model.PackItemEntry
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
