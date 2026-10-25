@@ -39,5 +39,5 @@ internal object UiLayerRules {
     }
 
     private fun isUi(packageName: String, segments: List<String>): Boolean =
-        "ui" in segments || packageName.removePrefix(ROOT) in SCREEN_PACKAGES
+        "ui" in segments || segments.first() == "presentation" || packageName.removePrefix(ROOT) in SCREEN_PACKAGES
 }

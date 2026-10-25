@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 
 /** Gallery-only MVI model for Home's Packs tab, mirroring
  *  [com.donnclab.kinetiframe.project.ui.ProjectManagerViewModel] and
- *  [com.donnclab.kinetiframe.actors.ui.ActorManagerViewModel]'s shape: list/reload/delete, plus opening one
+ *  [com.donnclab.kinetiframe.presentation.actors.ActorManagerViewModel]'s shape: list/reload/delete, plus opening one
  *  pack's full contents on demand. No canvas or editor state -- editing a pack is a full separate
  *  destination ([com.donnclab.kinetiframe.library.ui.packs.PackCreatorRoute] with an `editItemId`), not something
  *  this ViewModel drives. Sharing a pack stays a Route-level, Context-dependent concern -- exactly

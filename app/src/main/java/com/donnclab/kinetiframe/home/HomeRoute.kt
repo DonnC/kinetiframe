@@ -26,9 +26,6 @@ import com.donnclab.kinetiframe.actors.data.ActorBundleRepository
 import com.donnclab.kinetiframe.actors.data.ActorReferenceIndex
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
-import com.donnclab.kinetiframe.actors.ui.ActorManagerEffect
-import com.donnclab.kinetiframe.actors.ui.ActorManagerIntent
-import com.donnclab.kinetiframe.actors.ui.ActorManagerViewModel
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
@@ -43,6 +40,9 @@ import com.donnclab.kinetiframe.library.ui.LibraryPickerDialog
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabEffect
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabIntent
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabViewModel
+import com.donnclab.kinetiframe.presentation.actors.ActorManagerEffect
+import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
+import com.donnclab.kinetiframe.presentation.actors.ActorManagerViewModel
 import com.donnclab.kinetiframe.project.data.KframeArchiver
 import com.donnclab.kinetiframe.project.ui.ProjectManagerEffect
 import com.donnclab.kinetiframe.project.ui.ProjectManagerIntent

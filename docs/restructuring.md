@@ -13,16 +13,12 @@ Keep this page current:
 
 ## Now
 
-**Step 6: actors split, part 1, done (#28).** Actor Studio is a mode of the studio, so its screens
-moved to `studio.ui.actorstudio` (with `rigging` and `sketch`) and its managers to
-`studio.domain.actorstudio`: 42 files and their tests. `SceneCamera` and `SharedResourceCache`
-moved to `engine`, so actor rendering no longer uses the studio. The `actors` package now makes
-no references to a feature above it.
-
-**Step 6, part 2, done (#29).** `actors` is now a module: rig, posing, performances, actor
-rendering, storage and the actor library screens, with 59 of its tests. 17 tests stay in `app`
-because they read bundled assets from disk or need Robolectric. The compose and uidata checks now
-run in every module, so code keeps its findings when it leaves `app`.
+**Step 7: UI out of `media` and `actors`, in review.** The actor library screens moved to
+`presentation.actors` (with `rigging` and `sketch`) and the audio recorder and trimmer to
+`presentation.media.audio`, with their ViewModels, strings and 22 tests. `actors` and `media` no
+longer use Compose screens, `presentation` or `designsystem`, and `checkArchitecture` now keeps
+it that way. `StoreResult` moved to `core.contracts`, so ViewModels read repository results
+without importing `data`.
 
 ## Next
 
@@ -30,13 +26,10 @@ The remaining steps, in order, following the
 [UI in presentation](architecture/decisions/ui-in-presentation.md) decision. Nine modules in all:
 no `export`, `library`, `home` or `settings` modules.
 
-1. **UI out of `media` and `actors`.** Move `media.audio.ui` and `actors.ui` into
-   `presentation.media` and `presentation.actors`, so both modules hold logic only. Screens that
-   import `data` read it through their ViewModel first.
-2. **Studio module.** The editor's managers, rendering, drawing tools, camera, export and the
+1. **Studio module.** The editor's managers, rendering, drawing tools, camera, export and the
    library's logic become the `studio` module. Their screens move to `presentation.studio` and
    `presentation.library`.
-3. **Shell screens.** Home, settings and project creation move to `presentation`. Navigation and
+2. **Shell screens.** Home, settings and project creation move to `presentation`. Navigation and
    wiring stay in `app`, which then holds nothing else.
 
 ## Later
@@ -48,7 +41,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
   check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
-  code, and the 144 places where UI code imports a `data` package. Screens should reach storage
+  code, and the 128 places where UI code imports a `data` package. Screens should reach storage
   through their ViewModel, as in strict MVI.
 - **Parameter limits.** 53 functions still take more than the allowed number of parameters.
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
@@ -184,13 +177,13 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Debt counts
 
-From `.architecture/` after step 6. Each count may only go down.
+From `.architecture/` after step 7. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
 | References to a feature above | 27 | 16 |
 | Compose imports outside UI code | 38 | 25 |
-| UI imports of `data` packages | 144 | 46 |
+| UI imports of `data` packages | 128 | 44 |
 | Functions over the parameter limit | 53 | — |
 | Inline text values | 298 | 95 |
 | Inline colours | 64 | 24 |

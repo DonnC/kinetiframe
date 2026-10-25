@@ -8,6 +8,8 @@ import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
+import com.donnclab.kinetiframe.presentation.actors.rigging.PresetAuditionControls
+import com.donnclab.kinetiframe.presentation.actors.rigging.PresetLibrarySection
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.ActorMotionTimingMenu

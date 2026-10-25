@@ -8,11 +8,6 @@ import android.graphics.PorterDuffXfermode
 import androidx.core.graphics.createBitmap
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.actors.rig.math.ActorDrawingBinder
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchEffect
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchIntent
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchState
-import com.donnclab.kinetiframe.actors.ui.sketch.SketchLayer
-import com.donnclab.kinetiframe.actors.ui.sketch.SketchTool
 import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawing
 import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawingRegion
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingBinding
@@ -25,6 +20,11 @@ import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.document.BrushId
 import com.donnclab.kinetiframe.core.document.BrushSnapshot
 import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchEffect
+import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchIntent
+import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchState
+import com.donnclab.kinetiframe.presentation.actors.sketch.SketchLayer
+import com.donnclab.kinetiframe.presentation.actors.sketch.SketchTool
 import com.donnclab.kinetiframe.studio.drawing.BrushRenderers
 import com.donnclab.kinetiframe.studio.drawing.SketchColourFill
 import com.donnclab.kinetiframe.ui.BaseViewModel

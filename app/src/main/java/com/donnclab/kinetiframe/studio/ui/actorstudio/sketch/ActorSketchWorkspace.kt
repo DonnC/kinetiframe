@@ -35,10 +35,10 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.PaintBucket
 import com.composables.icons.lucide.Pen
 import com.composables.icons.lucide.Text
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchIntent
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchState
-import com.donnclab.kinetiframe.actors.ui.sketch.SketchLayer
-import com.donnclab.kinetiframe.actors.ui.sketch.SketchTool
+import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchIntent
+import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchState
+import com.donnclab.kinetiframe.presentation.actors.sketch.SketchLayer
+import com.donnclab.kinetiframe.presentation.actors.sketch.SketchTool
 import com.donnclab.kinetiframe.studio.ui.dock.FloatingDock
 import com.donnclab.kinetiframe.studio.ui.dock.ToolButton
 

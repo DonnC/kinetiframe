@@ -141,7 +141,7 @@ fun EditorTopBar(
                     }
                 }
                 if (isActorStudio) {
-                    com.donnclab.kinetiframe.actors.ui.rigging.ActorToolButton(
+                    com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(
                         Lucide.Bone,
                         "Edit skeleton joints",
                     ) {
@@ -152,10 +152,10 @@ fun EditorTopBar(
                             StudioIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.studio.ActorEditTarget.JOINT_END),
                         )
                     }
-                    com.donnclab.kinetiframe.actors.ui.rigging.ActorToolButton(Lucide.Undo, "Undo") {
+                    com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(Lucide.Undo, "Undo") {
                         onIntent(StudioIntent.Draw.Undo)
                     }
-                    com.donnclab.kinetiframe.actors.ui.rigging.ActorToolButton(Lucide.Redo, "Redo") {
+                    com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(Lucide.Redo, "Redo") {
                         onIntent(StudioIntent.Draw.Redo)
                     }
                 } else {
@@ -171,14 +171,14 @@ fun EditorTopBar(
             if (isActorStudio) {
                 actorViews?.invoke()
                 onAttachActorArtwork?.let { choose ->
-                    com.donnclab.kinetiframe.actors.ui.rigging.ActorPackAttachmentButton(
+                    com.donnclab.kinetiframe.presentation.actors.rigging.ActorPackAttachmentButton(
                         choose,
                         enabled =
                         state.scene.selectedBoneId != null,
                     )
                 }
                 onSaveActorClick?.let { save ->
-                    com.donnclab.kinetiframe.actors.ui.rigging.ActorToolButton(
+                    com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(
                         Lucide.Save,
                         "Save actor revision",
                         onClick = save,
@@ -199,7 +199,7 @@ fun EditorTopBar(
             }
             Box {
                 if (isActorStudio) {
-                    com.donnclab.kinetiframe.actors.ui.rigging.ActorToolButton(
+                    com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(
                         Lucide.EllipsisVertical,
                         "More Settings",
                     ) {

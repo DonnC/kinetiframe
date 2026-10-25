@@ -200,9 +200,13 @@ internal object KotlinBoundaryScanner {
                 "com.donnclab.kinetiframe.designsystem.",
             )
 
-            "presentation" -> listOf("com.donnclab.kinetiframe.data.")
+            // Screens reach storage through their ViewModel. Tests may still build real stores on a
+            // temporary folder to drive a ViewModel end to end.
+            "presentation" -> if ("/src/main/" in path) listOf("com.donnclab.kinetiframe.data.") else emptyList()
 
-            "media" -> listOf("com.donnclab.kinetiframe.data.", "com.donnclab.kinetiframe.engine.")
+            "media" -> LOGIC_ONLY + listOf("com.donnclab.kinetiframe.data.", "com.donnclab.kinetiframe.engine.")
+
+            "actors" -> LOGIC_ONLY
 
             "designsystem" ->
                 sdk +
@@ -220,6 +224,18 @@ internal object KotlinBoundaryScanner {
             else -> emptyList()
         }
     }
+
+    // Logic modules hold no screens: their UI lives in presentation. Compose geometry and graphics
+    // types stay allowed here because the compose check already counts them.
+    private val LOGIC_ONLY = listOf(
+        "com.donnclab.kinetiframe.presentation.",
+        "com.donnclab.kinetiframe.designsystem.",
+        "com.donnclab.kinetiframe.ui.",
+        "androidx.compose.runtime.",
+        "androidx.compose.foundation.",
+        "androidx.compose.material",
+        "androidx.lifecycle.",
+    )
 
     // Feature packages of the app module. Library modules sit below app and never reference them.
     private val APP_PACKAGES = listOf(

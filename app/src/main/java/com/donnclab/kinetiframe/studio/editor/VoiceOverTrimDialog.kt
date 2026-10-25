@@ -12,10 +12,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.media.audio.AudioTrimSelection
 import com.donnclab.kinetiframe.media.audio.TrimPreviewPlayer
 import com.donnclab.kinetiframe.media.audio.Waveform
-import com.donnclab.kinetiframe.media.audio.ui.AudioTrimActions
-import com.donnclab.kinetiframe.media.audio.ui.AudioTrimScreen
-import com.donnclab.kinetiframe.media.audio.ui.AudioTrimState
-import com.donnclab.kinetiframe.media.audio.ui.PendingAudioTake
+import com.donnclab.kinetiframe.presentation.media.audio.AudioTrimActions
+import com.donnclab.kinetiframe.presentation.media.audio.AudioTrimScreen
+import com.donnclab.kinetiframe.presentation.media.audio.AudioTrimState
+import com.donnclab.kinetiframe.presentation.media.audio.PendingAudioTake
 import kotlinx.coroutines.CoroutineScope
 
 /**

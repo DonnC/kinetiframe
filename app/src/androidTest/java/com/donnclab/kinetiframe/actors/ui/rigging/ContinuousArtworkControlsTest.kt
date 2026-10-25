@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import com.donnclab.kinetiframe.presentation.actors.rigging.ArtworkAlignmentDialog
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

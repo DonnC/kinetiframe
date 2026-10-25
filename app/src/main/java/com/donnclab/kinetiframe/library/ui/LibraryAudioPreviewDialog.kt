@@ -22,7 +22,7 @@ import androidx.compose.ui.window.Dialog
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
-import com.donnclab.kinetiframe.media.audio.ui.AudioPreview
+import com.donnclab.kinetiframe.presentation.media.audio.AudioPreview
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

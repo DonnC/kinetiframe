@@ -21,13 +21,13 @@ import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Image
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Plus
-import com.donnclab.kinetiframe.actors.ui.rigging.ActorPartTree
-import com.donnclab.kinetiframe.actors.ui.rigging.CoverageBadge
-import com.donnclab.kinetiframe.actors.ui.rigging.RasterLayerGroupHeader
-import com.donnclab.kinetiframe.actors.ui.rigging.RasterLayerRow
 import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.actors.rigging.ActorPartTree
+import com.donnclab.kinetiframe.presentation.actors.rigging.CoverageBadge
+import com.donnclab.kinetiframe.presentation.actors.rigging.RasterLayerGroupHeader
+import com.donnclab.kinetiframe.presentation.actors.rigging.RasterLayerRow
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers

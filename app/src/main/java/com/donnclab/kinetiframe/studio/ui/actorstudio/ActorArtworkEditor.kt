@@ -5,9 +5,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.actors.ui.rigging.ArtworkAlignmentDialog
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.presentation.actors.rigging.ArtworkAlignmentDialog
 import com.donnclab.kinetiframe.studio.StudioIntent
 
 /** Borrows owned runtime pixels; dismissing this editor must never recycle actor/undo artwork. */

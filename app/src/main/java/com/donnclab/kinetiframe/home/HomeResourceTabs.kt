@@ -56,11 +56,6 @@ import com.composables.icons.lucide.Clapperboard
 import com.composables.icons.lucide.Folder
 import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
-import com.donnclab.kinetiframe.actors.ui.ActorManagerIntent
-import com.donnclab.kinetiframe.actors.ui.ActorManagerMessage
-import com.donnclab.kinetiframe.actors.ui.ActorManagerState
-import com.donnclab.kinetiframe.actors.ui.ActorNameDialog
-import com.donnclab.kinetiframe.actors.ui.AddActorScreen
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.data.project.ProjectManifest
@@ -78,6 +73,11 @@ import com.donnclab.kinetiframe.library.ui.packs.PackBrowserControls
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabCallbacks
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabIntent
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabState
+import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
+import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
+import com.donnclab.kinetiframe.presentation.actors.ActorManagerState
+import com.donnclab.kinetiframe.presentation.actors.ActorNameDialog
+import com.donnclab.kinetiframe.presentation.actors.AddActorScreen
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.common.FullScreenDialog
 import com.donnclab.kinetiframe.project.ui.AddProjectRoute
@@ -284,7 +284,7 @@ internal fun ActorsTabContent(
         }
     }
     selectedActor?.let { actor ->
-        com.donnclab.kinetiframe.actors.ui.CharacterDetailsSheet(
+        com.donnclab.kinetiframe.presentation.actors.CharacterDetailsSheet(
             actor,
             state.thumbnailPaths[actor.actorId],
             state.performances.filter { it.actorId == actor.actorId },

@@ -11,9 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.ui.rigging.PartRail
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorDrawingModeButton
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.presentation.actors.rigging.PartRail
+import com.donnclab.kinetiframe.presentation.actors.sketch.ActorDrawingModeButton
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState

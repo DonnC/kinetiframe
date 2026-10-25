@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.donnclab.kinetiframe.media.audio.ui.PendingAudioTake
+import com.donnclab.kinetiframe.presentation.media.audio.PendingAudioTake
 import com.donnclab.kinetiframe.studio.StudioViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

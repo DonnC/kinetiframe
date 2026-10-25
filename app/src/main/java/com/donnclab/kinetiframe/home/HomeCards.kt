@@ -365,7 +365,7 @@ fun HomeActorCard(
             .clickable(onClick = onOpen),
     ) {
         if (thumbnailPath == null) {
-            com.donnclab.kinetiframe.actors.ui.rigging.RigBlueprintThumbnail(
+            com.donnclab.kinetiframe.presentation.actors.rigging.RigBlueprintThumbnail(
                 com.donnclab.kinetiframe.actors.rig.model.ActorTemplate.HUMAN,
                 Modifier.fillMaxSize().padding(24.dp),
             )

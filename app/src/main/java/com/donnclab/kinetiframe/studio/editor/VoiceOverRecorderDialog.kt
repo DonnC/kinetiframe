@@ -14,9 +14,9 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.media.audio.VoiceRecorder
-import com.donnclab.kinetiframe.media.audio.ui.AudioRecorderActions
-import com.donnclab.kinetiframe.media.audio.ui.AudioRecorderSheet
-import com.donnclab.kinetiframe.media.audio.ui.PendingAudioTake
+import com.donnclab.kinetiframe.presentation.media.audio.AudioRecorderActions
+import com.donnclab.kinetiframe.presentation.media.audio.AudioRecorderSheet
+import com.donnclab.kinetiframe.presentation.media.audio.PendingAudioTake
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 
