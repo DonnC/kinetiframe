@@ -1,8 +1,6 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
-import com.donnclab.kinetiframe.actors.domain.ActorArtworkManager
-import com.donnclab.kinetiframe.actors.domain.ActorStudioManager
 import com.donnclab.kinetiframe.actors.rig.math.ActorDrawingBinder
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
@@ -18,6 +16,8 @@ import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.actorDefinition
+import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorArtworkManager
+import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorStudioManager
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull

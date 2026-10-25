@@ -17,6 +17,8 @@ import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.activeActor
+import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorMotionManager
+import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorStudioManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel

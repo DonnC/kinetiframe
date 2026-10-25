@@ -5,6 +5,7 @@ import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.core.document.camera.CameraPose
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.core.document.camera.CameraShots
+import com.donnclab.kinetiframe.engine.camera.SceneCamera
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals

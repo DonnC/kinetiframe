@@ -23,13 +23,13 @@ import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchCanvas
 import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchControls
 import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchIntent
 import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchState
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchToolDock
 import com.donnclab.kinetiframe.actors.ui.sketch.SketchTool
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.studio.ui.actorstudio.sketch.ActorSketchToolDock
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

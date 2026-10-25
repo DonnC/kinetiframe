@@ -3,13 +3,13 @@ package com.donnclab.kinetiframe.studio.editor
 
 import androidx.compose.runtime.Composable
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.actors.ui.ActorReferenceSession
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.library.ui.packs.PackCreatorConfig
 import com.donnclab.kinetiframe.studio.StudioState
+import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorReferenceSession
 
 /**
  * What the route hosting the editor supplies: which document it edits and what happens when the

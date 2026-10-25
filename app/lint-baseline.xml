@@ -216,7 +216,7 @@
         errorLine1="    var importGeneration by remember(session) { mutableStateOf(session.importGeneration) }"
         errorLine2="                                                ~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/ui/ActorReferenceControls.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/actorstudio/ActorReferenceControls.kt"
             line="69"
             column="49"/>
     </issue>
@@ -484,7 +484,7 @@
         errorLine1="                        val bitmap = Bitmap.createBitmap(width, 48, Bitmap.Config.ARGB_8888)"
         errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/domain/ActorSampleArtwork.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/domain/actorstudio/ActorSampleArtwork.kt"
             line="47"
             column="38"/>
     </issue>
@@ -726,7 +726,7 @@
         errorLine1="                Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888).also { result ->"
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/PerformancePoseThumbnail.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/actorstudio/rigging/PerformancePoseThumbnail.kt"
             line="52"
             column="17"/>
     </issue>
@@ -792,7 +792,7 @@
         errorLine1="            native.save()"
         errorLine2="            ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/PuppetSourceLayer.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/actorstudio/rigging/PuppetSourceLayer.kt"
             line="81"
             column="13"/>
     </issue>
@@ -858,7 +858,7 @@
         errorLine1="            nativeCanvas.save()"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/SkeletalRenderLayer.kt"
+            file="src/main/java/com/donnclab/kinetiframe/studio/ui/actorstudio/rigging/SkeletalRenderLayer.kt"
             line="51"
             column="13"/>
     </issue>

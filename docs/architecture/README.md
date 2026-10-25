@@ -67,10 +67,11 @@ All paths are under `app/src/main/java/com/donnclab/kinetiframe/`.
 | Brushes and drawing tools | `studio/drawing` |
 | Frame and bitmap caches | `studio/render`, `studio/drawing` |
 | Stroke, undo, layer and selection coordination | `studio/domain` |
-| Actor Studio | `actors/ui`, `actors/ui/rigging` |
-| Actor posing, placements and performances | `actors/domain` |
+| Actor Studio | `studio/ui/actorstudio` (with `rigging` and `sketch`), and its managers in `studio/domain/actorstudio` |
+| Actor library screens and dialogs | `actors/ui` |
+| Actor posing, placements and performances | `actors/domain`, `actors/rig` |
 | Rendering actors | `actors/render`, `actors/rig/texture` |
-| Camera effects | `studio/camera` |
+| Camera effects | `studio/camera`; shot evaluation is `SceneCamera` in `engine` |
 | Library | `library/ui`, `library/ui/catalog`, `library/data` |
 | Stamp packs | `library/ui/packs`, `library/data/PackArchiver.kt` |
 | Projects on disk | `project/data` |
@@ -99,7 +100,7 @@ flowchart LR
 
 The studio's ViewModel is `StudioViewModel`. It
 delegates focused jobs to managers, such as `DrawingManager` in `studio/domain` for strokes and
-undo, and `RiggingManager` in `actors/domain` for actor editing.
+undo, and `RiggingManager` in `studio/domain/actorstudio` for actor editing.
 
 ## Drawing a stroke
 

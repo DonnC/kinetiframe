@@ -11,19 +11,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.ui.rigging.ActorArtworkControls
-import com.donnclab.kinetiframe.actors.ui.rigging.ActorArtworkMenu
-import com.donnclab.kinetiframe.actors.ui.rigging.PartActionsRow
-import com.donnclab.kinetiframe.actors.ui.rigging.PartPickerSheet
 import com.donnclab.kinetiframe.actors.ui.rigging.PartRail
 import com.donnclab.kinetiframe.actors.ui.sketch.ActorDrawingModeButton
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchArtworkControls
-import com.donnclab.kinetiframe.actors.ui.sketch.ActorSketchJointControls
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.actorDefinition
+import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.ActorArtworkControls
+import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.ActorArtworkMenu
+import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.PartActionsRow
+import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.PartPickerSheet
+import com.donnclab.kinetiframe.studio.ui.actorstudio.sketch.ActorSketchArtworkControls
+import com.donnclab.kinetiframe.studio.ui.actorstudio.sketch.ActorSketchJointControls
 
 /** Actor Studio's canvas controls: the part rail and the selected part's artwork actions. */
 @Composable

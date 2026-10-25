@@ -7,14 +7,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.donnclab.kinetiframe.actors.ui.ActorArtworkAttachmentFlow
-import com.donnclab.kinetiframe.actors.ui.ActorArtworkEditor
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.StudioViewModel
 import com.donnclab.kinetiframe.studio.actorDefinition
+import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorArtworkAttachmentFlow
+import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorArtworkEditor
 import kotlinx.coroutines.CancellationException
 
 /** Actor Studio's artwork flows: attaching, replacing and editing a part's artwork, and the sketch editor. */

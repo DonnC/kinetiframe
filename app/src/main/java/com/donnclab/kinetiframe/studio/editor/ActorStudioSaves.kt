@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.studio.editor
 
-import com.donnclab.kinetiframe.actors.ui.hasActorStudioChanges
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioViewModel
 import com.donnclab.kinetiframe.studio.activeActor
 import com.donnclab.kinetiframe.studio.actorDefinition
 import com.donnclab.kinetiframe.studio.actorPreviewDuration
+import com.donnclab.kinetiframe.studio.ui.actorstudio.hasActorStudioChanges
 import kotlinx.coroutines.CancellationException
 
 /**

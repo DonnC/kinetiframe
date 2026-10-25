@@ -4,6 +4,7 @@ import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.core.document.camera.CameraEasing
 import com.donnclab.kinetiframe.core.document.camera.CameraPose
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.engine.camera.SceneCamera
 import kotlinx.serialization.Serializable
 import kotlin.math.roundToInt
 

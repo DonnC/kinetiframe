@@ -11,7 +11,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.donnclab.kinetiframe.actors.ui.ActorReferenceControls
+import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorReferenceControls
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
@@ -56,7 +56,7 @@ class FrameReferenceControlsTest {
     }
 
     @Test fun referencePaletteTogglesVisibilityAndProportionsWithoutTextRows() {
-        val session = com.donnclab.kinetiframe.actors.ui.ActorReferenceSession()
+        val session = com.donnclab.kinetiframe.studio.ui.actorstudio.ActorReferenceSession()
         session.replace(Bitmap.createBitmap(20, 20, Bitmap.Config.ARGB_8888), 100, 100)
         session.editing = false
         compose.setContent { MaterialTheme { ActorReferenceControls(session, 100, 100) } }

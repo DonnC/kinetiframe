@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.studio
 
-import com.donnclab.kinetiframe.actors.domain.ActorStudioManager
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
@@ -14,6 +13,7 @@ import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
 import com.donnclab.kinetiframe.core.actor.presets.RootMotionChannel
 import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorStudioManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import com.donnclab.kinetiframe.core.actor.presets.RootMotionPoint as PresetRootPoint

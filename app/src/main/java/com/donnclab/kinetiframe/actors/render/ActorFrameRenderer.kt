@@ -14,14 +14,13 @@ import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.StoreResult
-import com.donnclab.kinetiframe.studio.render.ProjectFrameCompositor
-import com.donnclab.kinetiframe.studio.render.SharedResourceCache
+import com.donnclab.kinetiframe.engine.render.SharedResourceCache
 import java.io.File
 
 /**
  * Resolves and draws actor placements onto a plain [android.graphics.Canvas]. The same math and
  * asset-loading rules serve three callers that must never drift apart: the live editor canvas, project video export
- * ([ProjectFrameCompositor]), and gallery thumbnail generation. This class knows nothing about
+ * (the project frame compositor), and gallery thumbnail generation. This class knows nothing about
  * Compose -- it is deliberately callable from a headless export coroutine with no composition in
  * progress.
  */

@@ -1,10 +1,8 @@
 package com.donnclab.kinetiframe.studio
 
-import com.donnclab.kinetiframe.actors.domain.ActorStudioManager
 import com.donnclab.kinetiframe.actors.rig.math.ActorDrawingBinder
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.ui.actorStudioInitialState
 import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawing
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingBinding
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingComposition
@@ -18,6 +16,8 @@ import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorStudioManager
+import com.donnclab.kinetiframe.studio.ui.actorstudio.actorStudioInitialState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test

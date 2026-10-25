@@ -18,7 +18,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.actors.data.ActorPresetRepository
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.actors.ui.ActorReferenceSession
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
@@ -33,6 +32,7 @@ import com.donnclab.kinetiframe.studio.editor.EditorFolders
 import com.donnclab.kinetiframe.studio.editor.EditorHost
 import com.donnclab.kinetiframe.studio.editor.EditorWorkspace
 import com.donnclab.kinetiframe.studio.editor.rememberEditorRepositories
+import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorReferenceSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

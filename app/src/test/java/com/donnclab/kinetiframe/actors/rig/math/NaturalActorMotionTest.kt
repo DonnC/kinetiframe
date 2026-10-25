@@ -8,7 +8,6 @@ import com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.ui.actorStudioInitialState
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.ActorRevision
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
@@ -22,6 +21,7 @@ import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.engine.rigging.math.CompiledMotionCurve
 import com.donnclab.kinetiframe.studio.actorDefinition
+import com.donnclab.kinetiframe.studio.ui.actorstudio.actorStudioInitialState
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -221,8 +221,11 @@ class NaturalActorMotionTest {
 
     @Test fun `root drag pin release and undo persist motion without changing the rest graph`() {
         var state = actorStudioInitialState(manifest, revision, performanceAuthoring = true)
-        val manager = com.donnclab.kinetiframe.actors.domain.ActorStudioManager({ state }, { state = it(state) })
-        val motion = com.donnclab.kinetiframe.actors.domain.ActorMotionManager(
+        val manager = com.donnclab.kinetiframe.studio.domain.actorstudio.ActorStudioManager({ state }, {
+            state =
+                it(state)
+        })
+        val motion = com.donnclab.kinetiframe.studio.domain.actorstudio.ActorMotionManager(
             kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined),
             { state },
             { state = it(state) },

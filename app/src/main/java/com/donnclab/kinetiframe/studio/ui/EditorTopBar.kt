@@ -53,7 +53,6 @@ import com.composables.icons.lucide.Redo
 import com.composables.icons.lucide.Save
 import com.composables.icons.lucide.Spline
 import com.composables.icons.lucide.Undo
-import com.donnclab.kinetiframe.actors.ui.rigging.StudioModePill
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
@@ -61,6 +60,7 @@ import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.actorDefinition
+import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.StudioModePill
 
 @Composable
 fun EditorTopBar(
@@ -75,7 +75,7 @@ fun EditorTopBar(
      *  entry point, however its data got here; adding/editing an actor performance from FxF goes
      *  through the Actor Studio destination instead (see MainActivity's onCreatePerformance /
      *  onEditPerformance navigation). Also gates the [StudioModePill] shown at the leading edge of
-     *  this bar, the same phase switch [com.donnclab.kinetiframe.actors.ui.rigging.PuppetTopBar] shows
+     *  this bar, the same phase switch [com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.PuppetTopBar] shows
      *  while sketching is paused for rigging or posing. */
     isActorStudio: Boolean = false,
     showOverflowMenu: Boolean,

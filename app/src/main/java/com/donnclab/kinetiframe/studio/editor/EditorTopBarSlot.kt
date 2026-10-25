@@ -2,7 +2,6 @@
 package com.donnclab.kinetiframe.studio.editor
 
 import androidx.compose.runtime.Composable
-import com.donnclab.kinetiframe.actors.ui.rigging.PuppetTopBar
 import com.donnclab.kinetiframe.settings.LocalAppPreferences
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioMode
@@ -10,6 +9,7 @@ import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.activeActor
 import com.donnclab.kinetiframe.studio.actorPreviewDuration
 import com.donnclab.kinetiframe.studio.ui.EditorTopBar
+import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.PuppetTopBar
 
 /** The rigging and posing bar in Actor Studio's puppet modes, and the drawing bar everywhere else. */
 @Composable
