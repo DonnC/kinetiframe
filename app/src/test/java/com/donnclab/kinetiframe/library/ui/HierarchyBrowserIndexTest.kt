@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.library.ui
 
-import com.donnclab.kinetiframe.library.data.AssetOrganization
-import com.donnclab.kinetiframe.library.data.BrowseMode
-import com.donnclab.kinetiframe.library.data.BrowserPosition
-import com.donnclab.kinetiframe.library.data.LibraryOrganization
+import com.donnclab.kinetiframe.library.model.AssetOrganization
+import com.donnclab.kinetiframe.library.model.BrowseMode
+import com.donnclab.kinetiframe.library.model.BrowserPosition
+import com.donnclab.kinetiframe.library.model.LibraryOrganization
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

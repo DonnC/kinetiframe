@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.library.model.PackFrameTag
@@ -32,11 +31,11 @@ fun PackItemDialog(initial: PackFrameTag, creating: Boolean, onDismiss: () -> Un
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 CompactTextField(name, {
-                    name = it.take(com.donnclab.kinetiframe.library.data.PackItemEntry.MAX_NAME_LENGTH)
+                    name = it.take(com.donnclab.kinetiframe.library.model.PackItemEntry.MAX_NAME_LENGTH)
                 }, label = { Text("Name") }, singleLine = true)
                 CompactTextField(description, {
                     description =
-                        it.take(com.donnclab.kinetiframe.library.data.PackItemEntry.MAX_DESCRIPTION_LENGTH)
+                        it.take(com.donnclab.kinetiframe.library.model.PackItemEntry.MAX_DESCRIPTION_LENGTH)
                 }, label = { Text("Description (optional)") }, singleLine = true)
             }
         },

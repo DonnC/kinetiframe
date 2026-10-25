@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.library.data.PackItemEntry
+import com.donnclab.kinetiframe.library.model.PackItemEntry
 import java.io.File
 
 /**

@@ -1,46 +1,12 @@
 package com.donnclab.kinetiframe.library.data
 
 import com.donnclab.kinetiframe.data.storage.DurableFile
-import kotlinx.serialization.Serializable
+import com.donnclab.kinetiframe.library.model.AssetOrganization
+import com.donnclab.kinetiframe.library.model.BrowserPosition
+import com.donnclab.kinetiframe.library.model.LibraryOrganization
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
-
-@Serializable enum class AssetCategory(val label: String) {
-    CHARACTERS("Characters"),
-    EXPRESSIONS("Expressions"),
-    GESTURES("Gestures"),
-    SCENES("Scenes"),
-    PROPS("Props"),
-    AUDIO("Audio"),
-    COLOURS("Colours"),
-}
-
-@Serializable enum class BrowseMode(val label: String) {
-    RECENT("Recent"),
-    FAVOURITES("Favourites"),
-    COLLECTIONS("Collections"),
-    ALL("All"),
-}
-
-@Serializable data class AssetOrganization(
-    val collection: String = "General Essentials",
-    val category: AssetCategory? = null,
-    val favourite: Boolean = false,
-    val lastUsedEpochMs: Long = 0,
-    val displayName: String? = null,
-)
-
-@Serializable data class BrowserPosition(
-    val mode: BrowseMode = BrowseMode.RECENT,
-    val collection: String? = null,
-    val category: AssetCategory? = null,
-)
-
-@Serializable data class LibraryOrganization(
-    val items: Map<String, AssetOrganization> = emptyMap(),
-    val browsers: Map<String, BrowserPosition> = emptyMap(),
-)
 
 /** Private local organisation. Collections are labels, never file owners or exported metadata.
  * Read-modify-write under a shared lock prevents independent browser instances losing updates.

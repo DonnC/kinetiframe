@@ -40,8 +40,8 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
-import com.donnclab.kinetiframe.library.data.PackArtworkRegistration
-import com.donnclab.kinetiframe.library.data.PackItemEntry
+import com.donnclab.kinetiframe.library.model.PackArtworkRegistration
+import com.donnclab.kinetiframe.library.model.PackItemEntry
 import com.donnclab.kinetiframe.library.ui.LibraryPickerDialog
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers

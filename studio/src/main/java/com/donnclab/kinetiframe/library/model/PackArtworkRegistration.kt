@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.library.data
+package com.donnclab.kinetiframe.library.model
 
 import com.donnclab.kinetiframe.core.actor.artwork.ArtworkAlignment
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding

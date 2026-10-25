@@ -50,7 +50,7 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.designsystem.theme.LibraryAccent
-import com.donnclab.kinetiframe.library.data.PackItemEntry
+import com.donnclab.kinetiframe.library.model.PackItemEntry
 import com.donnclab.kinetiframe.library.ui.HierarchyBrowserIntent
 import com.donnclab.kinetiframe.library.ui.HierarchyBrowserState
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabCallbacks

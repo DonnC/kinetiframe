@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.library.data
+package com.donnclab.kinetiframe.library.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
  * One stamp-ready drawing inside a [PackManifest], matching the `.kpack`
  * spec key-for-key (snake_case `file`/`index`/`name`/`desc`) so the internal `payload/meta.json`
  * this app writes and the external, WhatsApp/Telegram-shareable `.kpack` file
- * ([PackArchiver]) are byte-for-byte the same JSON -- no translation step needed at the
+ * (`PackArchiver`) are byte-for-byte the same JSON -- no translation step needed at the
  * export/import boundary, mirroring how `.kframe` is just a zip of the working directory as-is.
  */
 @Serializable
