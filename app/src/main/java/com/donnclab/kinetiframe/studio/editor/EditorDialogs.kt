@@ -57,7 +57,6 @@ internal fun EditorDialogs(
     }
     if (panels.showLibraryPicker) {
         LibraryPickerDialog(
-            library = repositories.library,
             allowedKinds = EditorLibraryKinds,
             projectId = state.project.id,
             onDismiss = { panels.showLibraryPicker = false },

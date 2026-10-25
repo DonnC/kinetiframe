@@ -41,6 +41,9 @@ class PacksTabViewModel(
     fun packItemFile(itemId: String, fileName: String): java.io.File =
         libraryRepository.packItemFile(itemId, fileName, scope, projectId)
 
+    /** The image a pack's card shows, or null. Call from a background thread. */
+    fun previewImage(pack: LibraryItemManifest): java.io.File? = libraryRepository.previewImage(pack)
+
     private var reloadJob: kotlinx.coroutines.Job? = null
     private val mutations = kotlinx.coroutines.sync.Mutex()
     private var browseRevision = 0L

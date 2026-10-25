@@ -139,6 +139,23 @@ class LibraryRepository(
         manifest
     }.fold(::value, ::failure)
 
+    /**
+     * The image a card shows for [item]: a background or frame's own file, or a pack's first
+     * drawing. Null for kinds without an image, or when the file can't be read.
+     */
+    fun previewImage(item: LibraryItemManifest): File? = runCatching {
+        when (item.kind) {
+            LibraryItemKind.PACK ->
+                (loadPack(item.libraryItemId, item.scope, item.sourceProjectId) as? StoreResult.Value)
+                    ?.value?.second?.items?.firstOrNull()
+                    ?.let { packItemFile(item.libraryItemId, it.file, item.scope, item.sourceProjectId) }
+
+            LibraryItemKind.BACKGROUND_IMAGE, LibraryItemKind.FRAME -> (assetFile(item) as? StoreResult.Value)?.value
+
+            else -> null
+        }
+    }.getOrNull()
+
     /** Read-only preview access. The validated manifest supplies a contained payload path. */
     fun assetFile(item: LibraryItemManifest): StoreResult<File> = runCatching {
         item.validate()
