@@ -104,7 +104,6 @@ fun ActorArtworkPicker(
     val selectedPack = pack
     if (selectedPack == null) {
         LibraryPickerDialog(
-            library,
             allowedKinds = setOf(LibraryItemKind.FRAME, LibraryItemKind.PACK),
             dismissOnOpenPack = false,
             onDismiss = onDismiss,

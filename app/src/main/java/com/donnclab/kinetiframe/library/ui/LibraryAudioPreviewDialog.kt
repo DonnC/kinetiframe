@@ -11,44 +11,25 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
-import com.donnclab.kinetiframe.core.contracts.StoreResult
-import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.presentation.media.audio.AudioPreview
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 /** Inspect the actual sound before inserting it. Preview does not copy or mutate the asset. */
 @Composable
-fun LibraryAudioPreviewDialog(
-    item: LibraryItemManifest,
-    library: LibraryRepository,
-    onDismiss: () -> Unit,
-    onInsert: () -> Unit,
-) {
-    var path by remember(item) { mutableStateOf<String?>(null) }
-    var error by remember(item) { mutableStateOf<String?>(null) }
-    LaunchedEffect(item) {
-        when (val result = withContext(Dispatchers.IO) { library.assetFile(item) }) {
-            is StoreResult.Value -> path = result.value.absolutePath
-            is StoreResult.Failure -> error = result.message
-        }
-    }
+fun LibraryAudioPreviewDialog(preview: AudioItemPreview, onDismiss: () -> Unit, onInsert: () -> Unit) {
+    val item = preview.item
+    val path = preview.path
+    val error = preview.error
     Dialog(onDismissRequest = onDismiss) {
         Surface(shape = MaterialTheme.shapes.large) {
             Column(Modifier.fillMaxWidth().padding(16.dp)) {
                 Text(item.displayName, style = MaterialTheme.typography.titleMedium)
-                val audioPath = path
-                if (audioPath != null) {
-                    AudioPreview(audioPath)
+                if (path != null) {
+                    AudioPreview(path)
                 } else if (error == null) {
                     LinearProgressIndicator(Modifier.fillMaxWidth())
                 }

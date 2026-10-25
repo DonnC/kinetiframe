@@ -187,7 +187,6 @@ class MainActivity : ComponentActivity() {
                                     entry<ProjectGalleryKey> {
                                         // Home is one tabbed dashboard for projects, packs and actors.
                                         HomeRoute(
-                                            container.library,
                                             refreshToken = homeRefreshToken,
                                             onOpenProject = { projectId -> backStack.add(EditorKey(projectId)) },
                                             onOpenPackCreator = { itemId ->

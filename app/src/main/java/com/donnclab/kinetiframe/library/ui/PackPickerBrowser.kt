@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
-import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.ui.packs.PackBrowserControls
 import com.donnclab.kinetiframe.library.ui.packs.PackBrowserIndex
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabEffect
@@ -30,12 +29,7 @@ import com.donnclab.kinetiframe.ui.appViewModel
 
 /** Shared Home policy, remembered collection/category, and item-name search while inserting. */
 @Composable
-internal fun PackPickerBrowser(
-    library: LibraryRepository,
-    scope: LibraryScope,
-    projectId: String?,
-    onOpen: (LibraryItemManifest) -> Unit,
-) {
+internal fun PackPickerBrowser(scope: LibraryScope, projectId: String?, onOpen: (LibraryItemManifest) -> Unit) {
     val model: PacksTabViewModel = appViewModel(key = "pack-picker-$scope-$projectId") {
         set(PacksTabViewModel.ScopeKey, scope)
         projectId?.let { set(PacksTabViewModel.ProjectIdKey, it) }
@@ -79,7 +73,7 @@ internal fun PackPickerBrowser(
                             model.handleIntent(PacksTabIntent.Used(pack))
                             onOpen(pack)
                         },
-                        localLibrary = library,
+                        loadThumbnail = model::previewImage,
                     )
                 }
             }

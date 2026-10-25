@@ -34,7 +34,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,6 +43,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.lucide.Clapperboard
 import com.composables.icons.lucide.Drama
 import com.composables.icons.lucide.Folder
@@ -54,10 +54,10 @@ import com.composables.icons.lucide.Square
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
-import com.donnclab.kinetiframe.core.contracts.StoreResult
-import com.donnclab.kinetiframe.library.data.LibraryRepository
+import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 
 /**
  * The shared "add from Library" surface, opened from the unified Add menu
@@ -86,7 +86,6 @@ import kotlinx.coroutines.withContext
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryPickerDialog(
-    library: LibraryRepository,
     allowedKinds: Set<LibraryItemKind>? = null,
     projectId: String? = null,
     dismissOnOpenPack: Boolean = true,
@@ -94,32 +93,24 @@ fun LibraryPickerDialog(
     onOpenPack: (LibraryItemManifest) -> Unit = {},
     onPick: (LibraryItemManifest) -> Unit,
 ) {
-    var scope by remember { mutableStateOf(LibraryScope.PERSONAL) }
-    var kindFilter by remember { mutableStateOf<LibraryItemKind?>(null) }
-    var items by remember { mutableStateOf<List<LibraryItemManifest>>(emptyList()) }
-    var loading by remember { mutableStateOf(true) }
-    var error by remember { mutableStateOf<String?>(null) }
-    var previewItem by remember { mutableStateOf<LibraryItemManifest?>(null) }
-    LaunchedEffect(scope) {
-        loading = true
-        error = null
-        when (val result = withContext(Dispatchers.IO) { library.list(scope, projectId) }) {
-            is StoreResult.Value -> items = result.value
-            is StoreResult.Failure -> error = result.message
-        }
-        loading = false
+    val model: LibraryPickerViewModel = appViewModel(key = "library-picker-$projectId") {
+        projectId?.let { set(LibraryPickerViewModel.ProjectIdKey, it) }
     }
+    val state by model.state.collectAsStateWithLifecycle()
+    LaunchedEffect(model) { model.handleIntent(LibraryPickerIntent.Open) }
+    val scope = state.scope
+    val kindFilter = state.kindFilter
 
-    val visibleItems = remember(items, kindFilter, allowedKinds) {
-        items.filter {
+    val visibleItems = remember(state.items, kindFilter, allowedKinds) {
+        state.items.filter {
             it.kind != LibraryItemKind.PALETTE && (allowedKinds == null || it.kind in allowedKinds) &&
                 (kindFilter == null || it.kind == kindFilter)
         }
     }
-    val filterableKinds = remember(items, allowedKinds) {
+    val filterableKinds = remember(state.items, allowedKinds) {
         (allowedKinds ?: LibraryItemKind.entries.toSet()).filter { kind ->
             kind != LibraryItemKind.PALETTE &&
-                items.any { it.kind == kind }
+                state.items.any { it.kind == kind }
         }
     }
 
@@ -136,18 +127,12 @@ fun LibraryPickerDialog(
                     SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
                         SegmentedButton(
                             selected = scope == LibraryScope.PERSONAL,
-                            onClick = {
-                                scope = LibraryScope.PERSONAL
-                                kindFilter = null
-                            },
+                            onClick = { model.handleIntent(LibraryPickerIntent.SelectScope(LibraryScope.PERSONAL)) },
                             shape = SegmentedButtonDefaults.itemShape(0, 2),
                         ) { Text("Personal") }
                         SegmentedButton(
                             selected = scope == LibraryScope.PROJECT,
-                            onClick = {
-                                scope = LibraryScope.PROJECT
-                                kindFilter = null
-                            },
+                            onClick = { model.handleIntent(LibraryPickerIntent.SelectScope(LibraryScope.PROJECT)) },
                             shape = SegmentedButtonDefaults.itemShape(1, 2),
                         ) { Text("This Project") }
                     }
@@ -157,12 +142,12 @@ fun LibraryPickerDialog(
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         item {
                             FilterChip(selected = kindFilter == null, onClick = {
-                                kindFilter = null
+                                model.handleIntent(LibraryPickerIntent.Filter(null))
                             }, label = { Text("All") })
                         }
                         items(filterableKinds) { kind ->
                             FilterChip(selected = kindFilter == kind, onClick = {
-                                kindFilter = kind
+                                model.handleIntent(LibraryPickerIntent.Filter(kind))
                             }, label = { Text(kindLabel(kind)) })
                         }
                     }
@@ -171,14 +156,14 @@ fun LibraryPickerDialog(
                 Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                     when {
                         kindFilter == LibraryItemKind.PACK ->
-                            PackPickerBrowser(library, scope, projectId, { pack ->
+                            PackPickerBrowser(scope, projectId, { pack ->
                                 openPackFromPicker(dismissOnOpenPack, onDismiss) { onOpenPack(pack) }
                             })
 
-                        loading -> CircularProgressIndicator()
+                        state.loading -> CircularProgressIndicator()
 
-                        error != null -> Text(
-                            error.orEmpty(),
+                        state.error != null -> Text(
+                            state.error.orEmpty(),
                             color = MaterialTheme.colorScheme.error,
                             modifier = Modifier.padding(24.dp),
                         )
@@ -198,7 +183,7 @@ fun LibraryPickerDialog(
                             items(visibleItems, key = { it.libraryItemId }) { libraryItem ->
                                 LibraryItemCard(
                                     libraryItem,
-                                    localLibrary = library,
+                                    loadThumbnail = model::previewImage,
                                     onClick = {
                                         if (libraryItem.kind == LibraryItemKind.PACK) {
                                             openPackFromPicker(dismissOnOpenPack, onDismiss) { onOpenPack(libraryItem) }
@@ -207,7 +192,7 @@ fun LibraryPickerDialog(
                                         }
                                     },
                                     onPreview = if (libraryItem.kind == LibraryItemKind.AUDIO) {
-                                        ({ previewItem = libraryItem })
+                                        ({ model.handleIntent(LibraryPickerIntent.Preview(libraryItem)) })
                                     } else {
                                         null
                                     },
@@ -222,44 +207,24 @@ fun LibraryPickerDialog(
         }
     }
 
-    previewItem?.let { item ->
-        LibraryAudioPreviewDialog(item, library, { previewItem = null }, {
-            previewItem = null
-            onPick(item)
+    state.preview?.let { preview ->
+        LibraryAudioPreviewDialog(preview, { model.handleIntent(LibraryPickerIntent.ClosePreview) }, {
+            model.handleIntent(LibraryPickerIntent.ClosePreview)
+            onPick(preview.item)
         })
     }
 }
 
+/** [loadThumbnail] finds the card's image off the main thread; without it the card has none. */
 @Composable
 internal fun LibraryItemCard(
     item: LibraryItemManifest,
     onClick: () -> Unit,
     onPreview: (() -> Unit)? = null,
-    localLibrary: LibraryRepository? = null,
+    loadThumbnail: ((LibraryItemManifest) -> File?)? = null,
 ) {
-    val thumbnail by produceState<java.io.File?>(null, item, localLibrary) {
-        value =
-            if (localLibrary != null &&
-                item.kind in setOf(LibraryItemKind.BACKGROUND_IMAGE, LibraryItemKind.FRAME, LibraryItemKind.PACK)
-            ) {
-                withContext(Dispatchers.IO) {
-                    if (item.kind == LibraryItemKind.PACK) {
-                        (
-                            localLibrary.loadPack(
-                                item.libraryItemId,
-                                item.scope,
-                                item.sourceProjectId,
-                            ) as? StoreResult.Value
-                            )?.value?.second?.items?.firstOrNull()?.let {
-                            localLibrary.packItemFile(item.libraryItemId, it.file, item.scope, item.sourceProjectId)
-                        }
-                    } else {
-                        (localLibrary.assetFile(item) as? StoreResult.Value)?.value
-                    }
-                }
-            } else {
-                null
-            }
+    val thumbnail by produceState<File?>(null, item, loadThumbnail) {
+        value = loadThumbnail?.let { load -> withContext(Dispatchers.IO) { load(item) } }
     }
     Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(10.dp)) {

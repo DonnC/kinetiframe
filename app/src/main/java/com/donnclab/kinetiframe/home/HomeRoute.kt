@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
-import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.ui.LibraryPickerDialog
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabEffect
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabIntent
@@ -37,12 +36,11 @@ import java.io.File
 
 /**
  * The app's Home destination: one tabbed dashboard (Projects / Packs / Actors, see [HomeScreen]).
- * This route owns the project and pack import, export and share plumbing.
+ * Sharing, importing and the bundled content go through [HomeActionsViewModel]; this route turns
+ * its effects into share sheets and messages.
  */
 @Composable
 fun HomeRoute(
-    /** Lists library projects in the import picker, which gets its own ViewModel with the library screens. */
-    libraryRepository: LibraryRepository,
     refreshToken: Int = 0,
     onOpenProject: (String) -> Unit,
     onOpenPackCreator: (String?) -> Unit = {},
@@ -188,7 +186,6 @@ fun HomeRoute(
 
     if (showLibraryImportPicker) {
         LibraryPickerDialog(
-            library = libraryRepository,
             allowedKinds = setOf(LibraryItemKind.PROJECT),
             onDismiss = { showLibraryImportPicker = false },
             onPick = { item ->

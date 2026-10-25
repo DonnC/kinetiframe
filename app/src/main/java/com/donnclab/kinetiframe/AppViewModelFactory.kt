@@ -7,6 +7,7 @@ import com.donnclab.kinetiframe.actors.data.ActorReferenceIndex
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.home.HomeActionsViewModel
 import com.donnclab.kinetiframe.library.ui.HierarchyBrowserViewModel
+import com.donnclab.kinetiframe.library.ui.LibraryPickerViewModel
 import com.donnclab.kinetiframe.library.ui.LibraryViewModel
 import com.donnclab.kinetiframe.library.ui.LocalLibraryCatalog
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabViewModel
@@ -59,6 +60,7 @@ fun appViewModelFactory(container: AppContainer): ViewModelProvider.Factory = vi
             container.bundledContent,
         )
     }
+    initializer { LibraryPickerViewModel(container.library, this[LibraryPickerViewModel.ProjectIdKey]) }
     initializer { PaletteViewModel(container.palettes) }
     initializer {
         val arguments = checkNotNull(this[StudioViewModel.ArgumentsKey]) { "The editor needs its arguments" }
