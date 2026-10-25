@@ -28,7 +28,7 @@ import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 import com.donnclab.kinetiframe.core.document.VideoFit
 import com.donnclab.kinetiframe.core.document.VoiceEffect
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
-import com.donnclab.kinetiframe.library.ui.packs.PackFrameTag
+import com.donnclab.kinetiframe.library.model.PackFrameTag
 import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorPlacementManager
 import com.donnclab.kinetiframe.studio.drawing.ConstructionShape
 import com.donnclab.kinetiframe.studio.drawing.FontRegistry

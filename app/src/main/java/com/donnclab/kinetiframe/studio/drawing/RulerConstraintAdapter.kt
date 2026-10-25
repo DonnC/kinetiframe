@@ -1,9 +1,7 @@
-package com.donnclab.kinetiframe.studio.ui.canvas
+package com.donnclab.kinetiframe.studio.drawing
 
 import com.donnclab.kinetiframe.studio.RulerGuide
 import com.donnclab.kinetiframe.studio.RulerMode
-import com.donnclab.kinetiframe.studio.drawing.RulerConstraintMode
-import com.donnclab.kinetiframe.studio.drawing.RulerConstraintSpec
 
 /** Single UI-to-engine boundary for persistent ruler geometry. */
 internal fun RulerGuide.toConstraintSpec(): RulerConstraintSpec = RulerConstraintSpec(

@@ -19,7 +19,7 @@ import java.util.UUID
 
 /**
  * Owns the project's single persistent background image: set once, rendered behind every layer on
- * every frame by [com.donnclab.kinetiframe.studio.ui.canvas.CanvasDrawingLayer] -- never duplicated
+ * every frame by the canvas drawing layer -- never duplicated
  * per-frame and never trimmed to a frame range, unlike an Actor placement. Two other models were
  * considered:
  *  - `LayerType.BACKGROUND` -- a raster layer type that would need per-frame content like any

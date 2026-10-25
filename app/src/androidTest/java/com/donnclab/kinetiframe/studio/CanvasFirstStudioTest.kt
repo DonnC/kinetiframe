@@ -25,7 +25,7 @@ import androidx.compose.ui.test.top
 import androidx.compose.ui.test.width
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.library.ui.packs.PackFrameTag
+import com.donnclab.kinetiframe.library.model.PackFrameTag
 import com.donnclab.kinetiframe.library.ui.packs.PackSaveTagsDialog
 import com.donnclab.kinetiframe.studio.ui.EditorTopBar
 import com.donnclab.kinetiframe.studio.ui.timeline.FrameCard

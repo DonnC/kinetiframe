@@ -2,8 +2,8 @@
 package com.donnclab.kinetiframe.studio.editor
 
 import androidx.compose.runtime.Composable
+import com.donnclab.kinetiframe.library.model.PackFrameTag
 import com.donnclab.kinetiframe.library.ui.packs.PackCreatorConfig
-import com.donnclab.kinetiframe.library.ui.packs.PackFrameTag
 import com.donnclab.kinetiframe.library.ui.packs.PackItemDialog
 import com.donnclab.kinetiframe.library.ui.packs.PackSaveTagsDialog
 import com.donnclab.kinetiframe.studio.StudioIntent

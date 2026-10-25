@@ -7,7 +7,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
-import com.donnclab.kinetiframe.library.ui.packs.PackFrameTag
+import com.donnclab.kinetiframe.library.model.PackFrameTag
 import com.donnclab.kinetiframe.library.ui.packs.PackItemDialog
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

@@ -50,7 +50,9 @@ internal class StudioSession(
     val cacheManager = FrameCacheManager(directories.cache, store.scope).apply {
         restoreExposures(store.state.layers.linkedCels, store.state.animation.totalFrames)
     }
-    val frameReferences = com.donnclab.kinetiframe.studio.reference.FrameReferenceSession()
+
+    /** Per-frame UI resources, such as reference images, that must follow frame inserts and deletes. */
+    var frameStructureListener: com.donnclab.kinetiframe.studio.reference.FrameStructureListener? = null
 
     /** Supplied by Actor Studio when reopening a revision with persisted artwork. */
     val rigAssetManager = runtimeRigAssetManager ?: RigAssetManager()
@@ -148,13 +150,13 @@ internal class StudioSession(
         commitFrameStructure = { inserted, deleted, change ->
             withContext(Dispatchers.Main.immediate) {
                 sceneEffects.clear()
-                inserted?.let { frameReferences.insert(it) }
-                deleted.forEach { frameReferences.delete(it) }
+                inserted?.let { frameStructureListener?.insert(it) }
+                deleted.forEach { frameStructureListener?.delete(it) }
                 store.update { before ->
                     val next =
                         change(
                             before.copy(
-                                packTags = com.donnclab.kinetiframe.library.ui.packs.reindexPackTags(
+                                packTags = com.donnclab.kinetiframe.library.model.reindexPackTags(
                                     before.packTags,
                                     inserted,
                                     deleted,
@@ -421,7 +423,7 @@ internal class StudioSession(
 
     /** Frees bitmaps, players and decoders. Called once, when the studio closes. */
     fun release() {
-        frameReferences.clear()
+        frameStructureListener?.clear()
         projectAssetManager.clear()
         engine.stop()
         audioPlaybackManager.release()

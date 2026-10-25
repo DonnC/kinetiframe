@@ -49,9 +49,9 @@ class StudioViewModelTest {
 
     @Test
     fun `pack tags commit with insertions and deletions`() = runTest {
-        val head = com.donnclab.kinetiframe.library.ui.packs.PackFrameTag("Head")
-        val hand = com.donnclab.kinetiframe.library.ui.packs.PackFrameTag("Hand")
-        val eye = com.donnclab.kinetiframe.library.ui.packs.PackFrameTag("Eye")
+        val head = com.donnclab.kinetiframe.library.model.PackFrameTag("Head")
+        val hand = com.donnclab.kinetiframe.library.model.PackFrameTag("Hand")
+        val eye = com.donnclab.kinetiframe.library.model.PackFrameTag("Eye")
         viewModel.handleIntent(StudioIntent.PackItem.SetTag(0, head))
         viewModel.handleIntent(StudioIntent.PackItem.Add(1, hand))
         viewModel.prepareProjectSave()

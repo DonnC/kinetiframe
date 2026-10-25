@@ -307,7 +307,7 @@ data class StudioState(
     val currentBitmap: Bitmap? = null,
     /** Transient bake receipts, published atomically with pixels; never project data. */
     val bakedStrokeSeeds: Set<Long> = emptySet(),
-    val packTags: Map<Int, com.donnclab.kinetiframe.library.ui.packs.PackFrameTag> = emptyMap(),
+    val packTags: Map<Int, com.donnclab.kinetiframe.library.model.PackFrameTag> = emptyMap(),
 ) : ViewState {
     val isCanvasTransformed: Boolean
         get() = canvas.zoom != 1f || canvas.pan != Offset.Zero || canvas.rotation != 0f

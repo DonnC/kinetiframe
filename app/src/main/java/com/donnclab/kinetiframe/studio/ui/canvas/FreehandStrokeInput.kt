@@ -8,6 +8,7 @@ import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.studio.RulerGuide
 import com.donnclab.kinetiframe.studio.RulerMode
 import com.donnclab.kinetiframe.studio.drawing.RulerStrokeConstraintSession
+import com.donnclab.kinetiframe.studio.drawing.toConstraintSpec
 
 /** The active pointer of one [MotionEvent], in screen and document coordinates. */
 internal data class CanvasPointer(
