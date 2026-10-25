@@ -38,7 +38,7 @@ import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 
 @Composable
-internal fun ActorSketchControls(
+fun ActorSketchControls(
     state: ActorSketchState,
     onIntent: (ActorSketchIntent) -> Unit,
     showBones: Boolean,

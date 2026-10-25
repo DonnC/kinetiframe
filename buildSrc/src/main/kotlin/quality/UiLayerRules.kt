@@ -10,7 +10,8 @@ package quality
  * - `uidata`: imports of a `data` package from UI code, which reaches storage only through its
  *   ViewModel.
  *
- * Both are counted per file in the app module's main code.
+ * Both are counted per file in the main code of every module, so code keeps its findings when it
+ * moves out of the app.
  */
 internal object UiLayerRules {
     const val COMPOSE = "compose"
@@ -22,7 +23,7 @@ internal object UiLayerRules {
     // Screen packages that predate the `ui` subpackage convention.
     private val SCREEN_PACKAGES = setOf("studio.editor", "home", "settings")
 
-    fun applies(module: String, path: String): Boolean = module == "app" && "/src/main/" in path
+    fun applies(path: String): Boolean = "/src/main/" in path
 
     /** The rule an import from [packageName] breaks, or null. */
     fun violation(packageName: String, import: String): String? {

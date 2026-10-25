@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":engine"))
     implementation(project(":data"))
     implementation(project(":media"))
+    implementation(project(":actors"))
     implementation(project(":presentation"))
     implementation(project(":designsystem"))
     testImplementation("org.robolectric:robolectric:4.16")

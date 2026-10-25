@@ -25,7 +25,7 @@ object ActorArtworkDecoder {
     }
 
     /** Pack drawings often occupy a tiny portion of their frame. Fit the actual art, not blank canvas. */
-    internal fun trimTransparentPadding(bitmap: Bitmap): Bitmap {
+    fun trimTransparentPadding(bitmap: Bitmap): Bitmap {
         val row = IntArray(bitmap.width)
         var left = bitmap.width
         var top = bitmap.height

@@ -92,8 +92,9 @@ class ActorPlacementPipelineTest {
                     listOf(0, 24, 47).forEach { frame ->
                         val resolved = renderer.resolveAll(listOf(prepared), target.id, frame, target.fps).single()
                         assertNull(resolved.diagnostic)
-                        assertTrue(resolved.render!!.commands.isNotEmpty())
-                        val points = resolved.render.geometry.quads.flatten()
+                        val render = resolved.render!!
+                        assertTrue(render.commands.isNotEmpty())
+                        val points = render.geometry.quads.flatten()
                         assertFalse(
                             com.donnclab.kinetiframe.actors.domain.ActorStageFraming.outside(points, target.stage),
                         )

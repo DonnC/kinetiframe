@@ -16,9 +16,8 @@ internal object FeatureLayering {
         // Preview fixtures build sample data of every kind.
         "preview" to setOf("home"),
         "project" to emptySet(),
-        "actors" to setOf("project"),
-        "library" to setOf("actors"),
-        "export" to setOf("actors"),
+        "library" to setOf("project"),
+        "export" to setOf("project"),
         "studio" to setOf("library", "export", "settings"),
         "settings" to setOf("project"),
         "home" to setOf("studio"),

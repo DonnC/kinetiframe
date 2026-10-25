@@ -13,23 +13,26 @@ Keep this page current:
 
 ## Now
 
-**Step 6: actors split, part 1, in review.** Actor Studio is a mode of the studio, so its screens
+**Step 6: actors split, part 1, done (#28).** Actor Studio is a mode of the studio, so its screens
 moved to `studio.ui.actorstudio` (with `rigging` and `sketch`) and its managers to
 `studio.domain.actorstudio`: 42 files and their tests. `SceneCamera` and `SharedResourceCache`
 moved to `engine`, so actor rendering no longer uses the studio. The `actors` package now makes
-no references to a feature above it. Part 2 extracts it as the `actors` module.
+no references to a feature above it.
+
+**Step 6, part 2, in review.** `actors` is now a module: rig, posing, performances, actor
+rendering, storage and the actor library screens, with 59 of its tests. 17 tests stay in `app`
+because they read bundled assets from disk or need Robolectric. The compose and uidata checks now
+run in every module, so code keeps its findings when it leaves `app`.
 
 ## Next
 
 The remaining steps of the feature modules decision, in order:
 
-1. **Actors module.** Extract the actor domain (rig, posing, rendering, storage) and the actor
-   library screens as the `actors` module.
-2. **Export module.** `ProjectExporter` renders frames through `studio.render`,
+1. **Export module.** `ProjectExporter` renders frames through `studio.render`,
    `studio.drawing` and `actors.render`, so `export` becomes a module once the frame compositor and
    actor rendering sit below it (see Discoveries).
-3. **Library, then studio.** Extract each module once it only references modules below it.
-4. **Home and settings.** Extract them and move navigation into `app`, so `app` holds only the
+2. **Library, then studio.** Extract each module once it only references modules below it.
+3. **Home and settings.** Extract them and move navigation into `app`, so `app` holds only the
    entry point and wiring.
 
 ## Later
@@ -135,6 +138,7 @@ fixed after the module work, unless one blocks testing.
 | #23 | Moved the Room database and project storage into `data` (step 4c) |
 | #24 | Moved the shared app UI into `presentation` (step 4d) |
 | #25 | Moved studio media code into `studio.media` and extracted the `media` module (step 5) |
+| #28 | Moved Actor Studio under the studio, and the scene camera and render cache into `engine` (step 6, part 1) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -175,11 +179,11 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Debt counts
 
-From `.architecture/` after step 6, part 1. Each count may only go down.
+From `.architecture/` after step 6. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| References to a feature above | 31 | 17 |
+| References to a feature above | 27 | 16 |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 144 | 46 |
 | Functions over the parameter limit | 53 | — |
