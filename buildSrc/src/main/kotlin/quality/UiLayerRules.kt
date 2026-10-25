@@ -7,8 +7,9 @@ package quality
  * - `compose`: Compose imports in product rules and storage, meaning packages with a `domain`,
  *   `data`, `render`, `rig`, `math` or `model` segment. How something is drawn must not shape
  *   the rules behind it.
- * - `uidata`: imports of a `data` package from UI code, which reaches storage only through its
- *   ViewModel.
+ * - `uidata`: imports of a `data` package from UI code. Screens reach storage only through their
+ *   ViewModel. A ViewModel may use the repositories in `media`, `actors` and `studio`, but not the
+ *   `data` module underneath them.
  *
  * Both are counted per file in the main code of every module, so code keeps its findings when it
  * moves out of the app.
@@ -25,17 +26,23 @@ internal object UiLayerRules {
 
     fun applies(path: String): Boolean = "/src/main/" in path
 
-    /** The rule an import from [packageName] breaks, or null. */
-    fun violation(packageName: String, import: String): String? {
+    /** The rule an import from [packageName] breaks, or null. [viewModel] marks a ViewModel's file. */
+    fun violation(packageName: String, import: String, viewModel: Boolean = false): String? {
         val segments = packageName.removePrefix(ROOT).split('.')
         return when {
             import.startsWith("androidx.compose.") && segments.any { it in NON_UI_SEGMENTS } -> COMPOSE
-
-            isUi(packageName, segments) && import.startsWith(ROOT) &&
-                import.removePrefix(ROOT).split('.').dropLast(1).contains("data") -> UI_DATA
-
+            isUi(packageName, segments) && reachesStorage(import, viewModel) -> UI_DATA
             else -> null
         }
+    }
+
+    /** Whether [path] is a ViewModel's file, by the `*ViewModel.kt` naming convention. */
+    fun isViewModel(path: String): Boolean = path.endsWith("ViewModel.kt")
+
+    private fun reachesStorage(import: String, viewModel: Boolean): Boolean = when {
+        !import.startsWith(ROOT) -> false
+        viewModel -> import.startsWith("${ROOT}data.")
+        else -> import.removePrefix(ROOT).split('.').dropLast(1).contains("data")
     }
 
     private fun isUi(packageName: String, segments: List<String>): Boolean =

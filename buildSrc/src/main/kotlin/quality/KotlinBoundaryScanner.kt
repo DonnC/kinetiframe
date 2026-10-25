@@ -60,7 +60,7 @@ internal object KotlinBoundaryScanner {
                     val uiLayer = sortedMapOf<String, Int>()
                     fun checkUiLayer(import: String) {
                         if (!UiLayerRules.applies(path)) return
-                        val rule = UiLayerRules.violation(pkg, import) ?: return
+                        val rule = UiLayerRules.violation(pkg, import, UiLayerRules.isViewModel(path)) ?: return
                         uiLayer[rule] = (uiLayer[rule] ?: 0) + 1
                     }
                     if (UiValueRules.applies(module, path)) {

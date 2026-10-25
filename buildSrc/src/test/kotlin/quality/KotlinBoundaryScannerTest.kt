@@ -55,12 +55,12 @@ class KotlinBoundaryScannerTest {
     }
 
     @Test fun `library modules cannot reference app feature packages`() {
-        fixture("engine", "Bad.kt", "import com.donnclab.kinetiframe.studio.StudioState")
-        fixture("core", "Bad.kt", "val x = com.donnclab.kinetiframe.actors.data.ActorRepository()")
+        fixture("engine", "Bad.kt", "import com.donnclab.kinetiframe.studio.ui.StudioScreen")
+        fixture("core", "Bad.kt", "val x = com.donnclab.kinetiframe.home.HomeRoute()")
         fixture(
             "app",
             "studio/Good.kt",
-            "package com.donnclab.kinetiframe.studio\nimport com.donnclab.kinetiframe.actors.ui.Card",
+            "package com.donnclab.kinetiframe.studio\nimport com.donnclab.kinetiframe.library.ui.Card",
         )
         val findings = KotlinBoundaryScanner.scan(root, listOf("engine", "core", "app"))
         assertEquals(2, findings.size)

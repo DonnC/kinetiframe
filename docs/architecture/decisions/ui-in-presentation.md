@@ -28,7 +28,9 @@ grouped by feature: `presentation.home`, `presentation.studio`, `presentation.ac
 Changing the UI means working in one module.
 
 `presentation` doesn't import `data`. A screen reaches storage through its ViewModel, and the
-ViewModel through the logic modules.
+ViewModel through the logic modules. A ViewModel may use a logic module's repositories, such as
+`ActorRepository` in `actors.data`, but not the `data` module's Room tables, file stores or
+project storage underneath them. Screens, routes and components import no `data` package at all.
 
 ### Logic modules hold no screens
 

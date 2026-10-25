@@ -11,13 +11,10 @@ class FeatureLayeringTest {
     @TempDir lateinit var root: File
 
     @Test fun `a feature may use the features below it but not above`() {
-        assertNull(FeatureLayering.violation("studio", "com.donnclab.kinetiframe.actors.render.ActorFrameRenderer"))
-        assertNull(FeatureLayering.violation("actors", "com.donnclab.kinetiframe.project.model.Layer"))
-        assertEquals("studio", FeatureLayering.violation("actors", "com.donnclab.kinetiframe.studio.StudioState"))
-        assertEquals(
-            "actors",
-            FeatureLayering.violation("project", "com.donnclab.kinetiframe.actors.data.ActorFileStore"),
-        )
+        assertNull(FeatureLayering.violation("studio", "com.donnclab.kinetiframe.library.ui.LibraryRoute"))
+        assertNull(FeatureLayering.violation("library", "com.donnclab.kinetiframe.project.ui.ProjectCard"))
+        assertEquals("studio", FeatureLayering.violation("library", "com.donnclab.kinetiframe.studio.StudioState"))
+        assertEquals("home", FeatureLayering.violation("project", "com.donnclab.kinetiframe.home.HomeRoute"))
     }
 
     @Test fun `the root package, resources and other libraries are not features`() {
@@ -28,19 +25,19 @@ class FeatureLayeringTest {
 
     @Test fun `upward references are counted per file and target in app main code only`() {
         val source = """
-            package com.donnclab.kinetiframe.actors.ui
+            package com.donnclab.kinetiframe.library.ui
             import com.donnclab.kinetiframe.studio.StudioState
-            import com.donnclab.kinetiframe.project.model.Layer
+            import com.donnclab.kinetiframe.project.ui.ProjectCard
             fun mode() = com.donnclab.kinetiframe.studio.StudioMode.RIG_SETUP
         """.trimIndent()
         fixture("main", source)
         fixture("test", source)
         val findings = KotlinBoundaryScanner.scan(root, listOf("app")).filterKeys { it.startsWith("layering|") }
-        assertEquals(mapOf("layering|app/src/main/kotlin/Actor.kt|studio" to 2), findings)
+        assertEquals(mapOf("layering|app/src/main/kotlin/Library.kt|studio" to 2), findings)
     }
 
     private fun fixture(sourceSet: String, source: String) {
-        val file = File(root, "app/src/$sourceSet/kotlin/Actor.kt")
+        val file = File(root, "app/src/$sourceSet/kotlin/Library.kt")
         file.parentFile.mkdirs()
         file.writeText(source)
     }
