@@ -15,33 +15,20 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.navigation.BottomNavDestination
+import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.launch
 
 /** Wires [LibraryViewModel] to [LibraryScreen]. */
 @Composable
 fun LibraryRoute(
+    files: com.donnclab.kinetiframe.data.storage.DocumentFileStore,
+    repository: com.donnclab.kinetiframe.library.data.LibraryRepository,
     onNavigate: (BottomNavDestination) -> Unit,
     onOpenDocument: (LibraryOpenTarget) -> Unit = {},
     onEditPack: (com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest) -> Unit = {},
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
-    val files =
-        remember(context) {
-            com.donnclab.kinetiframe.data.storage.DocumentFileStore(java.io.File(context.filesDir, "actor-studio"))
-        }
-    val repository = remember(files) {
-        com.donnclab.kinetiframe.library.data.LibraryRepository(
-            files,
-            dao = com.donnclab.kinetiframe.data.db.AppDatabase.getInstance(context).libraryItemDao(),
-        )
-    }
-    val viewModel: LibraryViewModel = viewModel(
-        factory = object : androidx.lifecycle.ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T =
-                LibraryViewModel(LocalLibraryCatalog(files, repository)) as T
-        },
-    )
+    val viewModel: LibraryViewModel = appViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()

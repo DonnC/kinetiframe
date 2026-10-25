@@ -1,6 +1,7 @@
 package com.donnclab.kinetiframe.library.ui.packs
 
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
@@ -26,6 +27,14 @@ class PacksTabViewModel(
     private val projectId: String? = null,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<PacksTabState, PacksTabIntent, PacksTabEffect>(PacksTabState()) {
+    companion object {
+        /** The library scope to list, read by the app's ViewModel factory. Personal when absent. */
+        val ScopeKey = object : CreationExtras.Key<LibraryScope> {}
+
+        /** The project whose library to list, for project scope. */
+        val ProjectIdKey = object : CreationExtras.Key<String> {}
+    }
+
     private val organizationStore = libraryRepository.organizationStore()
     private var reloadJob: kotlinx.coroutines.Job? = null
     private val mutations = kotlinx.coroutines.sync.Mutex()

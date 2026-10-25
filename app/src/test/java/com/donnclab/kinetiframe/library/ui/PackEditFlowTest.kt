@@ -1,8 +1,11 @@
 package com.donnclab.kinetiframe.library.ui
 
+import com.donnclab.kinetiframe.actors.data.ActorRepository
+import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.contracts.StoreResult
+import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackItemEntry
@@ -68,7 +71,17 @@ class PackEditFlowTest {
         val files = DocumentFileStore(root)
         val repository = LibraryRepository(files)
         val original = save(repository, "Faces", "Happy")
-        val model = LibraryViewModel(LocalLibraryCatalog(files, repository), ioDispatcher = dispatcher)
+        val model =
+            LibraryViewModel(
+                LocalLibraryCatalog(
+                    files,
+                    repository,
+                    ProjectRepository(files),
+                    ActorRepository(files),
+                    PerformanceRepository(files),
+                ),
+                ioDispatcher = dispatcher,
+            )
         model.handleIntent(LibraryIntent.Reload)
         val loaded = model.state.first { !it.loading }
         model.handleIntent(LibraryIntent.OpenPackContents(loaded.packs.single()))

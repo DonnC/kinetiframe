@@ -1,6 +1,7 @@
 package com.donnclab.kinetiframe.presentation.actors
 
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.domain.PerformanceAuthoring
@@ -37,6 +38,11 @@ class ActorStudioDocumentViewModel(
 ) : BaseViewModel<ActorStudioDocumentState, ActorStudioDocumentIntent, ActorStudioDocumentEffect>(
     ActorStudioDocumentState(),
 ) {
+    companion object {
+        /** The actor, project and performance to edit, read by the app's ViewModel factory. */
+        val TargetKey = object : CreationExtras.Key<ActorStudioTarget> {}
+    }
+
     private val actorId = target.actorId
     private val projectId = target.projectId
     private val performanceId = target.performanceId

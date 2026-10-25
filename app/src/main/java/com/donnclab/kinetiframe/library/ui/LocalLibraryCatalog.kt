@@ -31,8 +31,16 @@ import com.donnclab.kinetiframe.presentation.common.StampAsset
 import java.io.File
 
 /** IO-only projection. Working projects/actors and captured reusable items are separate stores.
- * Scope-qualified IDs prevent collisions between project vaults; no bitmap decoding here. */
-class LocalLibraryCatalog(private val files: DocumentFileStore, private val library: LibraryRepository) {
+ * Scope-qualified IDs prevent collisions between project vaults; no bitmap decoding here.
+ * [actorRepository] and [performanceRepository] scan their files rather than the Room index, so
+ * the library shows what is on disk. */
+class LocalLibraryCatalog(
+    private val files: DocumentFileStore,
+    private val library: LibraryRepository,
+    private val projectRepository: ProjectRepository,
+    private val actorRepository: ActorRepository,
+    private val performanceRepository: PerformanceRepository,
+) {
     data class Snapshot(
         val projects: List<AssetSummary>,
         val actors: List<AssetSummary>,
@@ -51,7 +59,7 @@ class LocalLibraryCatalog(private val files: DocumentFileStore, private val libr
         val audio = mutableListOf<AudioTrackSummary>()
         val items = linkedMapOf<String, LibraryItemManifest>()
         val packItemNames = mutableMapOf<String, List<String>>()
-        val savedProjects = value(ProjectRepository(files).list())
+        val savedProjects = value(projectRepository.list())
         savedProjects.forEach { project ->
             projects += card(
                 "project:${project.projectId}",
@@ -60,7 +68,7 @@ class LocalLibraryCatalog(private val files: DocumentFileStore, private val libr
                 "${project.fps} FPS · ${project.stage.width}×${project.stage.height}",
                 project.thumbnailPath,
             )
-            value(PerformanceRepository(files).list(project.projectId)).forEach { performance ->
+            value(performanceRepository.list(project.projectId)).forEach { performance ->
                 actors += card(
                     "performance:${project.projectId}:${performance.performanceId}",
                     performance.displayName,
@@ -69,7 +77,7 @@ class LocalLibraryCatalog(private val files: DocumentFileStore, private val libr
                 )
             }
         }
-        value(ActorRepository(files).listWithThumbnails()).forEach { (actor, thumbnail) ->
+        value(actorRepository.listWithThumbnails()).forEach { (actor, thumbnail) ->
             actors +=
                 card("actor:${actor.actorId}", actor.displayName, AssetKind.ACTOR_RIG, actor.templateId, thumbnail)
         }

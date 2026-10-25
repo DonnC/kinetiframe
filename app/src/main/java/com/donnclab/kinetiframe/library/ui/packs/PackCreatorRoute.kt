@@ -32,7 +32,6 @@ import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.project.ProjectSaveDocument
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.data.LibraryRepository
-import com.donnclab.kinetiframe.library.data.PackArchiver
 import com.donnclab.kinetiframe.library.data.PackItemEntry
 import com.donnclab.kinetiframe.library.data.PackManifest
 import com.donnclab.kinetiframe.library.model.PackFrameTag
@@ -76,7 +75,9 @@ import java.util.UUID
  */
 @Composable
 fun PackCreatorRoute(
-    storageRoot: File,
+    files: DocumentFileStore,
+    projectRepository: ProjectRepository,
+    libraryRepository: LibraryRepository,
     onExit: () -> Unit,
     editingItemId: String? = null,
     editingScope: LibraryScope = LibraryScope.PERSONAL,
@@ -84,14 +85,6 @@ fun PackCreatorRoute(
     onHome: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
-    val files = remember(storageRoot) { DocumentFileStore(storageRoot) }
-    val projectRepository = remember(files) { ProjectRepository(files) }
-    val libraryRepository = remember(files, context) {
-        LibraryRepository(
-            files,
-            dao = com.donnclab.kinetiframe.data.db.AppDatabase.getInstance(context).libraryItemDao(),
-        )
-    }
     val scope = rememberCoroutineScope()
     val snackbar = remember { SnackbarHostState() }
 

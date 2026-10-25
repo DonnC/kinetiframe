@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.LinearProgressIndicator
@@ -34,12 +33,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.core.contracts.StoreResult
-import com.donnclab.kinetiframe.data.db.AppDatabase
 import com.donnclab.kinetiframe.data.project.ProjectRepository
-import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.export.data.ExportPresets
 import com.donnclab.kinetiframe.export.data.ProjectExporter
 import kotlinx.coroutines.Dispatchers
@@ -63,22 +58,16 @@ private sealed interface ExportPhase {
  */
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun ExportRoute(storageRoot: File, projectId: String, onExit: () -> Unit) {
+fun ExportRoute(
+    projects: ProjectRepository,
+    newExporter: () -> ProjectExporter,
+    projectId: String,
+    onExit: () -> Unit,
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackbar = remember { SnackbarHostState() }
-    val actorStore = remember(storageRoot) { DocumentFileStore(storageRoot) }
-    val appDatabase = remember(context) { AppDatabase.getInstance(context) }
-    val exporter = remember(storageRoot, appDatabase) {
-        ProjectExporter(
-            context = context.applicationContext,
-            actorStore = actorStore,
-            actorRepository = ActorRepository(actorStore, dao = appDatabase.actorDao()),
-            performanceRepository = PerformanceRepository(actorStore, dao = appDatabase.performanceDao()),
-            projectRepository = ProjectRepository(actorStore),
-            exportDao = appDatabase.exportDao(),
-        )
-    }
+    val exporter = remember { newExporter() }
     var progress by remember { mutableStateOf(0f) }
     var phase by remember { mutableStateOf<ExportPhase>(ExportPhase.ChoosingPreset) }
     var displayName by remember { mutableStateOf(projectId) }
@@ -87,7 +76,7 @@ fun ExportRoute(storageRoot: File, projectId: String, onExit: () -> Unit) {
     LaunchedEffect(projectId) {
         val manifest = when (
             val loaded = withContext(Dispatchers.IO) {
-                ProjectRepository(actorStore).load(projectId)
+                projects.load(projectId)
             }
         ) {
             is StoreResult.Value -> loaded.value.first

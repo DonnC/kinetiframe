@@ -13,8 +13,12 @@ Keep this page current:
 
 ## Now
 
-Step 8 continues with the studio screens. Every Android module is now linted by `verify`, each
-against its own `lint-baseline.xml`.
+**Step 8c: one place for the app's services, in review.** `AppContainer` in `app` creates the
+database, the document store, every repository and the preference store once, and
+`AppViewModelFactory` builds the ViewModels from it. Screens get their ViewModel with
+`appViewModel()` instead of building stores, and routes receive the shared stores instead of a
+storage folder. The [dependency wiring](architecture/decisions/dependency-wiring.md) decision
+explains the approach and when to revisit Hilt.
 
 ## Next
 
@@ -36,7 +40,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
   check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
-  code, and the 128 places where UI code imports a `data` package. Screens should reach storage
+  code, and the 114 places where UI code imports a `data` package. Screens should reach storage
   through their ViewModel, as in strict MVI.
 - **Parameter limits.** 53 functions still take more than the allowed number of parameters.
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
@@ -77,6 +81,9 @@ fixed after the module work, unless one blocks testing.
 **Editor**
 
 - The asset menu cuts off "Actor perfor…" and "Import audio …".
+- In the brush panel, the brush name ("Pen") is white text on the white preview card.
+- The export screen has no back button, and its hint uses "--" for a dash.
+- In portrait, Actor Studio's hint banner runs into the gold asset button.
 - The asset tracks panel covers the whole stage and says only "No clips yet".
 - "Save before leaving?" appears even right after saving with nothing changed. In that dialog,
   Discard looks like the safe buttons although it throws work away.
@@ -153,6 +160,9 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   `ProjectFrameCompositor`, `FrameCacheManager` and `FontRegistry`, and the actor renderer. The
   compositor belongs below both `studio` and `export`, which is why export moves after the actors
   split instead of with media.
+- **Unused imports go unnoticed.** ktlint 1.x no longer has its unused-imports rule, and nothing
+  else in `verify` reports them. Moves leave unused imports behind, which also inflate the uidata
+  count. Add a check, for example detekt's `UnusedImports`, or the compiler's warning as an error.
 - **The UI rules read package names.** `uidata` counts UI code by its `ui` segment, and `compose`
   counts domain code by its `domain` segment. A move that leaves those segments hides debt, so
   moved screens go under a `ui` package and managers under `domain`.
@@ -165,20 +175,22 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   `buildSrc/build` open and break local builds of the checker. CI on Linux is the reliable check.
 - **Lint version checks.** Lint's "newer version available" checks are disabled, because their
   findings change with every upstream release. Dependabot reports updates instead.
-- **Editor repositories.** `EditorRepositories` creates the editor's stores inside a composable.
-  They should be created in `app` and passed in, which the home-and-settings step allows.
+- **Editor repositories.** `EditorRepositories` and the voice effect dialog still reach the
+  container through the `Context` (`rememberEditorRepositories`), and Home, the library, export
+  and pack creation still use stores directly for importing, sharing and archiving. Each goes
+  through its ViewModel when its screen moves to `presentation`.
 - **Library build defaults.** Library modules relied on default SDK levels until the convention
   plugins set them (#17).
 
 ## Debt counts
 
-From `.architecture/` after step 8b. Each count may only go down.
+From `.architecture/` after step 8c. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
 | References to a feature above | 24 | 15 |
 | Compose imports outside UI code | 38 | 25 |
-| UI imports of `data` packages | 128 | 44 |
+| UI imports of `data` packages | 114 | 44 |
 | Functions over the parameter limit | 53 | — |
 | Inline text values | 298 | 95 |
 | Inline colours | 64 | 24 |

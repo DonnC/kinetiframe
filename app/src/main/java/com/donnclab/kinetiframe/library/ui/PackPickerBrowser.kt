@@ -16,10 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.library.data.LibraryRepository
@@ -29,6 +26,7 @@ import com.donnclab.kinetiframe.library.ui.packs.PacksTabEffect
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabIntent
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabViewModel
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
+import com.donnclab.kinetiframe.ui.appViewModel
 
 /** Shared Home policy, remembered collection/category, and item-name search while inserting. */
 @Composable
@@ -38,15 +36,10 @@ internal fun PackPickerBrowser(
     projectId: String?,
     onOpen: (LibraryItemManifest) -> Unit,
 ) {
-    val model: PacksTabViewModel =
-        viewModel(
-            key = "pack-picker-$scope-$projectId",
-            factory = object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                    PacksTabViewModel(library, scope, projectId) as T
-            },
-        )
+    val model: PacksTabViewModel = appViewModel(key = "pack-picker-$scope-$projectId") {
+        set(PacksTabViewModel.ScopeKey, scope)
+        projectId?.let { set(PacksTabViewModel.ProjectIdKey, it) }
+    }
     val state by model.state.collectAsStateWithLifecycle()
     var query by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf("") }
     var actionError by remember { mutableStateOf<String?>(null) }

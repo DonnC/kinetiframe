@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.donnclab.kinetiframe.core.contracts.StoreResult
-import com.donnclab.kinetiframe.data.db.AppDatabase
 import com.donnclab.kinetiframe.data.db.ProjectEntity
 import com.donnclab.kinetiframe.data.project.ProjectFrameDraft
 import com.donnclab.kinetiframe.data.project.ProjectManifest
@@ -113,7 +112,7 @@ internal class ProjectSaveWriter(
     }
 
     private suspend fun indexProject(manifest: ProjectManifest, thumbnailPath: String?) {
-        AppDatabase.getInstance(context).projectDao().upsert(
+        repositories.projectIndex.upsert(
             ProjectEntity(
                 projectId = manifest.projectId,
                 title = manifest.displayName,

@@ -1,8 +1,11 @@
 package com.donnclab.kinetiframe.library.bundled
 
+import com.donnclab.kinetiframe.actors.data.ActorRepository
+import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.contracts.StoreResult
+import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.ui.LocalLibraryCatalog
@@ -36,7 +39,15 @@ class BundledDemoLibraryInstallerTest {
             value(library.copyAssetTo(item.libraryItemId, destination))
             assertTrue(destination.length() > 1000)
         }
-        val catalog = LocalLibraryCatalog(DocumentFileStore(root), LibraryRepository(DocumentFileStore(root))).load()
+        val catalog = DocumentFileStore(root).let { store ->
+            LocalLibraryCatalog(
+                store,
+                LibraryRepository(store),
+                ProjectRepository(store),
+                ActorRepository(store),
+                PerformanceRepository(store),
+            ).load()
+        }
         assertEquals(12, catalog.projects.count { it.details.kind == AssetKind.BACKGROUND_IMAGE })
         assertEquals(4, catalog.audio.size)
         assertEquals(3, catalog.audio.count { it.tagLabel == "SFX" })
@@ -107,7 +118,13 @@ class BundledDemoLibraryInstallerTest {
                 ),
             )
         }
-        val loaded = LocalLibraryCatalog(files, library).load()
+        val loaded = LocalLibraryCatalog(
+            files,
+            library,
+            ProjectRepository(files),
+            ActorRepository(files),
+            PerformanceRepository(files),
+        ).load()
         assertEquals(2, loaded.projects.count { it.details.kind == AssetKind.PROJECT })
         assertEquals(3, loaded.projects.count { it.details.kind == AssetKind.FRAME })
         assertEquals(3, loaded.items.keys.distinct().size)

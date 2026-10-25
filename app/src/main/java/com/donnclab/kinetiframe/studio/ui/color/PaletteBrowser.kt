@@ -17,35 +17,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.data.BundledPalettes
-import com.donnclab.kinetiframe.library.data.PaletteRepository
-import java.io.File
+import com.donnclab.kinetiframe.ui.appViewModel
 
 /** Same palette surface in the Library and every brush/fill colour popup. */
 @Composable
 fun PaletteBrowser(color: Color, onColorChanged: (Color) -> Unit) {
-    val context = LocalContext.current
-    val repository = remember(context) { PaletteRepository(DocumentFileStore(File(context.filesDir, "actor-studio"))) }
-    val model: PaletteViewModel = viewModel(
-        key = "palette-browser",
-        factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T = PaletteViewModel(repository) as T
-        },
-    )
+    val model: PaletteViewModel = appViewModel(key = "palette-browser")
     val state by model.state.collectAsStateWithLifecycle()
     PaletteBrowserContent(state, color, model::handleIntent, onColorChanged)
 }
