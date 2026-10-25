@@ -15,6 +15,7 @@ flowchart TD
     data["data<br/><small>storage, Room database</small>"]
     media["media<br/><small>audio, video, images</small>"]
     actors["actors<br/><small>rigs, posing, performances, actor rendering</small>"]
+    studio["studio<br/><small>editor state, managers, rendering, export, library storage</small>"]
     core["core<br/><small>models, codecs, validation</small>"]
 
     app --> presentation
@@ -23,6 +24,7 @@ flowchart TD
     app --> data
     app --> media
     app --> actors
+    app --> studio
     app --> core
     presentation --> media
     presentation --> actors
@@ -34,17 +36,20 @@ flowchart TD
     media --> core
     actors --> engine
     actors --> data
+    studio --> actors
+    studio --> media
 ```
 
 | Module | Type | Responsibility |
 | --- | --- | --- |
-| [`app`](../../app/README.md) | Android app | Entry point, navigation, the studio and other screens, rendering, feature repositories, bundled assets |
+| [`app`](../../app/README.md) | Android app | Entry point, navigation, the editor and other screens still to move to `presentation`, bundled assets |
 | [`core`](../../core/README.md) | Kotlin/JVM | The project document and platform-neutral records for actors, rigs, motion and presets; JSON codecs; validation; service contracts; the MVI `StateStore` |
 | [`engine`](../../engine/README.md) | Android library | IK (FABRIK and two-bone), world transforms, skin deformation, artwork registration, pose and curve sampling, performance clocks, motion presets |
 | [`data`](../../data/README.md) | Android library | Crash-safe file writes, the document file store, the Room database, project storage and crash reports |
+| [`studio`](../../studio/README.md) | Android library | The editor's state, managers, drawing tools, frame rendering and caches, camera, playback, video export, and library storage |
 | [`actors`](../../actors/README.md) | Android library | Actor storage, rig math, posing, performances and actor rendering |
 | [`media`](../../media/README.md) | Android library | Audio decoding, mixing, recording and trimming; imported video decoding and framing; background image decoding |
-| [`presentation`](../../presentation/README.md) | Android library | `BaseViewModel` and shared MVI plumbing |
+| [`presentation`](../../presentation/README.md) | Android library | Screens and components with their ViewModels, and `BaseViewModel`; the rest of the screens are moving here from `app` |
 | [`designsystem`](../../designsystem/README.md) | Android library | Compose theme, design tokens and reusable controls |
 
 Dependencies only point downward. `./gradlew checkArchitecture` fails the build if code imports
@@ -66,24 +71,24 @@ All paths are under `app/src/main/java/com/donnclab/kinetiframe/`.
 | --- | --- |
 | Activity and navigation | `MainActivity.kt`, `navigation` |
 | Home screen | `home`, `project/ui` |
-| The studio (main editor) | `studio/EditorScreen.kt`, `studio/StudioViewModel.kt`, `studio/StudioState.kt`, `studio/StudioIntent.kt` |
+| The studio (main editor) | `studio/EditorScreen.kt` and `studio/StudioViewModel.kt` in `app`; `StudioState`, `StudioIntent` and `StudioSession` in the `studio` module |
 | Canvas input and drawing surface | `studio/ui/canvas` |
 | Editor toolbars and menus | `studio/ui/dock`, `studio/ui/timeline` |
-| Brushes and drawing tools | `studio/drawing` |
-| Frame and bitmap caches | `studio/render`, `studio/drawing` |
-| Stroke, undo, layer and selection coordination | `studio/domain` |
+| Brushes and drawing tools | `studio` module, `studio/drawing` |
+| Frame and bitmap caches | `studio` module, `studio/render` and `studio/drawing` |
+| Stroke, undo, layer and selection coordination | `studio` module, `studio/domain` |
 | Actor Studio | `studio/ui/actorstudio` (with `rigging` and `sketch`), and its managers in `studio/domain/actorstudio` |
 | Actor library screens and dialogs | `presentation` module, `presentation/actors` |
 | Actor posing, placements and performances | `actors` module, `actors/domain` and `actors/rig` |
 | Rendering actors | `actors` module, `actors/render` and `actors/rig/texture` |
-| Camera effects | `studio/camera`; shot evaluation is `SceneCamera` in `engine` |
-| Library | `library/ui`, `library/ui/catalog`, `library/data` |
-| Stamp packs | `library/ui/packs`, `library/data/PackArchiver.kt` |
-| Projects on disk | `project/data` |
+| Camera effects | `studio` module, `studio/camera`; shot evaluation is `SceneCamera` in `engine` |
+| Library | `library/ui` and `library/ui/catalog` in `app`; `library/data` and `library/bundled` in the `studio` module |
+| Stamp packs | `library/ui/packs` in `app`; `library/data/PackArchiver.kt` in the `studio` module |
+| Projects on disk | `data` module, `data/project`; `.kframe` archives in the `studio` module, `project/data` |
 | Actors and performances on disk | `actors` module, `actors/data` |
-| Video export | `export/data`, `export/ui` |
+| Video export | `export/ui` in `app`; `export/data` in the `studio` module |
 | Audio and imported video clips | `media` module, `media/audio` and `media/video`; the recorder and trimmer in `presentation/media/audio` |
-| Studio audio and video playback | `studio/media` |
+| Studio audio and video playback | `studio` module, `studio/media` |
 | Shared app UI | `presentation` module, `presentation/common` |
 
 ## How the app is structured

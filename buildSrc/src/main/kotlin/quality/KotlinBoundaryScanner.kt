@@ -206,7 +206,7 @@ internal object KotlinBoundaryScanner {
 
             "media" -> LOGIC_ONLY + listOf("com.donnclab.kinetiframe.data.", "com.donnclab.kinetiframe.engine.")
 
-            "actors" -> LOGIC_ONLY
+            "actors", "studio" -> LOGIC_ONLY
 
             "designsystem" ->
                 sdk +
@@ -237,16 +237,18 @@ internal object KotlinBoundaryScanner {
         "androidx.lifecycle.",
     )
 
-    // Feature packages of the app module. Library modules sit below app and never reference them.
+    // Screen packages still in the app module. Library modules sit below app and never reference
+    // them. The studio, library, export and project logic packages live in the studio module.
     private val APP_PACKAGES = listOf(
-        "export",
+        "export.ui",
         "home",
-        "library",
+        "library.ui",
         "navigation",
         "preview",
-        "project",
+        "project.ui",
         "settings",
-        "studio",
+        "studio.editor",
+        "studio.ui",
     ).map { "com.donnclab.kinetiframe.$it." }
 
     // Layer-named packages the app module no longer uses. `engine`, `data` and `core` are module

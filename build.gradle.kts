@@ -18,7 +18,7 @@ spotless {
 
 val architectureParser by configurations.creating
 dependencies { architectureParser("org.jetbrains.kotlin:kotlin-compiler-embeddable:${libs.versions.kotlin.get()}") }
-val auditedModules = listOf("app", "core", "engine", "data", "media", "actors", "presentation", "designsystem")
+val auditedModules = listOf("app", "core", "engine", "data", "media", "actors", "studio", "presentation", "designsystem")
 tasks.register<quality.ArchitectureCheckTask>("checkArchitecture") {
     repository.set(layout.projectDirectory)
     modules.set(auditedModules)
@@ -45,6 +45,7 @@ tasks.register("verify") {
         ":data:testDebugUnitTest",
         ":media:testDebugUnitTest",
         ":actors:testDebugUnitTest",
+        ":studio:testDebugUnitTest",
         ":presentation:testDebugUnitTest",
         ":designsystem:testDebugUnitTest",
         ":app:testDebugUnitTest",

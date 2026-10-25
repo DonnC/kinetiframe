@@ -19,15 +19,19 @@ session reports frame changes through `FrameStructureListener` instead of owning
 image session, which moved to `studio.ui.reference`. `rotateVector` and the ruler adapter moved to
 `studio.drawing`, and `PackFrameTag` and tag reindexing to `library.model`.
 
+**Step 8b: studio module, in review.** That logic is now the `studio` module, 118 files with 51
+of their tests: the studio's state, managers, drawing tools, rendering, camera and playback,
+export's and the library's storage, bundled content and the `.kframe` archiver. Motion rehearsal
+and recording take their frame clock from the ViewModel instead of calling Compose.
+
 ## Next
 
 The remaining steps, in order, following the
 [UI in presentation](architecture/decisions/ui-in-presentation.md) decision. Nine modules in all:
 no `export`, `library`, `home` or `settings` modules.
 
-1. **Studio module.** The editor's managers, rendering, drawing tools, camera, export and the
-   library's logic become the `studio` module. Their screens move to `presentation.studio` and
-   `presentation.library`.
+1. **Studio screens.** The editor's screens, `EditorScreen`, `StudioViewModel`, and the library,
+   export and project screens move to `presentation.studio`, `presentation.library` and so on.
 2. **Shell screens.** Home, settings and project creation move to `presentation`. Navigation and
    wiring stay in `app`, which then holds nothing else.
 
@@ -177,11 +181,11 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Debt counts
 
-From `.architecture/` after step 7. Each count may only go down.
+From `.architecture/` after step 8b. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| References to a feature above | 27 | 16 |
+| References to a feature above | 24 | 15 |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 128 | 44 |
 | Functions over the parameter limit | 53 | — |

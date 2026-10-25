@@ -52,6 +52,11 @@ class StudioViewModel(
         shouldInitialize,
         loadActorPresets,
         runtimeRigAssetManager,
+        awaitFrame = {
+            kotlinx.coroutines.withContext(androidx.compose.ui.platform.AndroidUiDispatcher.Main) {
+                androidx.compose.runtime.withFrameNanos { }
+            }
+        },
     )
     private val canvasIntents = StudioCanvasIntents(store, session)
     private val sceneIntents = StudioSceneIntents(store, session)
