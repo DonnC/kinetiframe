@@ -13,7 +13,7 @@ Keep this page current:
 
 ## Now
 
-**Step 6: actors split, part 1, in review.** Actor Studio is a mode of the studio, so its screens
+**Step 6: actors split, part 1, done (#28).** Actor Studio is a mode of the studio, so its screens
 moved to `studio.ui.actorstudio` (with `rigging` and `sketch`) and its managers to
 `studio.domain.actorstudio`: 42 files and their tests. `SceneCamera` and `SharedResourceCache`
 moved to `engine`, so actor rendering no longer uses the studio. The `actors` package now makes
@@ -138,6 +138,7 @@ fixed after the module work, unless one blocks testing.
 | #23 | Moved the Room database and project storage into `data` (step 4c) |
 | #24 | Moved the shared app UI into `presentation` (step 4d) |
 | #25 | Moved studio media code into `studio.media` and extracted the `media` module (step 5) |
+| #28 | Moved Actor Studio under the studio, and the scene camera and render cache into `engine` (step 6, part 1) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
