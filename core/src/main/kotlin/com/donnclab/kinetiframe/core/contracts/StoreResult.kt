@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-package com.donnclab.kinetiframe.data.storage
+package com.donnclab.kinetiframe.core.contracts
 
 /** The outcome of a store operation: its value, or a message the UI can show. */
 sealed interface StoreResult<out T> {

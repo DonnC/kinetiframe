@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.library.ui.packs
 
+import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
-import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.AssetCategory
 import com.donnclab.kinetiframe.library.data.BrowseMode
 import com.donnclab.kinetiframe.library.data.BrowserPosition

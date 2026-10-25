@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.library.bundled
 
+import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
-import com.donnclab.kinetiframe.data.storage.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArchiver
 import org.junit.jupiter.api.Assertions.assertFalse
