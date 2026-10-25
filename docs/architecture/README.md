@@ -103,10 +103,24 @@ flowchart LR
     VM --> Repo["repositories and managers"]
 ```
 
-- A *route* composable gets the ViewModel and collects its state. The screen content below it is
-  stateless and previewable.
+- A *route* composable gets the ViewModel with `appViewModel()` and collects its state. The
+  screen content below it is stateless and previewable.
 - The ViewModel is the only place state changes. It handles every intent explicitly.
 - Effects are for things that happen once, such as navigating or showing a message.
+
+### Where dependencies come from
+
+`AppContainer`, in `app`, creates every shared object once: the database, the document store
+under `actor-studio/`, the repositories and the preference store. `AppViewModelFactory` builds
+each ViewModel from it, and `MainActivity` provides that factory to the UI as
+`LocalViewModelFactory`. A route asks for its ViewModel with `appViewModel()`, passing values such
+as the document it edits as creation extras. Screens don't open the database or build stores.
+The [dependency wiring](decisions/dependency-wiring.md) decision explains why this is a
+container rather than Hilt.
+
+To add a ViewModel: give it its dependencies as constructor parameters, add one `initializer`
+block to `AppViewModelFactory`, and call `appViewModel()` from its route. If it needs a value
+per screen, declare a `CreationExtras.Key` in its companion object and set it in the route.
 
 The studio's ViewModel is `StudioViewModel`. It
 delegates focused jobs to managers, such as `DrawingManager` in `studio/domain` for strokes and
@@ -204,6 +218,7 @@ Important choices are recorded as architecture decision records:
 - [Standard parameter limits](decisions/parameter-limits.md)
 - [Feature modules](decisions/feature-modules.md)
 - [UI in presentation](decisions/ui-in-presentation.md)
+- [Dependency wiring](decisions/dependency-wiring.md)
 
 See also [module boundaries](modules.md), [code guidelines](../code-guidelines.md),
 [development setup](../development.md) and [UI contributions](../ui-contributions.md).

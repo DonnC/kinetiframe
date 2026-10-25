@@ -25,21 +25,14 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
-import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
-import com.donnclab.kinetiframe.data.db.AppDatabase
-import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.export.ui.ExportRoute
 import com.donnclab.kinetiframe.home.HomeRoute
@@ -58,7 +51,6 @@ import com.donnclab.kinetiframe.navigation.SettingsKey
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioRepositories
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioTarget
 import com.donnclab.kinetiframe.presentation.common.LocalShowMenuLabels
-import com.donnclab.kinetiframe.settings.AppPreferencesStore
 import com.donnclab.kinetiframe.settings.AppTheme
 import com.donnclab.kinetiframe.settings.LocalAppPreferences
 import com.donnclab.kinetiframe.settings.SettingsScreen
@@ -67,22 +59,17 @@ import com.donnclab.kinetiframe.settings.StudioOrientation
 import com.donnclab.kinetiframe.studio.EditorScreen
 import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorStudioScreen
 import com.donnclab.kinetiframe.studio.ui.color.ScreenColorPickerHost
-import java.io.File
+import com.donnclab.kinetiframe.ui.LocalViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val container = (application as KinetiFrameApplication).container
+        val viewModels = appViewModelFactory(container)
         setContent {
-            val settings: SettingsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
-                factory =
-                object : ViewModelProvider.Factory {
-                    @Suppress("UNCHECKED_CAST")
-                    override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                        SettingsViewModel(AppPreferencesStore(File(filesDir, "preferences.json"))) as T
-                },
-            )
+            val settings: SettingsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = viewModels)
             val settingsState by settings.state.collectAsStateWithLifecycle()
             val preferences = settingsState.preferences
             val dark = when (preferences.theme) {
@@ -92,6 +79,7 @@ class MainActivity : ComponentActivity() {
             }
             CompositionLocalProvider(
                 LocalAppPreferences provides preferences,
+                LocalViewModelFactory provides viewModels,
                 LocalShowMenuLabels provides preferences.showMenuLabels,
             ) {
                 KinetiFrameTheme(darkTheme = dark, dynamicColor = false) {
@@ -199,7 +187,8 @@ class MainActivity : ComponentActivity() {
                                     entry<ProjectGalleryKey> {
                                         // Home is one tabbed dashboard for projects, packs and actors.
                                         HomeRoute(
-                                            File(filesDir, "actor-studio"),
+                                            container.files,
+                                            container.library,
                                             refreshToken = homeRefreshToken,
                                             onOpenProject = { projectId -> backStack.add(EditorKey(projectId)) },
                                             onOpenPackCreator = { itemId ->
@@ -214,7 +203,7 @@ class MainActivity : ComponentActivity() {
                                     entry<LibraryKey> {
                                         // Top-level destinations share one bottom nav (AppBottomNavBar).
                                         // Home pops the back stack instead of stacking another copy.
-                                        LibraryRoute(onEditPack = { item ->
+                                        LibraryRoute(container.files, container.library, onEditPack = { item ->
                                             backStack.add(
                                                 PackCreatorKey(
                                                     editItemId = item.libraryItemId,
@@ -258,14 +247,17 @@ class MainActivity : ComponentActivity() {
                                     }
                                     entry<ExportKey> { key ->
                                         ExportRoute(
-                                            File(filesDir, "actor-studio"),
+                                            container.projects,
+                                            container::newProjectExporter,
                                             key.projectId,
                                             onExit = goBack,
                                         )
                                     }
                                     entry<PackCreatorKey> { key ->
                                         PackCreatorRoute(
-                                            File(filesDir, "actor-studio"),
+                                            container.files,
+                                            container.projects,
+                                            container.library,
                                             onExit = goBack,
                                             editingItemId = key.editItemId,
                                             editingScope = LibraryScope.valueOf(
@@ -299,10 +291,6 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                     entry<ActorStudioKey> { key ->
-                                        val db = AppDatabase.getInstance(
-                                            this@MainActivity,
-                                        )
-                                        val actorStore = DocumentFileStore(File(filesDir, "actor-studio"))
                                         ActorStudioScreen(
                                             target = ActorStudioTarget(
                                                 actorId = key.actorId,
@@ -311,14 +299,9 @@ class MainActivity : ComponentActivity() {
                                                 returnPlacementId = key.returnPlacementId,
                                             ),
                                             repositories = ActorStudioRepositories(
-                                                actors = ActorRepository(actorStore, dao = db.actorDao()),
-                                                performances = PerformanceRepository(
-                                                    actorStore,
-                                                    dao = db.performanceDao(),
-                                                ),
-                                                artwork = ActorArtworkStore(
-                                                    actorStore,
-                                                ),
+                                                actors = container.actors,
+                                                performances = container.performances,
+                                                artwork = container.actorArtwork,
                                             ),
                                             onExit = goBack,
                                             onPerformanceSaved = { returnedPerformance = it },

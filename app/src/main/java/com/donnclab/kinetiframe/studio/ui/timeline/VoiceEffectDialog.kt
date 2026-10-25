@@ -38,6 +38,7 @@ internal fun VoiceEffectDialog(
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val projectFiles = com.donnclab.kinetiframe.studio.editor.rememberEditorRepositories(context).actorStore
     AlertDialog(onDismissRequest = onDismiss, title = { Text("Voice style") }, text = {
         Column(Modifier.verticalScroll(rememberScrollState())) {
             VoiceEffect.entries.forEach { effect ->
@@ -75,9 +76,7 @@ internal fun VoiceEffectDialog(
                                 "Audio source missing"
                             }
                         val id = "voice-${java.util.UUID.randomUUID()}"
-                        val directory = com.donnclab.kinetiframe.data.storage.DocumentFileStore(
-                            File(context.filesDir, "actor-studio"),
-                        ).projectDirectory(project.id)
+                        val directory = projectFiles.projectDirectory(project.id)
                         val output = File(directory, "project-assets/audio/$id.wav")
                         val duration =
                             clip.sourceDurationMicros.takeIf { it > 0 }

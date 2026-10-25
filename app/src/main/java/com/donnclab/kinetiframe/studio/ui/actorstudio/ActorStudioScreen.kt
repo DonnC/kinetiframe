@@ -19,10 +19,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
@@ -37,6 +34,7 @@ import com.donnclab.kinetiframe.presentation.actors.ActorStudioRepositories
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioTarget
 import com.donnclab.kinetiframe.presentation.actors.ActorViewMenu
 import com.donnclab.kinetiframe.studio.EditorScreen
+import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -61,14 +59,9 @@ fun ActorStudioScreen(
     val artwork = repositories.artwork
     // Performance editing is a distinct document context even when the actor is the same.
     val model: ActorStudioDocumentViewModel =
-        viewModel(
-            key = "actor-studio-$actorId-${projectId ?: "setup"}-${performanceId ?: "new"}",
-            factory = object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                    ActorStudioDocumentViewModel(target, repository, performances) as T
-            },
-        )
+        appViewModel(key = "actor-studio-$actorId-${projectId ?: "setup"}-${performanceId ?: "new"}") {
+            set(ActorStudioDocumentViewModel.TargetKey, target)
+        }
     val state by model.state.collectAsStateWithLifecycle()
     val saveScope = rememberCoroutineScope()
     var writingArtwork by remember { mutableStateOf(false) }

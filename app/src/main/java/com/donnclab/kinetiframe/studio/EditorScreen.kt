@@ -13,10 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.donnclab.kinetiframe.actors.data.ActorPresetRepository
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.contracts.StoreResult
@@ -33,6 +30,7 @@ import com.donnclab.kinetiframe.studio.editor.EditorHost
 import com.donnclab.kinetiframe.studio.editor.EditorWorkspace
 import com.donnclab.kinetiframe.studio.editor.rememberEditorRepositories
 import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorReferenceSession
+import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -197,19 +195,16 @@ fun EditorScreen(
     val documentKey = remember(projectId, cacheNamespace) {
         "editor-${projectId ?: cacheNamespace ?: fallbackCacheNamespace}"
     }
-    val viewModel: StudioViewModel = viewModel(
-        key = documentKey,
-        factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T = StudioViewModel(
-                editorCacheDir,
-                loadActorPresets = ActorPresetRepository(context.assets)::load,
+    val viewModel: StudioViewModel = appViewModel(key = documentKey) {
+        set(
+            StudioViewModel.ArgumentsKey,
+            StudioViewModel.Arguments(
+                cacheDir = editorCacheDir,
+                filesDir = editorFilesDir,
                 initialEditorState = effectiveInitialState?.copy(packTags = packCreatorConfig?.tags.orEmpty()),
                 runtimeRigAssetManager = runtimeRigAssetManager,
-                filesDir = editorFilesDir,
-                diagnosticsDir = context.filesDir,
-            ) as T
-        },
-    )
+            ),
+        )
+    }
     EditorWorkspace(viewModel, host, repositories, EditorFolders(cache = editorCacheDir, files = editorFilesDir))
 }

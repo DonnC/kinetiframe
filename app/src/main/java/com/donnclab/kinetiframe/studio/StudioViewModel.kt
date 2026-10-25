@@ -1,6 +1,7 @@
 package com.donnclab.kinetiframe.studio
 
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
@@ -43,6 +44,18 @@ class StudioViewModel(
         ),
     ),
 ) {
+    /** What one editor opens, read by the app's ViewModel factory: its folders, the document it
+     *  starts from, and Actor Studio's runtime artwork when it reopens a revision. */
+    data class Arguments(
+        val cacheDir: File,
+        val filesDir: File,
+        val initialEditorState: StudioState?,
+        val runtimeRigAssetManager: RigAssetManager?,
+    )
+
+    companion object {
+        val ArgumentsKey = object : CreationExtras.Key<Arguments> {}
+    }
 
     private val store = StudioStore(viewModelScope, { currentState }, { updateState(it) }, { sendEffect(it) })
     private val session = StudioSession(

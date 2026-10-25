@@ -18,21 +18,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.donnclab.kinetiframe.actors.data.ActorBundleRepository
-import com.donnclab.kinetiframe.actors.data.ActorReferenceIndex
-import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.contracts.StoreResult
-import com.donnclab.kinetiframe.data.db.AppDatabase
 import com.donnclab.kinetiframe.data.project.ProjectManifest
-import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArchiver
@@ -47,6 +38,7 @@ import com.donnclab.kinetiframe.project.data.KframeArchiver
 import com.donnclab.kinetiframe.project.ui.ProjectManagerEffect
 import com.donnclab.kinetiframe.project.ui.ProjectManagerIntent
 import com.donnclab.kinetiframe.project.ui.ProjectManagerViewModel
+import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -59,7 +51,8 @@ import java.util.UUID
  */
 @Composable
 fun HomeRoute(
-    storageRoot: File,
+    files: DocumentFileStore,
+    libraryRepository: LibraryRepository,
     refreshToken: Int = 0,
     onOpenProject: (String) -> Unit,
     onOpenPackCreator: (String?) -> Unit = {},
@@ -69,48 +62,11 @@ fun HomeRoute(
     onOpenSettings: () -> Unit = {},
 ) {
     val context = LocalContext.current
-    val files = remember(storageRoot) { DocumentFileStore(storageRoot) }
-    val db = remember(context) { AppDatabase.getInstance(context) }
-
-    val projectModel: ProjectManagerViewModel = viewModel(
-        factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                ProjectManagerViewModel(ProjectRepository(files), db.projectDao()) as T
-        },
-    )
-    val actorModel: ActorManagerViewModel = viewModel(
-        factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val actors = ActorRepository(files, dao = db.actorDao())
-                val performances = PerformanceRepository(files, dao = db.performanceDao())
-                return ActorManagerViewModel(
-                    actors,
-                    ActorReferenceIndex(files),
-                    ActorBundleRepository(files, actors, performances, libraryDao = db.libraryItemDao()),
-                ) as T
-            }
-        },
-    )
-    val libraryRepository = remember(files, context) { LibraryRepository(files, dao = db.libraryItemDao()) }
-    val hierarchyModel: com.donnclab.kinetiframe.library.ui.HierarchyBrowserViewModel =
-        viewModel(
-            factory = object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                    com.donnclab.kinetiframe.library.ui.HierarchyBrowserViewModel(
-                        libraryRepository.organizationStore(),
-                    ) as T
-            },
-        )
+    val projectModel: ProjectManagerViewModel = appViewModel()
+    val actorModel: ActorManagerViewModel = appViewModel()
+    val hierarchyModel: com.donnclab.kinetiframe.library.ui.HierarchyBrowserViewModel = appViewModel()
     val hierarchyState by hierarchyModel.state.collectAsStateWithLifecycle()
-    val packModel: PacksTabViewModel = viewModel(
-        factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T = PacksTabViewModel(libraryRepository) as T
-        },
-    )
+    val packModel: PacksTabViewModel = appViewModel()
 
     val projectState by projectModel.state.collectAsStateWithLifecycle()
     val actorState by actorModel.state.collectAsStateWithLifecycle()
