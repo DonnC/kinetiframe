@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.unit.dp
 
 /** Decoder for our bundled single-path 64px icons, not a general external SVG importer. */
-internal object PresetVectorIcon {
+object PresetVectorIcon {
     fun decode(source: String): ImageVector {
         require(source.length <= 8192 && source.contains("viewBox=\"0 0 64 64\""))
         val data = requireNotNull(Regex("<path d=\"([^\"]+)\"").find(source)?.groupValues?.get(1))

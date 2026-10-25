@@ -24,7 +24,7 @@ import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 
 /** Choose a named part, then lasso its artwork. Reset is local to that part and undoable. */
 @Composable
-internal fun ActorSketchBindingMenu(state: ActorSketchState, graph: SceneGraph, onIntent: (ActorSketchIntent) -> Unit) {
+fun ActorSketchBindingMenu(state: ActorSketchState, graph: SceneGraph, onIntent: (ActorSketchIntent) -> Unit) {
     var open by remember { mutableStateOf(false) }
     Box {
         IconButton({ open = true }, enabled = !state.busy) {

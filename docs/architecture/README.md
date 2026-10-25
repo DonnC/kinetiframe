@@ -14,6 +14,7 @@ flowchart TD
     engine["engine<br/><small>rigging, IK, skinning, motion</small>"]
     data["data<br/><small>storage, Room database</small>"]
     media["media<br/><small>audio, video, images</small>"]
+    actors["actors<br/><small>rigs, posing, performances, actor rendering</small>"]
     core["core<br/><small>models, codecs, validation</small>"]
 
     app --> presentation
@@ -21,6 +22,7 @@ flowchart TD
     app --> engine
     app --> data
     app --> media
+    app --> actors
     app --> core
     presentation --> designsystem
     presentation --> engine
@@ -30,6 +32,10 @@ flowchart TD
     media --> presentation
     media --> designsystem
     media --> core
+    actors --> engine
+    actors --> data
+    actors --> presentation
+    actors --> designsystem
 ```
 
 | Module | Type | Responsibility |
@@ -38,6 +44,7 @@ flowchart TD
 | [`core`](../../core/README.md) | Kotlin/JVM | The project document and platform-neutral records for actors, rigs, motion and presets; JSON codecs; validation; service contracts; the MVI `StateStore` |
 | [`engine`](../../engine/README.md) | Android library | IK (FABRIK and two-bone), world transforms, skin deformation, artwork registration, pose and curve sampling, performance clocks, motion presets |
 | [`data`](../../data/README.md) | Android library | Crash-safe file writes, the document file store, the Room database, project storage and crash reports |
+| [`actors`](../../actors/README.md) | Android library | Actor storage, rig math, posing, performances, actor rendering and the actor library screens |
 | [`media`](../../media/README.md) | Android library | Audio decoding, mixing, recording and trimming; imported video decoding and framing; background image decoding |
 | [`presentation`](../../presentation/README.md) | Android library | `BaseViewModel` and shared MVI plumbing |
 | [`designsystem`](../../designsystem/README.md) | Android library | Compose theme, design tokens and reusable controls |
@@ -68,14 +75,14 @@ All paths are under `app/src/main/java/com/donnclab/kinetiframe/`.
 | Frame and bitmap caches | `studio/render`, `studio/drawing` |
 | Stroke, undo, layer and selection coordination | `studio/domain` |
 | Actor Studio | `studio/ui/actorstudio` (with `rigging` and `sketch`), and its managers in `studio/domain/actorstudio` |
-| Actor library screens and dialogs | `actors/ui` |
-| Actor posing, placements and performances | `actors/domain`, `actors/rig` |
-| Rendering actors | `actors/render`, `actors/rig/texture` |
+| Actor library screens and dialogs | `actors` module, `actors/ui` |
+| Actor posing, placements and performances | `actors` module, `actors/domain` and `actors/rig` |
+| Rendering actors | `actors` module, `actors/render` and `actors/rig/texture` |
 | Camera effects | `studio/camera`; shot evaluation is `SceneCamera` in `engine` |
 | Library | `library/ui`, `library/ui/catalog`, `library/data` |
 | Stamp packs | `library/ui/packs`, `library/data/PackArchiver.kt` |
 | Projects on disk | `project/data` |
-| Actors and performances on disk | `actors/data` |
+| Actors and performances on disk | `actors` module, `actors/data` |
 | Video export | `export/data`, `export/ui` |
 | Audio and imported video clips | `media` module, `media/audio` and `media/video` |
 | Studio audio and video playback | `studio/media` |

@@ -23,7 +23,7 @@ internal fun PresetAuthoredView.product(): ActorView = when (this) {
     PresetAuthoredView.BACK -> ActorView.BACK
 }
 
-internal fun ActorMotionPreset.document(): PresetRecipeDocument = PresetRecipeDocument(
+fun ActorMotionPreset.document(): PresetRecipeDocument = PresetRecipeDocument(
     PresetRecipe(
         PresetRecipeMetadata(schemaVersion, id, name, durationSeconds),
         PresetRecipeChannels(requiredBones, PresetRotationValidationInput(channels), rootMotion),

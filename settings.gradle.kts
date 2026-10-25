@@ -23,4 +23,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "KinetiFrame"
-include(":app", ":core", ":engine", ":data", ":media", ":presentation", ":designsystem")
+include(":app", ":core", ":engine", ":data", ":media", ":actors", ":presentation", ":designsystem")

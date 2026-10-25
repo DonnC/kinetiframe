@@ -243,7 +243,9 @@ internal fun ActorsTabContent(
             when {
                 state.loading -> LoadingBox()
 
-                state.error != null -> ActorManagerMessage(state.error, "Retry") { onIntent(ActorManagerIntent.Reload) }
+                state.error != null -> ActorManagerMessage(state.error.orEmpty(), "Retry") {
+                    onIntent(ActorManagerIntent.Reload)
+                }
 
                 state.actors.isEmpty() -> ActorManagerMessage(
                     "Create a Human actor, then draw and rig it in Actor Studio.",

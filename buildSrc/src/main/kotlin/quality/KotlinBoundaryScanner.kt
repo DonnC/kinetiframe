@@ -59,7 +59,7 @@ internal object KotlinBoundaryScanner {
                     }
                     val uiLayer = sortedMapOf<String, Int>()
                     fun checkUiLayer(import: String) {
-                        if (!UiLayerRules.applies(module, path)) return
+                        if (!UiLayerRules.applies(path)) return
                         val rule = UiLayerRules.violation(pkg, import) ?: return
                         uiLayer[rule] = (uiLayer[rule] ?: 0) + 1
                     }
@@ -223,7 +223,13 @@ internal object KotlinBoundaryScanner {
 
     // Feature packages of the app module. Library modules sit below app and never reference them.
     private val APP_PACKAGES = listOf(
-        "actors", "export", "home", "library", "navigation", "preview", "project", "settings",
+        "export",
+        "home",
+        "library",
+        "navigation",
+        "preview",
+        "project",
+        "settings",
         "studio",
     ).map { "com.donnclab.kinetiframe.$it." }
 

@@ -34,7 +34,7 @@ import kotlin.math.hypot
  * are created in the draw callback. Coordinates remain in the editable source, never posed space. */
 @OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class)
 @Composable
-internal fun ActorSketchCanvas(
+fun ActorSketchCanvas(
     state: ActorSketchState,
     graph: SceneGraph,
     bounds: FloatArray,
