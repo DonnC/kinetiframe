@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 9.3.1" type="baseline" client="gradle" dependencies="false" name="AGP (9.3.1)" variant="all" version="9.3.1">
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="            Bitmap.createBitmap(32, 32, Bitmap.Config.ARGB_8888).apply { eraseColor(Color.CYAN) }"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/donnclab/kinetiframe/presentation/actors/rigging/ArtworkAlignmentDialog.kt"
+            line="172"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withTranslation` instead?"
+        errorLine1="            val save = native.save()"
+        errorLine2="                       ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/donnclab/kinetiframe/presentation/actors/rigging/ArtworkPlacementPreview.kt"
+            line="131"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="            Bitmap.createBitmap(32, 48, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.CYAN) }"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/donnclab/kinetiframe/presentation/actors/rigging/ArtworkPlacementPreview.kt"
+            line="153"
+            column="13"/>
+    </issue>
+
+</issues>

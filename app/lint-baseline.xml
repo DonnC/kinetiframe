@@ -8,52 +8,8 @@
         errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/CanvasInputLayer.kt"
-            line="78"
+            line="77"
             column="37"/>
-    </issue>
-
-    <issue
-        id="WrongConstant"
-        message="Must be one or more of: MediaCodec.BUFFER_FLAG_SYNC_FRAME, MediaCodec.BUFFER_FLAG_KEY_FRAME, MediaCodec.BUFFER_FLAG_CODEC_CONFIG, MediaCodec.BUFFER_FLAG_END_OF_STREAM, MediaCodec.BUFFER_FLAG_PARTIAL_FRAME, MediaCodec.BUFFER_FLAG_DECODE_ONLY, but could be MediaExtractor.SAMPLE_FLAG_SYNC, MediaExtractor.SAMPLE_FLAG_ENCRYPTED, MediaExtractor.SAMPLE_FLAG_PARTIAL_FRAME"
-        errorLine1="                    info.set(0, size, extractor.sampleTime, extractor.sampleFlags)"
-        errorLine2="                                                            ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/export/data/ProjectExporter.kt"
-            line="228"
-            column="61"/>
-    </issue>
-
-    <issue
-        id="NonObservableLocale"
-        message="Reading locale in a non-observable way in a composable function"
-        errorLine1="            Text(String.format(Locale.getDefault(), &quot;%.2f s&quot;, durationMicros / 1_000_000.0))"
-        errorLine2="                               ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/PerformanceDurationMenu.kt"
-            line="29"
-            column="32"/>
-    </issue>
-
-    <issue
-        id="NonObservableLocale"
-        message="Reading locale in a non-observable way in a composable function"
-        errorLine1="                    text = { Text(String.format(Locale.getDefault(), &quot;%.1f seconds&quot;, duration / 1_000_000.0)) },"
-        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/PerformanceDurationMenu.kt"
-            line="34"
-            column="49"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of org.robolectric:robolectric than 4.16 is available: 4.17"
-        errorLine1="    testImplementation(&quot;org.robolectric:robolectric:4.16&quot;)"
-        errorLine2="                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle.kts"
-            line="59"
-            column="24"/>
     </issue>
 
     <issue
@@ -162,7 +118,7 @@
         errorLine2="                                                              ~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/home/HomeCards.kt"
-            line="68"
+            line="69"
             column="63"/>
     </issue>
 
@@ -173,7 +129,7 @@
         errorLine2="                                                                            ~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/library/ui/catalog/PreviewBadge.kt"
-            line="29"
+            line="30"
             column="77"/>
     </issue>
 
@@ -217,7 +173,7 @@
         errorLine2="                                                ~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/studio/ui/actorstudio/ActorReferenceControls.kt"
-            line="69"
+            line="70"
             column="49"/>
     </issue>
 
@@ -228,7 +184,7 @@
         errorLine2="                       ~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/CanvasDrawingUtils.kt"
-            line="174"
+            line="165"
             column="24"/>
     </issue>
 
@@ -261,7 +217,7 @@
         errorLine2="                                                               ~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/MainActivity.kt"
-            line="124"
+            line="128"
             column="64"/>
     </issue>
 
@@ -272,7 +228,7 @@
         errorLine2="                                           ~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/RulerGuideOverlay.kt"
-            line="47"
+            line="46"
             column="44"/>
     </issue>
 
@@ -283,7 +239,7 @@
         errorLine2="                                                ~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/RulerGuideOverlay.kt"
-            line="48"
+            line="47"
             column="49"/>
     </issue>
 
@@ -321,17 +277,6 @@
         message="The resource `R.drawable.placeholder` appears to be unused">
         <location
             file="src/main/res/drawable/placeholder.png"/>
-    </issue>
-
-    <issue
-        id="UsableSpace"
-        message="Consider also using `StorageManager#getAllocatableBytes` and `allocateBytes` which will consider clearable cached data"
-        errorLine1="        require(output.parentFile?.usableSpace ?: 0L > dataBytes + 16L * 1024 * 1024) {"
-        errorLine2="                                   ~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/audio/data/VoiceEffectProxy.kt"
-            line="25"
-            column="36"/>
     </issue>
 
     <issue
@@ -469,72 +414,6 @@
 
     <issue
         id="UseKtx"
-        message="Use the KTX extension function `Canvas.withSave` instead?"
-        errorLine1="            canvas.save()"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/render/ActorFrameRenderer.kt"
-            line="98"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="                        val bitmap = Bitmap.createBitmap(width, 48, Bitmap.Config.ARGB_8888)"
-        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/domain/actorstudio/ActorSampleArtwork.kt"
-            line="47"
-            column="38"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="        val result = Bitmap.createBitmap(320, 320, Bitmap.Config.ARGB_8888)"
-        errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/render/ActorThumbnailMaker.kt"
-            line="48"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="            Bitmap.createBitmap(32, 32, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.CYAN) }"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/ArtworkAlignmentDialog.kt"
-            line="166"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Canvas.withTranslation` instead?"
-        errorLine1="            val save = native.save()"
-        errorLine2="                       ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/ArtworkPlacementPreview.kt"
-            line="125"
-            column="24"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="            Bitmap.createBitmap(32, 48, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.CYAN) }"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/ui/rigging/ArtworkPlacementPreview.kt"
-            line="147"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
         message="Use the KTX extension function `String.toColorInt` instead?"
         errorLine1="            color = android.graphics.Color.parseColor(&quot;#4285F4&quot;)"
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
@@ -553,28 +432,6 @@
             file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/BufferedDrawingCanvas.kt"
             line="173"
             column="21"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `SharedPreferences.edit` instead?"
-        errorLine1="        preferences.edit().putString(&quot;recipes&quot;, json.encodeToString(recipes)).commit()"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/camera/CameraRecipeStore.kt"
-            line="23"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `SharedPreferences.edit` instead?"
-        errorLine1="        preferences.edit().putString(&quot;recipes&quot;, json.encodeToString(load().filterNot { it.name == name })).commit()"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/camera/CameraRecipeStore.kt"
-            line="26"
-            column="9"/>
     </issue>
 
     <issue
@@ -584,7 +441,7 @@
         errorLine2="    ~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/CanvasDrawingUtils.kt"
-            line="54"
+            line="55"
             column="5"/>
     </issue>
 
@@ -597,127 +454,6 @@
             file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/ConstructionShapePreviewOverlay.kt"
             line="38"
             column="13"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Bitmap.get` instead?"
-        errorLine1="        val startColor = source.getPixel(x, y)"
-        errorLine2="                         ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/FloodFill.kt"
-            line="17"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="    val bitmap: Bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)"
-        errorLine2="                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/FrameBitmapBuffer.kt"
-            line="18"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="                val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)"
-        errorLine2="                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/render/FrameCacheManager.kt"
-            line="223"
-            column="30"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Canvas.withMatrix` instead?"
-        errorLine1="        canvas.save()"
-        errorLine2="        ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/domain/HistoryItemPainter.kt"
-            line="38"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Canvas.withMatrix` instead?"
-        errorLine1="                canvas.save()"
-        errorLine2="                ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/domain/HistoryItemPainter.kt"
-            line="49"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="        val output = Bitmap.createBitmap("
-        errorLine2="                     ^">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/rig/texture/JointProcessor.kt"
-            line="16"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="        val next = Bitmap.createBitmap(nr - nl, nb - nt, Bitmap.Config.ARGB_8888)"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/ManipulationStrokeSession.kt"
-            line="85"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also { patch = it }"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/ManipulationTools.kt"
-            line="54"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Canvas.withMatrix` instead?"
-        errorLine1="        canvas.save()"
-        errorLine2="        ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/MultilineTextRenderer.kt"
-            line="24"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toColorInt` instead?"
-        errorLine1="            color = Color.parseColor(&quot;#00E5FF&quot;)"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/MultilineTextRenderer.kt"
-            line="99"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toColorInt` instead?"
-        errorLine1="            color = Color.parseColor(&quot;#00E5FF&quot;)"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/drawing/MultilineTextRenderer.kt"
-            line="99"
-            column="21"/>
     </issue>
 
     <issue
@@ -738,52 +474,8 @@
         errorLine2="            ~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/PivotPlacementOverlay.kt"
-            line="99"
+            line="98"
             column="13"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="                    Bitmap.createBitmap("
-        errorLine2="                    ^">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/export/data/ProjectExporter.kt"
-            line="171"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Canvas.withSave` instead?"
-        errorLine1="                    canvas.save()"
-        errorLine2="                    ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/render/ProjectFrameCompositor.kt"
-            line="139"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Bitmap.get` instead?"
-        errorLine1="                        android.graphics.Color.alpha(bitmap.getPixel(x, y)) > 24"
-        errorLine2="                                                     ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/render/PuppetArtworkHitTester.kt"
-            line="58"
-            column="54"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Bitmap.get` instead?"
-        errorLine1="            return android.graphics.Color.alpha(bitmap.getPixel(sx, sy)) > 24"
-        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/render/PuppetArtworkHitTester.kt"
-            line="86"
-            column="49"/>
     </issue>
 
     <issue
@@ -804,7 +496,7 @@
         errorLine2="            ~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/studio/ui/canvas/RulerGuideOverlay.kt"
-            line="120"
+            line="119"
             column="13"/>
     </issue>
 
@@ -822,56 +514,12 @@
     <issue
         id="UseKtx"
         message="Use the KTX extension function `Canvas.withMatrix` instead?"
-        errorLine1="        canvas.save()"
-        errorLine2="        ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/video/SceneVideoRenderer.kt"
-            line="30"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="        val masked = Bitmap.createBitmap(right - left, bottom - top, Bitmap.Config.ARGB_8888)"
-        errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/domain/SelectionRaster.kt"
-            line="23"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Canvas.withTranslation` instead?"
-        errorLine1="        canvas.save()"
-        errorLine2="        ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/studio/domain/SelectionRaster.kt"
-            line="25"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Canvas.withMatrix` instead?"
         errorLine1="            nativeCanvas.save()"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/donnclab/kinetiframe/studio/ui/actorstudio/rigging/SkeletalRenderLayer.kt"
             line="51"
             column="13"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="        val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)"
-        errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/actors/rig/texture/TextureExtractor.kt"
-            line="82"
-            column="22"/>
     </issue>
 
     <issue
@@ -903,7 +551,7 @@
         errorLine2="                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
-            line="59"
+            line="50"
             column="24"/>
     </issue>
 

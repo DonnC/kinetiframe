@@ -37,7 +37,7 @@ tasks.register<quality.ArchitectureCheckTask>("reportArchitectureDebt") {
 // Device tests (connectedDebugAndroidTest) still need an emulator or phone and run separately.
 tasks.register("verify") {
     group = "verification"
-    description = "Runs formatting, the architecture check, host tests and lint."
+    description = "Runs formatting, the architecture check, host tests and lint for every module."
     dependsOn(
         "spotlessCheck",
         "checkArchitecture",
@@ -50,6 +50,13 @@ tasks.register("verify") {
         ":presentation:testDebugUnitTest",
         ":designsystem:testDebugUnitTest",
         ":app:testDebugUnitTest",
+        ":engine:lintDebug",
+        ":data:lintDebug",
+        ":media:lintDebug",
+        ":actors:lintDebug",
+        ":studio:lintDebug",
+        ":presentation:lintDebug",
+        ":designsystem:lintDebug",
         ":app:lintDebug",
     )
 }

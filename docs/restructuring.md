@@ -154,9 +154,6 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   `ProjectFrameCompositor`, `FrameCacheManager` and `FontRegistry`, and the actor renderer. The
   compositor belongs below both `studio` and `export`, which is why export moves after the actors
   split instead of with media.
-- **Library modules aren't linted.** `verify` runs `:app:lintDebug` only, so lint never checks
-  code once it leaves `app`. Three baseline entries for files now in `media` no longer match
-  anything. Lint each module in `verify`, with its own baseline.
 - **The UI rules read package names.** `uidata` counts UI code by its `ui` segment, and `compose`
   counts domain code by its `domain` segment. A move that leaves those segments hides debt, so
   moved screens go under a `ui` package and managers under `domain`.
