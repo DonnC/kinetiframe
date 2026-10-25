@@ -106,6 +106,9 @@ fixed after the module work, unless one blocks testing.
 - On a fresh install the Library's Audio tab says "No matching items. Try another filter or
   search." with no filter or search applied.
 - Settings is a bottom bar tab but shows a back arrow and a second header under the brand bar.
+- Sharing the 34 MB demo project took about three and a half minutes on an A73, with no sign
+  that anything was happening after the menu closed. Show progress, and look at why the
+  archive is slow.
 
 **System bars**
 
