@@ -31,7 +31,7 @@ import com.donnclab.kinetiframe.studio.ui.color.PaletteViewModel
  */
 fun appViewModelFactory(container: AppContainer): ViewModelProvider.Factory = viewModelFactory {
     initializer { SettingsViewModel(container.preferences) }
-    initializer { ProjectManagerViewModel(container.projects, container.database.projectDao()) }
+    initializer { ProjectManagerViewModel(container.projectCatalog) }
     initializer {
         ActorManagerViewModel(container.actors, ActorReferenceIndex(container.files), container.actorBundles)
     }

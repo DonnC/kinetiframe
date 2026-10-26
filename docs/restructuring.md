@@ -19,10 +19,11 @@ into `LibraryViewModel`. #39 moved the library's documents to `library.model`, a
 `uidata` check match the [UI in presentation](architecture/decisions/ui-in-presentation.md)
 decision. #41 gave the library picker its own `LibraryPickerViewModel`, #42 ran export through
 `ExportViewModel` and fixed a crash when sharing a video, and #43 moved the Pack Creator's
-draft work into `PackDrafts`. This pull request moves Actor Studio's artwork picker
-onto `ActorArtworkPickerViewModel`, with `LibraryArtwork` in `studio` reading library drawings
-as actor artwork. The editor's repositories and `ProjectManagerViewModel` still reach the `data`
-module directly.
+draft work into `PackDrafts`. #44 ran Actor Studio's artwork picker through
+`ActorArtworkPickerViewModel`, with `LibraryArtwork` reading library drawings as actor artwork.
+This pull request moves the project gallery's storage into `ProjectCatalog` in `studio`, so
+`ProjectManagerViewModel` no longer uses the `data` module. The editor's repositories still
+reach the `data` module directly.
 
 ## Next
 
@@ -44,7 +45,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
   check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
-  code, and the 40 places where UI code imports a `data` package. Screens should reach storage
+  code, and the 36 places where UI code imports a `data` package. Screens should reach storage
   through their ViewModel, as in strict MVI.
 - **Parameter limits.** 53 functions still take more than the allowed number of parameters.
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
@@ -157,6 +158,7 @@ fixed after the module work, unless one blocks testing.
 | #41 | Gave the library picker its own ViewModel (step 8d, part 4) |
 | #42 | Ran the export screen through its ViewModel and fixed sharing a video (step 8d, part 5) |
 | #43 | Ran the Pack Creator through its ViewModel (step 8d, part 6) |
+| #44 | Ran Actor Studio's artwork picker through its ViewModel (step 8d, part 7) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -207,7 +209,7 @@ From `.architecture/` after step 8d. Each count may only go down.
 | --- | --- | --- |
 | References to a feature above | 23 | 15 |
 | Compose imports outside UI code | 38 | 25 |
-| UI imports of `data` packages | 40 | 16 |
+| UI imports of `data` packages | 36 | 15 |
 | Functions over the parameter limit | 53 | — |
 | Inline text values | 298 | 95 |
 | Inline colours | 64 | 24 |
