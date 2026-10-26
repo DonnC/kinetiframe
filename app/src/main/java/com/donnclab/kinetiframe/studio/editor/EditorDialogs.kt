@@ -2,6 +2,7 @@
 package com.donnclab.kinetiframe.studio.editor
 
 import androidx.compose.runtime.Composable
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.library.ui.LibraryPickerDialog
 import com.donnclab.kinetiframe.library.ui.LibraryScopeDialog
@@ -13,6 +14,20 @@ import com.donnclab.kinetiframe.studio.ui.LayerPanelPopup
 import com.donnclab.kinetiframe.studio.ui.OnionOptionsPopup
 import com.donnclab.kinetiframe.studio.ui.dialogs.TextInsertionDialog
 import com.donnclab.kinetiframe.studio.ui.frames.FrameStudio
+
+/**
+ * What the editor's "From Library" item can pick from. PROJECT is left out because a project is
+ * imported from the gallery, not into another open project. BUNDLE is left out because no screen
+ * creates bundles yet. A PACK opens the pack tray instead of being placed.
+ */
+internal val EditorLibraryKinds = setOf(
+    LibraryItemKind.ACTOR,
+    LibraryItemKind.PERFORMANCE,
+    LibraryItemKind.AUDIO,
+    LibraryItemKind.BACKGROUND_IMAGE,
+    LibraryItemKind.FRAME,
+    LibraryItemKind.PACK,
+)
 
 /** The editor's dialogs and popups that open over the canvas. */
 @Composable

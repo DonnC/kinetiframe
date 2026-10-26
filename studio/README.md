@@ -16,7 +16,7 @@ screens. The editor's screens and `StudioViewModel` still live in `app` and move
 | `studio.media` | Studio audio and video playback over `media` |
 | `studio.reference` | The frame reference index and `FrameStructureListener` |
 | `export.data`, `export.domain`, `export.model` | Video export: `ProjectExporter` and the `VideoExporter` interface the export screen uses, the video and audio encoders, and export presets |
-| `library.data`, `library.domain`, `library.model`, `library.bundled` | Library storage; pack drafts for the Pack Creator and library drawings read as actor artwork; the pack, palette and organisation documents and pack frame tags; and the bundled demo, starter kit and sample actors |
+| `library.data`, `library.domain`, `library.model`, `library.bundled` | Library storage; pack drafts for the Pack Creator, library drawings read as actor artwork, and moving items between the library and an open project; the pack, palette and organisation documents and pack frame tags; and the bundled demo, starter kit and sample actors |
 | `project.data` | The `.kframe` archiver, which bundles a project with the actors it uses |
 | `project.domain` | The project gallery's storage (`ProjectCatalog`), saving an editor's project (`ProjectSaver`), and project sharing, importing and saving to the library (`ProjectTransfers`) |
 
