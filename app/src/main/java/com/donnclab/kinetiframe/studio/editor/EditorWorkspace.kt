@@ -37,6 +37,7 @@ import com.donnclab.kinetiframe.studio.ui.actorstudio.hasActorStudioChanges
 import com.donnclab.kinetiframe.studio.ui.actorstudio.sketch.ActorSketchEditor
 import com.donnclab.kinetiframe.studio.ui.timeline.LayerPanel
 import com.donnclab.kinetiframe.studio.ui.timeline.durationFramesFor
+import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -68,9 +69,7 @@ internal fun EditorWorkspace(
     val scope = rememberCoroutineScope()
     val media = remember(context, folders.files) { EditorMediaImporter(context, folders.files) }
     val library = remember(context, repositories, media) { EditorLibraryActions(context, repositories, media) }
-    val writer = remember(context, repositories, viewModel) {
-        ProjectSaveWriter(context, repositories, viewModel.cacheManager)
-    }
+    val storage: EditorStorageViewModel = appViewModel()
     val placementPreparation = remember(repositories) {
         ActorPlacementPreparation(repositories.actors, repositories.performances, repositories.actorStore)
     }
@@ -141,7 +140,7 @@ internal fun EditorWorkspace(
     val density = LocalDensity.current.density
     val projectSave = host.projectId?.let { projectId ->
         val draftFrames = if (host.isPackCreator) null else folders.cache
-        ProjectSaveTarget(projectId, writer, draftFrames, density)
+        ProjectSaveTarget(projectId, storage, draftFrames, density)
     }
     val saves = EditorSaveActions(viewModel, messages, ui.exit, scope, projectSave)
     val actorSaves = ActorStudioSaves(viewModel, messages, host)

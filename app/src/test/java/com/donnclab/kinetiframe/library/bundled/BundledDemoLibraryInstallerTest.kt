@@ -99,7 +99,7 @@ class BundledDemoLibraryInstallerTest {
                         createdAtEpochMs = 1,
                         updatedAtEpochMs = 1,
                     ),
-                    com.donnclab.kinetiframe.data.project.ProjectSaveDocument(
+                    com.donnclab.kinetiframe.core.document.ProjectSaveDocument(
                         project = project,
                         frameLayers = emptyMap(),
                         totalFrames = 1,

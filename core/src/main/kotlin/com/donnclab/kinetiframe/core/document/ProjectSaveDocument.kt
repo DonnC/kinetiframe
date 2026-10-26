@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
-package com.donnclab.kinetiframe.data.project
+package com.donnclab.kinetiframe.core.document
 
-import com.donnclab.kinetiframe.core.document.Layer
-import com.donnclab.kinetiframe.core.document.ProjectDocument
 import kotlinx.serialization.Serializable
 
 /**

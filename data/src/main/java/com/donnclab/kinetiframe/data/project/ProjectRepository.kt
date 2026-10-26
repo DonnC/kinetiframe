@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.data.project
 
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ProjectManifest
+import com.donnclab.kinetiframe.core.document.ProjectSaveDocument
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
