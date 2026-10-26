@@ -244,12 +244,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                     entry<ExportKey> { key ->
-                                        ExportRoute(
-                                            container.projects,
-                                            container::newProjectExporter,
-                                            key.projectId,
-                                            onExit = goBack,
-                                        )
+                                        ExportRoute(key.projectId, onExit = goBack)
                                     }
                                     entry<PackCreatorKey> { key ->
                                         PackCreatorRoute(

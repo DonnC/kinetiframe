@@ -2,7 +2,6 @@ package com.donnclab.kinetiframe.export.data
 
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -14,7 +13,6 @@ import android.media.MediaExtractor
 import android.media.MediaMuxer
 import android.os.Build
 import android.provider.MediaStore
-import androidx.core.content.FileProvider
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
@@ -25,6 +23,7 @@ import com.donnclab.kinetiframe.data.db.ExportDao
 import com.donnclab.kinetiframe.data.db.ExportEntity
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.export.domain.VideoExporter
 import com.donnclab.kinetiframe.media.audio.StreamingAudioMix
 import com.donnclab.kinetiframe.studio.drawing.FontRegistry
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
@@ -66,15 +65,18 @@ class ProjectExporter(
     private val performanceRepository: PerformanceRepository,
     private val projectRepository: ProjectRepository,
     private val exportDao: ExportDao? = null,
-) {
+) : VideoExporter {
+    override fun projectName(projectId: String): String? =
+        (projectRepository.load(projectId) as? StoreResult.Value)?.value?.first?.displayName
+
     /** Renders [projectId] to a private MP4 under `filesDir/video-exports/`, reporting progress
-     *  in `[0f, 1f]`. The returned file is app-private -- callers use [saveToGallery] or [shareVideo]
-     *  to actually get it in front of the user, mirroring the existing `.kframe`/`.kpack` FileProvider
-     *  pattern rather than writing straight into MediaStore mid-encode. */
-    suspend fun export(
+     *  in `[0f, 1f]`. The returned file is app-private: callers use [saveToGallery], or share it
+     *  through the app's FileProvider like `.kframe` and `.kpack` files, rather than writing straight
+     *  into MediaStore mid-encode. */
+    override suspend fun export(
         projectId: String,
-        targetDimensions: StageDimensions? = null,
-        onProgress: (Float) -> Unit = {},
+        targetDimensions: StageDimensions?,
+        onProgress: (Float) -> Unit,
     ): StoreResult<File> = runCatching {
         val (manifest, document) = when (val result = projectRepository.load(projectId)) {
             is StoreResult.Value -> result.value
@@ -278,7 +280,7 @@ class ProjectExporter(
     /** Copies an already-exported MP4 into the user's public gallery via MediaStore, so it
      *  survives an app uninstall and shows up in their normal camera-roll/gallery apps -- Android's
      *  Scoped Storage rules mean this app can never write directly into `Movies/` itself. */
-    fun saveToGallery(file: File, displayName: String): StoreResult<Unit> = runCatching {
+    override fun saveToGallery(file: File, displayName: String): StoreResult<Unit> = runCatching {
         require(file.isFile && file.length() > 0) { "Exported video is missing" }
         val resolver = context.contentResolver
         val values = ContentValues().apply {
@@ -305,18 +307,4 @@ class ProjectExporter(
             throw error
         }
     }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(it.message ?: "Could not save to gallery", it) })
-
-    /** Hands an already-exported MP4 to the system share sheet via a FileProvider content:// URI
-     *  -- the exact same pattern the home screen's project and pack share
-     *  helpers already use for `.kframe`/`.kpack` files, so exporting doesn't invent a second
-     *  sharing convention. */
-    fun shareVideo(file: File, displayName: String) {
-        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-        val sendIntent = Intent(Intent.ACTION_SEND).apply {
-            type = "video/mp4"
-            putExtra(Intent.EXTRA_STREAM, uri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        context.startActivity(Intent.createChooser(sendIntent, "Share $displayName"))
-    }
 }
