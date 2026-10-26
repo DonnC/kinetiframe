@@ -16,6 +16,7 @@ import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PaletteRepository
 import com.donnclab.kinetiframe.library.domain.LibraryArtwork
 import com.donnclab.kinetiframe.library.domain.PackDrafts
+import com.donnclab.kinetiframe.project.domain.ProjectCatalog
 import com.donnclab.kinetiframe.project.domain.ProjectTransfers
 import com.donnclab.kinetiframe.settings.AppPreferencesStore
 import java.io.File
@@ -57,6 +58,7 @@ class AppContainer(context: Context) {
 
     /** The demo projects, library items and sample actors that ship with the app. */
     val bundledContent by lazy { BundledContent(files, library, appContext.assets::open) }
+    val projectCatalog by lazy { ProjectCatalog(projects, database.projectDao()) }
     val projectTransfers by lazy { ProjectTransfers(files, library, filesDir, appContext.cacheDir) }
 
     val preferences by lazy { AppPreferencesStore(File(filesDir, "preferences.json")) }
