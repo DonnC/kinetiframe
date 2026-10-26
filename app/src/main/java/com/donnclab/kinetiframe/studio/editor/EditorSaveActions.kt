@@ -31,7 +31,7 @@ internal class EditorExitState {
 /** Where a gallery project is saved. */
 internal class ProjectSaveTarget(
     val projectId: String,
-    val writer: ProjectSaveWriter,
+    val storage: EditorStorageViewModel,
     /** The working frame directory to publish, or null when the editor draws into the project directly. */
     val draftFrames: File?,
     val nodeDensity: Float,
@@ -81,7 +81,13 @@ internal class EditorSaveActions(
                 if (leaveWhenSaved) exit.returnHomeAfterSave = false
                 return@launchSave
             }
-            val result = target.writer.write(target.projectId, document, target.draftFrames, time)
+            val result = target.storage.saveProject(
+                target.projectId,
+                document,
+                target.draftFrames,
+                time,
+                viewModel.cacheManager,
+            )
             messages.projectSaveMessage = when (result) {
                 is StoreResult.Value -> {
                     viewModel.frameReferences.clear()

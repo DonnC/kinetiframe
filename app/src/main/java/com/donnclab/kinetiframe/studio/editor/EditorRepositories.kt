@@ -9,7 +9,6 @@ import com.donnclab.kinetiframe.actors.data.ActorBundleRepository
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
-import com.donnclab.kinetiframe.data.db.ProjectDao
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.data.LibraryRepository
@@ -22,8 +21,6 @@ internal class EditorRepositories(
     val bundles: ActorBundleRepository,
     val library: LibraryRepository,
     val projects: ProjectRepository,
-    /** Room index of saved projects, updated after every save so Home lists it at once. */
-    val projectIndex: ProjectDao,
 ) {
     fun actorFrameRenderer(): ActorFrameRenderer = ActorFrameRenderer(actors, performances, actorStore)
 }
@@ -39,6 +36,5 @@ internal fun rememberEditorRepositories(context: Context): EditorRepositories = 
         bundles = container.actorBundles,
         library = container.library,
         projects = container.projects,
-        projectIndex = container.database.projectDao(),
     )
 }

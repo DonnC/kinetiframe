@@ -18,7 +18,7 @@ screens. The editor's screens and `StudioViewModel` still live in `app` and move
 | `export.data`, `export.domain`, `export.model` | Video export: `ProjectExporter` and the `VideoExporter` interface the export screen uses, the video and audio encoders, and export presets |
 | `library.data`, `library.domain`, `library.model`, `library.bundled` | Library storage; pack drafts for the Pack Creator and library drawings read as actor artwork; the pack, palette and organisation documents and pack frame tags; and the bundled demo, starter kit and sample actors |
 | `project.data` | The `.kframe` archiver, which bundles a project with the actors it uses |
-| `project.domain` | The project gallery's storage (`ProjectCatalog`) and project sharing, importing and saving to the library (`ProjectTransfers`) |
+| `project.domain` | The project gallery's storage (`ProjectCatalog`), saving an editor's project (`ProjectSaver`), and project sharing, importing and saving to the library (`ProjectTransfers`) |
 
 Tests that read the app's assets from disk, need Robolectric, or drive `StudioViewModel` stay in
 `app`.

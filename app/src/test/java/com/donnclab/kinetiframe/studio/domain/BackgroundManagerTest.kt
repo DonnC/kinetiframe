@@ -166,7 +166,7 @@ class BackgroundManagerTest {
         )
         val saved = repository.save(
             manifest,
-            com.donnclab.kinetiframe.data.project.ProjectSaveDocument(
+            com.donnclab.kinetiframe.core.document.ProjectSaveDocument(
                 project = project,
                 frameLayers = emptyMap(),
                 totalFrames = 1,

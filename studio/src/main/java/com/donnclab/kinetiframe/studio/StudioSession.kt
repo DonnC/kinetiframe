@@ -74,7 +74,7 @@ class StudioSession(
     }
 
     /** Commit floating selection and await accepted raster/frame edits before publishing a save. */
-    suspend fun prepareProjectSave(nodeDensity: Float): com.donnclab.kinetiframe.data.project.ProjectSaveDocument {
+    suspend fun prepareProjectSave(nodeDensity: Float): com.donnclab.kinetiframe.core.document.ProjectSaveDocument {
         pendingOperations.awaitIdle()
         selectionManager.commitSelection().join()
         pendingOperations.awaitIdle()
@@ -83,7 +83,7 @@ class StudioSession(
             // an untouched layer here creates blank artwork and can rebind an actor skin.
             val state = store.state
             val stacks = state.layers.frameLayers + (state.animation.currentFrame to state.layers.layers)
-            val document = com.donnclab.kinetiframe.data.project.ProjectSaveDocument(
+            val document = com.donnclab.kinetiframe.core.document.ProjectSaveDocument(
                 project = state.project.copy(
                     layers = stacks[0] ?: state.layers.layers,
                     nodes = state.scene.nodes.mapValues {
