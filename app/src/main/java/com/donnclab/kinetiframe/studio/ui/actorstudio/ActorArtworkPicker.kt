@@ -27,113 +27,51 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.donnclab.kinetiframe.actors.data.ActorArtworkDecoder
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
-import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
-import com.donnclab.kinetiframe.core.contracts.StoreResult
-import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.model.PackArtworkRegistration
-import com.donnclab.kinetiframe.library.model.PackItemEntry
 import com.donnclab.kinetiframe.library.ui.LibraryPickerDialog
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
+import com.donnclab.kinetiframe.ui.appViewModel
 
 /** Shared library browser, specialised only at the final item-to-actor attachment boundary. */
 @Composable
-fun ActorArtworkPicker(
-    library: LibraryRepository,
-    temporaryDirectory: File,
-    onDismiss: () -> Unit,
-    onSelected: (String, Bitmap, PackArtworkRegistration?) -> Unit,
-) {
-    var pack by remember { mutableStateOf<LibraryItemManifest?>(null) }
-    var items by remember { mutableStateOf<List<PackItemEntry>>(emptyList()) }
-    var busy by remember { mutableStateOf(false) }
-    var error by remember { mutableStateOf<String?>(null) }
-    val scope = rememberCoroutineScope()
-    fun read(name: String, registration: PackArtworkRegistration? = null, copy: (File) -> StoreResult<*>) {
-        if (busy) return
-        busy = true
-        scope.launch {
-            var pending: Bitmap? = null
-            try {
-                val bitmap = withContext(Dispatchers.IO) {
-                    val target = File.createTempFile("actor-artwork-", ".png", temporaryDirectory)
-                    try {
-                        when (val result = copy(target)) {
-                            is StoreResult.Failure -> throw IllegalStateException(result.message)
-
-                            is StoreResult.Value -> ActorArtworkDecoder.decode(
-                                target,
-                                preservePadding =
-                                registration != null,
-                            ).also { pending = it }
-                        }
-                    } finally {
-                        target.delete()
-                    }
-                }
-                onSelected(name, bitmap, registration)
-                pending = null // The attachment flow now owns the pixels.
-            } catch (
-                cancel: CancellationException,
-            ) {
-                throw cancel
-            } catch (
-                failure: Exception,
-            ) {
-                error = failure.message ?: "Could not read artwork"
-            } finally {
-                pending?.takeUnless { it.isRecycled }?.recycle()
-                busy = false
+fun ActorArtworkPicker(onDismiss: () -> Unit, onSelected: (String, Bitmap, PackArtworkRegistration?) -> Unit) {
+    val model: ActorArtworkPickerViewModel = appViewModel(key = "actor-artwork-picker")
+    val state by model.state.collectAsStateWithLifecycle()
+    val selected by rememberUpdatedState(onSelected)
+    LaunchedEffect(model) { model.handleIntent(ActorArtworkPickerIntent.Open) }
+    LaunchedEffect(model) {
+        model.effect.collect { effect ->
+            when (effect) {
+                is ActorArtworkPickerEffect.Selected -> selected(effect.name, effect.bitmap, effect.registration)
             }
         }
     }
-    val selectedPack = pack
+    val busy = state.busy
+    val selectedPack = state.pack
     if (selectedPack == null) {
         LibraryPickerDialog(
             allowedKinds = setOf(LibraryItemKind.FRAME, LibraryItemKind.PACK),
             dismissOnOpenPack = false,
             onDismiss = onDismiss,
-            onOpenPack = { pack = it },
-            onPick = { item ->
-                read(item.displayName) { destination ->
-                    library.copyAssetTo(item.libraryItemId, destination, item.scope, item.sourceProjectId)
-                }
-            },
+            onOpenPack = { model.handleIntent(ActorArtworkPickerIntent.OpenPack(it)) },
+            onPick = { model.handleIntent(ActorArtworkPickerIntent.PickItem(it)) },
         )
     } else {
-        LaunchedEffect(selectedPack) {
-            when (
-                val result =
-                    withContext(Dispatchers.IO) {
-                        library.loadPack(selectedPack.libraryItemId, selectedPack.scope, selectedPack.sourceProjectId)
-                    }
-            ) {
-                is StoreResult.Value -> items = result.value.second.items
-                is StoreResult.Failure -> error = result.message
-            }
-        }
         Dialog(onDismissRequest = { if (!busy) onDismiss() }) {
             Surface(shape = MaterialTheme.shapes.medium) {
                 Column(Modifier.fillMaxWidth().heightIn(max = 420.dp).padding(12.dp)) {
                     Row {
-                        IconButton(onClick = {
-                            pack = null
-                            items = emptyList()
-                        }, enabled = !busy) {
+                        IconButton(
+                            onClick = { model.handleIntent(ActorArtworkPickerIntent.BackToLibrary) },
+                            enabled = !busy,
+                        ) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back to packs")
                         }
                         Text(selectedPack.displayName, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
@@ -147,30 +85,13 @@ fun ActorArtworkPicker(
                         Modifier.fillMaxWidth(),
                         contentPadding = PaddingValues(4.dp),
                     ) {
-                        items(items, key = { it.file }) { item ->
+                        items(state.items, key = { it.file }) { item ->
                             Column(
                                 Modifier.padding(4.dp).clickable(enabled = !busy) {
-                                    read(item.name, item.registration) { destination ->
-                                        library.copyPackItemTo(
-                                            selectedPack.libraryItemId,
-                                            item.file,
-                                            destination,
-                                            selectedPack.scope,
-                                            selectedPack.sourceProjectId,
-                                        )
-                                    }
+                                    model.handleIntent(ActorArtworkPickerIntent.PickPackItem(item))
                                 },
                             ) {
-                                AsyncImage(
-                                    library.packItemFile(
-                                        selectedPack.libraryItemId,
-                                        item.file,
-                                        selectedPack.scope,
-                                        selectedPack.sourceProjectId,
-                                    ),
-                                    item.name,
-                                    Modifier.fillMaxWidth().height(72.dp),
-                                )
+                                AsyncImage(model.packItemFile(item), item.name, Modifier.fillMaxWidth().height(72.dp))
                                 Text(item.name, style = MaterialTheme.typography.labelSmall, maxLines = 1)
                             }
                         }
@@ -179,11 +100,13 @@ fun ActorArtworkPicker(
             }
         }
     }
-    error?.let { message ->
+    state.error?.let { message ->
         AlertDialog(
-            onDismissRequest = { error = null },
+            onDismissRequest = { model.handleIntent(ActorArtworkPickerIntent.DismissError) },
             text = { Text(message) },
-            confirmButton = { TextButton(onClick = { error = null }) { Text("OK") } },
+            confirmButton = {
+                TextButton(onClick = { model.handleIntent(ActorArtworkPickerIntent.DismissError) }) { Text("OK") }
+            },
         )
     }
 }

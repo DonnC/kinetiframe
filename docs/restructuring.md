@@ -17,12 +17,12 @@ Keep this page current:
 sharing, importing and bundled content into `HomeActionsViewModel`, and the library's seeding
 into `LibraryViewModel`. #39 moved the library's documents to `library.model`, and #40 made the
 `uidata` check match the [UI in presentation](architecture/decisions/ui-in-presentation.md)
-decision. #41 gave the library picker its own `LibraryPickerViewModel`, and #42 ran export
-through `ExportViewModel` and fixed a crash when sharing a video. This pull request moves the
-Pack Creator's draft work into `PackDrafts` in `studio` and runs the screen through
-`PackCreatorViewModel`, which discards an unsaved draft when it is cleared, so rotating no longer
-loses one. Actor Studio's artwork picker and the editor's repositories still reach stores
-directly.
+decision. #41 gave the library picker its own `LibraryPickerViewModel`, #42 ran export through
+`ExportViewModel` and fixed a crash when sharing a video, and #43 moved the Pack Creator's
+draft work into `PackDrafts`. This pull request moves Actor Studio's artwork picker
+onto `ActorArtworkPickerViewModel`, with `LibraryArtwork` in `studio` reading library drawings
+as actor artwork. The editor's repositories and `ProjectManagerViewModel` still reach the `data`
+module directly.
 
 ## Next
 
@@ -44,7 +44,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
   check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
-  code, and the 44 places where UI code imports a `data` package. Screens should reach storage
+  code, and the 40 places where UI code imports a `data` package. Screens should reach storage
   through their ViewModel, as in strict MVI.
 - **Parameter limits.** 53 functions still take more than the allowed number of parameters.
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
@@ -156,6 +156,7 @@ fixed after the module work, unless one blocks testing.
 | #40 | Let ViewModels use the logic modules' repositories (step 8d, part 3) |
 | #41 | Gave the library picker its own ViewModel (step 8d, part 4) |
 | #42 | Ran the export screen through its ViewModel and fixed sharing a video (step 8d, part 5) |
+| #43 | Ran the Pack Creator through its ViewModel (step 8d, part 6) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -190,9 +191,8 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 - **Lint version checks.** Lint's "newer version available" checks are disabled, because their
   findings change with every upstream release. Dependabot reports updates instead.
 - **Editor repositories.** `EditorRepositories` and the voice effect dialog still reach the
-  container through the `Context` (`rememberEditorRepositories`), and Actor Studio's artwork
-  picker still uses stores directly.
-  Each goes through its ViewModel when its screen moves to `presentation`.
+  container through the `Context` (`rememberEditorRepositories`). They go through the editor's
+  ViewModels when its screens move to `presentation`.
 - **Checker tests.** CI runs `./gradlew -p buildSrc test`, but only for `main` during the
   restructuring, and `verify` can't run them. Three tests still named `actors` as an app feature
   after it became a module. Run them by hand whenever the checker or the package layout changes.
@@ -207,7 +207,7 @@ From `.architecture/` after step 8d. Each count may only go down.
 | --- | --- | --- |
 | References to a feature above | 23 | 15 |
 | Compose imports outside UI code | 38 | 25 |
-| UI imports of `data` packages | 44 | 19 |
+| UI imports of `data` packages | 40 | 16 |
 | Functions over the parameter limit | 53 | — |
 | Inline text values | 298 | 95 |
 | Inline colours | 64 | 24 |
