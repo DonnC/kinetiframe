@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.studio.editor
 
+import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.studio.StudioViewModel
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
  * project or to the personal library; the export runs once the animator chooses.
  */
 internal class EditorLibraryExports(
-    private val actions: EditorLibraryActions,
+    private val storage: EditorStorageViewModel,
     private val viewModel: StudioViewModel,
     private val ui: EditorUiState,
     private val scope: CoroutineScope,
@@ -22,7 +23,8 @@ internal class EditorLibraryExports(
     fun exportBackground() {
         ui.panels.pendingLibraryExport = LibraryExportRequest("this background image") { libraryScope ->
             scope.launch {
-                messages.libraryMessage = actions.exportBackground(viewModel.state.value.project, libraryScope)
+                messages.libraryMessage = storage.exportBackground(viewModel.state.value.project, libraryScope)
+                    .message("Added background image to your library")
             }
         }
     }
@@ -37,7 +39,8 @@ internal class EditorLibraryExports(
             scope.launch {
                 val state = viewModel.state.value
                 val name = "Frame ${state.animation.currentFrame + 1}"
-                messages.libraryMessage = actions.exportFrame(frame, name, libraryScope, state.project.id)
+                messages.libraryMessage = storage.exportFrame(frame, name, libraryScope, state.project.id)
+                    .message("Added frame to your library")
             }
         }
     }
@@ -45,14 +48,21 @@ internal class EditorLibraryExports(
     fun exportAudioClip(clip: AudioClipPlacement) {
         ui.panels.pendingLibraryExport = LibraryExportRequest("\"${clip.label}\"") { libraryScope ->
             scope.launch {
-                messages.libraryMessage = actions.exportAudioClip(clip, viewModel.state.value.project, libraryScope)
+                messages.libraryMessage = storage.exportAudioClip(clip, viewModel.state.value.project, libraryScope)
+                    .message("Added \"${clip.label}\" to your library")
             }
         }
     }
 
     fun exportPerformance(placement: ActorPlacementReference) {
         scope.launch {
-            messages.actorLibraryMessage = actions.exportPerformance(viewModel.state.value.project.id, placement)
+            messages.actorLibraryMessage = storage.exportPerformance(viewModel.state.value.project.id, placement)
+                .message("Added ${placement.label} to your library")
         }
     }
+}
+
+private fun StoreResult<*>.message(success: String): String = when (this) {
+    is StoreResult.Value -> success
+    is StoreResult.Failure -> message
 }

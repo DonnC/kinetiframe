@@ -21,11 +21,12 @@ decision. #41 gave the library picker its own `LibraryPickerViewModel`, #42 ran 
 `ExportViewModel` and fixed a crash when sharing a video, and #43 moved the Pack Creator's
 draft work into `PackDrafts`. #44 ran Actor Studio's artwork picker through
 `ActorArtworkPickerViewModel`, with `LibraryArtwork` reading library drawings as actor artwork.
-#45 moved the project gallery's storage into `ProjectCatalog`. This pull request starts on
-the editor: `ProjectSaver` in `studio` writes an editor's saved project, and
-`EditorStorageViewModel` is the editor's way to storage. `ProjectSaveDocument` moves to
-`core.document`. The rest of `EditorRepositories` (library actions, actor rendering, Actor Studio
-and the voice effect dialog) follows in the next pull requests.
+#45 moved the project gallery's storage into `ProjectCatalog`. #46 started on the editor:
+`ProjectSaver` writes an editor's saved project, and `EditorStorageViewModel` is the editor's way
+to storage. This pull request moves the editor's library actions (picking items, the pack tray,
+and adding the background, frames, audio clips and performances to the library) into
+`LibraryTransfers` in `studio`, behind the same ViewModel. Actor rendering, Actor Studio and the
+voice effect dialog still use `EditorRepositories`.
 
 ## Next
 
@@ -47,7 +48,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
   check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
-  code, and the 32 places where UI code imports a `data` package. Screens should reach storage
+  code, and the 30 places where UI code imports a `data` package. Screens should reach storage
   through their ViewModel, as in strict MVI.
 - **Parameter limits.** 53 functions still take more than the allowed number of parameters.
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
@@ -162,6 +163,7 @@ fixed after the module work, unless one blocks testing.
 | #43 | Ran the Pack Creator through its ViewModel (step 8d, part 6) |
 | #44 | Ran Actor Studio's artwork picker through its ViewModel (step 8d, part 7) |
 | #45 | Moved the project gallery's storage into `ProjectCatalog` (step 8d, part 8) |
+| #46 | Saved editor projects through `EditorStorageViewModel` (editor storage, part 1) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -212,7 +214,7 @@ From `.architecture/` after step 8d. Each count may only go down.
 | --- | --- | --- |
 | References to a feature above | 23 | 15 |
 | Compose imports outside UI code | 38 | 25 |
-| UI imports of `data` packages | 32 | 14 |
+| UI imports of `data` packages | 30 | 14 |
 | Functions over the parameter limit | 53 | — |
 | Inline text values | 298 | 95 |
 | Inline colours | 64 | 24 |

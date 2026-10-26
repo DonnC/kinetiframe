@@ -48,15 +48,11 @@ import com.composables.icons.lucide.ChevronRight
 import com.composables.icons.lucide.GripHorizontal
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.library.model.PackTrayItem
 import com.donnclab.kinetiframe.studio.ui.dock.dockContainer
 import com.donnclab.kinetiframe.studio.ui.dock.dockDragHandle
 import com.donnclab.kinetiframe.studio.ui.dock.dockSurface
 import com.donnclab.kinetiframe.studio.ui.dock.rememberDraggableDockState
-
-/** One drawing inside an opened pack, already copied out of the Library and decoded -- see
- *  [com.donnclab.kinetiframe.studio.EditorScreen]'s pack-tray loading effect, which is the only place that
- *  ever builds one of these. */
-data class PackTrayItem(val fileName: String, val name: String, val thumbnail: android.graphics.Bitmap)
 
 /** The drag lifecycle a [PackTray] item cell reports upward. This composable only ever deals in
  *  on-screen pixels ([positionInWindow] on start, a per-move [delta] afterward) -- it has no idea

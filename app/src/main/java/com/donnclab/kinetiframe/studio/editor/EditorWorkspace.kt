@@ -28,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.actors.render.ActorPlacementPreparation
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.library.domain.LibraryPick
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
@@ -68,7 +69,6 @@ internal fun EditorWorkspace(
     val panels = ui.panels
     val scope = rememberCoroutineScope()
     val media = remember(context, folders.files) { EditorMediaImporter(context, folders.files) }
-    val library = remember(context, repositories, media) { EditorLibraryActions(context, repositories, media) }
     val storage: EditorStorageViewModel = appViewModel()
     val placementPreparation = remember(repositories) {
         ActorPlacementPreparation(repositories.actors, repositories.performances, repositories.actorStore)
@@ -189,14 +189,14 @@ internal fun EditorWorkspace(
     ActorArtworkFlows(artwork, state, viewModel)
     LaunchedEffect(ui.tray.manifest) {
         val manifest = ui.tray.manifest ?: return@LaunchedEffect
-        ui.tray.load(manifest, library, state.project.id)
+        ui.tray.load(manifest, storage, state.project.id)
     }
 
     /** Places a picked library item where its kind belongs. */
     fun applyLibraryPick(manifest: LibraryItemManifest) {
         panels.showLibraryPicker = false
         scope.launch {
-            library.pick(manifest, state.project.id, System.currentTimeMillis()).fold(
+            storage.pickFromLibrary(manifest, state.project.id, System.currentTimeMillis(), media.audioDirectory).fold(
                 onSuccess = { pick ->
                     val current = viewModel.state.value
                     when (pick) {
@@ -247,7 +247,7 @@ internal fun EditorWorkspace(
         placeActor = ::placeActor,
         openSketch = openSketch,
         pickers = pickers,
-        exports = EditorLibraryExports(library, viewModel, ui, scope),
+        exports = EditorLibraryExports(storage, viewModel, ui, scope),
     )
     EditorDialogs(viewModel, state, ui, repositories, ::applyLibraryPick)
     VoiceOverFlow(viewModel, media, ui, scope)

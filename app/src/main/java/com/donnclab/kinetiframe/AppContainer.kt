@@ -15,6 +15,7 @@ import com.donnclab.kinetiframe.library.bundled.BundledContent
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PaletteRepository
 import com.donnclab.kinetiframe.library.domain.LibraryArtwork
+import com.donnclab.kinetiframe.library.domain.LibraryTransfers
 import com.donnclab.kinetiframe.library.domain.PackDrafts
 import com.donnclab.kinetiframe.project.domain.ProjectCatalog
 import com.donnclab.kinetiframe.project.domain.ProjectSaver
@@ -66,6 +67,7 @@ class AppContainer(context: Context) {
     val preferences by lazy { AppPreferencesStore(File(filesDir, "preferences.json")) }
     val crashReports by lazy { CrashReportStore(filesDir) }
 
+    val libraryTransfers by lazy { LibraryTransfers(library, actorBundles, appContext.cacheDir) }
     val libraryArtwork by lazy { LibraryArtwork(library, appContext.cacheDir) }
     val packDrafts by lazy { PackDrafts(files, projects, library, appContext.cacheDir) }
 

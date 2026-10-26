@@ -18,9 +18,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.library.model.PackTrayItem
 import com.donnclab.kinetiframe.library.ui.packs.PackDragEvent
 import com.donnclab.kinetiframe.library.ui.packs.PackTray
-import com.donnclab.kinetiframe.library.ui.packs.PackTrayItem
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import kotlin.math.roundToInt
@@ -40,11 +40,11 @@ internal class PackTrayState {
     var dragPosition by mutableStateOf<Offset?>(null)
     var canvasRootPositionInWindow by mutableStateOf(Offset.Zero)
 
-    suspend fun load(manifest: LibraryItemManifest, actions: EditorLibraryActions, projectId: String) {
+    suspend fun load(manifest: LibraryItemManifest, storage: EditorStorageViewModel, projectId: String) {
         loading = true
         error = null
         items = emptyList()
-        val result = actions.loadPackTray(manifest, projectId)
+        val result = storage.loadPackTray(manifest, projectId)
         loading = false
         result.fold(onSuccess = { items = it }, onFailure = { error = it.message ?: "Could not open this pack" })
     }

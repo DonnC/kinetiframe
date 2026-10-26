@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import com.donnclab.kinetiframe.media.audio.AudioDurations
 import com.donnclab.kinetiframe.media.audio.WaveformExtractor
 import com.donnclab.kinetiframe.media.image.FrameImageDecoder
 import com.donnclab.kinetiframe.media.video.ImportedVideoMetadata
@@ -47,7 +48,7 @@ internal class EditorMediaImporter(
             val assetId = "audio-${UUID.randomUUID()}"
             val destination = File(audioDirectory, "$assetId.audio")
             copy(uri, destination, "Could not read that audio file")
-            ImportedAudio(assetId, destination, readAudioDurationMicros(destination.absolutePath))
+            ImportedAudio(assetId, destination, AudioDurations.readMicros(destination.absolutePath))
         }
     }
 
@@ -74,18 +75,6 @@ internal class EditorMediaImporter(
             val destination = File(projectVideoDir, "$assetId.video")
             copy(uri, destination, "Could not read that video file")
             ImportedVideo(assetId, destination, readVideoMetadata(destination))
-        }
-    }
-
-    /** Reads an audio file's duration from its path, with no ContentResolver involved. */
-    fun readAudioDurationMicros(path: String): Long {
-        val retriever = MediaMetadataRetriever()
-        return try {
-            retriever.setDataSource(path)
-            val millis = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0L
-            millis * 1000L
-        } finally {
-            retriever.release()
         }
     }
 
