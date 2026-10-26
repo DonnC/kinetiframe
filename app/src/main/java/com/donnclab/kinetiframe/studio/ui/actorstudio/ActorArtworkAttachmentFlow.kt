@@ -10,18 +10,14 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
-import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.presentation.actors.rigging.ArtworkAlignmentDialog
 import com.donnclab.kinetiframe.studio.StudioIntent
-import java.io.File
 
 /** Owns an uncommitted decoded item until Cancel or the MVI attachment transaction takes it. */
 @Composable
 fun ActorArtworkAttachmentFlow(
     partId: String,
     graph: SceneGraph,
-    library: LibraryRepository,
-    temporaryDirectory: File,
     onDismiss: () -> Unit,
     onIntent: (StudioIntent) -> Unit,
     initialAsVariant: Boolean = false,
@@ -39,7 +35,7 @@ fun ActorArtworkAttachmentFlow(
     if (item ==
         null
     ) {
-        ActorArtworkPicker(library, temporaryDirectory, onDismiss) { name, bitmap, source ->
+        ActorArtworkPicker(onDismiss) { name, bitmap, source ->
             selected =
                 name to bitmap
             registration = source

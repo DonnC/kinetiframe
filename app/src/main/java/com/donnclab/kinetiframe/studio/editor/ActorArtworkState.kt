@@ -6,8 +6,6 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
@@ -69,21 +67,13 @@ internal class ActorArtworkState {
 }
 
 @Composable
-internal fun ActorArtworkFlows(
-    artwork: ActorArtworkState,
-    state: StudioState,
-    viewModel: StudioViewModel,
-    library: LibraryRepository,
-) {
-    val context = LocalContext.current
+internal fun ActorArtworkFlows(artwork: ActorArtworkState, state: StudioState, viewModel: StudioViewModel) {
     val graph = state.actorDefinition()?.sceneGraph
     artwork.partId?.let { part ->
         graph?.let {
             ActorArtworkAttachmentFlow(
                 part,
                 it,
-                library,
-                context.cacheDir,
                 { artwork.partId = null },
                 viewModel::handleIntent,
                 initialAsVariant = artwork.asVariant,

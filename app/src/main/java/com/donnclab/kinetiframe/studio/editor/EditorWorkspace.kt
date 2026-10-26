@@ -187,7 +187,7 @@ internal fun EditorWorkspace(
             return
         }
     }
-    ActorArtworkFlows(artwork, state, viewModel, repositories.library)
+    ActorArtworkFlows(artwork, state, viewModel)
     LaunchedEffect(ui.tray.manifest) {
         val manifest = ui.tray.manifest ?: return@LaunchedEffect
         ui.tray.load(manifest, library, state.project.id)

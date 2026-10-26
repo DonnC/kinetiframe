@@ -18,6 +18,7 @@ import com.donnclab.kinetiframe.presentation.actors.ActorStudioDocumentViewModel
 import com.donnclab.kinetiframe.project.ui.ProjectManagerViewModel
 import com.donnclab.kinetiframe.settings.SettingsViewModel
 import com.donnclab.kinetiframe.studio.StudioViewModel
+import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorArtworkPickerViewModel
 import com.donnclab.kinetiframe.studio.ui.color.PaletteViewModel
 
 /**
@@ -71,6 +72,7 @@ fun appViewModelFactory(container: AppContainer): ViewModelProvider.Factory = vi
     initializer { LibraryPickerViewModel(container.library, this[LibraryPickerViewModel.ProjectIdKey]) }
     initializer { PackCreatorViewModel(container.packDrafts, this[PackCreatorViewModel.EditKey]) }
     initializer { PaletteViewModel(container.palettes) }
+    initializer { ActorArtworkPickerViewModel(container.libraryArtwork) }
     initializer {
         val arguments = checkNotNull(this[StudioViewModel.ArgumentsKey]) { "The editor needs its arguments" }
         StudioViewModel(
