@@ -248,9 +248,6 @@ class MainActivity : ComponentActivity() {
                                     }
                                     entry<PackCreatorKey> { key ->
                                         PackCreatorRoute(
-                                            container.files,
-                                            container.projects,
-                                            container.library,
                                             onExit = goBack,
                                             editingItemId = key.editItemId,
                                             editingScope = LibraryScope.valueOf(

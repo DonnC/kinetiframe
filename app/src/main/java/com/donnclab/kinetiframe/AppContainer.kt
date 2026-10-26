@@ -14,6 +14,7 @@ import com.donnclab.kinetiframe.export.data.ProjectExporter
 import com.donnclab.kinetiframe.library.bundled.BundledContent
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PaletteRepository
+import com.donnclab.kinetiframe.library.domain.PackDrafts
 import com.donnclab.kinetiframe.project.domain.ProjectTransfers
 import com.donnclab.kinetiframe.settings.AppPreferencesStore
 import java.io.File
@@ -59,6 +60,8 @@ class AppContainer(context: Context) {
 
     val preferences by lazy { AppPreferencesStore(File(filesDir, "preferences.json")) }
     val crashReports by lazy { CrashReportStore(filesDir) }
+
+    val packDrafts by lazy { PackDrafts(files, projects, library, appContext.cacheDir) }
 
     /** A new exporter for one export screen; it tracks that screen's single export. */
     fun newProjectExporter() = ProjectExporter(
