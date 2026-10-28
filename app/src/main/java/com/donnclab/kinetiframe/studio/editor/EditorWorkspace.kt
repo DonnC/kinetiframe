@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.donnclab.kinetiframe.actors.render.ActorPlacementPreparation
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.library.domain.LibraryPick
@@ -70,9 +69,7 @@ internal fun EditorWorkspace(
     val scope = rememberCoroutineScope()
     val media = remember(context, folders.files) { EditorMediaImporter(context, folders.files) }
     val storage: EditorStorageViewModel = appViewModel()
-    val placementPreparation = remember(repositories) {
-        ActorPlacementPreparation(repositories.actors, repositories.performances, repositories.actorStore)
-    }
+    val placementPreparation = storage.actorRendering.placements
 
     fun placeActor(reference: ActorPlacementReference) {
         val project = state.project
@@ -249,7 +246,7 @@ internal fun EditorWorkspace(
         pickers = pickers,
         exports = EditorLibraryExports(storage, viewModel, ui, scope),
     )
-    EditorDialogs(viewModel, state, ui, repositories, ::applyLibraryPick)
+    EditorDialogs(viewModel, state, ui, storage.actorRendering, ::applyLibraryPick)
     VoiceOverFlow(viewModel, media, ui, scope)
     val drawerState = ui.drawerState
     BackHandler(drawerState.isOpen) { scope.launch { drawerState.close() } }
@@ -270,7 +267,7 @@ internal fun EditorWorkspace(
     ) {
         Scaffold(
             topBar = { EditorTopBarSlot(state, host, ui, commands) },
-            bottomBar = { EditorBottomBarSlot(viewModel, state, host, ui, repositories, commands) },
+            bottomBar = { EditorBottomBarSlot(viewModel, state, host, ui, storage, commands) },
             contentWindowInsets = WindowInsets(0.dp),
         ) { innerPadding ->
             Box(
@@ -283,7 +280,7 @@ internal fun EditorWorkspace(
                         ui.tray.canvasRootPositionInWindow = coordinates.positionInWindow()
                     },
             ) {
-                EditorCanvasStack(viewModel, state, host, ui, repositories, commands)
+                EditorCanvasStack(viewModel, state, host, ui, storage.actorRendering, commands)
             }
         }
     }

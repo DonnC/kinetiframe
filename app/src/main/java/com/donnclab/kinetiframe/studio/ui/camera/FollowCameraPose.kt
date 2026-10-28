@@ -9,14 +9,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFollowCamera
-import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
+import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.core.document.camera.CameraPose
-import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.studio.render.completedPreviewFrames
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,16 +22,14 @@ import kotlinx.coroutines.withContext
 internal fun followCameraPose(
     project: ProjectDocument,
     frame: Int,
-    actors: ActorRepository?,
-    performances: PerformanceRepository?,
-    files: DocumentFileStore?,
+    rendering: ActorRendering?,
     enabled: Boolean = true,
 ): CameraPose? {
     val follow = project.cameraShots.any {
         it.action == CameraAction.FOLLOW && frame in it.startFrame until it.endFrame
     }
-    if (!enabled || !follow || actors == null || performances == null || files == null) return null
-    val renderer = remember(actors, performances, files) { ActorFrameRenderer(actors, performances, files) }
+    if (!enabled || !follow || rendering == null) return null
+    val renderer = remember(rendering) { rendering.newRenderer() }
     var resolved by remember { mutableStateOf<Pair<Pair<ProjectDocument, Int>, CameraPose>?>(null) }
     val latest by rememberUpdatedState(project to frame)
     LaunchedEffect(renderer) {

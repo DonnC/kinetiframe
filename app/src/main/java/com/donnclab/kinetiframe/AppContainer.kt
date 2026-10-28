@@ -6,6 +6,8 @@ import com.donnclab.kinetiframe.actors.data.ActorBundleRepository
 import com.donnclab.kinetiframe.actors.data.ActorPresetRepository
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.actors.domain.PerformanceChoices
+import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.data.db.AppDatabase
 import com.donnclab.kinetiframe.data.diagnostics.CrashReportStore
 import com.donnclab.kinetiframe.data.project.ProjectRepository
@@ -61,6 +63,8 @@ class AppContainer(context: Context) {
     /** The demo projects, library items and sample actors that ship with the app. */
     val bundledContent by lazy { BundledContent(files, library, appContext.assets::open) }
     val projectCatalog by lazy { ProjectCatalog(projects, database.projectDao()) }
+    val performanceChoices by lazy { PerformanceChoices(actors, performances) }
+    val actorRendering by lazy { ActorRendering(actors, performances, files) }
     val projectSaver by lazy { ProjectSaver(files, projects, actors, performances, database.projectDao()) }
     val projectTransfers by lazy { ProjectTransfers(files, library, filesDir, appContext.cacheDir) }
 

@@ -7,7 +7,6 @@ import androidx.compose.runtime.remember
 import com.donnclab.kinetiframe.KinetiFrameApplication
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
-import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 
@@ -17,9 +16,7 @@ internal class EditorRepositories(
     val actors: ActorRepository,
     val performances: PerformanceRepository,
     val projects: ProjectRepository,
-) {
-    fun actorFrameRenderer(): ActorFrameRenderer = ActorFrameRenderer(actors, performances, actorStore)
-}
+)
 
 /** The editor's view of the app's shared stores; see [com.donnclab.kinetiframe.AppContainer]. */
 @Composable

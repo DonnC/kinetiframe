@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.settings.LocalAppPreferences
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -42,7 +43,7 @@ internal fun BoxScope.EditorCanvasStack(
     state: StudioState,
     host: EditorHost,
     ui: EditorUiState,
-    repositories: EditorRepositories,
+    actorRendering: ActorRendering,
     commands: EditorCommands,
 ) {
     val panels = ui.panels
@@ -69,13 +70,11 @@ internal fun BoxScope.EditorCanvasStack(
         modifier = Modifier.fillMaxSize(),
         cacheManager = viewModel.cacheManager,
         rigAssetManager = viewModel.rigAssetManager,
-        actorFiles = repositories.actorStore,
-        actorRepository = repositories.actors,
-        performanceRepository = repositories.performances,
+        actorRendering = actorRendering,
         projectAssetManager = viewModel.projectAssetManager,
         videoFrameProvider = viewModel.videoFrameProvider,
     )
-    if (showsCamera) CameraOverlay(viewModel, state, repositories, cameraPreview, commands.onIntent)
+    if (showsCamera) CameraOverlay(viewModel, state, actorRendering, cameraPreview, commands.onIntent)
     if (!toolbarVisible && !isPuppetStudio) {
         StudioFocusControls(
             state.animation.isPlaying,
@@ -138,7 +137,7 @@ internal fun BoxScope.EditorCanvasStack(
 private fun BoxScope.CameraOverlay(
     viewModel: StudioViewModel,
     state: StudioState,
-    repositories: EditorRepositories,
+    actorRendering: ActorRendering,
     cameraPreview: MutableState<Boolean>,
     onIntent: (StudioIntent) -> Unit,
 ) {
@@ -174,9 +173,7 @@ private fun BoxScope.CameraOverlay(
             cameraPoseOverride = if (shot?.action == CameraAction.FOLLOW) null else pose,
             fitStage = true,
             cacheManager = viewModel.cacheManager,
-            actorFiles = repositories.actorStore,
-            actorRepository = repositories.actors,
-            performanceRepository = repositories.performances,
+            actorRendering = actorRendering,
             projectAssetManager = viewModel.projectAssetManager,
             videoFrameProvider = previewVideo,
         )

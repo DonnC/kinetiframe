@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.studio.ui.canvas
 
-import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,24 +13,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
-import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.studio.AnimationState
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -56,9 +49,7 @@ fun CanvasArea(
     modifier: Modifier = Modifier,
     cacheManager: FrameCacheManager? = null,
     rigAssetManager: RigAssetManager? = null,
-    actorFiles: DocumentFileStore? = null,
-    actorRepository: ActorRepository? = null,
-    performanceRepository: PerformanceRepository? = null,
+    actorRendering: ActorRendering? = null,
     projectAssetManager: com.donnclab.kinetiframe.studio.media.ProjectAssetManager? = null,
     videoFrameProvider: com.donnclab.kinetiframe.studio.media.VideoFrameProvider? = null,
 ) {
@@ -71,9 +62,7 @@ fun CanvasArea(
     val followed = com.donnclab.kinetiframe.studio.ui.camera.followCameraPose(
         state.project,
         state.animation.displayFrame(),
-        actorRepository,
-        performanceRepository,
-        actorFiles,
+        actorRendering,
         enabled && cameraPoseOverride == null,
     )
     val pose = cameraPoseOverride ?: followed ?: com.donnclab.kinetiframe.engine.camera.SceneCamera.evaluate(
@@ -155,7 +144,7 @@ fun CanvasArea(
                 }
             },
             Modifier.fillMaxSize().sceneCameraViewport(enabled, values, stage.width, stage.height, pose.black),
-            cacheManager, rigAssetManager, actorFiles, actorRepository, performanceRepository,
+            cacheManager, rigAssetManager, actorRendering,
             projectAssetManager, videoFrameProvider, enabled,
         )
         // Preview cannot silently paint in camera coordinates. Use the explicit pencil toggle
@@ -177,9 +166,7 @@ private fun CanvasAreaContents(
     modifier: Modifier = Modifier,
     cacheManager: FrameCacheManager? = null,
     rigAssetManager: RigAssetManager? = null,
-    actorFiles: DocumentFileStore? = null,
-    actorRepository: ActorRepository? = null,
-    performanceRepository: PerformanceRepository? = null,
+    actorRendering: ActorRendering? = null,
     /** Owns the decoded bitmap for the project's persistent background image, if one is set
      *  (managed by [com.donnclab.kinetiframe.studio.domain.BackgroundManager]). */
     projectAssetManager: com.donnclab.kinetiframe.studio.media.ProjectAssetManager? = null,
@@ -350,16 +337,14 @@ private fun CanvasAreaContents(
                     clipToStage = !cameraPreview,
                 )
             }
-            if (actorFiles != null && actorRepository != null && performanceRepository != null) {
+            if (actorRendering != null) {
                 ProjectActorRenderLayer(
                     placements = state.project.actorPlacements.values,
                     projectId = state.project.id,
                     frame = displayFrame,
                     fps = state.project.fps,
                     canvasMatrix = state.canvas.matrixValues,
-                    actors = actorRepository,
-                    performances = performanceRepository,
-                    files = actorFiles,
+                    rendering = actorRendering,
                     onGeometryResolved = { actorGeometry = it },
                     selectedIds = state.selection.selectedContent?.actors?.keys.orEmpty(),
                     selectionPreview = if (state.selection.active) ({ selectionTransform.matrix }) else null,

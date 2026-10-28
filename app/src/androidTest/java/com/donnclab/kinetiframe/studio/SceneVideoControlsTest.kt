@@ -5,7 +5,9 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
+import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.actors.domain.PerformanceChoices
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
@@ -26,13 +28,14 @@ class SceneVideoControlsTest {
         )
         var dispatched: StudioIntent? = null
         val context = ApplicationProvider.getApplicationContext<android.content.Context>()
-        val performances = PerformanceRepository(DocumentFileStore(context.filesDir))
+        val files = DocumentFileStore(context.filesDir)
+        val choices = PerformanceChoices(ActorRepository(files), PerformanceRepository(files))
         compose.setContent {
             KinetiFrameTheme {
                 TimelineTracksPanel(
                     state = state,
                     onIntent = { dispatched = it },
-                    performanceRepository = performances,
+                    performanceChoices = choices,
                     onEditPlacement = {},
                     onAddToLibrary = {},
                     workspaceMode = true,

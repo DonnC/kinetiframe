@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.actors.domain.PerformanceChoices
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
@@ -24,7 +25,7 @@ internal fun EditorBottomBarSlot(
     state: StudioState,
     host: EditorHost,
     ui: EditorUiState,
-    repositories: EditorRepositories,
+    storage: EditorStorageViewModel,
     commands: EditorCommands,
 ) {
     val panels = ui.panels
@@ -36,10 +37,10 @@ internal fun EditorBottomBarSlot(
     Column(Modifier.fillMaxWidth().imePadding()) {
         // Pack Creator drafts are raster drawing only: no actor, audio or video tracks.
         if (!isPackCreator && panels.tracksWorkspaceVisible) {
-            TracksWorkspace(state, host, ui, repositories, commands)
+            TracksWorkspace(state, host, ui, storage.performanceChoices, commands)
         }
         TimelineControls(
-            actorRendererFactory = repositories::actorFrameRenderer,
+            actorRendererFactory = storage.actorRendering::newRenderer,
             state = state,
             onIntent = { intent ->
                 when {
@@ -73,7 +74,7 @@ private fun TracksWorkspace(
     state: StudioState,
     host: EditorHost,
     ui: EditorUiState,
-    repositories: EditorRepositories,
+    performanceChoices: PerformanceChoices,
     commands: EditorCommands,
 ) {
     val panels = ui.panels
@@ -92,8 +93,7 @@ private fun TracksWorkspace(
                 state.project.id,
                 state.project.fps,
                 state.animation.currentFrame,
-                repositories.actors,
-                repositories.performances,
+                performanceChoices,
                 onPlace = {
                     panels.tracksWorkspaceVisible = false
                     commands.placeActor(it)
@@ -110,7 +110,7 @@ private fun TracksWorkspace(
             workspaceMode = true,
             state = state,
             onIntent = commands.onIntent,
-            performanceRepository = repositories.performances,
+            performanceChoices = performanceChoices,
             onEditPlacement = { placement -> host.onEditPerformance?.invoke(placement, state.project.id) },
             onCreatePerformance = host.onCreatePerformance,
             filmstripScrollState = ui.timelineScrollState,

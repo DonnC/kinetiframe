@@ -2,6 +2,7 @@
 package com.donnclab.kinetiframe.studio.editor
 
 import androidx.compose.runtime.Composable
+import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.library.ui.LibraryPickerDialog
@@ -35,7 +36,7 @@ internal fun EditorDialogs(
     viewModel: StudioViewModel,
     state: StudioState,
     ui: EditorUiState,
-    repositories: EditorRepositories,
+    actorRendering: ActorRendering,
     onLibraryPick: (LibraryItemManifest) -> Unit,
 ) {
     val panels = ui.panels
@@ -82,7 +83,7 @@ internal fun EditorDialogs(
     PackTrayErrorDialog(ui.tray)
     if (panels.frameStudioVisible) {
         FrameStudio(
-            actorRendererFactory = repositories::actorFrameRenderer,
+            actorRendererFactory = actorRendering::newRenderer,
             state = state,
             cacheManager = viewModel.cacheManager,
             onIntent = onIntent,

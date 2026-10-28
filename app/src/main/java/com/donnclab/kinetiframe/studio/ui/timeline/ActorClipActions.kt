@@ -13,7 +13,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.composables.icons.lucide.Clapperboard
 import com.composables.icons.lucide.Lucide
-import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.actors.domain.PerformanceChoices
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
@@ -27,7 +27,7 @@ import kotlinx.coroutines.withContext
 internal fun SwitchPerformanceButton(
     placement: ActorPlacementReference,
     projectId: String,
-    performanceRepository: PerformanceRepository,
+    choices: PerformanceChoices,
     onSwitchPerformance: (ActorPlacementReference, PerformanceDocument) -> Unit,
     onCreatePerformance: ((String, String) -> Unit)?,
 ) {
@@ -37,7 +37,7 @@ internal fun SwitchPerformanceButton(
     val scope = rememberCoroutineScope()
     LaunchedEffect(menuOpen, placement.actorId) {
         if (!menuOpen) return@LaunchedEffect
-        when (val result = withContext(Dispatchers.IO) { performanceRepository.listForActor(placement.actorId) }) {
+        when (val result = withContext(Dispatchers.IO) { choices.performancesOf(placement.actorId) }) {
             is StoreResult.Value -> {
                 performances = result.value
                 error = null
@@ -66,7 +66,7 @@ internal fun SwitchPerformanceButton(
                             when (
                                 val result =
                                     withContext(Dispatchers.IO) {
-                                        performanceRepository.copyIntoProject(performance, projectId)
+                                        choices.copyIntoProject(performance, projectId)
                                     }
                             ) {
                                 is StoreResult.Value -> {

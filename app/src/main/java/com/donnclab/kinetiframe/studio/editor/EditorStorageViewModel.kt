@@ -3,6 +3,8 @@ package com.donnclab.kinetiframe.studio.editor
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
+import com.donnclab.kinetiframe.actors.domain.PerformanceChoices
+import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.contracts.StoreResult
@@ -23,13 +25,17 @@ import java.io.File
 
 /**
  * The editor's way to storage. `StudioViewModel` owns the document being edited; this ViewModel
- * writes it out and moves items between it and the library, so the editor's screens never hold a
- * store themselves. Its functions suspend
- * because the editor runs them inside its own save queue (`StudioViewModel.launchSave`).
+ * writes it out, moves items between it and the library, and draws its actors, so the editor's
+ * screens never hold a store themselves. Its functions suspend because the editor runs them
+ * inside its own save queue (`StudioViewModel.launchSave`).
  */
 class EditorStorageViewModel(
     private val saver: ProjectSaver,
     private val transfers: LibraryTransfers,
+    /** Draws the project's actors; each screen asks it for its own renderer. */
+    val actorRendering: ActorRendering,
+    /** The actors and performances the timeline can place. */
+    val performanceChoices: PerformanceChoices,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
     /** Saves [document] as [projectId]; see [ProjectSaver.save]. */
