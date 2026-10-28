@@ -20,9 +20,11 @@ import com.donnclab.kinetiframe.library.domain.LibraryArtwork
 import com.donnclab.kinetiframe.library.domain.LibraryTransfers
 import com.donnclab.kinetiframe.library.domain.PackDrafts
 import com.donnclab.kinetiframe.project.domain.ProjectCatalog
+import com.donnclab.kinetiframe.project.domain.ProjectOpener
 import com.donnclab.kinetiframe.project.domain.ProjectSaver
 import com.donnclab.kinetiframe.project.domain.ProjectTransfers
 import com.donnclab.kinetiframe.settings.AppPreferencesStore
+import com.donnclab.kinetiframe.studio.media.VoiceStyles
 import java.io.File
 
 /**
@@ -65,6 +67,8 @@ class AppContainer(context: Context) {
     val projectCatalog by lazy { ProjectCatalog(projects, database.projectDao()) }
     val performanceChoices by lazy { PerformanceChoices(actors, performances) }
     val actorRendering by lazy { ActorRendering(actors, performances, files) }
+    val projectOpener by lazy { ProjectOpener(files, projects) }
+    val voiceStyles by lazy { VoiceStyles(files) }
     val projectSaver by lazy { ProjectSaver(files, projects, actors, performances, database.projectDao()) }
     val projectTransfers by lazy { ProjectTransfers(files, library, filesDir, appContext.cacheDir) }
 

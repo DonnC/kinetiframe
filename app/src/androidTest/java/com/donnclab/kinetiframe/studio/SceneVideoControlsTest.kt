@@ -12,6 +12,8 @@ import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.studio.media.VoiceStyles
+import com.donnclab.kinetiframe.studio.ui.timeline.TimelineServices
 import com.donnclab.kinetiframe.studio.ui.timeline.TimelineTracksPanel
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -35,7 +37,7 @@ class SceneVideoControlsTest {
                 TimelineTracksPanel(
                     state = state,
                     onIntent = { dispatched = it },
-                    performanceChoices = choices,
+                    timeline = TimelineServices(choices, VoiceStyles(files)),
                     onEditPlacement = {},
                     onAddToLibrary = {},
                     workspaceMode = true,

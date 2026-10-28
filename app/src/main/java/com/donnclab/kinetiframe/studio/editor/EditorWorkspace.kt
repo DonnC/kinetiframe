@@ -55,12 +55,7 @@ internal data class EditorFolders(
 
 /** The editor around an open document: its bars, canvas, dialogs, saves and the effects that keep them in step. */
 @Composable
-internal fun EditorWorkspace(
-    viewModel: StudioViewModel,
-    host: EditorHost,
-    repositories: EditorRepositories,
-    folders: EditorFolders,
-) {
+internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folders: EditorFolders) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     val ui = rememberEditorUiState()

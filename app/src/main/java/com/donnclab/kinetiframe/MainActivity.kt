@@ -48,7 +48,6 @@ import com.donnclab.kinetiframe.navigation.LibraryKey
 import com.donnclab.kinetiframe.navigation.PackCreatorKey
 import com.donnclab.kinetiframe.navigation.ProjectGalleryKey
 import com.donnclab.kinetiframe.navigation.SettingsKey
-import com.donnclab.kinetiframe.presentation.actors.ActorStudioRepositories
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioTarget
 import com.donnclab.kinetiframe.presentation.common.LocalShowMenuLabels
 import com.donnclab.kinetiframe.settings.AppTheme
@@ -287,11 +286,6 @@ class MainActivity : ComponentActivity() {
                                                 projectId = key.projectId,
                                                 performanceId = key.performanceId,
                                                 returnPlacementId = key.returnPlacementId,
-                                            ),
-                                            repositories = ActorStudioRepositories(
-                                                actors = container.actors,
-                                                performances = container.performances,
-                                                artwork = container.actorArtwork,
                                             ),
                                             onExit = goBack,
                                             onPerformanceSaved = { returnedPerformance = it },

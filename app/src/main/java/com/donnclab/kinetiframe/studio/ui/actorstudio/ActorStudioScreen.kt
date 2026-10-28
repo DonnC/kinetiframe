@@ -20,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
@@ -30,21 +29,17 @@ import com.donnclab.kinetiframe.presentation.actors.ActorStudioDocumentIntent
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioDocumentSnapshot
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioDocumentViewModel
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioEditorCallbacks
-import com.donnclab.kinetiframe.presentation.actors.ActorStudioRepositories
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioTarget
 import com.donnclab.kinetiframe.presentation.actors.ActorViewMenu
 import com.donnclab.kinetiframe.studio.EditorScreen
 import com.donnclab.kinetiframe.ui.appViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /** Landscape destination that hosts the shared canvas engine against an isolated actor document. */
 @Composable
 fun ActorStudioScreen(
     target: ActorStudioTarget,
-    repositories: ActorStudioRepositories,
     onExit: () -> Unit,
     onPerformanceSaved: (PerformanceDocument) -> Unit = {},
 ) {
@@ -54,9 +49,6 @@ fun ActorStudioScreen(
     val projectId = target.projectId
     val performanceId = target.performanceId
     val returnPlacementId = target.returnPlacementId
-    val repository = repositories.actors
-    val performances = repositories.performances
-    val artwork = repositories.artwork
     // Performance editing is a distinct document context even when the actor is the same.
     val model: ActorStudioDocumentViewModel =
         appViewModel(key = "actor-studio-$actorId-${projectId ?: "setup"}-${performanceId ?: "new"}") {
@@ -112,7 +104,7 @@ fun ActorStudioScreen(
         manifest != null && revision != null -> RestoredActorEditor(
             actorId = actorId,
             document = ActorStudioDocumentSnapshot(manifest, revision, state.performance),
-            artwork = artwork,
+            documents = model,
             performanceAuthoring = projectId != null,
             reference = references.getOrPut(revision.view) { ActorReferenceSession() },
             actorViews = {
@@ -136,9 +128,7 @@ fun ActorStudioScreen(
                     // atomically committing the revision document that references the artwork.
                     saveScope.launch {
                         val paths = runCatching {
-                            withContext(Dispatchers.IO) {
-                                artwork.save(manifest.actorId, revisionId, definition.sceneGraph, runtime)
-                            }
+                            model.saveArtwork(revisionId, definition.sceneGraph, runtime)
                         }.getOrElse { throwable ->
                             error = throwable.message ?: "Could not save actor artwork"
                             writingArtwork = false
@@ -276,7 +266,7 @@ fun ActorStudioScreen(
 private fun RestoredActorEditor(
     actorId: String,
     document: ActorStudioDocumentSnapshot,
-    artwork: ActorArtworkStore,
+    documents: ActorStudioDocumentViewModel,
     performanceAuthoring: Boolean,
     reference: ActorReferenceSession,
     actorViews: @Composable () -> Unit,
@@ -298,9 +288,7 @@ private fun RestoredActorEditor(
     var restoreError by remember(manifest.actorId, revision.revisionId) { mutableStateOf<String?>(null) }
     LaunchedEffect(manifest.actorId, revision.revisionId) {
         try {
-            val missing = withContext(Dispatchers.IO) {
-                artwork.restore(manifest.actorId, revision.artworkAssetPaths, revision.sceneGraph, runtime)
-            }
+            val missing = documents.restoreArtwork(revision.artworkAssetPaths, revision.sceneGraph, runtime)
             check(missing.isEmpty()) { "Missing actor artwork: ${missing.joinToString()}" }
             restored = true
         } catch (cancelled: kotlinx.coroutines.CancellationException) {

@@ -15,21 +15,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import com.donnclab.kinetiframe.core.document.AssetKind
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.ProjectAsset
-import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.VoiceEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 
+/** [render] makes the restyled audio asset for a chosen style; it runs off the main thread. */
 @Composable
 internal fun VoiceEffectDialog(
     clip: AudioClipPlacement,
-    project: ProjectDocument,
+    render: suspend (VoiceEffect) -> ProjectAsset,
     onDismiss: () -> Unit,
     onSave: (VoiceEffect, ProjectAsset?) -> Unit,
 ) {
@@ -37,8 +34,6 @@ internal fun VoiceEffectDialog(
     var busy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    val projectFiles = com.donnclab.kinetiframe.studio.editor.rememberEditorRepositories(context).actorStore
     AlertDialog(onDismissRequest = onDismiss, title = { Text("Voice style") }, text = {
         Column(Modifier.verticalScroll(rememberScrollState())) {
             VoiceEffect.entries.forEach { effect ->
@@ -70,25 +65,7 @@ internal fun VoiceEffectDialog(
             error = null
             scope.launch {
                 try {
-                    val asset = withContext(Dispatchers.IO) {
-                        val original =
-                            requireNotNull(project.assets[clip.originalAssetId ?: clip.assetId]?.sourcePath) {
-                                "Audio source missing"
-                            }
-                        val id = "voice-${java.util.UUID.randomUUID()}"
-                        val directory = projectFiles.projectDirectory(project.id)
-                        val output = File(directory, "project-assets/audio/$id.wav")
-                        val duration =
-                            clip.sourceDurationMicros.takeIf { it > 0 }
-                                ?: (clip.trimStartMicros + clip.durationFrames * 1_000_000L / project.fps)
-                        com.donnclab.kinetiframe.media.audio.data.VoiceEffectProxy().create(
-                            File(original),
-                            duration,
-                            selected,
-                            output,
-                        )
-                        ProjectAsset(id, AssetKind.AUDIO, output.absolutePath, 0, 0)
-                    }
+                    val asset = withContext(Dispatchers.IO) { render(selected) }
                     onSave(selected, asset)
                 } catch (
                     failure: kotlinx.coroutines.CancellationException,
@@ -110,6 +87,11 @@ internal fun VoiceEffectDialog(
 @Composable
 private fun VoiceStylePreview() {
     com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme {
-        VoiceEffectDialog(AudioClipPlacement("clip", "audio", 0, "Voice", 0, 24), ProjectDocument(), {}, { _, _ -> })
+        VoiceEffectDialog(
+            AudioClipPlacement("clip", "audio", 0, "Voice", 0, 24),
+            { error("No audio in a preview") },
+            {},
+            { _, _ -> },
+        )
     }
 }

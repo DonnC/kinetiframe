@@ -21,18 +21,15 @@ import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.ProjectSaveDocument
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
-import com.donnclab.kinetiframe.data.project.ProjectFrameDraft
 import com.donnclab.kinetiframe.library.ui.packs.PackCreatorConfig
 import com.donnclab.kinetiframe.project.ui.ProjectDraftSession
 import com.donnclab.kinetiframe.project.ui.ProjectDraftSessionIntent
 import com.donnclab.kinetiframe.studio.editor.EditorFolders
 import com.donnclab.kinetiframe.studio.editor.EditorHost
+import com.donnclab.kinetiframe.studio.editor.EditorStorageViewModel
 import com.donnclab.kinetiframe.studio.editor.EditorWorkspace
-import com.donnclab.kinetiframe.studio.editor.rememberEditorRepositories
 import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorReferenceSession
 import com.donnclab.kinetiframe.ui.appViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
 
@@ -96,8 +93,7 @@ fun EditorScreen(
         onBackClick = onBackClick,
     )
     val context = LocalContext.current
-    val repositories = rememberEditorRepositories(context)
-    val actorStore = repositories.actorStore
+    val storage: EditorStorageViewModel = appViewModel()
 
     // Saved frames/assets remain project-owned. Raster edits use a private working cache;
     // evictions are not implicit saves, so Discard preserves the committed project pixels.
@@ -116,7 +112,7 @@ fun EditorScreen(
     val editorCacheDir = remember(projectId, cacheNamespace) {
         projectId?.let {
             if (packCreatorConfig != null) {
-                File(actorStore.projectDirectory(it), "frames")
+                File(storage.projectDirectory(it), "frames")
             } else {
                 File(context.cacheDir, "editor-scratch/${requireNotNull(projectDraft).state.value.id}/frames")
             }
@@ -124,7 +120,7 @@ fun EditorScreen(
             ?: File(context.cacheDir, "editor-scratch/${cacheNamespace ?: fallbackCacheNamespace}")
     }
     val editorFilesDir = remember(projectId, cacheNamespace) {
-        projectId?.let { actorStore.projectDirectory(it) }
+        projectId?.let { storage.projectDirectory(it) }
             ?: File(context.filesDir, "editor-scratch/${cacheNamespace ?: fallbackCacheNamespace}").apply { mkdirs() }
     }
 
@@ -134,23 +130,12 @@ fun EditorScreen(
 
     LaunchedEffect(projectId) {
         if (projectId == null || initialEditorState != null) return@LaunchedEffect
-        val result = withContext(Dispatchers.IO) {
-            val loaded = repositories.projects.load(projectId)
-            if (loaded is StoreResult.Value && projectDraft?.state?.value?.ready == false) {
-                try {
-                    ProjectFrameDraft.open(File(actorStore.projectDirectory(projectId), "frames"), editorCacheDir)
-                } catch (failure: Exception) {
-                    return@withContext StoreResult.Failure(
-                        failure.message ?: "Could not open frame draft",
-                        failure,
-                    )
-                }
-            }
-            loaded
-        }
+        // A gallery project draws on a draft copy of its frames until it is saved.
+        val draftFrames = editorCacheDir.takeIf { projectDraft?.state?.value?.ready == false }
+        val result = storage.openProject(projectId, draftFrames)
         when (result) {
             is StoreResult.Value -> {
-                loadedProjectDocument = result.value.second
+                loadedProjectDocument = result.value
                 projectDraft?.handleIntent(ProjectDraftSessionIntent.Prepared)
             }
 
@@ -206,5 +191,5 @@ fun EditorScreen(
             ),
         )
     }
-    EditorWorkspace(viewModel, host, repositories, EditorFolders(cache = editorCacheDir, files = editorFilesDir))
+    EditorWorkspace(viewModel, host, EditorFolders(cache = editorCacheDir, files = editorFilesDir))
 }

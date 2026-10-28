@@ -3,7 +3,6 @@ package com.donnclab.kinetiframe.studio.editor
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
-import com.donnclab.kinetiframe.actors.domain.PerformanceChoices
 import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
@@ -16,8 +15,10 @@ import com.donnclab.kinetiframe.core.document.ProjectSaveDocument
 import com.donnclab.kinetiframe.library.domain.LibraryPick
 import com.donnclab.kinetiframe.library.domain.LibraryTransfers
 import com.donnclab.kinetiframe.library.model.PackTrayItem
+import com.donnclab.kinetiframe.project.domain.ProjectOpener
 import com.donnclab.kinetiframe.project.domain.ProjectSaver
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
+import com.donnclab.kinetiframe.studio.ui.timeline.TimelineServices
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,8 +26,8 @@ import java.io.File
 
 /**
  * The editor's way to storage. `StudioViewModel` owns the document being edited; this ViewModel
- * writes it out, moves items between it and the library, and draws its actors, so the editor's
- * screens never hold a store themselves. Its functions suspend because the editor runs them
+ * opens and writes it, moves items between it and the library, and draws its actors, so the
+ * editor's screens never hold a store themselves. Its functions suspend because the editor runs them
  * inside its own save queue (`StudioViewModel.launchSave`).
  */
 class EditorStorageViewModel(
@@ -34,10 +35,18 @@ class EditorStorageViewModel(
     private val transfers: LibraryTransfers,
     /** Draws the project's actors; each screen asks it for its own renderer. */
     val actorRendering: ActorRendering,
-    /** The actors and performances the timeline can place. */
-    val performanceChoices: PerformanceChoices,
+    /** What the timeline's clip actions use: performances to place and voice styles. */
+    val timeline: TimelineServices,
+    private val opener: ProjectOpener,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
+    /** The folder that holds [projectId]'s document, frames and assets. */
+    fun projectDirectory(projectId: String): File = opener.projectDirectory(projectId)
+
+    /** Loads [projectId] for editing; see [ProjectOpener.open]. */
+    suspend fun openProject(projectId: String, draftFrames: File?): StoreResult<ProjectSaveDocument> =
+        withContext(ioDispatcher) { opener.open(projectId, draftFrames) }
+
     /** Saves [document] as [projectId]; see [ProjectSaver.save]. */
     suspend fun saveProject(
         projectId: String,
