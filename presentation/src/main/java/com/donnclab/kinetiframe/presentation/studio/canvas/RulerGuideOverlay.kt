@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,8 +44,8 @@ fun RulerGuideOverlay(
     var handle by remember { mutableIntStateOf(-1) }
     var lastDoc by remember { mutableStateOf(Offset.Zero) }
     var lastGuideLocal by remember { mutableStateOf(Offset.Zero) }
-    var rotationStartDegrees by remember { mutableStateOf(0f) }
-    var rotationStartPointerAngle by remember { mutableStateOf(0f) }
+    var rotationStartDegrees by remember { mutableFloatStateOf(0f) }
+    var rotationStartPointerAngle by remember { mutableFloatStateOf(0f) }
     var transient by remember(guide) { mutableStateOf(guide) }
     val color = MaterialTheme.colorScheme.primary.toArgb()
     Canvas(

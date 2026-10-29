@@ -40,13 +40,13 @@ import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 
 @Composable
 fun CanvasArea(
+    modifier: Modifier = Modifier,
     cameraPreview: Boolean = false,
     cameraPoseOverride: com.donnclab.kinetiframe.core.document.camera.CameraPose? = null,
     fitStage: Boolean = false,
     actorReference: com.donnclab.kinetiframe.presentation.studio.actorstudio.ActorReferenceSession? = null,
     state: StudioState,
     onIntent: (StudioIntent) -> Unit,
-    modifier: Modifier = Modifier,
     cacheManager: FrameCacheManager? = null,
     rigAssetManager: RigAssetManager? = null,
     actorRendering: ActorRendering? = null,
@@ -133,7 +133,8 @@ fun CanvasArea(
         }.background(MaterialTheme.colorScheme.surface),
     ) {
         CanvasAreaContents(
-            actorReference, shown, { intent ->
+            state = shown,
+            onIntent = { intent ->
                 if (com.donnclab.kinetiframe.presentation.studio.camera.CameraWorkspacePolicy.acceptsIntent(
                         enabled,
                         fitStage,
@@ -143,9 +144,20 @@ fun CanvasArea(
                     onIntent(intent)
                 }
             },
-            Modifier.fillMaxSize().sceneCameraViewport(enabled, values, stage.width, stage.height, pose.black),
-            cacheManager, rigAssetManager, actorRendering,
-            projectAssetManager, videoFrameProvider, enabled,
+            modifier = Modifier.fillMaxSize().sceneCameraViewport(
+                enabled,
+                values,
+                stage.width,
+                stage.height,
+                pose.black,
+            ),
+            actorReference = actorReference,
+            cacheManager = cacheManager,
+            rigAssetManager = rigAssetManager,
+            actorRendering = actorRendering,
+            projectAssetManager = projectAssetManager,
+            videoFrameProvider = videoFrameProvider,
+            cameraPreview = enabled,
         )
         // Preview cannot silently paint in camera coordinates. Use the explicit pencil toggle
         // to return to untransformed artwork editing; playback/scrubbing still show the camera.
@@ -160,10 +172,10 @@ fun CanvasArea(
 
 @Composable
 private fun CanvasAreaContents(
-    actorReference: com.donnclab.kinetiframe.presentation.studio.actorstudio.ActorReferenceSession? = null,
     state: StudioState,
     onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,
+    actorReference: com.donnclab.kinetiframe.presentation.studio.actorstudio.ActorReferenceSession? = null,
     cacheManager: FrameCacheManager? = null,
     rigAssetManager: RigAssetManager? = null,
     actorRendering: ActorRendering? = null,

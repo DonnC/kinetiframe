@@ -1,7 +1,11 @@
 package com.donnclab.kinetiframe.presentation.common
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -16,6 +20,9 @@ import androidx.compose.ui.window.DialogProperties
  * [androidx.compose.material3.AlertDialog]. Implemented as a platform [Dialog] purely so the
  * system back gesture and button both map to [onDismiss] for free, without adding a NavKey
  * destination for what is really a short-lived, in-place flow off Home.
+ *
+ * The dialog window draws edge to edge, so the content is padded for the system bars and the
+ * keyboard here, as MainActivity does for the main window, while the background fills behind them.
  */
 @Composable
 fun FullScreenDialog(onDismiss: () -> Unit, content: @Composable () -> Unit) {
@@ -24,7 +31,7 @@ fun FullScreenDialog(onDismiss: () -> Unit, content: @Composable () -> Unit) {
         properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false),
     ) {
         Surface(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-            content()
+            Box(Modifier.windowInsetsPadding(WindowInsets.safeDrawing)) { content() }
         }
     }
 }

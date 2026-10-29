@@ -13,11 +13,12 @@ Keep this page current:
 
 ## Now
 
-**The checker follows the new layout.** Step 9 is done: #52 to #54 moved every screen to
-`presentation`, which ended the module work with nine modules. This pull request makes
-`checkArchitecture` describe that layout. `app`'s main code may only use the root package and
-`navigation`. Feature layering inside `app` is retired, since the module graph now enforces it,
-and the old screen packages leave the checker's lists.
+**One Compose version for every module.** Navigation 3 pulled Compose 1.10 and 1.11 into `app`,
+while every other module compiled against the 1.7 that BOM 2024.09.00 pins, so the app shipped a
+mix of versions and `presentation`'s lint skipped four Compose checks. This pull request raises the
+BOM to 2026.09.00 (Compose 1.12.1, Material 3 1.4.0), the version Dependabot #3 proposes, and
+fixes what the newer checks find. The newer Compose draws `FullScreenDialog` edge to edge, so the
+add flows now pad for the system bars themselves.
 
 ## Next
 
@@ -48,8 +49,17 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Preview fixtures.** The shared fixtures moved to `presentation.preview`. Split them by feature
   as the screens that use them settle.
 - **Dependency updates.** Work through the Dependabot pull requests (#1 to #5) one family at a
-  time, with a full check and a device check after each. The Compose BOM (2024.09.00) is the
-  furthest behind.
+  time, with a full check and a device check after each. The Compose BOM is already at the
+  version #3 proposes.
+- **Compose deprecations.** BOM 2026.09.00 deprecates `createComposeRule` (47 device tests), in
+  favour of a `v2` rule that queues coroutines instead of running them at once, so tests may need
+  explicit waits. `TabRow` (2 uses) gives way to `PrimaryTabRow` and `SecondaryTabRow`, and
+  `rememberPlainTooltipPositionProvider` (2 uses) to `rememberTooltipPositionProvider`. Migrate
+  each with its screen, and check the tabs on a device, since the new rows draw a different
+  indicator.
+- **Audio ribbon recomposition.** `ProjectAudioScrubRibbon` reads the timeline's `layoutInfo` in
+  composition, so it recomposes on every scroll frame. Lint's `FrequentlyChangingValue` finding is
+  in the baseline. Move the reads into the draw phase, and check scrubbing on a device.
 - **Device tests.** 13 device tests fail on `develop` and failed before the restructuring began.
   They check labels and controls that have since changed. Delete each one when the code it covers
   is replaced.
@@ -88,6 +98,7 @@ fixed after the module work, unless one blocks testing.
 - The tool dock's grip doesn't read as draggable.
 - Frame thumbnails are dark grey while the canvas is white, so strokes are barely visible in them.
 - With one frame, the frame strip floats in the middle of a mostly empty bar.
+- Undo doesn't remove a frame added with the frame strip's +.
 
 **Home and actors**
 
@@ -160,6 +171,7 @@ fixed after the module work, unless one blocks testing.
 | #52 | Moved what the studio screens shared with `app` into `presentation` (step 9, part 1) |
 | #53 | Moved the editor, library, export and project screens into `presentation` (step 9, part 2) |
 | #54 | Moved Home and Settings into `presentation`, ending the module work (step 9 done) |
+| #55 | Made `checkArchitecture` describe the nine-module layout |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -198,13 +210,10 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 - **Checker tests.** CI runs `./gradlew -p buildSrc test`, but only for `main` during the
   restructuring, and `verify` can't run them. Three tests still named `actors` as an app feature
   after it became a module. Run them by hand whenever the checker or the package layout changes.
-- **Implicit Compose versions.** `app` resolved a newer Compose `foundation` than `presentation`
-  through its other dependencies, and some unused imports resolved only there. Moving
-  `EraserOptionsContent` needed an `@OptIn` for `combinedClickable`, and `presentation`'s lint
-  doesn't run four Compose checks that `app`'s does (`ModifierParameter`,
-  `AutoboxingStateCreation`, `ConfigurationScreenWidthHeight`, `FrequentlyChangingValue`), so 18
-  baseline findings in the moved screens went unchecked. Pin the Compose versions in one place,
-  then fix or baseline those findings.
+- **Implicit Compose versions.** Navigation 3 raised Compose in `app` above the BOM that the
+  other modules compiled against, so `presentation`'s lint skipped four Compose checks. A
+  transitive dependency can do this again: compare `./gradlew :app:dependencies` with
+  `:presentation:dependencies` when bumping a library that depends on Compose.
 - **Library build defaults.** Library modules relied on default SDK levels until the convention
   plugins set them (#17).
 

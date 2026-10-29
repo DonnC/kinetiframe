@@ -25,9 +25,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.LifecycleStartEffect
@@ -46,7 +46,7 @@ fun ScreenColorPickerHost(content: @Composable () -> Unit) {
     val state by model.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val activity = remember(context) { context.activity() }
-    val configuration = LocalConfiguration.current
+    val windowSize = LocalWindowInfo.current.containerSize
     var selectedCallback by remember { mutableStateOf<((Color) -> Unit)?>(null) }
     val currentCallback by rememberUpdatedState(selectedCallback)
     var origin by remember { mutableStateOf(Offset.Zero) }
@@ -67,7 +67,7 @@ fun ScreenColorPickerHost(content: @Composable () -> Unit) {
                 null
         }
     }
-    LaunchedEffect(configuration.screenWidthDp, configuration.screenHeightDp) {
+    LaunchedEffect(windowSize) {
         // An old snapshot cannot accurately sample a resized or rotated app window.
         model.handleIntent(ScreenColorIntent.Cancel)
         selectedCallback = null

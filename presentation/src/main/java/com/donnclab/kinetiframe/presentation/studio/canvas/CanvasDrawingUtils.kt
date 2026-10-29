@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
@@ -162,7 +163,7 @@ class ActiveStroke {
     val mirroredPoints = mutableListOf<TouchPoint>()
     var predictedTouchPoint: TouchPoint? = null
     var predictedMirroredTouchPoint: TouchPoint? = null
-    var drawTrigger by mutableStateOf(0L)
+    var drawTrigger by mutableLongStateOf(0L)
     var settledStrokes by mutableStateOf<List<SettledStroke>>(emptyList())
         private set
 

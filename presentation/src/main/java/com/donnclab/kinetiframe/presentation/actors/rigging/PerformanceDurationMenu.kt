@@ -11,8 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
-import java.util.Locale
 
 /** Contextual timing choices keep the stage visible and avoid dozens of frame-step taps. */
 @Composable
@@ -24,14 +24,15 @@ fun PerformanceDurationMenu(
     onDuration: (Long) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val locale = LocalConfiguration.current.locales[0]
     Box {
         TextButton(onClick = { expanded = true }) {
-            Text(String.format(Locale.getDefault(), "%.2f s", durationMicros / 1_000_000.0))
+            Text(String.format(locale, "%.2f s", durationMicros / 1_000_000.0))
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             listOf(500_000L, 1_000_000L, 2_000_000L, 3_000_000L, 5_000_000L, 10_000_000L).forEach { duration ->
                 DropdownMenuItem(
-                    text = { Text(String.format(Locale.getDefault(), "%.1f seconds", duration / 1_000_000.0)) },
+                    text = { Text(String.format(locale, "%.1f seconds", duration / 1_000_000.0)) },
                     enabled = duration in minimumMicros..maximumMicros,
                     onClick = {
                         onDuration(duration)
