@@ -17,6 +17,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -112,7 +113,7 @@ class MainActivity : ComponentActivity() {
                              * [returnedPerformance], because MainActivity owns the back stack and is the
                              * only place that knows a pop happened.
                              */
-                            var homeRefreshToken by remember { mutableStateOf(0) }
+                            var homeRefreshToken by remember { mutableIntStateOf(0) }
                             val goBack: () -> Unit = {
                                 if (backStack.size >
                                     1

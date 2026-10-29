@@ -28,6 +28,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
@@ -88,9 +90,10 @@ fun ColorPickerPanel(color: Color, onColorChanged: (Color) -> Unit, onDismiss: (
     val isLandscape = configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
     val pickerSize = if (isLandscape) 120.dp else 160.dp
     val screenPicker = LocalScreenColorRequest.current
+    val windowHeightDp = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp().value }
 
     Column(
-        modifier = Modifier.heightIn(max = (configuration.screenHeightDp - 32).coerceAtLeast(100).dp)
+        modifier = Modifier.heightIn(max = (windowHeightDp - 32).coerceAtLeast(100f).dp)
             .verticalScroll(rememberScrollState()).padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {

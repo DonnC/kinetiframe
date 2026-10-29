@@ -46,6 +46,7 @@ fun ActorPerformancePicker(
     currentFrame: Int,
     choices: PerformanceChoices,
     onPlace: (ActorPlacementReference) -> Unit,
+    modifier: Modifier = Modifier,
     onCreatePerformance: ((String, String) -> Unit)? = null,
     onImportAudio: () -> Unit = {},
     onRecordAudio: () -> Unit = {},
@@ -55,7 +56,6 @@ fun ActorPerformancePicker(
      *  One browse surface covers performances, audio and backgrounds, so there is no separate
      *  library entry per asset type. */
     onFromLibrary: () -> Unit = {},
-    modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var showActorPicker by remember { mutableStateOf(false) }

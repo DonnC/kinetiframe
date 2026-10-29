@@ -92,8 +92,8 @@ private fun AssetPreviewArea(details: AssetDetails) {
         val badge = previewBadgeFor(PreviewKind.STATIC_SCREENSHOT)
         PreviewBadge(
             stringResource(badge.first),
-            badge.second,
             modifier = Modifier.align(Alignment.TopStart).padding(Dimens.spaceS),
+            icon = badge.second,
         )
     }
 }

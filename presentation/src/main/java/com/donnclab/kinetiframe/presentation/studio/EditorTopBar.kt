@@ -70,6 +70,7 @@ fun EditorTopBar(
     onStudioClick: () -> Unit,
     onGridSettingsClick: () -> Unit,
     onOnionSettingsClick: () -> Unit,
+    modifier: Modifier = Modifier,
     /** True only for the standalone Actor Studio's own EditorScreen instance (see
      *  EditorScreen's `initialEditorState`) -- a plain FxF project never shows the Rig Setup
      *  entry point, however its data got here; adding/editing an actor performance from FxF goes
@@ -98,7 +99,6 @@ fun EditorTopBar(
      *  from Home's Packs tab. */
     onSavePackClick: (() -> Unit)? = null,
     onSaveActorClick: (() -> Unit)? = null,
-    modifier: Modifier = Modifier,
     onFocusCanvas: (() -> Unit)? = null,
     onTracksOpen: (() -> Unit)? = null,
     onEditPackItem: (() -> Unit)? = null,

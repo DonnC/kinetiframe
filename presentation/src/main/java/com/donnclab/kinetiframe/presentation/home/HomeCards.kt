@@ -64,7 +64,7 @@ import java.io.File
 private val ScrimBrush = Brush.verticalGradient(listOf(Color.Transparent, Color(0xB8141210)))
 
 @Composable
-private fun HomeChip(text: String, icon: ImageVector? = null, modifier: Modifier = Modifier) {
+private fun HomeChip(text: String, modifier: Modifier = Modifier, icon: ImageVector? = null) {
     Surface(modifier = modifier, shape = RoundedCornerShape(HomeTokens.chipCorner), color = HomeTokens.chipBg) {
         Row(
             Modifier.padding(horizontal = 7.dp, vertical = 4.dp),

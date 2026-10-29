@@ -32,7 +32,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Box
@@ -78,10 +79,11 @@ fun TimelineTracksPanel(
         return
     }
     var expanded by rememberSaveable { mutableStateOf(false) }
+    val windowHeight = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() }
     val laneHeight = if (workspaceMode) {
-        (LocalConfiguration.current.screenHeightDp.dp - 120.dp).coerceAtLeast(48.dp)
+        (windowHeight - 120.dp).coerceAtLeast(48.dp)
     } else {
-        (LocalConfiguration.current.screenHeightDp.dp * .24f).coerceIn(48.dp, 168.dp)
+        (windowHeight * .24f).coerceIn(48.dp, 168.dp)
     }
     var dropLane by remember { mutableStateOf<Int?>(null) }
     // A typed key prevents an actor and an audio clip from exposing competing controls.

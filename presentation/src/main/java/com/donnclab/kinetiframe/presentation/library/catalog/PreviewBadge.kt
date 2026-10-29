@@ -27,7 +27,7 @@ import com.donnclab.kinetiframe.presentation.R
  * "Live preview -- loops", "Static preview", or "Preview" for audio. Text is passed in rather than
  * derived here, since the exact copy differs slightly by [com.donnclab.kinetiframe.presentation.common.PreviewKind]. */
 @Composable
-fun PreviewBadge(label: String, icon: ImageVector = Icons.Filled.PlayArrow, modifier: Modifier = Modifier) {
+fun PreviewBadge(label: String, modifier: Modifier = Modifier, icon: ImageVector = Icons.Filled.PlayArrow) {
     Row(
         modifier
             .clip(RoundedCornerShape(Dimens.radiusPill))

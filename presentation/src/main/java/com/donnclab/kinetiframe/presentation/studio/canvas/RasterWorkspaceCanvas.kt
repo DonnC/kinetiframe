@@ -19,6 +19,7 @@ fun RasterWorkspaceCanvas(
     state: StudioState,
     onIntent: (StudioIntent) -> Unit,
     cacheManager: FrameCacheManager?,
+    modifier: Modifier = Modifier,
     /** The project's persistent background image, already decoded -- see [CanvasDrawingLayer]'s
      *  doc comment on its own parameter of the same name for the full rationale. */
     backgroundBitmap: android.graphics.Bitmap? = null,
@@ -26,7 +27,6 @@ fun RasterWorkspaceCanvas(
      *  [CanvasDrawingLayer]'s doc comment on its own parameters of the same name. */
     videoFrameBitmap: android.graphics.Bitmap? = null,
     videoOpacity: Float = 0.5f,
-    modifier: Modifier = Modifier,
     actorGeometry: com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry? = null,
     externalSelectionOverlay: Boolean = false,
     paperDecoration: Boolean = true,
