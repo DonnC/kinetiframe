@@ -15,12 +15,13 @@ never on the `data` module.
 | `presentation.export` | The export screen and `ExportViewModel` |
 | `presentation.project` | The project gallery's cards and ViewModel, the new-project flow and `ProjectDraftSession` |
 | `presentation.common` | Stateless UI shared by features: the brand mark and brand bar, the bottom navigation bar, the add-flow top and bottom bars, icon context menus, sliders and dialogs. The app provides the user's settings through `LocalAppPreferences` and `LocalShowMenuLabels` |
+| `presentation.home` | The Home screen, its tabs and cards, and `HomeActionsViewModel` |
+| `presentation.settings` | The Settings screen and `SettingsViewModel` |
 | `presentation.preview` | `PreviewCatalog`: sample cards and assets for previews and tests |
 
 Controls that know nothing about animation belong in [`designsystem`](../designsystem/README.md).
-Home and Settings still live in `app`, and move here next, as the
-[restructuring tracker](../docs/restructuring.md) describes. Some screen tests that need
-Robolectric or the app's assets also stay in `app` for now.
+`app` keeps navigation and the wiring. Some screen tests that need Robolectric or the app's
+assets still live in `app`, as the [restructuring tracker](../docs/restructuring.md) lists.
 
 ```sh
 ./gradlew :presentation:assembleDebug

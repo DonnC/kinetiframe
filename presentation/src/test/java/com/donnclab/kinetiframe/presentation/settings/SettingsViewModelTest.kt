@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.settings
+package com.donnclab.kinetiframe.presentation.settings
 
 import com.donnclab.kinetiframe.preferences.data.AppPreferencesStore
 import com.donnclab.kinetiframe.preferences.model.AppTheme

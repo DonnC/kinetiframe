@@ -13,22 +13,18 @@ Keep this page current:
 
 ## Now
 
-**Step 9: studio screens to `presentation`, in progress.** The library and editor screens use
-each other: the Pack Creator opens the editor, and the editor opens the library picker, so they
-move together. #52 gave `presentation` everything else they needed from `app`. This pull request
-moves them: the editor (`EditorScreen`, `StudioViewModel`, `studio.editor` and `studio.ui.*`) to
-`presentation.studio`, and the library, export and project screens to `presentation.library`,
-`presentation.export` and `presentation.project`. Their tests that run without Robolectric or the
-app's assets move with them. `app` now holds only Home, Settings, navigation and the wiring.
+**Step 9: screens to `presentation`, done with this pull request.** #52 gave `presentation`
+what the studio screens shared with `app`, and #53 moved the editor, library, export and project
+screens. This pull request moves Home and Settings to `presentation.home` and
+`presentation.settings`, with their strings and ViewModel tests. `app` now holds only the entry
+point, navigation, `AppContainer`, the ViewModel factory and diagnostics sharing, as the
+[UI in presentation](architecture/decisions/ui-in-presentation.md) decision describes. That ends
+the module work: nine modules, and no `export`, `library`, `home` or `settings` modules.
 
 ## Next
 
-The remaining steps, in order, following the
-[UI in presentation](architecture/decisions/ui-in-presentation.md) decision. Nine modules in all:
-no `export`, `library`, `home` or `settings` modules.
-
-1. **Shell screens.** Home and Settings move to `presentation`. Navigation and
-   wiring stay in `app`, which then holds nothing else.
+The tracks under **Later**, a screen or feature at a time. The checker's package lists come
+first, since they still describe the old layout (see **Discoveries**).
 
 ## Later
 
@@ -165,6 +161,7 @@ fixed after the module work, unless one blocks testing.
 | #50 | Split the library catalog into a studio reader and a card mapper |
 | #51 | Moved the app's preferences into `studio`; no screen imports a `data` package (step 8d done) |
 | #52 | Moved what the studio screens shared with `app` into `presentation` (step 9, part 1) |
+| #53 | Moved the editor, library, export and project screens into `presentation` (step 9, part 2) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -201,9 +198,10 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 - **Checker tests.** CI runs `./gradlew -p buildSrc test`, but only for `main` during the
   restructuring, and `verify` can't run them. Three tests still named `actors` as an app feature
   after it became a module. Run them by hand whenever the checker or the package layout changes.
-- **Checker package lists.** `KotlinBoundaryScanner` still lists `studio.ui`, `studio.editor`,
-  `library.ui`, `export.ui` and `project.ui` as app screen packages, and `UiLayerRules` lists
-  `studio.editor`, although `app` no longer has them. They still stop logic modules from using
+- **Checker package lists.** `KotlinBoundaryScanner` still lists `home`, `settings`, `studio.ui`,
+  `studio.editor`, `library.ui`, `export.ui` and `project.ui` as app screen packages,
+  `UiLayerRules` lists `studio.editor`, `home` and `settings`, and `FeatureLayering` still layers
+  `app`'s old features, although `app` no longer has them. They still stop logic modules from using
   those names, and the checker's tests use them as fixtures. Prune them with the tests.
 - **Implicit Compose versions.** `app` resolved a newer Compose `foundation` than `presentation`
   through its other dependencies, and some unused imports resolved only there. Moving

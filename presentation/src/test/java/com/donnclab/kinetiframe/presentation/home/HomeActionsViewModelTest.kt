@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.home
+package com.donnclab.kinetiframe.presentation.home
 
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.Layer

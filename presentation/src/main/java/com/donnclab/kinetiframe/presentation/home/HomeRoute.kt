@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.home
+package com.donnclab.kinetiframe.presentation.home
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts

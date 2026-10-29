@@ -63,14 +63,15 @@ Most product code still lives in `app`, organised by feature as described in the
 library module when everything it depends on can move with it. Package names never repeat a
 module name, so `com.donnclab.kinetiframe.engine` is always the `engine` module.
 
-## Where to find things in `app`
+## Where to find things
 
-All paths are under `app/src/main/java/com/donnclab/kinetiframe/`.
+Paths are under each module's `src/main/java/com/donnclab/kinetiframe/`. Rows that name no module
+are in `app`.
 
 | Area | Package |
 | --- | --- |
 | Activity and navigation | `MainActivity.kt`, `navigation` |
-| Home screen | `home`; the project gallery and new-project flow in `presentation`, `presentation/project` |
+| Home and Settings | `presentation` module, `presentation/home` and `presentation/settings`; the project gallery and new-project flow in `presentation/project` |
 | The studio (main editor) | `presentation` module, `presentation/studio` (`EditorScreen.kt`, `StudioViewModel.kt`, and the editor's slots in `editor`); `StudioState`, `StudioIntent` and `StudioSession` in the `studio` module |
 | Canvas input and drawing surface | `presentation` module, `presentation/studio/canvas` |
 | Editor toolbars and menus | `presentation` module, `presentation/studio/dock` and `presentation/studio/timeline` |
