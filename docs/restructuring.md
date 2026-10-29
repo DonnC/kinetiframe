@@ -25,10 +25,11 @@ draft work into `PackDrafts`. #44 ran Actor Studio's artwork picker through
 `ProjectSaver` writes an editor's saved project, and `EditorStorageViewModel` is the editor's way
 to storage. #47 moved the editor's library actions into `LibraryTransfers`, and #48 gave the
 canvas and timeline `ActorRendering` and `PerformanceChoices`, and #49 removed the editor's and
-Actor Studio's store bags. This pull request splits the library screen's catalog: `LibraryCatalog`
-in `studio` reads projects, performances, actors and library items, and `LocalLibraryCatalog`
-only turns them into cards. `BundledPalettes` moves to `library.model`. Only the app
-preferences store remains, which needs a decision on where app-wide settings live.
+Actor Studio's store bags, and #50 split the library screen's catalog into a `studio` reader
+and a card mapper. This pull request moves the app's preferences and their store into `studio`
+(`preferences.model` and `preferences.data`), next to the other features' storage, so
+`SettingsViewModel` reaches them like any other ViewModel. With that, no screen imports a `data`
+package, and step 8d is done.
 
 ## Next
 
@@ -50,8 +51,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
   check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
-  code, and the 1 places where UI code imports a `data` package. Screens should reach storage
-  through their ViewModel, as in strict MVI.
+  code. Screens already reach storage only through their ViewModels (step 8d).
 - **Parameter limits.** 52 functions still take more than the allowed number of parameters.
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
   still mirror `core` types, with bridges and parity tests between them, and `ActorView` duplicates
@@ -169,6 +169,7 @@ fixed after the module work, unless one blocks testing.
 | #47 | Moved the editor's library actions into `LibraryTransfers` (editor storage, part 2) |
 | #48 | Gave the editor's actor rendering and timeline narrow actor services (editor storage, part 3) |
 | #49 | Removed the editor's and Actor Studio's store bags (editor storage, part 4) |
+| #50 | Split the library catalog into a studio reader and a card mapper |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -216,7 +217,7 @@ From `.architecture/` after step 8d. Each count may only go down.
 | --- | --- | --- |
 | References to a feature above | 23 | 15 |
 | Compose imports outside UI code | 38 | 25 |
-| UI imports of `data` packages | 1 | 1 |
+| UI imports of `data` packages | 0 | — |
 | Functions over the parameter limit | 52 | — |
 | Inline text values | 298 | 95 |
 | Inline colours | 64 | 24 |

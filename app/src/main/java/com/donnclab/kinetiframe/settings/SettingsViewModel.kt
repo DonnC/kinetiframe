@@ -1,6 +1,10 @@
 package com.donnclab.kinetiframe.settings
 
 import androidx.lifecycle.viewModelScope
+import com.donnclab.kinetiframe.preferences.data.AppPreferencesStore
+import com.donnclab.kinetiframe.preferences.model.AppPreferences
+import com.donnclab.kinetiframe.preferences.model.AppTheme
+import com.donnclab.kinetiframe.preferences.model.StudioOrientation
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
