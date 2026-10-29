@@ -7,6 +7,7 @@ import com.donnclab.kinetiframe.actors.data.ActorReferenceIndex
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.export.ui.ExportViewModel
 import com.donnclab.kinetiframe.home.HomeActionsViewModel
+import com.donnclab.kinetiframe.library.domain.LibraryCatalog
 import com.donnclab.kinetiframe.library.ui.HierarchyBrowserViewModel
 import com.donnclab.kinetiframe.library.ui.LibraryPickerViewModel
 import com.donnclab.kinetiframe.library.ui.LibraryViewModel
@@ -63,11 +64,13 @@ fun appViewModelFactory(container: AppContainer): ViewModelProvider.Factory = vi
     initializer {
         LibraryViewModel(
             LocalLibraryCatalog(
-                container.files,
-                container.library,
-                container.projects,
-                container.scannedActors,
-                container.scannedPerformances,
+                LibraryCatalog(
+                    container.files,
+                    container.library,
+                    container.projects,
+                    container.scannedActors,
+                    container.scannedPerformances,
+                ),
             ),
             container.bundledContent,
         )

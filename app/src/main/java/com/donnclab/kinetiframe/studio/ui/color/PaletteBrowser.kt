@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.library.data.BundledPalettes
+import com.donnclab.kinetiframe.library.model.BundledPalettes
 import com.donnclab.kinetiframe.ui.appViewModel
 
 /** Same palette surface in the Library and every brush/fill colour popup. */

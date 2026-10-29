@@ -1,7 +1,4 @@
-package com.donnclab.kinetiframe.library.data
-
-import com.donnclab.kinetiframe.library.model.ColorSwatch
-import com.donnclab.kinetiframe.library.model.PaletteDocument
+package com.donnclab.kinetiframe.library.model
 
 /** Versioned exact colour data. Skin families are tonal starting points, not ethnicity labels. */
 object BundledPalettes {
