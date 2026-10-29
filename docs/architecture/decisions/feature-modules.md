@@ -1,7 +1,9 @@
 # Feature modules
 
 Accepted by the maintainer on 23 October 2026. Its module list and per-module `ui` packages are
-replaced by [UI in presentation](ui-in-presentation.md).
+replaced by [UI in presentation](ui-in-presentation.md). The layering check described under
+"Layering comes first" was retired once every screen had moved out of `app`, since the module
+graph now enforces the order.
 
 ## Context
 

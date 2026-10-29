@@ -13,18 +13,15 @@ Keep this page current:
 
 ## Now
 
-**Step 9: screens to `presentation`, done with this pull request.** #52 gave `presentation`
-what the studio screens shared with `app`, and #53 moved the editor, library, export and project
-screens. This pull request moves Home and Settings to `presentation.home` and
-`presentation.settings`, with their strings and ViewModel tests. `app` now holds only the entry
-point, navigation, `AppContainer`, the ViewModel factory and diagnostics sharing, as the
-[UI in presentation](architecture/decisions/ui-in-presentation.md) decision describes. That ends
-the module work: nine modules, and no `export`, `library`, `home` or `settings` modules.
+**The checker follows the new layout.** Step 9 is done: #52 to #54 moved every screen to
+`presentation`, which ended the module work with nine modules. This pull request makes
+`checkArchitecture` describe that layout. `app`'s main code may only use the root package and
+`navigation`. Feature layering inside `app` is retired, since the module graph now enforces it,
+and the old screen packages leave the checker's lists.
 
 ## Next
 
-The tracks under **Later**, a screen or feature at a time. The checker's package lists come
-first, since they still describe the old layout (see **Discoveries**).
+The tracks under **Later**, a screen or feature at a time.
 
 ## Later
 
@@ -162,6 +159,7 @@ fixed after the module work, unless one blocks testing.
 | #51 | Moved the app's preferences into `studio`; no screen imports a `data` package (step 8d done) |
 | #52 | Moved what the studio screens shared with `app` into `presentation` (step 9, part 1) |
 | #53 | Moved the editor, library, export and project screens into `presentation` (step 9, part 2) |
+| #54 | Moved Home and Settings into `presentation`, ending the module work (step 9 done) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -193,16 +191,13 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   Windows. It passes on rerun and in CI.
 - **Local Windows builds.** The IDE's Java language server and Gradle daemons can hold files in
   `buildSrc/build` open and break local builds of the checker. CI on Linux is the reliable check.
+  Locally, `./gradlew -p buildSrc test` right after a full build can fail to resolve the Android
+  plugin's accessors (`Unresolved reference 'android'`). Stop the daemons and run it on its own.
 - **Lint version checks.** Lint's "newer version available" checks are disabled, because their
   findings change with every upstream release. Dependabot reports updates instead.
 - **Checker tests.** CI runs `./gradlew -p buildSrc test`, but only for `main` during the
   restructuring, and `verify` can't run them. Three tests still named `actors` as an app feature
   after it became a module. Run them by hand whenever the checker or the package layout changes.
-- **Checker package lists.** `KotlinBoundaryScanner` still lists `home`, `settings`, `studio.ui`,
-  `studio.editor`, `library.ui`, `export.ui` and `project.ui` as app screen packages,
-  `UiLayerRules` lists `studio.editor`, `home` and `settings`, and `FeatureLayering` still layers
-  `app`'s old features, although `app` no longer has them. They still stop logic modules from using
-  those names, and the checker's tests use them as fixtures. Prune them with the tests.
 - **Implicit Compose versions.** `app` resolved a newer Compose `foundation` than `presentation`
   through its other dependencies, and some unused imports resolved only there. Moving
   `EraserOptionsContent` needed an `@OptIn` for `combinedClickable`, and `presentation`'s lint
@@ -219,7 +214,6 @@ From `.architecture/` during step 9. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| References to a feature above | 0 | — |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 0 | — |
 | Functions over the parameter limit | 52 | — |

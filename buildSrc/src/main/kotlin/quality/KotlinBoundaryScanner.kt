@@ -48,15 +48,7 @@ internal object KotlinBoundaryScanner {
                     if (lines > MAX_LINES) violations["lines|$path"] = lines
                     val parsed = factory.createFile(source.name, text.replace("\r\n", "\n").replace('\r', '\n'))
                     val pkg = parsed.packageFqName.asString()
-                    if (module == "app" && RETIRED_APP_PACKAGES.any { pkg == it || pkg.startsWith("$it.") }) {
-                        violations["package|$path|$pkg"] = 1
-                    }
-                    val layer = FeatureLayering.featureOf(pkg)?.takeIf { FeatureLayering.applies(module, path) }
-                    val layering = sortedMapOf<String, Int>()
-                    fun checkLayering(reference: String) {
-                        val target = layer?.let { FeatureLayering.violation(it, reference) } ?: return
-                        layering[target] = (layering[target] ?: 0) + 1
-                    }
+                    if (module == "app" && !isAppPackage(pkg, path)) violations["package|$path|$pkg"] = 1
                     val uiLayer = sortedMapOf<String, Int>()
                     fun checkUiLayer(import: String) {
                         if (!UiLayerRules.applies(path)) return
@@ -118,7 +110,6 @@ internal object KotlinBoundaryScanner {
                         }
                         override fun visitImportDirective(directive: KtImportDirective) {
                             checkReference(directive.importedFqName?.asString().orEmpty())
-                            checkLayering(directive.importedFqName?.asString().orEmpty())
                             checkUiLayer(directive.importedFqName?.asString().orEmpty())
                             super.visitImportDirective(directive)
                         }
@@ -126,7 +117,6 @@ internal object KotlinBoundaryScanner {
                             // Imports are checked once as complete names, not again as partial qualifiers.
                             if (generateSequence(expression.parent) { it.parent }.none { it is KtImportDirective }) {
                                 checkReference(expression.text)
-                                if (expression.parent !is KtDotQualifiedExpression) checkLayering(expression.text)
                             }
                             super.visitDotQualifiedExpression(expression)
                         }
@@ -156,7 +146,6 @@ internal object KotlinBoundaryScanner {
                             violations["dependency|$path|$forbidden"] = 1
                         }
                     })
-                    layering.forEach { (target, count) -> violations["layering|$path|$target"] = count }
                     uiLayer.forEach { (rule, count) -> violations["$rule|$path"] = count }
                 }
             }
@@ -237,23 +226,27 @@ internal object KotlinBoundaryScanner {
         "androidx.lifecycle.",
     )
 
-    // Screen packages still in the app module. Library modules sit below app and never reference
-    // them. The studio, library, export and project logic packages live in the studio module.
-    private val APP_PACKAGES = listOf(
-        "export.ui",
-        "home",
-        "library.ui",
-        "navigation",
-        "project.ui",
-        "settings",
-        "studio.editor",
-        "studio.ui",
-    ).map { "com.donnclab.kinetiframe.$it." }
+    private const val ROOT = "com.donnclab.kinetiframe"
+
+    // The app module's own package below the root. Library modules sit below app and never
+    // reference it.
+    private const val APP_NAVIGATION = "$ROOT.navigation"
+    private val APP_PACKAGES = listOf("$APP_NAVIGATION.")
 
     // Layer-named packages the app module no longer uses. `engine`, `data` and `core` are module
     // names, and `ui`, `domain` and `models` group by layer instead of by feature.
-    private val RETIRED_APP_PACKAGES = listOf("core", "data", "domain", "engine", "models", "ui")
-        .map { "com.donnclab.kinetiframe.$it" }
+    private val RETIRED_APP_PACKAGES = listOf("core", "data", "domain", "engine", "models", "ui").map { "$ROOT.$it" }
+
+    /**
+     * Whether app code may live in [pkg]. Its main code is only the entry point in the root
+     * package and `navigation`, since every screen lives in presentation. Its tests may still use
+     * the feature packages of the code they test.
+     */
+    private fun isAppPackage(pkg: String, path: String): Boolean = when {
+        RETIRED_APP_PACKAGES.any { pkg == it || pkg.startsWith("$it.") } -> false
+        "/src/main/" in path -> pkg == ROOT || pkg == APP_NAVIGATION || pkg.startsWith("$APP_NAVIGATION.")
+        else -> true
+    }
 
     private const val MAX_LINES = 500
     const val MAX_FUNCTION_PARAMETERS = 6

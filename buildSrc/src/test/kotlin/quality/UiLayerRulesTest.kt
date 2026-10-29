@@ -10,7 +10,7 @@ class UiLayerRulesTest {
 
     @Test fun `compose belongs in ui code, not in product rules or storage`() {
         assertNull(UiLayerRules.violation("$root.studio.ui.canvas", "androidx.compose.ui.geometry.Offset"))
-        assertNull(UiLayerRules.violation("$root.home", "androidx.compose.runtime.Composable"))
+        assertNull(UiLayerRules.violation("$root.presentation.home", "androidx.compose.runtime.Composable"))
         assertEquals(
             UiLayerRules.COMPOSE,
             UiLayerRules.violation("$root.studio.domain", "androidx.compose.ui.geometry.Offset"),
@@ -28,7 +28,11 @@ class UiLayerRulesTest {
         )
         assertEquals(
             UiLayerRules.UI_DATA,
-            UiLayerRules.violation("$root.studio.editor", "$root.project.data.ProjectRepository"),
+            UiLayerRules.violation("$root.presentation.studio.editor", "$root.project.data.ProjectRepository"),
+        )
+        assertEquals(
+            UiLayerRules.UI_DATA,
+            UiLayerRules.violation("$root.navigation", "$root.project.data.ProjectRepository"),
         )
         assertNull(UiLayerRules.violation("$root.library.ui", "$root.library.ui.LibraryIntent"))
         assertNull(UiLayerRules.violation("$root.studio.domain", "$root.project.data.ProjectRepository"))

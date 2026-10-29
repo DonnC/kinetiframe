@@ -54,13 +54,13 @@ class KotlinBoundaryScannerTest {
         assertTrue(findings.keys.all { it.startsWith("dependency|") })
     }
 
-    @Test fun `library modules cannot reference app feature packages`() {
-        fixture("engine", "Bad.kt", "import com.donnclab.kinetiframe.studio.ui.StudioScreen")
-        fixture("core", "Bad.kt", "val x = com.donnclab.kinetiframe.home.HomeRoute()")
+    @Test fun `library modules cannot reference app packages`() {
+        fixture("engine", "Bad.kt", "import com.donnclab.kinetiframe.navigation.AppNavHost")
+        fixture("core", "Bad.kt", "val x = com.donnclab.kinetiframe.navigation.Destination.Home")
         fixture(
             "app",
-            "studio/Good.kt",
-            "package com.donnclab.kinetiframe.studio\nimport com.donnclab.kinetiframe.library.ui.Card",
+            "Good.kt",
+            "package com.donnclab.kinetiframe\nimport com.donnclab.kinetiframe.navigation.AppNavHost",
         )
         val findings = KotlinBoundaryScanner.scan(root, listOf("engine", "core", "app"))
         assertEquals(2, findings.size)
@@ -70,11 +70,24 @@ class KotlinBoundaryScannerTest {
     @Test fun `app code cannot live in layer or module named packages`() {
         fixture("app", "ui/Old.kt", "package com.donnclab.kinetiframe.ui.home")
         fixture("app", "engine/Old.kt", "package com.donnclab.kinetiframe.engine")
-        fixture("app", "home/New.kt", "package com.donnclab.kinetiframe.home")
+        fixture("app", "navigation/Nav.kt", "package com.donnclab.kinetiframe.navigation")
         fixture("app", "Root.kt", "package com.donnclab.kinetiframe")
         val findings = KotlinBoundaryScanner.scan(root, listOf("app"))
         assertEquals(
             setOf("com.donnclab.kinetiframe.ui.home", "com.donnclab.kinetiframe.engine"),
+            findings.keys.map { it.substringAfterLast('|') }.toSet(),
+        )
+    }
+
+    @Test fun `app main code holds no screens, while its tests may use feature packages`() {
+        fixture("app", "home/Home.kt", "package com.donnclab.kinetiframe.home")
+        fixture("app", "studio/ui/Canvas.kt", "package com.donnclab.kinetiframe.studio.ui")
+        val test = File(root, "app/src/test/kotlin/studio/StudioTest.kt")
+        test.parentFile.mkdirs()
+        test.writeText("package com.donnclab.kinetiframe.studio")
+        val findings = KotlinBoundaryScanner.scan(root, listOf("app"))
+        assertEquals(
+            setOf("com.donnclab.kinetiframe.home", "com.donnclab.kinetiframe.studio.ui"),
             findings.keys.map { it.substringAfterLast('|') }.toSet(),
         )
     }
