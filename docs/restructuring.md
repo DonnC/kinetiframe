@@ -17,7 +17,8 @@ Keep this page current:
 while every other module compiled against the 1.7 that BOM 2024.09.00 pins, so the app shipped a
 mix of versions and `presentation`'s lint skipped four Compose checks. This pull request raises the
 BOM to 2026.09.00 (Compose 1.12.1, Material 3 1.4.0), the version Dependabot #3 proposes, and
-fixes what the newer checks find.
+fixes what the newer checks find. The newer Compose draws `FullScreenDialog` edge to edge, so the
+add flows now pad for the system bars themselves.
 
 ## Next
 
