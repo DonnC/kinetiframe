@@ -8,6 +8,7 @@ import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.data.LibraryRepository
+import com.donnclab.kinetiframe.library.domain.LibraryCatalog
 import com.donnclab.kinetiframe.library.ui.LocalLibraryCatalog
 import com.donnclab.kinetiframe.presentation.common.AssetKind
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -41,11 +42,13 @@ class BundledDemoLibraryInstallerTest {
         }
         val catalog = DocumentFileStore(root).let { store ->
             LocalLibraryCatalog(
-                store,
-                LibraryRepository(store),
-                ProjectRepository(store),
-                ActorRepository(store),
-                PerformanceRepository(store),
+                LibraryCatalog(
+                    store,
+                    LibraryRepository(store),
+                    ProjectRepository(store),
+                    ActorRepository(store),
+                    PerformanceRepository(store),
+                ),
             ).load()
         }
         assertEquals(12, catalog.projects.count { it.details.kind == AssetKind.BACKGROUND_IMAGE })
@@ -119,11 +122,13 @@ class BundledDemoLibraryInstallerTest {
             )
         }
         val loaded = LocalLibraryCatalog(
-            files,
-            library,
-            ProjectRepository(files),
-            ActorRepository(files),
-            PerformanceRepository(files),
+            LibraryCatalog(
+                files,
+                library,
+                ProjectRepository(files),
+                ActorRepository(files),
+                PerformanceRepository(files),
+            ),
         ).load()
         assertEquals(2, loaded.projects.count { it.details.kind == AssetKind.PROJECT })
         assertEquals(3, loaded.projects.count { it.details.kind == AssetKind.FRAME })

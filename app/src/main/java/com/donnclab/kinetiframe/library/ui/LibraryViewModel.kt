@@ -56,7 +56,7 @@ class LibraryViewModel(
                     organizationWrites.lock()
                     try {
                         withContext(ioDispatcher) {
-                            catalog.organizationStore().rememberBrowser("packs", intent.position)
+                            catalog.source.organizationStore().rememberBrowser("packs", intent.position)
                         }
                     } catch (
                         cancelled: kotlinx.coroutines.CancellationException,
@@ -89,7 +89,7 @@ class LibraryViewModel(
                     try {
                         val item = requireNotNull(items[intent.pack.id])
                         val (contents, organization) = withContext(ioDispatcher) {
-                            catalog.packContents(item) to catalog.organizationStore().updateItem(
+                            catalog.packContents(item) to catalog.source.organizationStore().updateItem(
                                 com.donnclab.kinetiframe.library.ui.packs.PackBrowserIndex.key(item),
                                 com.donnclab.kinetiframe.library.ui.packs.PackBrowserIndex.defaults(item),
                             ) {

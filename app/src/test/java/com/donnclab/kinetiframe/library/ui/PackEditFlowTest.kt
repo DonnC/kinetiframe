@@ -8,6 +8,7 @@ import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.data.LibraryRepository
+import com.donnclab.kinetiframe.library.domain.LibraryCatalog
 import com.donnclab.kinetiframe.library.model.PackItemEntry
 import com.donnclab.kinetiframe.library.model.PackManifest
 import kotlinx.coroutines.Dispatchers
@@ -74,11 +75,13 @@ class PackEditFlowTest {
         val model =
             LibraryViewModel(
                 LocalLibraryCatalog(
-                    files,
-                    repository,
-                    ProjectRepository(files),
-                    ActorRepository(files),
-                    PerformanceRepository(files),
+                    LibraryCatalog(
+                        files,
+                        repository,
+                        ProjectRepository(files),
+                        ActorRepository(files),
+                        PerformanceRepository(files),
+                    ),
                 ),
                 ioDispatcher = dispatcher,
             )

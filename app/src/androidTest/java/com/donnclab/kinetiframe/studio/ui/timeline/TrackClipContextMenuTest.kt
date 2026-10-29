@@ -18,7 +18,6 @@ import com.donnclab.kinetiframe.studio.AnimationState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.media.VoiceStyles
-import com.donnclab.kinetiframe.studio.ui.timeline.TimelineServices
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

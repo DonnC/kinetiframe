@@ -10,15 +10,10 @@ import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ViewModule
 import androidx.compose.ui.graphics.Color
-import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
-import com.donnclab.kinetiframe.core.contracts.StoreResult
-import com.donnclab.kinetiframe.data.project.ProjectRepository
-import com.donnclab.kinetiframe.data.storage.DocumentFileStore
-import com.donnclab.kinetiframe.library.data.LibraryRepository
+import com.donnclab.kinetiframe.library.domain.LibraryCatalog
 import com.donnclab.kinetiframe.library.model.LibraryOrganization
 import com.donnclab.kinetiframe.library.ui.packs.PackBrowserIndex
 import com.donnclab.kinetiframe.presentation.common.AssetDetails
@@ -28,19 +23,12 @@ import com.donnclab.kinetiframe.presentation.common.AudioTrackSummary
 import com.donnclab.kinetiframe.presentation.common.CardThumbnail
 import com.donnclab.kinetiframe.presentation.common.PreviewKind
 import com.donnclab.kinetiframe.presentation.common.StampAsset
-import java.io.File
 
-/** IO-only projection. Working projects/actors and captured reusable items are separate stores.
- * Scope-qualified IDs prevent collisions between project vaults; no bitmap decoding here.
- * [actorRepository] and [performanceRepository] scan their files rather than the Room index, so
- * the library shows what is on disk. */
-class LocalLibraryCatalog(
-    private val files: DocumentFileStore,
-    private val library: LibraryRepository,
-    private val projectRepository: ProjectRepository,
-    private val actorRepository: ActorRepository,
-    private val performanceRepository: PerformanceRepository,
-) {
+/**
+ * Turns the library's contents, read by [source], into the cards the library screen shows: their
+ * names, details, thumbnails and icons. No bitmaps are decoded here; call off the main thread.
+ */
+class LocalLibraryCatalog(val source: LibraryCatalog) {
     data class Snapshot(
         val projects: List<AssetSummary>,
         val actors: List<AssetSummary>,
@@ -50,54 +38,38 @@ class LocalLibraryCatalog(
         val packItemNames: Map<String, List<String>> = emptyMap(),
         val organization: LibraryOrganization = LibraryOrganization(),
     )
-    fun organizationStore() = library.organizationStore()
 
     fun load(): Snapshot {
+        val contents = source.load(PackBrowserIndex::key)
         val projects = mutableListOf<AssetSummary>()
         val actors = mutableListOf<AssetSummary>()
         val packs = mutableListOf<AssetSummary>()
         val audio = mutableListOf<AudioTrackSummary>()
-        val items = linkedMapOf<String, LibraryItemManifest>()
-        val packItemNames = mutableMapOf<String, List<String>>()
-        val savedProjects = value(projectRepository.list())
-        savedProjects.forEach { project ->
+        contents.projects.forEach { project ->
             projects += card(
-                "project:${project.projectId}",
-                project.displayName,
+                project.id,
+                project.name,
                 AssetKind.PROJECT,
-                "${project.fps} FPS · ${project.stage.width}×${project.stage.height}",
+                "${project.fps} FPS · ${project.width}×${project.height}",
                 project.thumbnailPath,
             )
-            value(performanceRepository.list(project.projectId)).forEach { performance ->
-                actors += card(
-                    "performance:${project.projectId}:${performance.performanceId}",
-                    performance.displayName,
-                    AssetKind.ACTOR_PERFORMANCE,
-                    "${project.displayName} · ${performance.durationMicros / 1_000_000f}s",
-                )
-            }
         }
-        value(actorRepository.listWithThumbnails()).forEach { (actor, thumbnail) ->
-            actors +=
-                card("actor:${actor.actorId}", actor.displayName, AssetKind.ACTOR_RIG, actor.templateId, thumbnail)
+        contents.performances.forEach { performance ->
+            actors += card(
+                performance.id,
+                performance.name,
+                AssetKind.ACTOR_PERFORMANCE,
+                "${performance.projectName} · ${performance.durationMicros / 1_000_000f}s",
+            )
         }
-        val manifests =
-            value(library.list()) + savedProjects.flatMap { value(library.list(LibraryScope.PROJECT, it.projectId)) }
-        manifests.forEach { item ->
-            // Palettes have their own exact-value browser, not drawing/project cards.
-            if (item.kind == LibraryItemKind.PALETTE) return@forEach
-            val projectId = if (item.scope == LibraryScope.PROJECT) item.sourceProjectId else ""
-            val id = "${item.scope}:$projectId:${item.libraryItemId}"
-            items[id] = item
-            val directory = if (item.scope == LibraryScope.PERSONAL) {
-                files.libraryDirectory(item.libraryItemId)
-            } else {
-                files.projectVaultDirectory(requireNotNull(item.sourceProjectId), item.libraryItemId)
-            }
-            val location = if (item.scope == LibraryScope.PERSONAL) {
-                "Personal Library"
-            } else {
-                savedProjects.firstOrNull { it.projectId == item.sourceProjectId }?.displayName ?: "Project Library"
+        contents.actors.forEach { actor ->
+            actors += card(actor.id, actor.name, AssetKind.ACTOR_RIG, actor.templateId, actor.thumbnailPath)
+        }
+        contents.items.forEach { entry ->
+            val item = entry.item
+            val location = when {
+                item.scope == LibraryScope.PERSONAL -> "Personal Library"
+                else -> entry.projectName ?: "Project Library"
             }
             val kind = when (item.kind) {
                 LibraryItemKind.PROJECT -> AssetKind.PROJECT
@@ -109,43 +81,8 @@ class LocalLibraryCatalog(
                 LibraryItemKind.AUDIO -> AssetKind.AUDIO
                 LibraryItemKind.PALETTE -> error("Palettes use the colour browser")
             }
-            val image = if (kind == AssetKind.FRAME || kind == AssetKind.BACKGROUND_IMAGE) {
-                item.payloadFileName?.let { File(directory, "payload/$it").takeIf(File::isFile)?.absolutePath }
-            } else {
-                null
-            }
-            val pack = if (kind == AssetKind.PACK) {
-                (
-                    library.loadPack(
-                        item.libraryItemId,
-                        item.scope,
-                        item.sourceProjectId,
-                    ) as? StoreResult.Value
-                    )?.value?.second
-            } else {
-                null
-            }
-            val packImage = pack?.items?.firstOrNull()?.let {
-                library.packItemFile(
-                    item.libraryItemId,
-                    it.file,
-                    item.scope,
-                    item.sourceProjectId,
-                ).takeIf(File::isFile)?.absolutePath
-            }
-            if (pack !=
-                null
-            ) {
-                packItemNames[PackBrowserIndex.key(item)] =
-                    pack.items.map { it.name + " " + it.desc }
-            }
-            val summary = card(
-                id,
-                item.displayName,
-                kind,
-                if (pack != null) "${pack.items.size} drawings · $location" else location,
-                image ?: packImage,
-            )
+            val info = entry.drawingCount?.let { "$it drawings · $location" } ?: location
+            val summary = card(entry.id, item.displayName, kind, info, entry.imagePath)
             when (kind) {
                 AssetKind.PROJECT, AssetKind.BACKGROUND_IMAGE, AssetKind.FRAME -> projects += summary
 
@@ -160,42 +97,28 @@ class LocalLibraryCatalog(
                         "voice" in tags -> "VOICE"
                         else -> "SFX"
                     }
-                    val path = item.payloadFileName?.let {
-                        File(directory, "payload/$it").takeIf(File::isFile)?.absolutePath
-                    }
+                    val path = entry.audioPath
                     audio += AudioTrackSummary(
-                        id,
+                        entry.id,
                         item.displayName,
                         location,
                         tag,
                         0,
                         details = summary.details.copy(
                             audioPath = path,
-                            previewKind = if (path !=
-                                null
-                            ) {
-                                PreviewKind.AUDIO_PLAYER
-                            } else {
-                                PreviewKind.STATIC_SCREENSHOT
-                            },
+                            previewKind = if (path != null) PreviewKind.AUDIO_PLAYER else PreviewKind.STATIC_SCREENSHOT,
                         ),
                     )
                 }
             }
         }
-        return Snapshot(projects, actors, packs, audio, items, packItemNames, organizationStore().load())
+        val items = contents.items.associate { it.id to it.item }
+        return Snapshot(projects, actors, packs, audio, items, contents.packItemNames, contents.organization)
     }
 
-    fun packContents(item: LibraryItemManifest): List<StampAsset> =
-        value(library.loadPack(item.libraryItemId, item.scope, item.sourceProjectId)).second.items.map { drawing ->
-            StampAsset(
-                drawing.file,
-                drawing.name,
-                Icons.Filled.Folder,
-                Color.Gray,
-                library.packItemFile(item.libraryItemId, drawing.file, item.scope, item.sourceProjectId).absolutePath,
-            )
-        }
+    fun packContents(item: LibraryItemManifest): List<StampAsset> = source.packContents(item).map { drawing ->
+        StampAsset(drawing.fileName, drawing.name, Icons.Filled.Folder, Color.Gray, drawing.path)
+    }
 
     private fun card(id: String, name: String, kind: AssetKind, info: String, image: String? = null): AssetSummary {
         val thumbnail = image?.let { CardThumbnail.LocalImage(it) }
@@ -215,10 +138,5 @@ class LocalLibraryCatalog(
         // Real local entries never claim the sample UI's automatic live/audio preview.
         val details = AssetDetails(id, kind, PreviewKind.STATIC_SCREENSHOT, name, info, thumbnail)
         return AssetSummary(id, name, info, thumbnail, details = details)
-    }
-
-    private fun <T> value(result: StoreResult<T>): T = when (result) {
-        is StoreResult.Value -> result.value
-        is StoreResult.Failure -> throw IllegalStateException(result.message, result.cause)
     }
 }
