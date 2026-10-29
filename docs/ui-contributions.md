@@ -13,10 +13,10 @@ or even a device to start.
 | Shared app UI (brand bar, add-flow bars, icon context menus) | `presentation/.../presentation/common` |
 | Library cards, details sheets, tabs | `presentation/.../presentation/library/catalog`, `presentation/.../presentation/library` |
 | The studio's toolbars, menus and timeline | `presentation/.../presentation/studio/dock`, `presentation/.../presentation/studio/timeline` |
-| A screen's layout or behavior | its feature package in `presentation`, for example `presentation/.../presentation/library`; Home and Settings are still in `app` |
+| A screen's layout or behavior | its feature package in `presentation`, for example `presentation/.../presentation/library` |
 | Navigation, permissions, Activity setup | `app/.../MainActivity.kt`, `app/.../navigation` |
 
-Home and Settings still live in `app`. New shared controls go in `designsystem` when they know nothing
+New shared controls go in `designsystem` when they know nothing
 about animation, and in `presentation/.../presentation/common` when they do. When a screen moves out
 of `app`, it goes to `presentation/.../presentation/<feature>` together with its state and
 ViewModel.

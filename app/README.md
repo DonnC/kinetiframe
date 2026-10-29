@@ -1,14 +1,14 @@
 # app
 
-The KinetiFrame Android app. It holds the entry point, navigation, the service container
-(`AppContainer`) and ViewModel factory, the Home and Settings screens, and the bundled sample
-assets. The other screens live in [`presentation`](../presentation/README.md). It depends on all
-the other production modules.
+The KinetiFrame Android app. It holds the entry point (`MainActivity`, `KinetiFrameApplication`),
+navigation (`navigation`), the service container (`AppContainer`), the ViewModel factory,
+diagnostics sharing and the bundled sample assets. Every screen lives in
+[`presentation`](../presentation/README.md). It depends on all the other production modules.
 
-Packages are grouped by feature (`home`, `settings`, `navigation`). Its tests still include
-screen and studio tests that read the app's assets or need Robolectric. See the
+Its tests still include screen and studio tests that read the app's assets or need Robolectric.
+See the
 [project architecture](../docs/architecture/decisions/project-architecture.md) decision and the
-[map of where each feature lives](../docs/architecture/README.md#where-to-find-things-in-app).
+[map of where each feature lives](../docs/architecture/README.md#where-to-find-things).
 
 ## Things to know before changing code here
 

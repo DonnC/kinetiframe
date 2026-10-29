@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.home
+package com.donnclab.kinetiframe.presentation.home
 
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest

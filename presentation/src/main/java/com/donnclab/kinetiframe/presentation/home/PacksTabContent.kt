@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.home
+package com.donnclab.kinetiframe.presentation.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

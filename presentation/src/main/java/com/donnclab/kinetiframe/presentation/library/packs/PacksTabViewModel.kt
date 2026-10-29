@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
  *  pack's full contents on demand. No canvas or editor state -- editing a pack is a full separate
  *  destination ([com.donnclab.kinetiframe.presentation.library.packs.PackCreatorRoute] with an `editItemId`), not something
  *  this ViewModel drives. Sharing a pack stays a Route-level, Context-dependent concern -- exactly
- *  like [com.donnclab.kinetiframe.home.HomeRoute]'s own `shareProject` -- not a ViewModel intent. */
+ *  like [com.donnclab.kinetiframe.presentation.home.HomeRoute]'s own `shareProject` -- not a ViewModel intent. */
 class PacksTabViewModel(
     private val libraryRepository: LibraryRepository,
     private val scope: LibraryScope = LibraryScope.PERSONAL,

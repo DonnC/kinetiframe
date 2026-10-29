@@ -70,7 +70,7 @@ The `app` packages become:
 | `media` | Background images and image decoding | `engine/asset`, `data/image` |
 | `library` | Library, packs, palettes and bundled content | `ui/library`, `ui/packs`, `data/library`, `data/color`, `data/demo` |
 | `export` | Video export | `data/export`, `ui/export` |
-| `home`, `settings`, `diagnostics` | Those screens and their storage | `ui/*`, `data/*` |
+| `home`, `settings`, `diagnostics` | Those screens and their storage; the screens are now `presentation.home` and `presentation.settings` | `ui/*`, `data/*` |
 | `navigation` | Navigation keys and the bottom bar | `ui/navigation`, `ui/components/navigation` |
 | `common` | Shared app UI, strings, coroutine helpers and JSON setup | `ui/common`, `ui/components/common`, `core/coroutines` |
 | `preview` | Preview fixtures and fake data, used only by previews and tests; now `presentation.preview` | `ui/common/model/PreviewCatalog.kt` |

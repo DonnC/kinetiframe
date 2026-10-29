@@ -72,4 +72,18 @@
     <string name="audio_unmute_lane">Unmute this audio lane</string>
     <string name="audio_lock_lane">Lock this audio lane</string>
     <string name="audio_unlock_lane">Unlock this audio lane</string>
+
+    <!-- Home: packs -->
+    <string name="pack_edit">Edit</string>
+    <string name="pack_share">Share (.kpack)</string>
+    <string name="pack_delete">Delete</string>
+    <string name="pack_actions">Pack actions</string>
+
+    <!-- Home: import -->
+    <string name="import_title">Import</string>
+    <string name="import_subtitle">Bring in a project from your device or your library</string>
+    <string name="import_from_file_title">From File</string>
+    <string name="import_from_file_subtitle">A .kframe file saved on your device</string>
+    <string name="import_from_library_title">From Library</string>
+    <string name="import_from_library_subtitle">Your saved packs, actors and assets</string>
 </resources>

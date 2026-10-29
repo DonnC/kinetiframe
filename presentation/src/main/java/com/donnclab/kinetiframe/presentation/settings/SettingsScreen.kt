@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.settings
+package com.donnclab.kinetiframe.presentation.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
