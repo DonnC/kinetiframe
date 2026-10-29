@@ -42,7 +42,7 @@ import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 /**
  * A stable-part hierarchy for Actor Studio, styled as a layer browser: expand/collapse groups,
  * per-part bound-artwork status, and a per-part show/hide toggle -- mirroring FxF's own layer
- * list ([com.donnclab.kinetiframe.studio.ui.timeline.LayerItem]) so both editors read the same way.
+ * list ([com.donnclab.kinetiframe.presentation.studio.timeline.LayerItem]) so both editors read the same way.
  * Expansion is presentation-only: it never changes structural IDs, which keeps a selected part
  * valid for performances and future revisions.
  */

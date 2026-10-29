@@ -12,9 +12,9 @@ import com.donnclab.kinetiframe.library.model.AssetOrganization
 import com.donnclab.kinetiframe.library.model.BrowseMode
 import com.donnclab.kinetiframe.library.model.BrowserPosition
 import com.donnclab.kinetiframe.library.model.BundledPalettes
-import com.donnclab.kinetiframe.library.ui.packs.PackBrowserControls
-import com.donnclab.kinetiframe.library.ui.packs.PackOrganizationDialog
-import com.donnclab.kinetiframe.studio.ui.color.PaletteSwatches
+import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserControls
+import com.donnclab.kinetiframe.presentation.library.packs.PackOrganizationDialog
+import com.donnclab.kinetiframe.presentation.studio.color.PaletteSwatches
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

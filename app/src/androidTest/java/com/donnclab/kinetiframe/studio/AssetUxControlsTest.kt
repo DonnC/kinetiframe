@@ -10,7 +10,7 @@ import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.media.audio.AudioPreviewControls
 import com.donnclab.kinetiframe.presentation.media.audio.AudioPreviewIntent
 import com.donnclab.kinetiframe.presentation.media.audio.AudioPreviewState
-import com.donnclab.kinetiframe.studio.ui.dock.SelectionActionMenu
+import com.donnclab.kinetiframe.presentation.studio.dock.SelectionActionMenu
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

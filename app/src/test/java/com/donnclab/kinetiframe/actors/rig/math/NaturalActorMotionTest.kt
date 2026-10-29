@@ -20,8 +20,8 @@ import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.engine.rigging.math.CompiledMotionCurve
+import com.donnclab.kinetiframe.presentation.studio.actorstudio.actorStudioInitialState
 import com.donnclab.kinetiframe.studio.actorDefinition
-import com.donnclab.kinetiframe.studio.ui.actorstudio.actorStudioInitialState
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals

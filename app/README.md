@@ -1,11 +1,12 @@
 # app
 
-The KinetiFrame Android app. It holds the entry point, navigation, every product screen
-including the studio, platform adapters for drawing, audio and video, repositories, the Room
-database and the bundled sample assets. It depends on all the other production modules.
+The KinetiFrame Android app. It holds the entry point, navigation, the service container
+(`AppContainer`) and ViewModel factory, the Home and Settings screens, and the bundled sample
+assets. The other screens live in [`presentation`](../presentation/README.md). It depends on all
+the other production modules.
 
-Packages are grouped by feature (`studio`, `actors`, `library`, `project`, `audio`, `export` and
-so on), with `ui`, `domain` and `data` subpackages inside a feature where it needs them. See the
+Packages are grouped by feature (`home`, `settings`, `navigation`). Its tests still include
+screen and studio tests that read the app's assets or need Robolectric. See the
 [project architecture](../docs/architecture/decisions/project-architecture.md) decision and the
 [map of where each feature lives](../docs/architecture/README.md#where-to-find-things-in-app).
 

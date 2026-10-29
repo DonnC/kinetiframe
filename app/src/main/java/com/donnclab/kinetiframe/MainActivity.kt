@@ -34,11 +34,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.export.ui.ExportRoute
 import com.donnclab.kinetiframe.home.HomeRoute
-import com.donnclab.kinetiframe.library.ui.LibraryOpenTarget
-import com.donnclab.kinetiframe.library.ui.LibraryRoute
-import com.donnclab.kinetiframe.library.ui.packs.PackCreatorRoute
 import com.donnclab.kinetiframe.navigation.ActorStudioKey
 import com.donnclab.kinetiframe.navigation.EditorKey
 import com.donnclab.kinetiframe.navigation.ExitConfirmationDialog
@@ -53,11 +49,15 @@ import com.donnclab.kinetiframe.presentation.actors.ActorStudioTarget
 import com.donnclab.kinetiframe.presentation.common.BottomNavDestination
 import com.donnclab.kinetiframe.presentation.common.LocalAppPreferences
 import com.donnclab.kinetiframe.presentation.common.LocalShowMenuLabels
+import com.donnclab.kinetiframe.presentation.export.ExportRoute
+import com.donnclab.kinetiframe.presentation.library.LibraryOpenTarget
+import com.donnclab.kinetiframe.presentation.library.LibraryRoute
+import com.donnclab.kinetiframe.presentation.library.packs.PackCreatorRoute
+import com.donnclab.kinetiframe.presentation.studio.EditorScreen
+import com.donnclab.kinetiframe.presentation.studio.actorstudio.ActorStudioScreen
+import com.donnclab.kinetiframe.presentation.studio.color.ScreenColorPickerHost
 import com.donnclab.kinetiframe.settings.SettingsScreen
 import com.donnclab.kinetiframe.settings.SettingsViewModel
-import com.donnclab.kinetiframe.studio.EditorScreen
-import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorStudioScreen
-import com.donnclab.kinetiframe.studio.ui.color.ScreenColorPickerHost
 import com.donnclab.kinetiframe.ui.LocalViewModelFactory
 
 class MainActivity : ComponentActivity() {

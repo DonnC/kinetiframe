@@ -2,8 +2,9 @@
 
 Rigged characters: their storage, rig math, posing, performances and rendering. It depends on
 `core`, `engine` and `data`, and holds no screens. The actor library screens live in
-`presentation.actors`, and Actor Studio, a studio mode, lives in `app` under
-`studio.ui.actorstudio` and `studio.domain.actorstudio`. Both call into this module.
+`presentation.actors`, and Actor Studio, a studio mode, lives in
+`presentation.studio.actorstudio`, with its managers in `studio.domain.actorstudio`. Both call
+into this module.
 
 | Package | Contents |
 | --- | --- |

@@ -5,6 +5,7 @@ import android.graphics.Color
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.presentation.studio.timeline.sceneFrameThumbnails
 import com.donnclab.kinetiframe.studio.LayerState
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager

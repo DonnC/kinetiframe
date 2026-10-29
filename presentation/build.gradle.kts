@@ -5,6 +5,7 @@ plugins {
 android {
     namespace = "com.donnclab.kinetiframe.presentation"
     defaultConfig { testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+    testOptions { unitTests.isReturnDefaultValues = true }
 }
 dependencies {
     api(project(":core"))
@@ -15,6 +16,8 @@ dependencies {
     implementation(project(":actors"))
     implementation(project(":studio"))
     api(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.compose.colorpicker)
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.lifecycle.runtime.compose)

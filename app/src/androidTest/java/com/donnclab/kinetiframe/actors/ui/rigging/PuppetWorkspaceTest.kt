@@ -3,9 +3,9 @@ package com.donnclab.kinetiframe.actors.ui.rigging
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
+import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.PuppetTopBar
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
-import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.PuppetTopBar
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

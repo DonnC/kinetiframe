@@ -70,23 +70,23 @@ All paths are under `app/src/main/java/com/donnclab/kinetiframe/`.
 | Area | Package |
 | --- | --- |
 | Activity and navigation | `MainActivity.kt`, `navigation` |
-| Home screen | `home`, `project/ui` |
-| The studio (main editor) | `studio/EditorScreen.kt` and `studio/StudioViewModel.kt` in `app`; `StudioState`, `StudioIntent` and `StudioSession` in the `studio` module |
-| Canvas input and drawing surface | `studio/ui/canvas` |
-| Editor toolbars and menus | `studio/ui/dock`, `studio/ui/timeline` |
+| Home screen | `home`; the project gallery and new-project flow in `presentation`, `presentation/project` |
+| The studio (main editor) | `presentation` module, `presentation/studio` (`EditorScreen.kt`, `StudioViewModel.kt`, and the editor's slots in `editor`); `StudioState`, `StudioIntent` and `StudioSession` in the `studio` module |
+| Canvas input and drawing surface | `presentation` module, `presentation/studio/canvas` |
+| Editor toolbars and menus | `presentation` module, `presentation/studio/dock` and `presentation/studio/timeline` |
 | Brushes and drawing tools | `studio` module, `studio/drawing` |
 | Frame and bitmap caches | `studio` module, `studio/render` and `studio/drawing` |
 | Stroke, undo, layer and selection coordination | `studio` module, `studio/domain` |
-| Actor Studio | `studio/ui/actorstudio` (with `rigging` and `sketch`), and its managers in `studio/domain/actorstudio` |
+| Actor Studio | `presentation` module, `presentation/studio/actorstudio` (with `rigging` and `sketch`); its managers in the `studio` module, `studio/domain/actorstudio` |
 | Actor library screens and dialogs | `presentation` module, `presentation/actors` |
 | Actor posing, placements and performances | `actors` module, `actors/domain` and `actors/rig` |
 | Rendering actors | `actors` module, `actors/render` and `actors/rig/texture` |
 | Camera effects | `studio` module, `studio/camera`; shot evaluation is `SceneCamera` in `engine` |
-| Library | `library/ui` and `library/ui/catalog` in `app`; `library/data` and `library/bundled` in the `studio` module |
-| Stamp packs | `library/ui/packs` in `app`; `library/data/PackArchiver.kt` in the `studio` module |
+| Library | `presentation` module, `presentation/library` and `presentation/library/catalog`; `library/data` and `library/bundled` in the `studio` module |
+| Stamp packs | `presentation` module, `presentation/library/packs`; `library/data/PackArchiver.kt` in the `studio` module |
 | Projects on disk | `data` module, `data/project`; `.kframe` archives in the `studio` module, `project/data` |
 | Actors and performances on disk | `actors` module, `actors/data` |
-| Video export | `export/ui` in `app`; `export/data` in the `studio` module |
+| Video export | `presentation` module, `presentation/export`; `export/data` in the `studio` module |
 | Audio and imported video clips | `media` module, `media/audio` and `media/video`; the recorder and trimmer in `presentation/media/audio` |
 | Studio audio and video playback | `studio` module, `studio/media` |
 | Shared app UI | `presentation` module, `presentation/common` |

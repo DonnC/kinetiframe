@@ -9,8 +9,8 @@ import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.domain.LibraryCatalog
-import com.donnclab.kinetiframe.library.ui.LocalLibraryCatalog
 import com.donnclab.kinetiframe.presentation.common.AssetKind
+import com.donnclab.kinetiframe.presentation.library.LocalLibraryCatalog
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue

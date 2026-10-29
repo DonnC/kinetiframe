@@ -7,11 +7,11 @@ import androidx.compose.ui.test.performClick
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.actors.rigging.PerformanceDurationMenu
+import com.donnclab.kinetiframe.presentation.studio.EditorTopBar
+import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.PerformanceFrameRuler
+import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.PuppetTopBar
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
-import com.donnclab.kinetiframe.studio.ui.EditorTopBar
-import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.PerformanceFrameRuler
-import com.donnclab.kinetiframe.studio.ui.actorstudio.rigging.PuppetTopBar
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

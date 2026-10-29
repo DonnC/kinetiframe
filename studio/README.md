@@ -3,8 +3,7 @@
 The editor's logic: its state and intents, the managers that change them, drawing tools, frame
 rendering and caches, the camera, studio playback, video export, and the library's storage and
 bundled content. It depends on `core`, `engine`, `data`, `media` and `actors`, and holds no
-screens. The editor's screens and `StudioViewModel` still live in `app` and move to
-`presentation.studio` as the [restructuring tracker](../docs/restructuring.md) describes.
+screens. The editor's screens and `StudioViewModel` live in `presentation.studio`.
 
 | Package | Contents |
 | --- | --- |
