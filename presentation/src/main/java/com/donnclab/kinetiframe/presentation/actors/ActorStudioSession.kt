@@ -1,8 +1,5 @@
 package com.donnclab.kinetiframe.presentation.actors
 
-import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
-import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.ActorRevision
@@ -25,14 +22,6 @@ data class ActorStudioTarget(
     /** Set when the session was opened to edit an existing placement on a project timeline, which
      *  makes archiving the underlying performance unsafe until that placement is removed. */
     val returnPlacementId: String? = null,
-)
-
-/** The three stores an Actor Studio session reads and writes through, bundled so the screen takes
- *  a single collaborator parameter rather than one per repository. */
-data class ActorStudioRepositories(
-    val actors: ActorRepository,
-    val performances: PerformanceRepository,
-    val artwork: ActorArtworkStore,
 )
 
 /** A loaded actor document: the actor itself, the immutable revision being edited, and the

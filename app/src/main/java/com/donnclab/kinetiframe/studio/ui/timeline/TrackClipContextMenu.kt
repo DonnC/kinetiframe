@@ -29,7 +29,6 @@ import com.composables.icons.lucide.Undo2
 import com.composables.icons.lucide.Unlink
 import com.composables.icons.lucide.Video
 import com.composables.icons.lucide.Volume2
-import com.donnclab.kinetiframe.actors.domain.PerformanceChoices
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.VideoClipPlacement
@@ -50,7 +49,7 @@ internal fun TrackClipContextMenu(
     video: VideoClipPlacement?,
     onIntent: (StudioIntent) -> Unit,
     onPosition: () -> Unit,
-    performanceChoices: PerformanceChoices,
+    timeline: TimelineServices,
     onEdit: (ActorPlacementReference) -> Unit,
     onSaveActor: (ActorPlacementReference) -> Unit,
     onSaveAudio: (AudioClipPlacement) -> Unit,
@@ -239,7 +238,7 @@ internal fun TrackClipContextMenu(
     IconContextMenu(expanded, onDismiss, actions) {
         Row {
             actor?.let { clip ->
-                SwitchPerformanceButton(clip, state.project.id, performanceChoices, { placement, performance ->
+                SwitchPerformanceButton(clip, state.project.id, timeline.performances, { placement, performance ->
                     dispatch(
                         StudioIntent.ActorPlacement.SwitchPerformance(
                             placement.placementId,
@@ -303,7 +302,10 @@ internal fun TrackClipContextMenu(
         )
     }
     if (showVoice && sound != null) {
-        VoiceEffectDialog(sound, state.project, { showVoice = false }, { effect, asset ->
+        VoiceEffectDialog(sound, { effect -> timeline.voiceStyles.render(sound, state.project, effect) }, {
+            showVoice =
+                false
+        }, { effect, asset ->
             showVoice = false
             onIntent(StudioIntent.Audio.VoiceStyle(sound.clipId, sound.assetId, effect, asset))
         })

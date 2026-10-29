@@ -23,12 +23,12 @@ draft work into `PackDrafts`. #44 ran Actor Studio's artwork picker through
 `ActorArtworkPickerViewModel`, with `LibraryArtwork` reading library drawings as actor artwork.
 #45 moved the project gallery's storage into `ProjectCatalog`. #46 started on the editor:
 `ProjectSaver` writes an editor's saved project, and `EditorStorageViewModel` is the editor's way
-to storage. #47 moved the editor's library actions into `LibraryTransfers`. This pull request
-gives the canvas, the follow camera, the actor render layer and the frame studio an
-`ActorRendering` service in `actors` instead of the three actor stores they built renderers
-from, and gives the timeline `PerformanceChoices` for picking and switching performances. Actor
-Studio, the voice effect dialog and the editor's project loading still use
-`EditorRepositories`.
+to storage. #47 moved the editor's library actions into `LibraryTransfers`, and #48 gave the
+canvas and timeline `ActorRendering` and `PerformanceChoices`. This pull request finishes the
+editor: `EditorScreen` opens projects through `ProjectOpener`, the voice effect dialog renders
+through `VoiceStyles`, and Actor Studio saves and restores artwork through its document
+ViewModel. `EditorRepositories` and `ActorStudioRepositories` are gone, so no screen fetches
+stores through the `Context`.
 
 ## Next
 
@@ -50,7 +50,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
   check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
-  code, and the 16 places where UI code imports a `data` package. Screens should reach storage
+  code, and the 8 places where UI code imports a `data` package. Screens should reach storage
   through their ViewModel, as in strict MVI.
 - **Parameter limits.** 52 functions still take more than the allowed number of parameters.
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
@@ -167,6 +167,7 @@ fixed after the module work, unless one blocks testing.
 | #45 | Moved the project gallery's storage into `ProjectCatalog` (step 8d, part 8) |
 | #46 | Saved editor projects through `EditorStorageViewModel` (editor storage, part 1) |
 | #47 | Moved the editor's library actions into `LibraryTransfers` (editor storage, part 2) |
+| #48 | Gave the editor's actor rendering and timeline narrow actor services (editor storage, part 3) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -200,9 +201,6 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   `buildSrc/build` open and break local builds of the checker. CI on Linux is the reliable check.
 - **Lint version checks.** Lint's "newer version available" checks are disabled, because their
   findings change with every upstream release. Dependabot reports updates instead.
-- **Editor repositories.** `EditorRepositories` and the voice effect dialog still reach the
-  container through the `Context` (`rememberEditorRepositories`). They go through the editor's
-  ViewModels when its screens move to `presentation`.
 - **Checker tests.** CI runs `./gradlew -p buildSrc test`, but only for `main` during the
   restructuring, and `verify` can't run them. Three tests still named `actors` as an app feature
   after it became a module. Run them by hand whenever the checker or the package layout changes.
@@ -217,7 +215,7 @@ From `.architecture/` after step 8d. Each count may only go down.
 | --- | --- | --- |
 | References to a feature above | 23 | 15 |
 | Compose imports outside UI code | 38 | 25 |
-| UI imports of `data` packages | 16 | 7 |
+| UI imports of `data` packages | 8 | 4 |
 | Functions over the parameter limit | 52 | — |
 | Inline text values | 298 | 95 |
 | Inline colours | 64 | 24 |

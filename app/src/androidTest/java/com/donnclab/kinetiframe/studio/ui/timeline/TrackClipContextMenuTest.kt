@@ -17,6 +17,8 @@ import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.studio.AnimationState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
+import com.donnclab.kinetiframe.studio.media.VoiceStyles
+import com.donnclab.kinetiframe.studio.ui.timeline.TimelineServices
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -43,7 +45,7 @@ class TrackClipContextMenuTest {
                 TimelineTracksPanel(
                     state = state,
                     onIntent = onIntent,
-                    performanceChoices = choices,
+                    timeline = TimelineServices(choices, VoiceStyles(files)),
                     onEditPlacement = {},
                     onAddToLibrary = {},
                     workspaceMode = true,

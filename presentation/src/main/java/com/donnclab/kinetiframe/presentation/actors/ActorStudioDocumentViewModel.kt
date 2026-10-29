@@ -2,12 +2,14 @@ package com.donnclab.kinetiframe.presentation.actors
 
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.donnclab.kinetiframe.actors.data.ActorArtworkStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.domain.PerformanceAuthoring
 import com.donnclab.kinetiframe.actors.domain.PerformanceCompatibility
 import com.donnclab.kinetiframe.actors.domain.PerformanceDuration
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.document.validate
@@ -35,6 +37,8 @@ class ActorStudioDocumentViewModel(
     private val now: () -> Long = System::currentTimeMillis,
     private val id: () -> String = { UUID.randomUUID().toString() },
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    /** Where revision artwork is written and read back; null in tests that don't save artwork. */
+    private val artwork: ActorArtworkStore? = null,
 ) : BaseViewModel<ActorStudioDocumentState, ActorStudioDocumentIntent, ActorStudioDocumentEffect>(
     ActorStudioDocumentState(),
 ) {
@@ -50,6 +54,20 @@ class ActorStudioDocumentViewModel(
     init {
         reload()
     }
+
+    /**
+     * Writes the artwork of [graph] for the new revision [revisionId] from [runtime]'s decoded
+     * textures, and returns each asset's saved path. Called before the revision document that
+     * references them is committed.
+     */
+    suspend fun saveArtwork(revisionId: String, graph: SceneGraph, runtime: RigAssetManager): Map<String, String> =
+        withContext(ioDispatcher) { requireArtwork().save(actorId, revisionId, graph, runtime) }
+
+    /** Decodes a revision's saved [paths] into [runtime], and returns the asset IDs it couldn't read. */
+    suspend fun restoreArtwork(paths: Map<String, String>, graph: SceneGraph, runtime: RigAssetManager): List<String> =
+        withContext(ioDispatcher) { requireArtwork().restore(actorId, paths, graph, runtime) }
+
+    private fun requireArtwork() = requireNotNull(artwork) { "Actor artwork storage is unavailable" }
 
     override fun handleIntent(intent: ActorStudioDocumentIntent) = when (intent) {
         ActorStudioDocumentIntent.Reload -> reload()

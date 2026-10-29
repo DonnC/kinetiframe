@@ -44,7 +44,6 @@ import com.composables.icons.lucide.Move
 import com.composables.icons.lucide.Text
 import com.composables.icons.lucide.Video
 import com.composables.icons.lucide.X
-import com.donnclab.kinetiframe.actors.domain.PerformanceChoices
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.AudioTrackSettings
@@ -60,7 +59,7 @@ fun TimelineTracksPanel(
     modifier: Modifier = Modifier,
     state: StudioState,
     onIntent: (StudioIntent) -> Unit,
-    performanceChoices: PerformanceChoices,
+    timeline: TimelineServices,
     onEditPlacement: (ActorPlacementReference) -> Unit,
     onAddToLibrary: (ActorPlacementReference) -> Unit,
     onAddAudioToLibrary: (AudioClipPlacement) -> Unit = {},
@@ -144,7 +143,7 @@ fun TimelineTracksPanel(
     val clipMenu: @Composable () -> Unit = {
         TrackClipContextMenu(
             actionsOpen, { actionsOpen = false }, state, actor, sound, video,
-            onIntent, { moveOpen = true }, performanceChoices, onEditPlacement,
+            onIntent, { moveOpen = true }, timeline, onEditPlacement,
             onAddToLibrary, onAddAudioToLibrary, onCreatePerformance,
         )
     }

@@ -8,13 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.domain.PerformanceChoices
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.StudioViewModel
 import com.donnclab.kinetiframe.studio.ui.timeline.ActorPerformancePicker
 import com.donnclab.kinetiframe.studio.ui.timeline.TimelineControls
+import com.donnclab.kinetiframe.studio.ui.timeline.TimelineServices
 import com.donnclab.kinetiframe.studio.ui.timeline.TimelineTracksPanel
 import com.donnclab.kinetiframe.studio.ui.timeline.TracksWorkspaceDialog
 
@@ -37,7 +37,7 @@ internal fun EditorBottomBarSlot(
     Column(Modifier.fillMaxWidth().imePadding()) {
         // Pack Creator drafts are raster drawing only: no actor, audio or video tracks.
         if (!isPackCreator && panels.tracksWorkspaceVisible) {
-            TracksWorkspace(state, host, ui, storage.performanceChoices, commands)
+            TracksWorkspace(state, host, ui, storage.timeline, commands)
         }
         TimelineControls(
             actorRendererFactory = storage.actorRendering::newRenderer,
@@ -74,7 +74,7 @@ private fun TracksWorkspace(
     state: StudioState,
     host: EditorHost,
     ui: EditorUiState,
-    performanceChoices: PerformanceChoices,
+    timeline: TimelineServices,
     commands: EditorCommands,
 ) {
     val panels = ui.panels
@@ -93,7 +93,7 @@ private fun TracksWorkspace(
                 state.project.id,
                 state.project.fps,
                 state.animation.currentFrame,
-                performanceChoices,
+                timeline.performances,
                 onPlace = {
                     panels.tracksWorkspaceVisible = false
                     commands.placeActor(it)
@@ -110,7 +110,7 @@ private fun TracksWorkspace(
             workspaceMode = true,
             state = state,
             onIntent = commands.onIntent,
-            performanceChoices = performanceChoices,
+            timeline = timeline,
             onEditPlacement = { placement -> host.onEditPerformance?.invoke(placement, state.project.id) },
             onCreatePerformance = host.onCreatePerformance,
             filmstripScrollState = ui.timelineScrollState,

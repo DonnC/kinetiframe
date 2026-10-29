@@ -21,6 +21,7 @@ import com.donnclab.kinetiframe.studio.StudioViewModel
 import com.donnclab.kinetiframe.studio.editor.EditorStorageViewModel
 import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorArtworkPickerViewModel
 import com.donnclab.kinetiframe.studio.ui.color.PaletteViewModel
+import com.donnclab.kinetiframe.studio.ui.timeline.TimelineServices
 
 /**
  * Builds every ViewModel that needs the app's services, from [container]. MainActivity provides
@@ -41,6 +42,7 @@ fun appViewModelFactory(container: AppContainer): ViewModelProvider.Factory = vi
             checkNotNull(this[ActorStudioDocumentViewModel.TargetKey]) { "Actor Studio needs a target" },
             container.actors,
             container.performances,
+            artwork = container.actorArtwork,
         )
     }
     initializer {
@@ -79,7 +81,8 @@ fun appViewModelFactory(container: AppContainer): ViewModelProvider.Factory = vi
             container.projectSaver,
             container.libraryTransfers,
             container.actorRendering,
-            container.performanceChoices,
+            TimelineServices(container.performanceChoices, container.voiceStyles),
+            container.projectOpener,
         )
     }
     initializer {
