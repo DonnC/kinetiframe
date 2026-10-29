@@ -48,13 +48,13 @@ import com.donnclab.kinetiframe.navigation.LibraryKey
 import com.donnclab.kinetiframe.navigation.PackCreatorKey
 import com.donnclab.kinetiframe.navigation.ProjectGalleryKey
 import com.donnclab.kinetiframe.navigation.SettingsKey
+import com.donnclab.kinetiframe.preferences.model.AppTheme
+import com.donnclab.kinetiframe.preferences.model.StudioOrientation
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioTarget
 import com.donnclab.kinetiframe.presentation.common.LocalShowMenuLabels
-import com.donnclab.kinetiframe.settings.AppTheme
 import com.donnclab.kinetiframe.settings.LocalAppPreferences
 import com.donnclab.kinetiframe.settings.SettingsScreen
 import com.donnclab.kinetiframe.settings.SettingsViewModel
-import com.donnclab.kinetiframe.settings.StudioOrientation
 import com.donnclab.kinetiframe.studio.EditorScreen
 import com.donnclab.kinetiframe.studio.ui.actorstudio.ActorStudioScreen
 import com.donnclab.kinetiframe.studio.ui.color.ScreenColorPickerHost

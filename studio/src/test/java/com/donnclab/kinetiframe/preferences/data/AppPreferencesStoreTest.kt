@@ -1,5 +1,8 @@
-package com.donnclab.kinetiframe.settings
+package com.donnclab.kinetiframe.preferences.data
 
+import com.donnclab.kinetiframe.preferences.model.AppPreferences
+import com.donnclab.kinetiframe.preferences.model.AppTheme
+import com.donnclab.kinetiframe.preferences.model.StudioOrientation
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse

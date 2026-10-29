@@ -19,11 +19,11 @@ import com.donnclab.kinetiframe.library.data.PaletteRepository
 import com.donnclab.kinetiframe.library.domain.LibraryArtwork
 import com.donnclab.kinetiframe.library.domain.LibraryTransfers
 import com.donnclab.kinetiframe.library.domain.PackDrafts
+import com.donnclab.kinetiframe.preferences.data.AppPreferencesStore
 import com.donnclab.kinetiframe.project.domain.ProjectCatalog
 import com.donnclab.kinetiframe.project.domain.ProjectOpener
 import com.donnclab.kinetiframe.project.domain.ProjectSaver
 import com.donnclab.kinetiframe.project.domain.ProjectTransfers
-import com.donnclab.kinetiframe.settings.AppPreferencesStore
 import com.donnclab.kinetiframe.studio.media.VoiceStyles
 import java.io.File
 

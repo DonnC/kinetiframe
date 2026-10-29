@@ -1,24 +1,12 @@
-package com.donnclab.kinetiframe.settings
+package com.donnclab.kinetiframe.preferences.data
 
 import com.donnclab.kinetiframe.data.storage.DurableFile
+import com.donnclab.kinetiframe.preferences.model.AppPreferences
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
-
-@Serializable enum class AppTheme { SYSTEM, LIGHT, DARK }
-
-@Serializable enum class StudioOrientation { LANDSCAPE, PORTRAIT, DEVICE }
-
-@Serializable data class AppPreferences(
-    val theme: AppTheme = AppTheme.SYSTEM,
-    val orientation: StudioOrientation = StudioOrientation.LANDSCAPE,
-    val hideSystemBars: Boolean = false,
-    val hideToolsDuringPlayback: Boolean = true,
-    val showMenuLabels: Boolean = true,
-)
 
 /** Small independent preferences document; never mixed with an animation's export settings. */
 class AppPreferencesStore(private val file: File, private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
