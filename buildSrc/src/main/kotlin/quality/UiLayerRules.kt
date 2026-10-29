@@ -21,8 +21,8 @@ internal object UiLayerRules {
     private const val ROOT = "com.donnclab.kinetiframe."
     private val NON_UI_SEGMENTS = setOf("domain", "data", "render", "rig", "math", "model")
 
-    // Screen packages that predate the `ui` subpackage convention.
-    private val SCREEN_PACKAGES = setOf("studio.editor", "home", "settings")
+    // The app module's navigation, its only UI outside presentation.
+    private val SCREEN_PACKAGES = setOf("navigation")
 
     fun applies(path: String): Boolean = "/src/main/" in path
 

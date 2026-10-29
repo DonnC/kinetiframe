@@ -72,9 +72,9 @@ abstract class ArchitectureAuditWork : WorkAction<AuditParameters> {
     private companion object {
         val UI_VALUE_KINDS = setOf(UiValueRules.COLORS, UiValueRules.DP, UiValueRules.TEXT)
 
-        val LAYERING_KINDS = setOf("layering", UiLayerRules.COMPOSE, UiLayerRules.UI_DATA)
+        val LAYERING_KINDS = setOf(UiLayerRules.COMPOSE, UiLayerRules.UI_DATA)
 
-        /** Structural debt, upward feature references and inline UI values. Every list only shrinks. */
+        /** Structural debt, UI layer findings and inline UI values. Every list only shrinks. */
         val BASELINES = listOf(
             ".architecture/legacy-baseline.properties",
             ".architecture/layering-baseline.properties",

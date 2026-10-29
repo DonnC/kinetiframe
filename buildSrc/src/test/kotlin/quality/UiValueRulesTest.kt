@@ -51,6 +51,6 @@ class UiValueRulesTest {
     private fun fixture(module: String, sourceSet: String, source: String) {
         val file = File(root, "$module/src/$sourceSet/kotlin/Screen.kt")
         file.parentFile.mkdirs()
-        file.writeText(source)
+        file.writeText("package com.donnclab.kinetiframe\n$source")
     }
 }
