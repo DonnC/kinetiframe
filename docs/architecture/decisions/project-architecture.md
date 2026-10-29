@@ -50,8 +50,8 @@ The `app` packages become:
 
 | Package | Holds | Comes from |
 | --- | --- | --- |
-| `studio` | The frame-by-frame editor: `EditorScreen`, `StudioViewModel` and its MVI types | `ui` |
-| `studio.ui.*` | Canvas, dock, timeline, camera, colour picker, frame strip and editor dialogs | `ui/components/*`, `ui/color` |
+| `studio` | The frame-by-frame editor: `EditorScreen`, `StudioViewModel` and its MVI types; now `presentation.studio` | `ui` |
+| `studio.ui.*` | Canvas, dock, timeline, camera, colour picker, frame strip and editor dialogs; now `presentation.studio.*` | `ui/components/*`, `ui/color` |
 | `studio.domain` | Drawing, frames, layers, selection, history, playback and view managers | `domain/manager` |
 | `studio.render` | Frame composition and caches | `domain/render` |
 | `studio.drawing` | Brushes, shapes, rulers, stroke input math, text, bitmap buffers | `engine/*` |
@@ -59,7 +59,7 @@ The `app` packages become:
 | `studio.reference` | Reference images in the studio | `ui/reference` |
 | `project.model` | The project document, drawing commands and stage sizes | `engine/model`, `models` |
 | `project.data` | Project storage, `.kframe` archives, the Room database | `data/project` |
-| `project.ui` | Project list and new-project flow | `ui/projects` |
+| `project.ui` | Project list and new-project flow; now `presentation.project` | `ui/projects` |
 | `actors.ui` | Actor Studio and actor controls | `ui/actors`, `ui/components/rigging` |
 | `actors.domain` | Placements, performances, posing and actor managers | `domain/actor`, `domain/manager` |
 | `actors.render` | Actor drawing and thumbnails | `domain/render`, `engine/rigging/render` |

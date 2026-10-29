@@ -13,6 +13,7 @@ import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchEffect
 import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchIntent
 import com.donnclab.kinetiframe.presentation.actors.sketch.SketchTool
+import com.donnclab.kinetiframe.presentation.studio.actorstudio.sketch.ActorSketchViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

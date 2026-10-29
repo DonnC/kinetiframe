@@ -16,8 +16,8 @@ import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.presentation.studio.actorstudio.actorStudioInitialState
 import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorStudioManager
-import com.donnclab.kinetiframe.studio.ui.actorstudio.actorStudioInitialState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test

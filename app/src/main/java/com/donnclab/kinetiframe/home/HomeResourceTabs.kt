@@ -23,17 +23,17 @@ import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.library.model.AssetOrganization
 import com.donnclab.kinetiframe.library.model.BrowserPosition
-import com.donnclab.kinetiframe.library.ui.CollectionAssignmentDialog
-import com.donnclab.kinetiframe.library.ui.CollectionBrowserControls
-import com.donnclab.kinetiframe.library.ui.HierarchyBrowserIndex
-import com.donnclab.kinetiframe.library.ui.HierarchyBrowserIntent
-import com.donnclab.kinetiframe.library.ui.HierarchyBrowserState
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerState
 import com.donnclab.kinetiframe.presentation.actors.ActorNameDialog
-import com.donnclab.kinetiframe.project.ui.ProjectManagerIntent
-import com.donnclab.kinetiframe.project.ui.ProjectManagerState
+import com.donnclab.kinetiframe.presentation.library.CollectionAssignmentDialog
+import com.donnclab.kinetiframe.presentation.library.CollectionBrowserControls
+import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserIndex
+import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserIntent
+import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserState
+import com.donnclab.kinetiframe.presentation.project.ProjectManagerIntent
+import com.donnclab.kinetiframe.presentation.project.ProjectManagerState
 
 @Composable
 internal fun ProjectsTabContent(
@@ -73,10 +73,11 @@ internal fun ProjectsTabContent(
         )
         hierarchy.error?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
         Box(Modifier.weight(1f)) {
+            val error = state.error
             when {
                 state.loading -> LoadingBox()
 
-                state.error != null -> ActorManagerMessage(state.error, "Retry") {
+                error != null -> ActorManagerMessage(error, "Retry") {
                     onIntent(ProjectManagerIntent.Reload)
                 }
 

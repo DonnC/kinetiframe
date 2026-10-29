@@ -21,7 +21,7 @@ import com.donnclab.kinetiframe.presentation.common.StampAsset
 
 /**
  * Sample Library content for Compose previews only. The running app reads real items through
- * [com.donnclab.kinetiframe.library.ui.LocalLibraryCatalog].
+ * [com.donnclab.kinetiframe.presentation.library.LocalLibraryCatalog].
  */
 object PreviewCatalog {
 

@@ -18,17 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
-import com.donnclab.kinetiframe.library.ui.LibraryPickerDialog
-import com.donnclab.kinetiframe.library.ui.packs.PacksTabEffect
-import com.donnclab.kinetiframe.library.ui.packs.PacksTabIntent
-import com.donnclab.kinetiframe.library.ui.packs.PacksTabViewModel
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerEffect
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerViewModel
 import com.donnclab.kinetiframe.presentation.common.shareFile
-import com.donnclab.kinetiframe.project.ui.ProjectManagerEffect
-import com.donnclab.kinetiframe.project.ui.ProjectManagerIntent
-import com.donnclab.kinetiframe.project.ui.ProjectManagerViewModel
+import com.donnclab.kinetiframe.presentation.library.LibraryPickerDialog
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabEffect
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabIntent
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabViewModel
+import com.donnclab.kinetiframe.presentation.project.ProjectManagerEffect
+import com.donnclab.kinetiframe.presentation.project.ProjectManagerIntent
+import com.donnclab.kinetiframe.presentation.project.ProjectManagerViewModel
 import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.launch
 
@@ -50,7 +50,7 @@ fun HomeRoute(
     val context = LocalContext.current
     val projectModel: ProjectManagerViewModel = appViewModel()
     val actorModel: ActorManagerViewModel = appViewModel()
-    val hierarchyModel: com.donnclab.kinetiframe.library.ui.HierarchyBrowserViewModel = appViewModel()
+    val hierarchyModel: com.donnclab.kinetiframe.presentation.library.HierarchyBrowserViewModel = appViewModel()
     val hierarchyState by hierarchyModel.state.collectAsStateWithLifecycle()
     val packModel: PacksTabViewModel = appViewModel()
 

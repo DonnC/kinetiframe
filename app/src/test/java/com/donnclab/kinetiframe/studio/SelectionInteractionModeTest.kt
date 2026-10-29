@@ -1,6 +1,7 @@
 package com.donnclab.kinetiframe.studio
 
 import androidx.compose.ui.geometry.Rect
+import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

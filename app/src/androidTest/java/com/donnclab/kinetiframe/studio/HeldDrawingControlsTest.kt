@@ -7,8 +7,8 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
-import com.donnclab.kinetiframe.studio.ui.timeline.HoldDrawingDialog
-import com.donnclab.kinetiframe.studio.ui.timeline.LinkedDrawingScopeDialog
+import com.donnclab.kinetiframe.presentation.studio.timeline.HoldDrawingDialog
+import com.donnclab.kinetiframe.presentation.studio.timeline.LinkedDrawingScopeDialog
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Rule

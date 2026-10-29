@@ -9,8 +9,8 @@ import androidx.compose.ui.test.performTextReplacement
 import com.donnclab.kinetiframe.library.model.AssetOrganization
 import com.donnclab.kinetiframe.library.model.BrowseMode
 import com.donnclab.kinetiframe.library.model.BrowserPosition
-import com.donnclab.kinetiframe.library.ui.CollectionAssignmentDialog
-import com.donnclab.kinetiframe.library.ui.CollectionBrowserControls
+import com.donnclab.kinetiframe.presentation.library.CollectionAssignmentDialog
+import com.donnclab.kinetiframe.presentation.library.CollectionBrowserControls
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue

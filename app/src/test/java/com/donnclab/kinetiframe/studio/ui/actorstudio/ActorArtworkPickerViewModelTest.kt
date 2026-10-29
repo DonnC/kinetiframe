@@ -10,6 +10,9 @@ import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.domain.LibraryArtwork
 import com.donnclab.kinetiframe.library.model.PackItemEntry
 import com.donnclab.kinetiframe.library.model.PackManifest
+import com.donnclab.kinetiframe.presentation.studio.actorstudio.ActorArtworkPickerEffect
+import com.donnclab.kinetiframe.presentation.studio.actorstudio.ActorArtworkPickerIntent
+import com.donnclab.kinetiframe.presentation.studio.actorstudio.ActorArtworkPickerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

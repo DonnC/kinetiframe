@@ -20,9 +20,9 @@ import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.model.AssetCategory
 import com.donnclab.kinetiframe.library.model.BrowseMode
 import com.donnclab.kinetiframe.library.model.BrowserPosition
-import com.donnclab.kinetiframe.library.ui.packs.PackBrowserControls
-import com.donnclab.kinetiframe.studio.ui.frames.StudioFrameCard
-import com.donnclab.kinetiframe.studio.ui.timeline.FrameCard
+import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserControls
+import com.donnclab.kinetiframe.presentation.studio.frames.StudioFrameCard
+import com.donnclab.kinetiframe.presentation.studio.timeline.FrameCard
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue

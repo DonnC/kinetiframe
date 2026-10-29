@@ -21,15 +21,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
-import com.donnclab.kinetiframe.library.ui.packs.PackBrowserControls
-import com.donnclab.kinetiframe.library.ui.packs.PackBrowserIndex
-import com.donnclab.kinetiframe.library.ui.packs.PackDetailsScreen
-import com.donnclab.kinetiframe.library.ui.packs.PackDetailsState
-import com.donnclab.kinetiframe.library.ui.packs.PackOrganizationDialog
-import com.donnclab.kinetiframe.library.ui.packs.PacksTabCallbacks
-import com.donnclab.kinetiframe.library.ui.packs.PacksTabIntent
-import com.donnclab.kinetiframe.library.ui.packs.PacksTabState
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
+import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserControls
+import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserIndex
+import com.donnclab.kinetiframe.presentation.library.packs.PackDetailsScreen
+import com.donnclab.kinetiframe.presentation.library.packs.PackDetailsState
+import com.donnclab.kinetiframe.presentation.library.packs.PackOrganizationDialog
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabCallbacks
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabIntent
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabState
 import java.io.File
 
 /**
@@ -65,10 +65,11 @@ internal fun PacksTabContent(
             { onIntent(PacksTabIntent.Browse(it)) },
         )
         Box(Modifier.weight(1f).fillMaxWidth()) {
+            val error = state.error
             when {
                 state.loading -> LoadingBox()
 
-                state.error != null -> ActorManagerMessage(state.error, "Retry") { onIntent(PacksTabIntent.Reload) }
+                error != null -> ActorManagerMessage(error, "Retry") { onIntent(PacksTabIntent.Reload) }
 
                 state.packs.isEmpty() -> ActorManagerMessage(
                     "Build a pack of stamp-ready drawings to see it here.",

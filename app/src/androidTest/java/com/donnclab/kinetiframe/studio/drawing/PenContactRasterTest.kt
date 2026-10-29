@@ -6,7 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import com.donnclab.kinetiframe.core.document.BrushSnapshot
 import com.donnclab.kinetiframe.core.document.TouchPoint
-import com.donnclab.kinetiframe.studio.ui.canvas.ActiveStroke
+import com.donnclab.kinetiframe.presentation.studio.canvas.ActiveStroke
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

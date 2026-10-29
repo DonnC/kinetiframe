@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.studio
 import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

@@ -51,11 +51,6 @@ import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.designsystem.theme.LibraryAccent
 import com.donnclab.kinetiframe.library.model.PackItemEntry
-import com.donnclab.kinetiframe.library.ui.HierarchyBrowserIntent
-import com.donnclab.kinetiframe.library.ui.HierarchyBrowserState
-import com.donnclab.kinetiframe.library.ui.packs.PacksTabCallbacks
-import com.donnclab.kinetiframe.library.ui.packs.PacksTabIntent
-import com.donnclab.kinetiframe.library.ui.packs.PacksTabState
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerState
 import com.donnclab.kinetiframe.presentation.actors.ActorNameDialog
@@ -65,9 +60,14 @@ import com.donnclab.kinetiframe.presentation.common.AppBrandBar
 import com.donnclab.kinetiframe.presentation.common.BottomNavDestination
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.common.FullScreenDialog
-import com.donnclab.kinetiframe.project.ui.AddProjectRoute
-import com.donnclab.kinetiframe.project.ui.ProjectManagerIntent
-import com.donnclab.kinetiframe.project.ui.ProjectManagerState
+import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserIntent
+import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserState
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabCallbacks
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabIntent
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabState
+import com.donnclab.kinetiframe.presentation.project.AddProjectRoute
+import com.donnclab.kinetiframe.presentation.project.ProjectManagerIntent
+import com.donnclab.kinetiframe.presentation.project.ProjectManagerState
 import java.io.File
 
 /**

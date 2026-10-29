@@ -33,7 +33,7 @@ data class PackCreatorKey(
 data class ExportKey(val projectId: String) : NavKey
 
 /** Full-screen Library browse -- reached from the Home bottom nav's "Library" tab. Distinct from
- *  [com.donnclab.kinetiframe.library.ui.LibraryPickerDialog], which stays a modal picker used only when
+ *  [com.donnclab.kinetiframe.presentation.library.LibraryPickerDialog], which stays a modal picker used only when
  *  importing an asset into the current project or a new one. */
 @Serializable
 data object LibraryKey : NavKey

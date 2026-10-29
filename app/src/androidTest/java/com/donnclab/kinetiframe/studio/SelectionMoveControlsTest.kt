@@ -17,9 +17,9 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.up
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.studio.ui.canvas.SelectionTransformOverlay
-import com.donnclab.kinetiframe.studio.ui.canvas.SelectionTransformState
-import com.donnclab.kinetiframe.studio.ui.dock.SelectionActionMenu
+import com.donnclab.kinetiframe.presentation.studio.canvas.SelectionTransformOverlay
+import com.donnclab.kinetiframe.presentation.studio.canvas.SelectionTransformState
+import com.donnclab.kinetiframe.presentation.studio.dock.SelectionActionMenu
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

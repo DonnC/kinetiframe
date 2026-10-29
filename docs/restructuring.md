@@ -14,11 +14,12 @@ Keep this page current:
 ## Now
 
 **Step 9: studio screens to `presentation`, in progress.** The library and editor screens use
-each other: the Pack Creator opens the editor, and the editor opens the library picker. They move
-together in one pull request, once they no longer need anything else from `app`. This pull
-request clears the way: `presentation` now depends on `studio`, and takes the strings and brush
-images those screens use, the `LocalAppPreferences` composition local, the bottom navigation bar
-and the preview fixtures (`presentation.preview`).
+each other: the Pack Creator opens the editor, and the editor opens the library picker, so they
+move together. #52 gave `presentation` everything else they needed from `app`. This pull request
+moves them: the editor (`EditorScreen`, `StudioViewModel`, `studio.editor` and `studio.ui.*`) to
+`presentation.studio`, and the library, export and project screens to `presentation.library`,
+`presentation.export` and `presentation.project`. Their tests that run without Robolectric or the
+app's assets move with them. `app` now holds only Home, Settings, navigation and the wiring.
 
 ## Next
 
@@ -26,10 +27,7 @@ The remaining steps, in order, following the
 [UI in presentation](architecture/decisions/ui-in-presentation.md) decision. Nine modules in all:
 no `export`, `library`, `home` or `settings` modules.
 
-1. **Studio screens.** The editor's screens, `EditorScreen`, `StudioViewModel`, and the library,
-   export and project screens move to `presentation.studio`, `presentation.library` and so on, in
-   one mechanical pull request.
-2. **Shell screens.** Home, settings and project creation move to `presentation`. Navigation and
+1. **Shell screens.** Home and Settings move to `presentation`. Navigation and
    wiring stay in `app`, which then holds nothing else.
 
 ## Later
@@ -49,6 +47,11 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Typed errors in `core`.** `ActorGraphValidation` and `PresetValidationDiagnostics` turn typed
   validation issues into English sentences inside `core`. Return the typed issue and let the UI
   map it to string resources.
+- **Screen tests left in `app`.** Some tests of `presentation` code still live in `app` and use
+  its public API: host tests that need Robolectric or the app's assets, the `studio` package's
+  tests that drive `StudioViewModel`, and most device tests in the `studio` and
+  `actors.ui.rigging` packages. Move them once `presentation` can run Robolectric tests and read
+  the fixtures.
 - **Preview fixtures.** The shared fixtures moved to `presentation.preview`. Split them by feature
   as the screens that use them settle.
 - **Dependency updates.** Work through the Dependabot pull requests (#1 to #5) one family at a
@@ -161,6 +164,7 @@ fixed after the module work, unless one blocks testing.
 | #49 | Removed the editor's and Actor Studio's store bags (editor storage, part 4) |
 | #50 | Split the library catalog into a studio reader and a card mapper |
 | #51 | Moved the app's preferences into `studio`; no screen imports a `data` package (step 8d done) |
+| #52 | Moved what the studio screens shared with `app` into `presentation` (step 9, part 1) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -197,6 +201,17 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 - **Checker tests.** CI runs `./gradlew -p buildSrc test`, but only for `main` during the
   restructuring, and `verify` can't run them. Three tests still named `actors` as an app feature
   after it became a module. Run them by hand whenever the checker or the package layout changes.
+- **Checker package lists.** `KotlinBoundaryScanner` still lists `studio.ui`, `studio.editor`,
+  `library.ui`, `export.ui` and `project.ui` as app screen packages, and `UiLayerRules` lists
+  `studio.editor`, although `app` no longer has them. They still stop logic modules from using
+  those names, and the checker's tests use them as fixtures. Prune them with the tests.
+- **Implicit Compose versions.** `app` resolved a newer Compose `foundation` than `presentation`
+  through its other dependencies, and some unused imports resolved only there. Moving
+  `EraserOptionsContent` needed an `@OptIn` for `combinedClickable`, and `presentation`'s lint
+  doesn't run four Compose checks that `app`'s does (`ModifierParameter`,
+  `AutoboxingStateCreation`, `ConfigurationScreenWidthHeight`, `FrequentlyChangingValue`), so 18
+  baseline findings in the moved screens went unchecked. Pin the Compose versions in one place,
+  then fix or baseline those findings.
 - **Library build defaults.** Library modules relied on default SDK levels until the convention
   plugins set them (#17).
 
@@ -206,7 +221,7 @@ From `.architecture/` during step 9. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| References to a feature above | 8 | 5 |
+| References to a feature above | 0 | — |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 0 | — |
 | Functions over the parameter limit | 52 | — |
