@@ -74,7 +74,14 @@ fun appViewModelFactory(container: AppContainer): ViewModelProvider.Factory = vi
     initializer { PackCreatorViewModel(container.packDrafts, this[PackCreatorViewModel.EditKey]) }
     initializer { PaletteViewModel(container.palettes) }
     initializer { ActorArtworkPickerViewModel(container.libraryArtwork) }
-    initializer { EditorStorageViewModel(container.projectSaver, container.libraryTransfers) }
+    initializer {
+        EditorStorageViewModel(
+            container.projectSaver,
+            container.libraryTransfers,
+            container.actorRendering,
+            container.performanceChoices,
+        )
+    }
     initializer {
         val arguments = checkNotNull(this[StudioViewModel.ArgumentsKey]) { "The editor needs its arguments" }
         StudioViewModel(

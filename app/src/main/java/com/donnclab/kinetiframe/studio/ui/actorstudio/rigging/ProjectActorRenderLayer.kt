@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.studio.ui.actorstudio.rigging
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,14 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
+import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
-import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.studio.render.completedPreviewFrames
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.withContext
 
 /**
@@ -46,15 +42,13 @@ fun ProjectActorRenderLayer(
     frame: Int,
     fps: Int,
     canvasMatrix: FloatArray,
-    actors: ActorRepository,
-    performances: PerformanceRepository,
-    files: DocumentFileStore,
+    rendering: ActorRendering,
     modifier: Modifier = Modifier,
     onGeometryResolved: (com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry) -> Unit = {},
     selectedIds: Set<String> = emptySet(),
     selectionPreview: (() -> androidx.compose.ui.graphics.Matrix)? = null,
 ) {
-    val renderer = remember(actors, performances, files) { ActorFrameRenderer(actors, performances, files) }
+    val renderer = remember(rendering) { rendering.newRenderer() }
     DisposableEffect(renderer) { onDispose { renderer.clear() } }
     var renders by remember { mutableStateOf<List<ActorFrameRenderer.Render>>(emptyList()) }
     var diagnostics by remember { mutableStateOf<List<ActorFrameRenderer.Diagnostic>>(emptyList()) }

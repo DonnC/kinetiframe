@@ -8,8 +8,8 @@ Rigged characters: their storage, rig math, posing, performances and rendering. 
 | Package | Contents |
 | --- | --- |
 | `data` | Repositories for actors, performances, placements, presets and bundles, and the artwork store |
-| `domain` | Placement timing and trimming, performance evaluation and duration, recorded motion curves, root motion, legacy migration |
-| `render` | `ActorFrameRenderer`, which draws placements for the editor, export and thumbnails, plus artwork rendering, hit testing and thumbnails |
+| `domain` | Placement timing and trimming, performance evaluation and duration, recorded motion curves, root motion, legacy migration, and `PerformanceChoices`, the performances a timeline can place |
+| `render` | `ActorFrameRenderer`, which draws placements for the editor, export and thumbnails; `ActorRendering`, which hands screens renderers without the actor stores; plus artwork rendering, hit testing and thumbnails |
 | `rig` | Rig math (`rig.math`), the rig model (`rig.model`), motion presets and their bridges to `core` (`rig.presets`), and texture extraction (`rig.texture`) |
 
 Bundled actors, presets and preset icons live in the app's assets and are read through a `Context`

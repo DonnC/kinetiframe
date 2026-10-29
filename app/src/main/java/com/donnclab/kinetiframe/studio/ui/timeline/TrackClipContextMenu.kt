@@ -29,7 +29,7 @@ import com.composables.icons.lucide.Undo2
 import com.composables.icons.lucide.Unlink
 import com.composables.icons.lucide.Video
 import com.composables.icons.lucide.Volume2
-import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.actors.domain.PerformanceChoices
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.VideoClipPlacement
@@ -50,7 +50,7 @@ internal fun TrackClipContextMenu(
     video: VideoClipPlacement?,
     onIntent: (StudioIntent) -> Unit,
     onPosition: () -> Unit,
-    performances: PerformanceRepository,
+    performanceChoices: PerformanceChoices,
     onEdit: (ActorPlacementReference) -> Unit,
     onSaveActor: (ActorPlacementReference) -> Unit,
     onSaveAudio: (AudioClipPlacement) -> Unit,
@@ -239,7 +239,7 @@ internal fun TrackClipContextMenu(
     IconContextMenu(expanded, onDismiss, actions) {
         Row {
             actor?.let { clip ->
-                SwitchPerformanceButton(clip, state.project.id, performances, { placement, performance ->
+                SwitchPerformanceButton(clip, state.project.id, performanceChoices, { placement, performance ->
                     dispatch(
                         StudioIntent.ActorPlacement.SwitchPerformance(
                             placement.placementId,

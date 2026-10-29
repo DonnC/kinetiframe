@@ -19,8 +19,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.actors.data.ActorRepository
-import com.donnclab.kinetiframe.actors.data.PerformanceRepository
+import com.donnclab.kinetiframe.actors.domain.PerformanceChoices
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.contracts.StoreResult
@@ -45,8 +44,7 @@ fun ActorPerformancePicker(
     projectId: String,
     fps: Int,
     currentFrame: Int,
-    actors: ActorRepository,
-    performances: PerformanceRepository,
+    choices: PerformanceChoices,
     onPlace: (ActorPlacementReference) -> Unit,
     onCreatePerformance: ((String, String) -> Unit)? = null,
     onImportAudio: () -> Unit = {},
@@ -75,13 +73,13 @@ fun ActorPerformancePicker(
 
     LaunchedEffect(showActorPicker, selectedActor?.actorId) {
         if (!showActorPicker) return@LaunchedEffect
-        when (val result = withContext(Dispatchers.IO) { actors.list() }) {
+        when (val result = withContext(Dispatchers.IO) { choices.actors() }) {
             is StoreResult.Value -> actorItems = result.value
             is StoreResult.Failure -> error = result.message
         }
         performanceItems = emptyList()
         selectedActor?.let { actor ->
-            when (val result = withContext(Dispatchers.IO) { performances.listForActor(actor.actorId) }) {
+            when (val result = withContext(Dispatchers.IO) { choices.performancesOf(actor.actorId) }) {
                 is StoreResult.Value -> performanceItems = result.value
                 is StoreResult.Failure -> error = result.message
             }
@@ -142,7 +140,7 @@ fun ActorPerformancePicker(
                         scope.launch {
                             when (
                                 val copied =
-                                    withContext(Dispatchers.IO) { performances.copyIntoProject(performance, projectId) }
+                                    withContext(Dispatchers.IO) { choices.copyIntoProject(performance, projectId) }
                             ) {
                                 is StoreResult.Failure -> error = copied.message
 
