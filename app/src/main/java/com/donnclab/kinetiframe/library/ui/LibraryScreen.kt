@@ -26,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.ui.catalog.AssetDetailsContext
@@ -39,10 +38,11 @@ import com.donnclab.kinetiframe.library.ui.tabs.LibraryActorsTab
 import com.donnclab.kinetiframe.library.ui.tabs.LibraryAudioTab
 import com.donnclab.kinetiframe.library.ui.tabs.LibraryPacksTab
 import com.donnclab.kinetiframe.library.ui.tabs.LibraryProjectsTab
-import com.donnclab.kinetiframe.navigation.AppBottomNavBar
-import com.donnclab.kinetiframe.navigation.BottomNavDestination
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.AppBottomNavBar
+import com.donnclab.kinetiframe.presentation.common.BottomNavDestination
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
-import com.donnclab.kinetiframe.preview.PreviewCatalog
+import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
 
 /**
  * The Library destination's content: four tabs (Projects, Actors, Packs, Audio) over the user's

@@ -21,11 +21,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.ClipboardPlus
 import com.composables.icons.lucide.Lucide
-import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.DisabledContent
 import com.donnclab.kinetiframe.designsystem.theme.DisabledSurface
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.R
 
 /** Label + icon a [PrimaryActionButton] shows -- bundled together so the button itself stays a
  * 4-parameter function even though it needs both pieces of content. */

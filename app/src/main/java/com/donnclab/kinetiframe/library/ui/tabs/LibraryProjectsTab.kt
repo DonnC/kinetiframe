@@ -8,14 +8,14 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.ui.LibraryIntent
 import com.donnclab.kinetiframe.library.ui.catalog.AssetGridCard
 import com.donnclab.kinetiframe.library.ui.catalog.FilterChipRow
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AssetSummary
-import com.donnclab.kinetiframe.preview.PreviewCatalog
+import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
 
 private val filters = listOf(
     R.string.filter_all,

@@ -26,13 +26,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Pen
 import com.composables.icons.lucide.X
-import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.model.PackItemEntry
 import com.donnclab.kinetiframe.library.ui.catalog.ActionButtonContent
 import com.donnclab.kinetiframe.library.ui.catalog.ActionButtonState
 import com.donnclab.kinetiframe.library.ui.catalog.PrimaryActionButton
+import com.donnclab.kinetiframe.presentation.R
 import java.io.File
 
 /**

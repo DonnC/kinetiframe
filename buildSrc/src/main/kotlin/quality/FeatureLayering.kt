@@ -13,8 +13,6 @@ internal object FeatureLayering {
     private const val ROOT = "com.donnclab.kinetiframe"
 
     private val direct: Map<String, Set<String>> = mapOf(
-        // Preview fixtures build sample data of every kind.
-        "preview" to setOf("home"),
         "project" to emptySet(),
         "library" to setOf("project"),
         "export" to setOf("project"),

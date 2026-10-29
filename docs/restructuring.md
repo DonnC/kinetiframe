@@ -13,23 +13,12 @@ Keep this page current:
 
 ## Now
 
-**Step 8d: screens reach storage through their ViewModels, in progress.** #38 moved Home's
-sharing, importing and bundled content into `HomeActionsViewModel`, and the library's seeding
-into `LibraryViewModel`. #39 moved the library's documents to `library.model`, and #40 made the
-`uidata` check match the [UI in presentation](architecture/decisions/ui-in-presentation.md)
-decision. #41 gave the library picker its own `LibraryPickerViewModel`, #42 ran export through
-`ExportViewModel` and fixed a crash when sharing a video, and #43 moved the Pack Creator's
-draft work into `PackDrafts`. #44 ran Actor Studio's artwork picker through
-`ActorArtworkPickerViewModel`, with `LibraryArtwork` reading library drawings as actor artwork.
-#45 moved the project gallery's storage into `ProjectCatalog`. #46 started on the editor:
-`ProjectSaver` writes an editor's saved project, and `EditorStorageViewModel` is the editor's way
-to storage. #47 moved the editor's library actions into `LibraryTransfers`, and #48 gave the
-canvas and timeline `ActorRendering` and `PerformanceChoices`, and #49 removed the editor's and
-Actor Studio's store bags, and #50 split the library screen's catalog into a `studio` reader
-and a card mapper. This pull request moves the app's preferences and their store into `studio`
-(`preferences.model` and `preferences.data`), next to the other features' storage, so
-`SettingsViewModel` reaches them like any other ViewModel. With that, no screen imports a `data`
-package, and step 8d is done.
+**Step 9: studio screens to `presentation`, in progress.** The library and editor screens use
+each other: the Pack Creator opens the editor, and the editor opens the library picker. They move
+together in one pull request, once they no longer need anything else from `app`. This pull
+request clears the way: `presentation` now depends on `studio`, and takes the strings and brush
+images those screens use, the `LocalAppPreferences` composition local, the bottom navigation bar
+and the preview fixtures (`presentation.preview`).
 
 ## Next
 
@@ -38,7 +27,8 @@ The remaining steps, in order, following the
 no `export`, `library`, `home` or `settings` modules.
 
 1. **Studio screens.** The editor's screens, `EditorScreen`, `StudioViewModel`, and the library,
-   export and project screens move to `presentation.studio`, `presentation.library` and so on.
+   export and project screens move to `presentation.studio`, `presentation.library` and so on, in
+   one mechanical pull request.
 2. **Shell screens.** Home, settings and project creation move to `presentation`. Navigation and
    wiring stay in `app`, which then holds nothing else.
 
@@ -59,8 +49,8 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Typed errors in `core`.** `ActorGraphValidation` and `PresetValidationDiagnostics` turn typed
   validation issues into English sentences inside `core`. Return the typed issue and let the UI
   map it to string resources.
-- **Preview fixtures.** Give each module its own `preview` package and split up the shared one
-  in `app`.
+- **Preview fixtures.** The shared fixtures moved to `presentation.preview`. Split them by feature
+  as the screens that use them settle.
 - **Dependency updates.** Work through the Dependabot pull requests (#1 to #5) one family at a
   time, with a full check and a device check after each. The Compose BOM (2024.09.00) is the
   furthest behind.
@@ -170,6 +160,7 @@ fixed after the module work, unless one blocks testing.
 | #48 | Gave the editor's actor rendering and timeline narrow actor services (editor storage, part 3) |
 | #49 | Removed the editor's and Actor Studio's store bags (editor storage, part 4) |
 | #50 | Split the library catalog into a studio reader and a card mapper |
+| #51 | Moved the app's preferences into `studio`; no screen imports a `data` package (step 8d done) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -211,11 +202,11 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Debt counts
 
-From `.architecture/` after step 8d. Each count may only go down.
+From `.architecture/` during step 9. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| References to a feature above | 23 | 15 |
+| References to a feature above | 8 | 5 |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 0 | — |
 | Functions over the parameter limit | 52 | — |

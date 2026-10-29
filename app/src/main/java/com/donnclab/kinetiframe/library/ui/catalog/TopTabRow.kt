@@ -30,9 +30,9 @@ import com.composables.icons.lucide.Folder
 import com.composables.icons.lucide.Grid2x2
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Music
-import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.R
 
 /** One entry in a [TopTabRow] -- deliberately just an icon+label pair with no selection state of
  *  its own, so the row above decides which index is active. */
