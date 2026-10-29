@@ -1,48 +1,11 @@
 <resources>
     <string name="app_name" translatable="false">@string/brand_name</string>
 
-    <!-- Shared -->
-    <string name="action_back">Back</string>
-    <string name="action_close">Close</string>
-    <string name="filter_all">All</string>
-
-    <!-- Library -->
-    <string name="library_title">Library</string>
-    <string name="library_subtitle">Your local collection — ready to drop into any project</string>
-    <string name="library_packs_flat_note">All your saved packs, one continuous scroll — no sub-categories to dig through.</string>
-    <string name="library_add_to_project">Add to Current Project</string>
-    <string name="library_no_project_helper">Open a project first to use this asset</string>
-    <string name="library_tab_projects">Projects</string>
-    <string name="library_tab_actors">Actors</string>
-    <string name="library_tab_packs">Packs</string>
-    <string name="library_tab_audio">Audio</string>
-    <string name="library_filter_full_projects">Full Projects</string>
-    <string name="library_filter_background_images">Background Images</string>
-    <string name="library_filter_static_overlays">Static Overlays</string>
-    <string name="library_filter_rigs">Rigs / Blueprints</string>
-    <string name="library_filter_performances">Performances</string>
-    <string name="library_filter_sound_effects">Sound Effects</string>
-    <string name="library_filter_music_tracks">Music Tracks</string>
-    <string name="library_filter_voice_clips">Voice Clips</string>
-    <string name="asset_preview_live_loops">Live preview — loops</string>
-    <string name="asset_preview_static">Static preview</string>
-    <string name="asset_preview_audio">Preview</string>
-    <string name="pack_add_to_library">Add pack to Library</string>
-    <plurals name="pack_contents_item_count">
-        <item quantity="one">%d item in this pack</item>
-        <item quantity="other">%d items in this pack</item>
-    </plurals>
-
     <!-- Home: packs -->
-    <string name="pack_edit_pack">Edit Pack</string>
     <string name="pack_edit">Edit</string>
     <string name="pack_share">Share (.kpack)</string>
     <string name="pack_delete">Delete</string>
     <string name="pack_actions">Pack actions</string>
-    <plurals name="pack_item_count">
-        <item quantity="one">%d item</item>
-        <item quantity="other">%d items</item>
-    </plurals>
 
     <!-- Home: import -->
     <string name="import_title">Import</string>
@@ -51,22 +14,4 @@
     <string name="import_from_file_subtitle">A .kframe file saved on your device</string>
     <string name="import_from_library_title">From Library</string>
     <string name="import_from_library_subtitle">Your saved packs, actors and assets</string>
-
-    <!-- Actor Studio workflow hint: the next thing to do at each step -->
-    <string name="actor_hint_needs_skeleton">Add a reference skeleton to start this actor</string>
-    <string name="actor_hint_record">Record · move a part · stop and replay</string>
-    <string name="actor_hint_drag_artwork">Drag the artwork · joints stay fixed</string>
-    <string name="actor_hint_drag_attachment">Drag the highlighted attachment joint</string>
-    <string name="actor_hint_fit_sketch">Fit joints to your sketch · drawing menu to edit lines and colour</string>
-    <string name="actor_hint_trace_artwork">Artwork — trace the sketch you drew for this part, then confirm its pivot</string>
-    <string name="actor_hint_pick_part">Pick a body part below, then sketch it — it binds automatically</string>
-    <string name="actor_hint_fit_joints">Drag the joint pins to match your drawing, then switch back to the pencil</string>
-    <string name="actor_hint_drawing_part">Drawing %1$s · strokes attach automatically</string>
-    <string name="actor_hint_selected_part">selected part</string>
-
-    <!-- Audio lanes -->
-    <string name="audio_mute_lane">Mute this audio lane</string>
-    <string name="audio_unmute_lane">Unmute this audio lane</string>
-    <string name="audio_lock_lane">Lock this audio lane</string>
-    <string name="audio_unlock_lane">Unlock this audio lane</string>
 </resources>

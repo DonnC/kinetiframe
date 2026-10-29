@@ -244,7 +244,6 @@ internal object KotlinBoundaryScanner {
         "home",
         "library.ui",
         "navigation",
-        "preview",
         "project.ui",
         "settings",
         "studio.editor",

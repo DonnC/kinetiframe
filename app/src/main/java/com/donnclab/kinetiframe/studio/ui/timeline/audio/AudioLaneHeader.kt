@@ -17,8 +17,8 @@ import com.composables.icons.lucide.LockOpen
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Volume2
 import com.composables.icons.lucide.VolumeX
-import com.donnclab.kinetiframe.R
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.R
 
 /**
  * The mute/lock gutter for one audio lane, sitting to the left of its clips.

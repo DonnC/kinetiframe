@@ -40,7 +40,6 @@ import com.donnclab.kinetiframe.library.ui.LibraryOpenTarget
 import com.donnclab.kinetiframe.library.ui.LibraryRoute
 import com.donnclab.kinetiframe.library.ui.packs.PackCreatorRoute
 import com.donnclab.kinetiframe.navigation.ActorStudioKey
-import com.donnclab.kinetiframe.navigation.BottomNavDestination
 import com.donnclab.kinetiframe.navigation.EditorKey
 import com.donnclab.kinetiframe.navigation.ExitConfirmationDialog
 import com.donnclab.kinetiframe.navigation.ExportKey
@@ -51,8 +50,9 @@ import com.donnclab.kinetiframe.navigation.SettingsKey
 import com.donnclab.kinetiframe.preferences.model.AppTheme
 import com.donnclab.kinetiframe.preferences.model.StudioOrientation
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioTarget
+import com.donnclab.kinetiframe.presentation.common.BottomNavDestination
+import com.donnclab.kinetiframe.presentation.common.LocalAppPreferences
 import com.donnclab.kinetiframe.presentation.common.LocalShowMenuLabels
-import com.donnclab.kinetiframe.settings.LocalAppPreferences
 import com.donnclab.kinetiframe.settings.SettingsScreen
 import com.donnclab.kinetiframe.settings.SettingsViewModel
 import com.donnclab.kinetiframe.studio.EditorScreen

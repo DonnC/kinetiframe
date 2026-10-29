@@ -31,19 +31,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.preferences.model.AppPreferences
 import com.donnclab.kinetiframe.preferences.model.AppTheme
 import com.donnclab.kinetiframe.preferences.model.StudioOrientation
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
-
-val LocalAppPreferences = staticCompositionLocalOf { AppPreferences() }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,7 +47,7 @@ fun SettingsScreen(
     state: SettingsState,
     onIntent: (SettingsIntent) -> Unit,
     onBack: () -> Unit,
-    onNavigate: ((com.donnclab.kinetiframe.navigation.BottomNavDestination) -> Unit)? = null,
+    onNavigate: ((com.donnclab.kinetiframe.presentation.common.BottomNavDestination) -> Unit)? = null,
     onShareDiagnostics: () -> Unit = {},
 ) {
     Scaffold(topBar = {
@@ -63,8 +59,8 @@ fun SettingsScreen(
         }
     }, bottomBar = {
         onNavigate?.let {
-            com.donnclab.kinetiframe.navigation.AppBottomNavBar(
-                com.donnclab.kinetiframe.navigation.BottomNavDestination.SETTINGS,
+            com.donnclab.kinetiframe.presentation.common.AppBottomNavBar(
+                com.donnclab.kinetiframe.presentation.common.BottomNavDestination.SETTINGS,
                 it,
             )
         }

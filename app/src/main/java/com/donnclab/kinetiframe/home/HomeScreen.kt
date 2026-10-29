@@ -56,13 +56,13 @@ import com.donnclab.kinetiframe.library.ui.HierarchyBrowserState
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabCallbacks
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabIntent
 import com.donnclab.kinetiframe.library.ui.packs.PacksTabState
-import com.donnclab.kinetiframe.navigation.AppBottomNavBar
-import com.donnclab.kinetiframe.navigation.BottomNavDestination
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerState
 import com.donnclab.kinetiframe.presentation.actors.ActorNameDialog
 import com.donnclab.kinetiframe.presentation.actors.AddActorScreen
+import com.donnclab.kinetiframe.presentation.common.AppBottomNavBar
 import com.donnclab.kinetiframe.presentation.common.AppBrandBar
+import com.donnclab.kinetiframe.presentation.common.BottomNavDestination
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.common.FullScreenDialog
 import com.donnclab.kinetiframe.project.ui.AddProjectRoute

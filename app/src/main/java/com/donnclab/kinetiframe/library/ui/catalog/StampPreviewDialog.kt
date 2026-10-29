@@ -26,7 +26,7 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.common.StampAsset
-import com.donnclab.kinetiframe.preview.PreviewCatalog
+import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
 import java.io.File
 
 @Composable

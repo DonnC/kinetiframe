@@ -13,6 +13,7 @@ dependencies {
     // Screens drive the logic modules through their ViewModels.
     implementation(project(":media"))
     implementation(project(":actors"))
+    implementation(project(":studio"))
     api(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.material.icons.extended)

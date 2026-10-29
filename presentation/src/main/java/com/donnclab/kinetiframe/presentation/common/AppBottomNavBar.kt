@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.navigation
+package com.donnclab.kinetiframe.presentation.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

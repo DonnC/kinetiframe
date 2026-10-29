@@ -2,7 +2,7 @@
 package com.donnclab.kinetiframe.studio.editor
 
 import androidx.compose.runtime.Composable
-import com.donnclab.kinetiframe.settings.LocalAppPreferences
+import com.donnclab.kinetiframe.presentation.common.LocalAppPreferences
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
