@@ -7,15 +7,12 @@ import com.donnclab.kinetiframe.core.document.StageDimensions
  * [dimensions] null means "same as project" -- the output is encoded at the project's own stage
  * size with no scaling step at all. A non-null value is a *destination* resolution only: frames
  * are letterboxed to fit it (see `ProjectExporter`'s scaling step), the project's canvas and its
- * dashboard card are never touched by this choice.
+ * dashboard card are never touched by this choice. The screen names each target in its own
+ * string resources.
  */
-data class ExportPreset(val label: String, val dimensions: StageDimensions?)
-
-object ExportPresets {
-    val Presets = listOf(
-        ExportPreset("Same as project", dimensions = null),
-        ExportPreset("Square (Instagram, Facebook post)", StageDimensions.Square),
-        ExportPreset("Vertical (TikTok, Reels, Shorts)", StageDimensions.Vertical),
-        ExportPreset("Landscape (YouTube, Facebook video)", StageDimensions.LandscapeHd),
-    )
+enum class ExportPreset(val dimensions: StageDimensions?) {
+    SAME_AS_PROJECT(null),
+    SQUARE(StageDimensions.Square),
+    VERTICAL(StageDimensions.Vertical),
+    LANDSCAPE(StageDimensions.LandscapeHd),
 }

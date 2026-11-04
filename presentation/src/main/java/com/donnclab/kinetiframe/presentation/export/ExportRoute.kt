@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,11 +31,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.donnclab.kinetiframe.export.model.ExportPresets
+import com.donnclab.kinetiframe.export.model.ExportPreset
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.common.shareFile
 import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.launch
@@ -57,11 +60,12 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
     val scope = rememberCoroutineScope()
     val snackbar = remember { SnackbarHostState() }
     val storagePermissionMessage = stringResource(R.string.export_storage_permission_needed)
+    val resources = LocalResources.current
     LaunchedEffect(model) {
         model.effect.collect { effect ->
             when (effect) {
-                is ExportEffect.ShowMessage -> snackbar.showSnackbar(effect.message)
-                is ExportEffect.Share -> shareFile(context, effect.file, effect.title, "video/mp4")
+                is ExportEffect.ShowMessage -> snackbar.showSnackbar(effect.message.asString(resources))
+                is ExportEffect.Share -> shareFile(context, effect.file, effect.title.asString(resources), "video/mp4")
             }
         }
     }
@@ -103,11 +107,11 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    ExportPresets.Presets.forEach { preset ->
+                    ExportPreset.entries.forEach { preset ->
                         FilterChip(
                             selected = preset == state.preset,
                             onClick = { model.handleIntent(ExportIntent.ChoosePreset(preset)) },
-                            label = { Text(preset.label) },
+                            label = { Text(stringResource(preset.labelRes())) },
                             modifier = Modifier.fillMaxWidth(),
                         )
                     }
@@ -165,4 +169,12 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
         }
     }
     BackHandler(onBack = onExit)
+}
+
+@StringRes
+private fun ExportPreset.labelRes(): Int = when (this) {
+    ExportPreset.SAME_AS_PROJECT -> R.string.export_preset_same_as_project
+    ExportPreset.SQUARE -> R.string.export_preset_square
+    ExportPreset.VERTICAL -> R.string.export_preset_vertical
+    ExportPreset.LANDSCAPE -> R.string.export_preset_landscape
 }

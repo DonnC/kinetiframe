@@ -10,6 +10,8 @@ import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.bundled.BundledContent
 import com.donnclab.kinetiframe.library.data.LibraryRepository
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.project.domain.ProjectTransfers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -60,7 +62,7 @@ class HomeActionsViewModelTest {
         val effect = model.effect.first()
 
         assertEquals(
-            HomeActionsEffect.ShowMessage("Some demo resources could not be installed. Your work was not replaced."),
+            HomeActionsEffect.ShowMessage(UiText.Resource(R.string.home_bundled_install_failed)),
             effect,
         )
         assertTrue(model.state.value.cleanupOffered)
@@ -96,7 +98,7 @@ class HomeActionsViewModelTest {
         advanceUntilIdle()
 
         val share = model.effect.first() as HomeActionsEffect.Share
-        assertEquals("Share My Cartoon", share.title)
+        assertEquals(UiText.Resource(R.string.action_share_named, listOf("My Cartoon")), share.title)
         assertEquals(File(File(filesDir, "kframe-exports"), "project-a.kframe"), share.file)
     }
 }

@@ -42,6 +42,7 @@ import com.donnclab.kinetiframe.preferences.model.StudioOrientation
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
+import com.donnclab.kinetiframe.presentation.common.asString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,7 +76,7 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
-            state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+            state.error?.let { Text(it.asString(), color = MaterialTheme.colorScheme.error) }
             Text(stringResource(R.string.settings_appearance), style = MaterialTheme.typography.titleSmall)
             PreferenceChoice(
                 stringResource(R.string.settings_theme),

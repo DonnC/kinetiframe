@@ -50,7 +50,7 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
                 subtitle = with(state.canvasSelection) {
                     stringResource(
                         R.string.add_project_summary,
-                        preset.label,
+                        preset.displayName(),
                         dimensions.width,
                         dimensions.height,
                         state.fps,
@@ -109,7 +109,7 @@ private fun CanvasSizeRow(selection: CanvasSizeSelection, onClick: () -> Unit) {
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
         ) {
             Column(Modifier.weight(1f)) {
-                Text(selection.preset.label, style = MaterialTheme.typography.titleSmall)
+                Text(selection.preset.displayName(), style = MaterialTheme.typography.titleSmall)
                 Text(
                     stringResource(
                         R.string.canvas_size_dimensions,

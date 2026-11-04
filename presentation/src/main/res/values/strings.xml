@@ -26,6 +26,8 @@
     <string name="action_delete">Delete</string>
     <string name="action_rename">Rename</string>
     <string name="action_share">Share</string>
+    <!-- Share sheet title naming what is shared. -->
+    <string name="action_share_named">Share %1$s</string>
     <string name="action_duplicate">Duplicate</string>
     <string name="action_archive">Archive</string>
     <string name="action_favourite">Favourite</string>
@@ -130,6 +132,10 @@
     <string name="home_cleanup_message">Keep Tavi presents, Tavi/Mira/Kuda, the seven curated packs and scene backgrounds. All other existing projects, actors and library items move to a recoverable archive. New work created after cleanup is kept.</string>
     <string name="home_cleanup_not_now">Not now</string>
     <string name="home_cleanup_confirm">Clean up</string>
+    <string name="home_cleanup_done">Trial library archived. Your curated library is ready.</string>
+    <string name="home_bundled_install_failed">Some demo resources could not be installed. Your work was not replaced.</string>
+    <string name="home_project_imported">Project imported</string>
+    <string name="home_saved_to_library">Saved %1$s to your library</string>
     <string name="home_chip_fps">%1$d fps</string>
     <plurals name="home_chip_items">
         <item quantity="one">%d item</item>
@@ -157,6 +163,8 @@
     <!-- New Project summary: preset name · width × height · frames per second. -->
     <string name="add_project_summary">%1$s · %2$d × %3$d · %4$d fps</string>
     <string name="canvas_size_title">Canvas Size</string>
+    <!-- The canvas preset whose size the animator sets, for a project kept on this device. -->
+    <string name="canvas_preset_local">Local</string>
     <string name="canvas_size_width">Width</string>
     <string name="canvas_size_height">Height</string>
     <string name="canvas_size_px">px</string>
@@ -167,12 +175,17 @@
     <string name="export_title">Export Video</string>
     <string name="export_choose_title">Export as</string>
     <string name="export_choose_hint">Only changes the exported video\'s resolution — your project\'s own canvas is untouched.</string>
+    <string name="export_preset_same_as_project">Same as project</string>
+    <string name="export_preset_square">Square (Instagram, Facebook post)</string>
+    <string name="export_preset_vertical">Vertical (TikTok, Reels, Shorts)</string>
+    <string name="export_preset_landscape">Landscape (YouTube, Facebook video)</string>
     <string name="export_continue">Continue</string>
     <string name="export_rendering">Rendering your animation…</string>
     <string name="export_progress_percent">%1$d%%</string>
     <string name="export_ready">Your animation is ready!</string>
     <string name="export_save_to_gallery">Save to Gallery</string>
     <string name="export_failed">Export failed</string>
+    <string name="export_saved_to_gallery">Saved to your gallery</string>
     <string name="export_storage_permission_needed">Storage permission is needed to save to your gallery on this Android version</string>
 
     <!-- Settings -->
@@ -196,4 +209,6 @@
     <string name="settings_scope_note">These preferences do not change project canvas size or export FPS.</string>
     <string name="settings_diagnostics">Diagnostics</string>
     <string name="settings_share_diagnostics">Share diagnostics</string>
+    <string name="settings_load_failed">Could not read settings. Your projects are unchanged.</string>
+    <string name="settings_save_failed">Settings could not be saved. Please try again.</string>
 </resources>

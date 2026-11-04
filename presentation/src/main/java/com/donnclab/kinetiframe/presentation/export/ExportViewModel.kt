@@ -5,7 +5,8 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.export.domain.VideoExporter
 import com.donnclab.kinetiframe.export.model.ExportPreset
-import com.donnclab.kinetiframe.export.model.ExportPresets
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
@@ -26,7 +27,7 @@ sealed interface ExportPhase {
 /** [displayName] names the saved and shared video; it is the project ID until the name loads. */
 data class ExportState(
     val displayName: String,
-    val preset: ExportPreset = ExportPresets.Presets.first(),
+    val preset: ExportPreset = ExportPreset.SAME_AS_PROJECT,
     val phase: ExportPhase = ExportPhase.ChoosingPreset,
     val progress: Float = 0f,
 ) : ViewState
@@ -39,10 +40,10 @@ sealed interface ExportIntent : ViewIntent {
 }
 
 sealed interface ExportEffect : ViewEffect {
-    data class ShowMessage(val message: String) : ExportEffect
+    data class ShowMessage(val message: UiText) : ExportEffect
 
     /** Offer the exported [file] to other apps through the share sheet, titled [title]. */
-    data class Share(val file: File, val title: String) : ExportEffect
+    data class Share(val file: File, val title: UiText) : ExportEffect
 }
 
 /**
@@ -75,7 +76,12 @@ class ExportViewModel(
             ExportIntent.SaveToGallery -> saveToGallery()
 
             ExportIntent.Share -> (state.value.phase as? ExportPhase.Done)?.let {
-                sendEffect(ExportEffect.Share(it.file, "Share ${state.value.displayName}"))
+                sendEffect(
+                    ExportEffect.Share(
+                        it.file,
+                        UiText.Resource(R.string.action_share_named, listOf(state.value.displayName)),
+                    ),
+                )
             }
         }
     }
@@ -100,8 +106,8 @@ class ExportViewModel(
         viewModelScope.launch {
             val result = withContext(ioDispatcher) { exporter.saveToGallery(done.file, state.value.displayName) }
             val message = when (result) {
-                is StoreResult.Value -> "Saved to your gallery"
-                is StoreResult.Failure -> result.message
+                is StoreResult.Value -> UiText.Resource(R.string.export_saved_to_gallery)
+                is StoreResult.Failure -> UiText.Verbatim(result.message)
             }
             sendEffect(ExportEffect.ShowMessage(message))
         }
