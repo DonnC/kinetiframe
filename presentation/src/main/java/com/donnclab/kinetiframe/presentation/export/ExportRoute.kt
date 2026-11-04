@@ -30,9 +30,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.export.model.ExportPresets
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.shareFile
 import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.launch
@@ -54,6 +56,7 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackbar = remember { SnackbarHostState() }
+    val storagePermissionMessage = stringResource(R.string.export_storage_permission_needed)
     LaunchedEffect(model) {
         model.effect.collect { effect ->
             when (effect) {
@@ -71,11 +74,7 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
             if (granted) {
                 model.handleIntent(ExportIntent.SaveToGallery)
             } else {
-                scope.launch {
-                    snackbar.showSnackbar(
-                        "Storage permission is needed to save to your gallery on this Android version",
-                    )
-                }
+                scope.launch { snackbar.showSnackbar(storagePermissionMessage) }
             }
         }
 
@@ -88,7 +87,7 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
     }
 
     Scaffold(
-        topBar = { CenterAlignedTopAppBar(title = { Text("Export Video") }) },
+        topBar = { CenterAlignedTopAppBar(title = { Text(stringResource(R.string.export_title)) }) },
         snackbarHost = { SnackbarHost(snackbar) },
     ) { padding ->
         Box(Modifier.padding(padding).fillMaxSize()) {
@@ -98,9 +97,9 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    Text("Export as", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.export_choose_title), style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "Only changes the exported video's resolution -- your project's own canvas is untouched.",
+                        stringResource(R.string.export_choose_hint),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -115,7 +114,7 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                     Button(
                         onClick = { model.handleIntent(ExportIntent.Start) },
                         modifier = Modifier.fillMaxWidth(),
-                    ) { Text("Continue") }
+                    ) { Text(stringResource(R.string.export_continue)) }
                 }
 
                 is ExportPhase.Rendering -> Column(
@@ -123,10 +122,10 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    Text("Rendering your animation...", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.export_rendering), style = MaterialTheme.typography.titleMedium)
                     LinearProgressIndicator(progress = { state.progress }, modifier = Modifier.fillMaxWidth())
                     Text(
-                        "${(state.progress * 100).toInt()}%",
+                        stringResource(R.string.export_progress_percent, (state.progress * 100).toInt()),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -137,15 +136,15 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    Text("Your animation is ready!", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.export_ready), style = MaterialTheme.typography.titleMedium)
                     Button(onClick = ::requestSaveToGallery, modifier = Modifier.fillMaxWidth()) {
-                        Text("Save to Gallery")
+                        Text(stringResource(R.string.export_save_to_gallery))
                     }
                     OutlinedButton(
                         onClick = { model.handleIntent(ExportIntent.Share) },
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text("Share")
+                        Text(stringResource(R.string.action_share))
                     }
                 }
 
@@ -155,12 +154,12 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     Text(
-                        "Export failed",
+                        stringResource(R.string.export_failed),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.error,
                     )
                     Text(current.message, style = MaterialTheme.typography.bodyMedium)
-                    OutlinedButton(onClick = onExit) { Text("Close") }
+                    OutlinedButton(onClick = onExit) { Text(stringResource(R.string.action_close)) }
                 }
             }
         }

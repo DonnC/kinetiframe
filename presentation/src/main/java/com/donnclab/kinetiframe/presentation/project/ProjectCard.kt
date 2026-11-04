@@ -24,11 +24,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.presentation.R
 
 /** One dashboard card. Shows the project's real frame-0 thumbnail once one has been generated
  *  (see [ProjectRepository.thumbnailFile] and EditorScreen's
@@ -64,25 +66,27 @@ fun ProjectCard(
                     ) {}
                 }
                 Box(Modifier.align(Alignment.TopEnd)) {
-                    IconButton(onClick = { menuOpen = true }) { Icon(Icons.Default.MoreVert, "Project actions") }
+                    IconButton(onClick = {
+                        menuOpen = true
+                    }) { Icon(Icons.Default.MoreVert, stringResource(R.string.project_actions)) }
                     DropdownMenu(menuOpen, { menuOpen = false }) {
-                        DropdownMenuItem(text = { Text("Rename") }, onClick = {
+                        DropdownMenuItem(text = { Text(stringResource(R.string.action_rename)) }, onClick = {
                             menuOpen = false
                             onRename()
                         })
-                        DropdownMenuItem(text = { Text("Export Video") }, onClick = {
+                        DropdownMenuItem(text = { Text(stringResource(R.string.action_export_video)) }, onClick = {
                             menuOpen = false
                             onExportVideo()
                         })
-                        DropdownMenuItem(text = { Text("Share (.kframe)") }, onClick = {
+                        DropdownMenuItem(text = { Text(stringResource(R.string.project_share_kframe)) }, onClick = {
                             menuOpen = false
                             onShare()
                         })
-                        DropdownMenuItem(text = { Text("Save to Library") }, onClick = {
+                        DropdownMenuItem(text = { Text(stringResource(R.string.project_save_to_library)) }, onClick = {
                             menuOpen = false
                             onSaveToLibrary()
                         })
-                        DropdownMenuItem(text = { Text("Delete") }, onClick = {
+                        DropdownMenuItem(text = { Text(stringResource(R.string.action_delete)) }, onClick = {
                             menuOpen = false
                             onDelete()
                         })
@@ -91,7 +95,7 @@ fun ProjectCard(
             }
             Text(project.displayName, style = MaterialTheme.typography.titleSmall, maxLines = 1)
             Text(
-                "${project.stage.width}×${project.stage.height} · ${project.fps} fps",
+                stringResource(R.string.project_card_summary, project.stage.width, project.stage.height, project.fps),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

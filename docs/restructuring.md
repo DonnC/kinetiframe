@@ -13,22 +13,22 @@ Keep this page current:
 
 ## Now
 
-**One Compose version for every module.** Navigation 3 pulled Compose 1.10 and 1.11 into `app`,
-while every other module compiled against the 1.7 that BOM 2024.09.00 pins, so the app shipped a
-mix of versions and `presentation`'s lint skipped four Compose checks. This pull request raises the
-BOM to 2026.09.00 (Compose 1.12.1, Material 3 1.4.0), the version Dependabot #3 proposes, and
-fixes what the newer checks find. The newer Compose draws `FullScreenDialog` edge to edge, so the
-add flows now pad for the system bars themselves.
+**Strings to resources, part 1: the shell screens.** Home, New Project, Settings, Export, the
+add-flow header and the exit dialog take their text from string resources. Counts use plurals,
+and the shared actions (Delete, Rename, Share, Cancel and so on) are one set of `action_*`
+strings. ViewModel messages and the canvas and export preset names are left for part 2.
 
 ## Next
 
-The tracks under **Later**, a screen or feature at a time.
+**Strings, part 2.** Give the Home actions, Settings and Export ViewModels a typed message the
+screen turns into a string, and move the preset names out of the model. Then the studio screens,
+a feature at a time.
 
 ## Later
 
 Tracks that run alongside the module work, a screen or feature at a time:
 
-- **Strings to resources.** 298 inline text values in 95 files, plus messages assigned to state
+- **Strings to resources.** 247 inline text values in 83 files, plus messages assigned to state
   that the check doesn't count. Then right-to-left layouts, per-app language and a pseudo-locale
   check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
@@ -88,7 +88,7 @@ fixed after the module work, unless one blocks testing.
 
 - The asset menu cuts off "Actor perfor…" and "Import audio …".
 - In the brush panel, the brush name ("Pen") is white text on the white preview card.
-- The export screen has no back button, and its hint uses "--" for a dash.
+- The export screen has no back button.
 - In portrait, Actor Studio's hint banner runs into the gold asset button.
 - The asset tracks panel covers the whole stage and says only "No clips yet".
 - "Save before leaving?" appears even right after saving with nothing changed. In that dialog,
@@ -172,6 +172,7 @@ fixed after the module work, unless one blocks testing.
 | #53 | Moved the editor, library, export and project screens into `presentation` (step 9, part 2) |
 | #54 | Moved Home and Settings into `presentation`, ending the module work (step 9 done) |
 | #55 | Made `checkArchitecture` describe the nine-module layout |
+| #56 | Used one Compose version (BOM 2026.09.00) in every module and fixed the newer lint checks |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -226,7 +227,7 @@ From `.architecture/` during step 9. Each count may only go down.
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 0 | — |
 | Functions over the parameter limit | 52 | — |
-| Inline text values | 298 | 95 |
+| Inline text values | 247 | 83 |
 | Inline colours | 64 | 24 |
 | Inline `.dp` sizes | 806 | 132 |
 | Files over 500 lines | 0 | — |

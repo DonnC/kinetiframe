@@ -33,11 +33,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.preferences.model.AppTheme
 import com.donnclab.kinetiframe.preferences.model.StudioOrientation
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
 
@@ -53,8 +55,10 @@ fun SettingsScreen(
     Scaffold(topBar = {
         Column {
             com.donnclab.kinetiframe.presentation.common.AppBrandBar()
-            TopAppBar(title = { Text("Settings") }, navigationIcon = {
-                IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") }
+            TopAppBar(title = { Text(stringResource(R.string.settings_title)) }, navigationIcon = {
+                IconButton(onClick = onBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.action_back))
+                }
             })
         }
     }, bottomBar = {
@@ -72,67 +76,71 @@ fun SettingsScreen(
         ) {
             if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
             state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-            Text("Appearance", style = MaterialTheme.typography.titleSmall)
+            Text(stringResource(R.string.settings_appearance), style = MaterialTheme.typography.titleSmall)
             PreferenceChoice(
-                "Theme",
+                stringResource(R.string.settings_theme),
                 state.preferences.theme,
                 AppTheme.entries,
                 !state.loading,
                 {
                     when (it) {
-                        AppTheme.SYSTEM -> "System"
-                        AppTheme.LIGHT -> "Light"
-                        AppTheme.DARK -> "Dark"
+                        AppTheme.SYSTEM -> stringResource(R.string.settings_theme_system)
+                        AppTheme.LIGHT -> stringResource(R.string.settings_theme_light)
+                        AppTheme.DARK -> stringResource(R.string.settings_theme_dark)
                     }
                 },
                 { onIntent(SettingsIntent.Theme(it)) },
             )
             HorizontalDivider()
-            Text("Studio", style = MaterialTheme.typography.titleSmall)
+            Text(stringResource(R.string.settings_studio), style = MaterialTheme.typography.titleSmall)
             PreferenceSwitch(
-                "Menu labels",
-                "Small captions below menu icons.",
+                stringResource(R.string.settings_menu_labels),
+                stringResource(R.string.settings_menu_labels_hint),
                 state.preferences.showMenuLabels,
                 !state.loading,
             ) { onIntent(SettingsIntent.MenuLabels(it)) }
             PreferenceChoice(
-                "Orientation",
+                stringResource(R.string.settings_orientation),
                 state.preferences.orientation,
                 StudioOrientation.entries,
                 !state.loading,
                 {
                     when (it) {
-                        StudioOrientation.LANDSCAPE -> "Landscape"
-                        StudioOrientation.PORTRAIT -> "Portrait"
-                        StudioOrientation.DEVICE -> "Follow device"
+                        StudioOrientation.LANDSCAPE -> stringResource(R.string.settings_orientation_landscape)
+                        StudioOrientation.PORTRAIT -> stringResource(R.string.settings_orientation_portrait)
+                        StudioOrientation.DEVICE -> stringResource(R.string.settings_orientation_device)
                     }
                 },
                 { onIntent(SettingsIntent.Orientation(it)) },
             )
             PreferenceSwitch(
-                "Hide Android bars",
-                "Studio only; swipe from an edge to reveal them.",
+                stringResource(R.string.settings_hide_system_bars),
+                stringResource(R.string.settings_hide_system_bars_hint),
                 state.preferences.hideSystemBars,
                 !state.loading,
             ) { onIntent(SettingsIntent.SystemBars(it)) }
             PreferenceSwitch(
-                "Hide tools during playback",
-                "Keep the canvas clear while previewing.",
+                stringResource(R.string.settings_hide_tools),
+                stringResource(R.string.settings_hide_tools_hint),
                 state.preferences.hideToolsDuringPlayback,
                 !state.loading,
             ) {
                 onIntent(SettingsIntent.PlaybackTools(it))
             }
             Text(
-                "These preferences do not change project canvas size or export FPS.",
+                stringResource(R.string.settings_scope_note),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             HorizontalDivider()
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Diagnostics", Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
+                Text(
+                    stringResource(R.string.settings_diagnostics),
+                    Modifier.weight(1f),
+                    style = MaterialTheme.typography.titleSmall,
+                )
                 ContextIconButton(
-                    ContextIconAction(Icons.Filled.BugReport, "Share diagnostics", {
+                    ContextIconAction(Icons.Filled.BugReport, stringResource(R.string.settings_share_diagnostics), {
                         onShareDiagnostics()
                     }),
                 )
@@ -147,7 +155,7 @@ private fun <T> PreferenceChoice(
     value: T,
     choices: List<T>,
     enabled: Boolean,
-    name: (T) -> String,
+    name: @Composable (T) -> String,
     onChoose: (T) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }

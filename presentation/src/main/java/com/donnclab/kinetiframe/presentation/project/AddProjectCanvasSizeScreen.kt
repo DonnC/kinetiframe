@@ -20,12 +20,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Link2
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.studio.dialogs.SelectionDot
@@ -43,7 +45,9 @@ fun AddProjectCanvasSizeScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(modifier = modifier, topBar = { AddFlowTopBar(title = "Canvas Size", onBack = onBack) }) { padding ->
+    Scaffold(modifier = modifier, topBar = {
+        AddFlowTopBar(title = stringResource(R.string.canvas_size_title), onBack = onBack)
+    }) { padding ->
         Column(
             Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 20.dp),
         ) {
@@ -80,8 +84,8 @@ private fun LocalDimensionsRow(dimensions: StageDimensions, editable: Boolean, o
         CompactTextField(
             value = dimensions.width.toString(),
             onValueChange = { text -> text.toIntOrNull()?.let { onChange(dimensions.copy(width = it)) } },
-            label = { Text("Width") },
-            suffix = { Text("px") },
+            label = { Text(stringResource(R.string.canvas_size_width)) },
+            suffix = { Text(stringResource(R.string.canvas_size_px)) },
             singleLine = true,
             enabled = editable,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -96,8 +100,8 @@ private fun LocalDimensionsRow(dimensions: StageDimensions, editable: Boolean, o
         CompactTextField(
             value = dimensions.height.toString(),
             onValueChange = { text -> text.toIntOrNull()?.let { onChange(dimensions.copy(height = it)) } },
-            label = { Text("Height") },
-            suffix = { Text("px") },
+            label = { Text(stringResource(R.string.canvas_size_height)) },
+            suffix = { Text(stringResource(R.string.canvas_size_px)) },
             singleLine = true,
             enabled = editable,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -116,9 +120,13 @@ private fun CanvasPresetRow(preset: CanvasPreset, selected: Boolean, onClick: ()
                 Text(preset.label, style = MaterialTheme.typography.titleSmall)
                 Text(
                     if (preset.isLocal) {
-                        "${preset.dimensions.width} × ${preset.dimensions.height} · editable"
+                        stringResource(R.string.canvas_size_editable, preset.dimensions.width, preset.dimensions.height)
                     } else {
-                        "${preset.dimensions.width} × ${preset.dimensions.height}"
+                        stringResource(
+                            R.string.canvas_size_dimensions,
+                            preset.dimensions.width,
+                            preset.dimensions.height,
+                        )
                     },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name" translatable="false">@string/brand_name</string>
+
+    <!-- Exit confirmation -->
+    <string name="exit_title">Exit KinetiFrame?</string>
+    <string name="exit_message">You can return to your saved projects whenever you\'re ready.</string>
+    <string name="exit_confirm">Exit</string>
+    <string name="exit_stay">Stay</string>
 </resources>

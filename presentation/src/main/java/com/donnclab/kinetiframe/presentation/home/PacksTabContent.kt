@@ -19,8 +19,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
 import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserControls
 import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserIndex
@@ -69,11 +71,13 @@ internal fun PacksTabContent(
             when {
                 state.loading -> LoadingBox()
 
-                error != null -> ActorManagerMessage(error, "Retry") { onIntent(PacksTabIntent.Reload) }
+                error != null -> ActorManagerMessage(error, stringResource(R.string.action_retry)) {
+                    onIntent(PacksTabIntent.Reload)
+                }
 
                 state.packs.isEmpty() -> ActorManagerMessage(
-                    "Build a pack of stamp-ready drawings to see it here.",
-                    "New pack",
+                    stringResource(R.string.home_packs_empty),
+                    stringResource(R.string.home_new_pack),
                     onRequestCreate,
                 )
 
@@ -123,18 +127,20 @@ internal fun PacksTabContent(
     deleteCandidate?.let { pack ->
         AlertDialog(
             onDismissRequest = { deleteCandidate = null },
-            title = { Text("Delete \"${pack.displayName}\"?") },
+            title = { Text(stringResource(R.string.home_delete_pack_title, pack.displayName)) },
             text = {
-                Text("This removes the pack from your library. Anyone you already shared it with keeps their copy.")
+                Text(stringResource(R.string.home_delete_pack_message))
             },
             confirmButton = {
                 TextButton(onClick = {
                     onIntent(PacksTabIntent.Delete(pack.libraryItemId))
                     deleteCandidate =
                         null
-                }) { Text("Delete") }
+                }) { Text(stringResource(R.string.action_delete)) }
             },
-            dismissButton = { TextButton(onClick = { deleteCandidate = null }) { Text("Cancel") } },
+            dismissButton = {
+                TextButton(onClick = { deleteCandidate = null }) { Text(stringResource(R.string.action_cancel)) }
+            },
         )
     }
     state.openDetails?.let { pack ->
