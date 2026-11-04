@@ -5,6 +5,8 @@ import com.donnclab.kinetiframe.preferences.data.AppPreferencesStore
 import com.donnclab.kinetiframe.preferences.model.AppPreferences
 import com.donnclab.kinetiframe.preferences.model.AppTheme
 import com.donnclab.kinetiframe.preferences.model.StudioOrientation
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
@@ -17,7 +19,7 @@ import kotlinx.coroutines.sync.withLock
 data class SettingsState(
     val preferences: AppPreferences = AppPreferences(),
     val loading: Boolean = true,
-    val error: String? = null,
+    val error: UiText? = null,
 ) : ViewState
 sealed interface SettingsIntent : ViewIntent {
     data class Theme(val value: AppTheme) : SettingsIntent
@@ -45,7 +47,7 @@ class SettingsViewModel(private val store: AppPreferencesStore) :
                     _: Exception,
                 ) {
                     updateState {
-                        it.copy(loading = false, error = "Could not read settings. Your projects are unchanged.")
+                        it.copy(loading = false, error = UiText.Resource(R.string.settings_load_failed))
                     }
                 }
             }
@@ -78,7 +80,7 @@ class SettingsViewModel(private val store: AppPreferencesStore) :
                 } catch (
                     _: Exception,
                 ) {
-                    updateState { it.copy(error = "Settings could not be saved. Please try again.") }
+                    updateState { it.copy(error = UiText.Resource(R.string.settings_save_failed)) }
                 }
             }
         }

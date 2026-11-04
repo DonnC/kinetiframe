@@ -13,16 +13,17 @@ Keep this page current:
 
 ## Now
 
-**Strings to resources, part 1: the shell screens.** Home, New Project, Settings, Export, the
-add-flow header and the exit dialog take their text from string resources. Counts use plurals,
-and the shared actions (Delete, Rename, Share, Cancel and so on) are one set of `action_*`
-strings. ViewModel messages and the canvas and export preset names are left for part 2.
+**Strings to resources, part 2: ViewModel messages.** #58 moved the shell screens' text. This
+pull request gives ViewModels `UiText`, a string resource or already-worded text that the screen
+turns into a string, so they no longer hold English. The Home actions, Settings and Export
+ViewModels use it. `ExportPreset` becomes an enum that the screen names from resources, and the
+Local canvas preset takes its name from resources too.
 
 ## Next
 
-**Strings, part 2.** Give the Home actions, Settings and Export ViewModels a typed message the
-screen turns into a string, and move the preset names out of the model. Then the studio screens,
-a feature at a time.
+**Strings, part 3: the studio screens**, a feature at a time. The projects, actors and packs
+ViewModels' `ShowError` effects, and every `StoreResult.Failure`, still carry English from the
+layers below. They move with the **Typed errors** track, through `UiText.Verbatim` until then.
 
 ## Later
 

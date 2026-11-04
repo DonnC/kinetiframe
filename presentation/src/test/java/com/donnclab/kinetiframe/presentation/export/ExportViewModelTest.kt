@@ -3,7 +3,9 @@ package com.donnclab.kinetiframe.presentation.export
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.export.domain.VideoExporter
-import com.donnclab.kinetiframe.export.model.ExportPresets
+import com.donnclab.kinetiframe.export.model.ExportPreset
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -60,7 +62,7 @@ class ExportViewModelTest {
             advanceUntilIdle()
             assertEquals("My Cartoon", model.state.value.displayName)
 
-            val square = ExportPresets.Presets.first { it.dimensions == StageDimensions.Square }
+            val square = ExportPreset.SQUARE
             model.handleIntent(ExportIntent.ChoosePreset(square))
             model.handleIntent(ExportIntent.Start)
             advanceUntilIdle()
@@ -70,11 +72,17 @@ class ExportViewModelTest {
 
             model.handleIntent(ExportIntent.SaveToGallery)
             advanceUntilIdle()
-            assertEquals(ExportEffect.ShowMessage("Saved to your gallery"), model.effect.first())
+            assertEquals(
+                ExportEffect.ShowMessage(UiText.Resource(R.string.export_saved_to_gallery)),
+                model.effect.first(),
+            )
             assertEquals(listOf("My Cartoon"), exporter.saved)
 
             model.handleIntent(ExportIntent.Share)
-            assertEquals(ExportEffect.Share(video, "Share My Cartoon"), model.effect.first())
+            assertEquals(
+                ExportEffect.Share(video, UiText.Resource(R.string.action_share_named, listOf("My Cartoon"))),
+                model.effect.first(),
+            )
         }
 
     @Test fun `a failed export shows its reason`() = runTest(dispatcher) {

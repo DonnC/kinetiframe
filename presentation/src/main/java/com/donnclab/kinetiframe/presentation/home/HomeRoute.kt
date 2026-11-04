@@ -16,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
@@ -23,6 +24,7 @@ import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerEffect
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerViewModel
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.common.shareFile
 import com.donnclab.kinetiframe.presentation.library.LibraryPickerDialog
 import com.donnclab.kinetiframe.presentation.library.packs.PacksTabEffect
@@ -50,6 +52,7 @@ fun HomeRoute(
     onOpenSettings: () -> Unit = {},
 ) {
     val context = LocalContext.current
+    val resources = LocalResources.current
     val projectModel: ProjectManagerViewModel = appViewModel()
     val actorModel: ActorManagerViewModel = appViewModel()
     val hierarchyModel: com.donnclab.kinetiframe.presentation.library.HierarchyBrowserViewModel = appViewModel()
@@ -129,9 +132,9 @@ fun HomeRoute(
     LaunchedEffect(actions) {
         actions.effect.collect { effect ->
             when (effect) {
-                is HomeActionsEffect.Share -> shareFile(context, effect.file, effect.title)
+                is HomeActionsEffect.Share -> shareFile(context, effect.file, effect.title.asString(resources))
 
-                is HomeActionsEffect.ShowMessage -> snackbar.showSnackbar(effect.message)
+                is HomeActionsEffect.ShowMessage -> snackbar.showSnackbar(effect.message.asString(resources))
 
                 HomeActionsEffect.ProjectsChanged -> projectModel.handleIntent(ProjectManagerIntent.Reload)
 

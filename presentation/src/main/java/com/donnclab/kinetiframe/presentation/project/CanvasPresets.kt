@@ -1,6 +1,9 @@
 package com.donnclab.kinetiframe.presentation.project
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.presentation.R
 
 /**
  * A named canvas size a new project can start from. Deliberately a fixed table of real-world
@@ -11,13 +14,21 @@ import com.donnclab.kinetiframe.core.document.StageDimensions
  * [CanvasPresets.Local] is the odd one out: it is the only preset whose dimensions the animator
  * can edit directly on the canvas-size screen (see AddProjectCanvasSizeScreen), for a project
  * meant to stay on this device rather than target one specific platform's upload spec.
+ *
+ * [platform] is a product name ("YouTube (1080p)") and stays as written in every language. It is
+ * null for [CanvasPresets.Local], whose name comes from string resources; see [displayName].
  */
-data class CanvasPreset(val label: String, val dimensions: StageDimensions, val isLocal: Boolean = false)
+data class CanvasPreset(val platform: String?, val dimensions: StageDimensions) {
+    val isLocal: Boolean get() = platform == null
+}
+
+@Composable
+fun CanvasPreset.displayName(): String = platform ?: stringResource(R.string.canvas_preset_local)
 
 object CanvasPresets {
     /** Default local export target -- same pixel size as YouTube's 1080p preset, since that is
      *  the most broadly compatible landscape HD size a locally-kept file could want. */
-    val Local = CanvasPreset("Local", StageDimensions(1920, 1080), isLocal = true)
+    val Local = CanvasPreset(platform = null, StageDimensions(1920, 1080))
 
     val all: List<CanvasPreset> = listOf(
         Local,

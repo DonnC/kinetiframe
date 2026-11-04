@@ -5,6 +5,8 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.library.bundled.BundledContent
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.project.domain.ProjectTransfers
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
@@ -34,8 +36,8 @@ sealed interface HomeActionsIntent : ViewIntent {
 
 sealed interface HomeActionsEffect : ViewEffect {
     /** Offer [file] to other apps through the share sheet, titled [title]. */
-    data class Share(val file: File, val title: String) : HomeActionsEffect
-    data class ShowMessage(val message: String) : HomeActionsEffect
+    data class Share(val file: File, val title: UiText) : HomeActionsEffect
+    data class ShowMessage(val message: UiText) : HomeActionsEffect
 
     /** Projects changed on disk, so the projects list should reload. */
     data object ProjectsChanged : HomeActionsEffect
@@ -86,11 +88,7 @@ class HomeActionsViewModel(
             updateState { it.copy(cleanupOffered = cleanupPending) }
             if (installed.listsChanged) sendEffect(HomeActionsEffect.EverythingChanged)
             if (installed.errors.isNotEmpty()) {
-                sendEffect(
-                    HomeActionsEffect.ShowMessage(
-                        "Some demo resources could not be installed. Your work was not replaced.",
-                    ),
-                )
+                sendEffect(HomeActionsEffect.ShowMessage(UiText.Resource(R.string.home_bundled_install_failed)))
             }
         }
     }
@@ -101,10 +99,10 @@ class HomeActionsViewModel(
             when (val result = withContext(ioDispatcher) { bundled.cleanUp() }) {
                 is StoreResult.Value -> {
                     sendEffect(HomeActionsEffect.EverythingChanged)
-                    sendEffect(HomeActionsEffect.ShowMessage("Trial library archived. Your curated library is ready."))
+                    sendEffect(HomeActionsEffect.ShowMessage(UiText.Resource(R.string.home_cleanup_done)))
                 }
 
-                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(result.message))
+                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(UiText.Verbatim(result.message)))
             }
         }
     }
@@ -112,8 +110,11 @@ class HomeActionsViewModel(
     private fun share(name: String, archive: () -> StoreResult<File>) {
         viewModelScope.launch {
             when (val result = withContext(ioDispatcher) { archive() }) {
-                is StoreResult.Value -> sendEffect(HomeActionsEffect.Share(result.value, "Share $name"))
-                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(result.message))
+                is StoreResult.Value -> sendEffect(
+                    HomeActionsEffect.Share(result.value, UiText.Resource(R.string.action_share_named, listOf(name))),
+                )
+
+                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(UiText.Verbatim(result.message)))
             }
         }
     }
@@ -123,10 +124,10 @@ class HomeActionsViewModel(
             when (val result = withContext(ioDispatcher) { import() }) {
                 is StoreResult.Value -> {
                     sendEffect(HomeActionsEffect.ProjectsChanged)
-                    sendEffect(HomeActionsEffect.ShowMessage("Project imported"))
+                    sendEffect(HomeActionsEffect.ShowMessage(UiText.Resource(R.string.home_project_imported)))
                 }
 
-                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(result.message))
+                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(UiText.Verbatim(result.message)))
             }
         }
     }
@@ -135,10 +136,12 @@ class HomeActionsViewModel(
         viewModelScope.launch {
             when (val result = withContext(ioDispatcher) { transfers.saveToLibrary(project) }) {
                 is StoreResult.Value -> sendEffect(
-                    HomeActionsEffect.ShowMessage("Saved ${project.displayName} to your library"),
+                    HomeActionsEffect.ShowMessage(
+                        UiText.Resource(R.string.home_saved_to_library, listOf(project.displayName)),
+                    ),
                 )
 
-                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(result.message))
+                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(UiText.Verbatim(result.message)))
             }
         }
     }

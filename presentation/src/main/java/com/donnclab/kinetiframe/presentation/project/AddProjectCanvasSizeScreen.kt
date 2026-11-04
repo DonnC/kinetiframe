@@ -117,7 +117,7 @@ private fun CanvasPresetRow(preset: CanvasPreset, selected: Boolean, onClick: ()
     Surface(onClick = onClick, color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 14.dp)) {
             Column(Modifier.weight(1f)) {
-                Text(preset.label, style = MaterialTheme.typography.titleSmall)
+                Text(preset.displayName(), style = MaterialTheme.typography.titleSmall)
                 Text(
                     if (preset.isLocal) {
                         stringResource(R.string.canvas_size_editable, preset.dimensions.width, preset.dimensions.height)
