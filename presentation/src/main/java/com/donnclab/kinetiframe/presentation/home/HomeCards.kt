@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -127,12 +128,12 @@ fun HomeProjectCard(
             Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant))
         }
         HomeChip(
-            "${project.fps} fps",
+            stringResource(R.string.home_chip_fps, project.fps),
             icon = Icons.Filled.PlayArrow,
             modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
         )
         HomeChip(
-            "${project.stage.width}×${project.stage.height}",
+            stringResource(R.string.size_dimensions, project.stage.width, project.stage.height),
             modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
         )
         Column(
@@ -159,36 +160,36 @@ fun HomeProjectCard(
         Box(Modifier.align(Alignment.BottomEnd).padding(2.dp)) {
             IconButton(onClick = {
                 menuOpen = true
-            }) { Icon(Icons.Default.MoreVert, "Project actions", tint = Color.White) }
+            }) { Icon(Icons.Default.MoreVert, stringResource(R.string.project_actions), tint = Color.White) }
             IconContextMenu(
                 menuOpen,
                 { menuOpen = false },
                 listOf(
-                    ContextIconAction(Icons.Default.Star, "Favourite", {
+                    ContextIconAction(Icons.Default.Star, stringResource(R.string.action_favourite), {
                         menuOpen = false
                         onFavourite()
                     }, selected = favourite),
-                    ContextIconAction(Icons.Default.Folder, "Collection", {
+                    ContextIconAction(Icons.Default.Folder, stringResource(R.string.action_collection), {
                         menuOpen = false
                         onOrganise()
                     }),
-                    ContextIconAction(Icons.Default.Edit, "Rename", {
+                    ContextIconAction(Icons.Default.Edit, stringResource(R.string.action_rename), {
                         menuOpen = false
                         onRename()
                     }),
-                    ContextIconAction(Icons.Default.Movie, "Export video", {
+                    ContextIconAction(Icons.Default.Movie, stringResource(R.string.action_export_video), {
                         menuOpen = false
                         onExportVideo()
                     }),
-                    ContextIconAction(Icons.Default.Share, "Share", {
+                    ContextIconAction(Icons.Default.Share, stringResource(R.string.action_share), {
                         menuOpen = false
                         onShare()
                     }),
-                    ContextIconAction(Icons.Default.LibraryAdd, "Library", {
+                    ContextIconAction(Icons.Default.LibraryAdd, stringResource(R.string.action_add_to_library), {
                         menuOpen = false
                         onSaveToLibrary()
                     }),
-                    ContextIconAction(Icons.Default.Delete, "Delete", {
+                    ContextIconAction(Icons.Default.Delete, stringResource(R.string.action_delete), {
                         menuOpen = false
                         onDelete()
                     }),
@@ -268,7 +269,11 @@ fun HomePackCard(pack: LibraryItemManifest, itemCount: Int, previewFiles: List<F
                 }
             }
         }
-        HomeChip("$itemCount items", icon = Lucide.Layers, modifier = Modifier.align(Alignment.TopEnd).padding(8.dp))
+        HomeChip(
+            pluralStringResource(R.plurals.home_chip_items, itemCount, itemCount),
+            icon = Lucide.Layers,
+            modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
+        )
         Box(
             Modifier
                 .align(Alignment.BottomStart)
@@ -297,7 +302,9 @@ fun HomePackCard(pack: LibraryItemManifest, itemCount: Int, previewFiles: List<F
                         add(
                             ContextIconAction(
                                 Icons.Default.Star,
-                                if (actions.favourite) "Unfavourite" else "Favourite",
+                                stringResource(
+                                    if (actions.favourite) R.string.action_unfavourite else R.string.action_favourite,
+                                ),
                                 {
                                     menuOpen = false
                                     action()
@@ -308,7 +315,7 @@ fun HomePackCard(pack: LibraryItemManifest, itemCount: Int, previewFiles: List<F
                     }
                     actions.onOrganise?.let { action ->
                         add(
-                            ContextIconAction(Icons.Default.Folder, "Organise", {
+                            ContextIconAction(Icons.Default.Folder, stringResource(R.string.action_organise), {
                                 menuOpen =
                                     false
                                 action()
@@ -370,13 +377,13 @@ fun HomeActorCard(
         } else {
             AsyncImage(
                 model = "file://$thumbnailPath",
-                contentDescription = "${actor.displayName} actor preview",
+                contentDescription = stringResource(R.string.actor_preview_description, actor.displayName),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.fillMaxSize().padding(top = 28.dp, bottom = 40.dp, start = 12.dp, end = 12.dp),
             )
         }
         HomeChip(
-            "${actor.authoredViews().size} views",
+            actor.authoredViews().size.let { pluralStringResource(R.plurals.home_chip_views, it, it) },
             modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
         )
         Box(
@@ -398,32 +405,32 @@ fun HomeActorCard(
         Box(Modifier.align(Alignment.BottomEnd).padding(2.dp)) {
             IconButton(onClick = {
                 menuOpen = true
-            }) { Icon(Icons.Default.MoreVert, "Actor actions", tint = Color.White) }
+            }) { Icon(Icons.Default.MoreVert, stringResource(R.string.actor_actions), tint = Color.White) }
             IconContextMenu(
                 menuOpen,
                 { menuOpen = false },
                 listOf(
-                    ContextIconAction(Icons.Default.Star, "Favourite", {
+                    ContextIconAction(Icons.Default.Star, stringResource(R.string.action_favourite), {
                         menuOpen = false
                         onFavourite()
                     }, selected = favourite),
-                    ContextIconAction(Icons.Default.Folder, "Collection", {
+                    ContextIconAction(Icons.Default.Folder, stringResource(R.string.action_collection), {
                         menuOpen = false
                         onOrganise()
                     }),
-                    ContextIconAction(Icons.Default.Edit, "Rename", {
+                    ContextIconAction(Icons.Default.Edit, stringResource(R.string.action_rename), {
                         menuOpen = false
                         onRename()
                     }),
-                    ContextIconAction(Icons.Default.ContentCopy, "Duplicate", {
+                    ContextIconAction(Icons.Default.ContentCopy, stringResource(R.string.action_duplicate), {
                         menuOpen = false
                         onDuplicate()
                     }),
-                    ContextIconAction(Icons.Default.LibraryAdd, "Library", {
+                    ContextIconAction(Icons.Default.LibraryAdd, stringResource(R.string.action_add_to_library), {
                         menuOpen = false
                         onExport()
                     }),
-                    ContextIconAction(Icons.Default.Archive, "Archive", {
+                    ContextIconAction(Icons.Default.Archive, stringResource(R.string.action_archive), {
                         menuOpen = false
                         onArchive()
                     }),

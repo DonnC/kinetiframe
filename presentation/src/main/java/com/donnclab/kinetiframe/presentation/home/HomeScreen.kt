@@ -107,12 +107,23 @@ fun HomeScreen(
     var renameActorId by remember { mutableStateOf<String?>(null) }
     var showImportSheet by remember { mutableStateOf(false) }
 
-    val tabTitles = listOf("Projects", "Packs", "Actors")
+    val tabTitles = listOf(
+        stringResource(R.string.home_tab_projects),
+        stringResource(R.string.home_tab_packs),
+        stringResource(R.string.home_tab_actors),
+    )
+    val searchPlaceholder = stringResource(
+        when (selectedTab) {
+            0 -> R.string.home_search_projects
+            1 -> R.string.home_search_packs
+            else -> R.string.home_search_actors
+        },
+    )
 
     val fabDescription = when (selectedTab) {
-        0 -> "New project"
-        1 -> "New pack"
-        else -> "New actor"
+        0 -> stringResource(R.string.home_new_project)
+        1 -> stringResource(R.string.home_new_pack)
+        else -> stringResource(R.string.home_new_actor)
     }
     val onFabClick: () -> Unit = when (selectedTab) {
         0 -> {
@@ -133,7 +144,7 @@ fun HomeScreen(
             HomeTopBar(
                 searchActive = searchActive,
                 searchQuery = searchQuery,
-                searchLabel = tabTitles[selectedTab],
+                searchPlaceholder = searchPlaceholder,
                 onSearchQueryChange = { searchQuery = it },
                 onSearchToggle = {
                     searchActive = !searchActive
@@ -245,7 +256,7 @@ fun HomeScreen(
     renameActorId?.let { actorId ->
         ActorNameDialog(
             initialName = actorState.actors.firstOrNull { it.actorId == actorId }?.displayName.orEmpty(),
-            title = "Rename actor",
+            title = stringResource(R.string.home_rename_actor),
             onDismiss = { renameActorId = null },
             onConfirm = { name ->
                 onActorIntent(ActorManagerIntent.Rename(actorId, name))
@@ -273,15 +284,15 @@ fun HomeScreen(
 private fun HomeTopBar(
     searchActive: Boolean,
     searchQuery: String,
-    searchLabel: String,
+    searchPlaceholder: String,
     onSearchQueryChange: (String) -> Unit,
     onSearchToggle: () -> Unit,
     onImportClick: () -> Unit,
 ) {
     if (!searchActive) {
         AppBrandBar {
-            IconButton(onClick = onSearchToggle) { Icon(Icons.Filled.Search, "Search") }
-            IconButton(onClick = onImportClick) { Icon(Icons.Filled.FileOpen, "Import") }
+            IconButton(onClick = onSearchToggle) { Icon(Icons.Filled.Search, stringResource(R.string.action_search)) }
+            IconButton(onClick = onImportClick) { Icon(Icons.Filled.FileOpen, stringResource(R.string.import_title)) }
         }
         return
     }
@@ -295,10 +306,12 @@ private fun HomeTopBar(
                 value = searchQuery,
                 onValueChange = onSearchQueryChange,
                 modifier = Modifier.weight(1f).padding(end = 8.dp),
-                placeholder = { Text("Search $searchLabel") },
+                placeholder = { Text(searchPlaceholder) },
                 singleLine = true,
             )
-            IconButton(onClick = onSearchToggle) { Icon(Icons.Filled.Close, "Close search") }
+            IconButton(onClick = onSearchToggle) {
+                Icon(Icons.Filled.Close, stringResource(R.string.action_close_search))
+            }
         }
     }
 }
@@ -312,7 +325,7 @@ internal fun LoadingBox() {
 internal fun EmptySearchMessage() {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text(
-            "Nothing matches your search.",
+            stringResource(R.string.home_search_empty),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(24.dp),

@@ -18,11 +18,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.library.model.AssetOrganization
 import com.donnclab.kinetiframe.library.model.BrowserPosition
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerState
@@ -77,13 +79,13 @@ internal fun ProjectsTabContent(
             when {
                 state.loading -> LoadingBox()
 
-                error != null -> ActorManagerMessage(error, "Retry") {
+                error != null -> ActorManagerMessage(error, stringResource(R.string.action_retry)) {
                     onIntent(ProjectManagerIntent.Reload)
                 }
 
                 state.projects.isEmpty() -> ActorManagerMessage(
-                    "Create a project to start animating.",
-                    "New project",
+                    stringResource(R.string.home_projects_empty),
+                    stringResource(R.string.home_new_project),
                     onRequestCreate,
                 )
 
@@ -129,7 +131,7 @@ internal fun ProjectsTabContent(
     renameCandidate?.let { project ->
         ActorNameDialog(
             initialName = project.displayName,
-            title = "Rename project",
+            title = stringResource(R.string.home_rename_project),
             onDismiss = { renameCandidate = null },
             onConfirm = { name ->
                 onIntent(ProjectManagerIntent.Rename(project.projectId, name))
@@ -140,10 +142,10 @@ internal fun ProjectsTabContent(
     deleteCandidate?.let { project ->
         AlertDialog(
             onDismissRequest = { deleteCandidate = null },
-            title = { Text("Delete ${project.displayName}?") },
+            title = { Text(stringResource(R.string.home_delete_project_title, project.displayName)) },
             text = {
                 Text(
-                    "This permanently deletes the project and everything in it -- frames, actor performances and the background image. This cannot be undone.",
+                    stringResource(R.string.home_delete_project_message),
                 )
             },
             confirmButton = {
@@ -151,9 +153,11 @@ internal fun ProjectsTabContent(
                     onIntent(ProjectManagerIntent.Delete(project.projectId))
                     deleteCandidate =
                         null
-                }) { Text("Delete") }
+                }) { Text(stringResource(R.string.action_delete)) }
             },
-            dismissButton = { TextButton(onClick = { deleteCandidate = null }) { Text("Cancel") } },
+            dismissButton = {
+                TextButton(onClick = { deleteCandidate = null }) { Text(stringResource(R.string.action_cancel)) }
+            },
         )
     }
 }
@@ -194,13 +198,16 @@ internal fun ActorsTabContent(
             when {
                 state.loading -> LoadingBox()
 
-                state.error != null -> ActorManagerMessage(state.error.orEmpty(), "Retry") {
+                state.error != null -> ActorManagerMessage(
+                    state.error.orEmpty(),
+                    stringResource(R.string.action_retry),
+                ) {
                     onIntent(ActorManagerIntent.Reload)
                 }
 
                 state.actors.isEmpty() -> ActorManagerMessage(
-                    "Create a Human actor, then draw and rig it in Actor Studio.",
-                    "New actor",
+                    stringResource(R.string.home_actors_empty),
+                    stringResource(R.string.home_new_actor),
                     onRequestCreate,
                 )
 
@@ -265,10 +272,10 @@ internal fun ActorsTabContent(
     archiveCandidate?.let { actor ->
         AlertDialog(
             onDismissRequest = { archiveCandidate = null },
-            title = { Text("Archive ${actor.displayName}?") },
+            title = { Text(stringResource(R.string.home_archive_actor_title, actor.displayName)) },
             text = {
                 Text(
-                    "Archived actors can be recovered. Actors used by a project or library item are protected and cannot be archived.",
+                    stringResource(R.string.home_archive_actor_message),
                 )
             },
             confirmButton = {
@@ -276,9 +283,11 @@ internal fun ActorsTabContent(
                     onIntent(ActorManagerIntent.Archive(actor.actorId))
                     archiveCandidate =
                         null
-                }) { Text("Archive") }
+                }) { Text(stringResource(R.string.action_archive)) }
             },
-            dismissButton = { TextButton(onClick = { archiveCandidate = null }) { Text("Cancel") } },
+            dismissButton = {
+                TextButton(onClick = { archiveCandidate = null }) { Text(stringResource(R.string.action_cancel)) }
+            },
         )
     }
 }

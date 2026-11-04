@@ -16,8 +16,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerEffect
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerViewModel
@@ -67,21 +69,21 @@ fun HomeRoute(
     if (actionsState.cleanupOffered) {
         androidx.compose.material3.AlertDialog(
             onDismissRequest = { actions.handleIntent(HomeActionsIntent.DismissCleanup) },
-            title = { androidx.compose.material3.Text("Clean the trial library?") },
+            title = { androidx.compose.material3.Text(stringResource(R.string.home_cleanup_title)) },
             text = {
                 androidx.compose.material3.Text(
-                    "Keep Tavi presents, Tavi/Mira/Kuda, the seven curated packs and scene backgrounds. All other existing projects, actors and library items move to a recoverable archive. New work created after cleanup is kept.",
+                    stringResource(R.string.home_cleanup_message),
                 )
             },
             dismissButton = {
                 androidx.compose.material3.TextButton(onClick = {
                     actions.handleIntent(HomeActionsIntent.DismissCleanup)
-                }) { androidx.compose.material3.Text("Not now") }
+                }) { androidx.compose.material3.Text(stringResource(R.string.home_cleanup_not_now)) }
             },
             confirmButton = {
                 androidx.compose.material3.TextButton(onClick = {
                     actions.handleIntent(HomeActionsIntent.CleanUp)
-                }) { androidx.compose.material3.Text("Clean up") }
+                }) { androidx.compose.material3.Text(stringResource(R.string.home_cleanup_confirm)) }
             },
         )
     }

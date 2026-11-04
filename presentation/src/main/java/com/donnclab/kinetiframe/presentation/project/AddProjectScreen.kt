@@ -18,10 +18,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.ChevronRight
 import com.composables.icons.lucide.Lucide
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AddFlowBottomBar
 import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
@@ -35,16 +38,23 @@ import com.donnclab.kinetiframe.presentation.common.StandardSlider
  */
 @Composable
 fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks, modifier: Modifier = Modifier) {
+    val resources = LocalResources.current
     Scaffold(
         modifier = modifier,
-        topBar = { AddFlowTopBar(title = "New Project", onBack = callbacks.onBack) },
+        topBar = { AddFlowTopBar(title = stringResource(R.string.add_project_title), onBack = callbacks.onBack) },
         bottomBar = {
             AddFlowBottomBar(
-                buttonLabel = "Create Project",
+                buttonLabel = stringResource(R.string.add_project_create),
                 enabled = state.name.isNotBlank(),
                 onClick = callbacks.onCreate,
                 subtitle = with(state.canvasSelection) {
-                    "${preset.label} · ${dimensions.width} × ${dimensions.height} · ${state.fps} fps"
+                    stringResource(
+                        R.string.add_project_summary,
+                        preset.label,
+                        dimensions.width,
+                        dimensions.height,
+                        state.fps,
+                    )
                 },
             )
         },
@@ -57,13 +67,13 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
                 onValueChange = {
                     callbacks.onStateChange(state.copy(name = it))
                 },
-                label = { Text("Project name") },
+                label = { Text(stringResource(R.string.add_project_name)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
             )
 
             Text(
-                "Canvas size",
+                stringResource(R.string.add_project_canvas_size),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
@@ -75,8 +85,8 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
                 onValueChange = { callbacks.onStateChange(state.copy(fps = it.toInt())) },
                 range = 1f..30f,
                 steps = 28,
-                label = "Frame rate",
-                valueDisplay = { "${it.toInt()} FPS" },
+                label = stringResource(R.string.add_project_frame_rate),
+                valueDisplay = { resources.getString(R.string.add_project_fps_value, it.toInt()) },
                 modifier = Modifier.padding(top = 28.dp),
             )
             Spacer(Modifier.height(24.dp))
@@ -101,7 +111,11 @@ private fun CanvasSizeRow(selection: CanvasSizeSelection, onClick: () -> Unit) {
             Column(Modifier.weight(1f)) {
                 Text(selection.preset.label, style = MaterialTheme.typography.titleSmall)
                 Text(
-                    "${selection.dimensions.width} × ${selection.dimensions.height}",
+                    stringResource(
+                        R.string.canvas_size_dimensions,
+                        selection.dimensions.width,
+                        selection.dimensions.height,
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
