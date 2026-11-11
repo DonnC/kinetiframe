@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.presentation.studio.camera
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,6 +55,7 @@ import com.donnclab.kinetiframe.core.document.camera.CameraPose
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.engine.camera.SceneCamera
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.choiceLabel
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.camera.CameraFraming
 import com.donnclab.kinetiframe.studio.camera.CameraRanges
@@ -104,11 +104,11 @@ internal fun CameraShotEditor(
                         TextButton({
                             ending = false
                             playing = false
-                        }) { Text(framePointLabel(R.string.camera_point_start, selected = !ending)) }
+                        }) { Text(choiceLabel(stringResource(R.string.camera_point_start), selected = !ending)) }
                         TextButton({
                             ending = true
                             playing = false
-                        }) { Text(framePointLabel(R.string.camera_point_end, selected = ending)) }
+                        }) { Text(choiceLabel(stringResource(R.string.camera_point_end), selected = ending)) }
                     }
                     IconButton({
                         playing = !playing
@@ -270,13 +270,6 @@ internal fun CameraShotEditor(
             },
         )
     }
-}
-
-/** A Start or End button's label, marked when it is the pose being edited. */
-@Composable
-private fun framePointLabel(@StringRes point: Int, selected: Boolean): String {
-    val label = stringResource(point)
-    return if (selected) stringResource(R.string.camera_point_selected, label) else label
 }
 
 @Preview(widthDp = 800, heightDp = 420)

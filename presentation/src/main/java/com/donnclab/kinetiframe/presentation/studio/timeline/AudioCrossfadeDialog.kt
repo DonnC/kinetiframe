@@ -10,8 +10,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.presentation.R
 import kotlin.math.roundToInt
 
 @Composable
@@ -26,16 +28,20 @@ internal fun AudioCrossfadeDialog(
     var frames by remember(first.clipId, next.clipId) { mutableFloatStateOf(minOf(max, maxOf(1, fps / 2)).toFloat()) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Crossfade to ${next.label}") },
+        title = { Text(stringResource(R.string.audio_crossfade_title, next.label)) },
         text = {
             Column {
-                Text("Overlap · ${"%.2f".format(frames / fps)} s")
+                Text(stringResource(R.string.audio_crossfade_overlap_seconds, frames / fps))
                 Slider(frames, { frames = it }, valueRange = 1f..max.coerceAtLeast(2).toFloat(), enabled = max > 1)
-                Text("The next clip moves earlier to overlap. No speech is sped up or cut.")
+                Text(stringResource(R.string.audio_crossfade_note))
             }
         },
-        confirmButton = { TextButton({ onSave(frames.roundToInt().coerceAtMost(max)) }) { Text("Apply") } },
-        dismissButton = { TextButton(onDismiss) { Text("Cancel") } },
+        confirmButton = {
+            TextButton({
+                onSave(frames.roundToInt().coerceAtMost(max))
+            }) { Text(stringResource(R.string.action_apply)) }
+        },
+        dismissButton = { TextButton(onDismiss) { Text(stringResource(R.string.action_cancel)) } },
     )
 }
 

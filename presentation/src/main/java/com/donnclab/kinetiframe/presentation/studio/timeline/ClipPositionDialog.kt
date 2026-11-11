@@ -13,10 +13,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.document.MAX_AUDIO_TRACKS
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 /** Frame numbers are one-based in the UI, zero-based at the intent boundary. */
@@ -32,12 +34,14 @@ internal fun ClipPositionDialog(
     var trackText by remember { mutableStateOf(((track ?: 0) + 1).toString()) }
     val frame = frameText.toIntOrNull()?.takeIf { it in 1..1_000_000 }
     val lane = trackText.toIntOrNull()?.takeIf { it in 1..MAX_AUDIO_TRACKS }
-    AlertDialog(onDismissRequest = onDismiss, title = { Text("Position · $label") }, text = {
+    AlertDialog(onDismissRequest = onDismiss, title = {
+        Text(stringResource(R.string.clip_position_title, label))
+    }, text = {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             CompactTextField(
                 frameText,
                 { frameText = it },
-                label = { Text("Start frame") },
+                label = { Text(stringResource(R.string.clip_position_start_frame)) },
                 singleLine = true,
                 isError = frame == null,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -50,22 +54,22 @@ internal fun ClipPositionDialog(
                     {
                         trackText = it
                     },
-                    label = { Text("Audio track (1–$MAX_AUDIO_TRACKS)") },
+                    label = { Text(stringResource(R.string.clip_position_audio_track, MAX_AUDIO_TRACKS)) },
                     singleLine = true,
                     isError = lane == null,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 )
             }
             Text(
-                "Moves the clip without changing its source in-point or duration.",
+                stringResource(R.string.clip_position_note),
                 style = MaterialTheme.typography.bodySmall,
             )
         }
     }, confirmButton = {
         TextButton(enabled = frame != null && lane != null, onClick = {
             if (frame != null && lane != null) onConfirm(frame - 1, lane - 1)
-        }) { Text("Move") }
-    }, dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } })
+        }) { Text(stringResource(R.string.clip_position_move)) }
+    }, dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } })
 }
 
 @Preview

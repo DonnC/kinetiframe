@@ -25,6 +25,9 @@
     <string name="action_ok">OK</string>
     <string name="action_done">Done</string>
     <string name="action_save">Save</string>
+    <string name="action_apply">Apply</string>
+    <!-- Marks the selected option in a row of choices, such as "• Fill". -->
+    <string name="choice_selected">• %1$s</string>
     <string name="action_retry">Retry</string>
     <string name="action_delete">Delete</string>
     <string name="action_rename">Rename</string>
@@ -251,8 +254,6 @@
     <string name="camera_remove_effect">Remove camera effect</string>
     <string name="camera_point_start">Start</string>
     <string name="camera_point_end">End</string>
-    <!-- Marks the Start or End pose being edited. -->
-    <string name="camera_point_selected">• %1$s</string>
     <string name="camera_preview_movement">Preview camera movement</string>
     <string name="camera_motion_options">Movement timing and customization</string>
     <string name="camera_save_preset">Save camera preset</string>
@@ -269,6 +270,49 @@
         <item quantity="other">Frames %1$d–%2$d · %3$d total</item>
     </plurals>
     <string name="camera_preset_name">Name</string>
+
+    <!-- Timeline dialogs -->
+    <string name="audio_crossfade_title">Crossfade to %1$s</string>
+    <string name="audio_crossfade_overlap_seconds">Overlap · %1$.2f s</string>
+    <string name="audio_crossfade_note">The next clip moves earlier to overlap. No speech is sped up or cut.</string>
+    <string name="audio_fades_title">Audio fades</string>
+    <string name="audio_fade_in_seconds">Fade in · %1$.2f s</string>
+    <string name="audio_fade_out_seconds">Fade out · %1$.2f s</string>
+    <!-- Title naming the clip being moved. -->
+    <string name="clip_position_title">Position · %1$s</string>
+    <string name="clip_position_start_frame">Start frame</string>
+    <!-- %1$d is the highest audio track number. -->
+    <string name="clip_position_audio_track">Audio track (1–%1$d)</string>
+    <string name="clip_position_note">Moves the clip without changing its source in-point or duration.</string>
+    <string name="clip_position_move">Move</string>
+    <string name="hold_drawing_title">Hold drawing</string>
+    <!-- The first frame of the range being held, followed by the last-frame field. -->
+    <string name="hold_drawing_from_frame">Frame %1$d →</string>
+    <string name="hold_drawing_last_frame">Last frame</string>
+    <string name="hold_drawing_note">Replaces this layer’s drawings in the range. Other layers stay unchanged.</string>
+    <string name="hold_drawing_confirm">Hold range</string>
+    <plurals name="linked_drawing_title">
+        <item quantity="one">Drawing · %d linked frame</item>
+        <item quantity="other">Drawing · %d linked frames</item>
+    </plurals>
+    <string name="linked_drawing_prompt">Choose where your next edits apply.</string>
+    <string name="linked_drawing_this_frame">This frame only</string>
+    <string name="linked_drawing_all_frames">All linked frames</string>
+    <string name="linked_drawing_hold_another">Hold another range</string>
+    <string name="video_framing_title">Video framing</string>
+    <string name="video_crop_preview">Video crop preview</string>
+    <string name="video_preview_unavailable">Preview unavailable. Your source is unchanged.</string>
+    <string name="video_fit_stretch">stretch</string>
+    <string name="video_fit_fit">fit</string>
+    <string name="video_fit_fill">fill</string>
+    <string name="video_framing_hint">Fill: drag the picture to choose the crop. Use Transform video to move or resize it on stage.</string>
+    <string name="voice_title">Voice style</string>
+    <string name="voice_original">Original</string>
+    <string name="voice_warm">Warm</string>
+    <string name="voice_radio">Radio</string>
+    <string name="voice_robot">Robot</string>
+    <string name="voice_note">Changes the sound, not the speech timing. Original audio is retained.</string>
+    <string name="voice_process_failed">Could not process audio</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
