@@ -16,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
@@ -27,7 +29,11 @@ fun TimelineFpsSlider(fps: Int, onIntent: (StudioIntent) -> Unit, modifier: Modi
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.padding(horizontal = 8.dp),
     ) {
-        Text("FPS", color = EditorTokens.muted, style = MaterialTheme.typography.labelSmall)
+        Text(
+            stringResource(R.string.playback_fps_short),
+            color = EditorTokens.muted,
+            style = MaterialTheme.typography.labelSmall,
+        )
         Slider(
             value = fps.toFloat(),
             onValueChange = { onIntent(StudioIntent.Playback.SetFps(it.toInt())) },

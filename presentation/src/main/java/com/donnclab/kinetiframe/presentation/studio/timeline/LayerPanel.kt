@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,6 +44,7 @@ import com.composables.icons.lucide.Plus
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.LayerState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
@@ -99,7 +101,7 @@ fun LayerPanel(
                 modifier = Modifier.size(20.dp),
             )
             Text(
-                text = "Layers",
+                text = stringResource(R.string.layers_title),
                 style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier.padding(start = 8.dp),
                 fontWeight = FontWeight.Bold,
@@ -113,14 +115,14 @@ fun LayerPanel(
                 ) {
                     Icon(
                         Lucide.Plus,
-                        contentDescription = "Add Layer",
+                        contentDescription = stringResource(R.string.layers_add),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp),
                     )
                 }
                 DropdownMenu(expanded = addLayerMenuVisible, onDismissRequest = { addLayerMenuVisible = false }) {
                     DropdownMenuItem(
-                        text = { Text("Drawing layer") },
+                        text = { Text(stringResource(R.string.layers_drawing_layer)) },
                         onClick = {
                             onIntent(StudioIntent.Layer.AddLayer())
                             addLayerMenuVisible = false
@@ -140,7 +142,7 @@ fun LayerPanel(
             if (layers.isEmpty()) {
                 item {
                     Text(
-                        text = "No layers",
+                        text = stringResource(R.string.layers_empty),
                         modifier = Modifier.padding(16.dp),
                         style = MaterialTheme.typography.bodyMedium,
                         color = EditorTokens.muted,

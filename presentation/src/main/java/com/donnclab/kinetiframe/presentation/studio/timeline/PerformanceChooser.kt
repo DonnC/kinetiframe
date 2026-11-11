@@ -4,7 +4,9 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.presentation.R
 import kotlin.math.ceil
 
 /** How many timeline frames a performance occupies once placed, at the project's fps. Shared by
@@ -34,7 +36,13 @@ fun PerformanceChooserItems(
     }
     if (choices.isEmpty()) {
         DropdownMenuItem(
-            text = { Text(if (performances.isEmpty()) "No saved performances" else "No other saved performances") },
+            text = {
+                Text(
+                    stringResource(
+                        if (performances.isEmpty()) R.string.performances_none else R.string.performances_no_others,
+                    ),
+                )
+            },
             enabled = false,
             onClick = {},
         )
@@ -45,7 +53,7 @@ fun PerformanceChooserItems(
     }
     HorizontalDivider()
     DropdownMenuItem(
-        text = { Text("New performance in Actor Studio") },
+        text = { Text(stringResource(R.string.performances_new)) },
         enabled = onCreatePerformance != null,
         onClick = { onCreatePerformance?.invoke() },
     )

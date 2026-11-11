@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,7 @@ import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.SquarePlus
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 
 @Composable
@@ -49,7 +51,7 @@ fun TimelineActionRow(
         var open by remember { mutableStateOf(false) }
         Box(modifier) {
             IconButton(onClick = { open = true }, modifier = Modifier.size(48.dp)) {
-                Icon(Lucide.Ellipsis, "Frame and canvas actions")
+                Icon(Lucide.Ellipsis, stringResource(R.string.timeline_frame_actions))
             }
             DropdownMenu(open, { open = false }) {
                 TimelineActionRow(
@@ -84,7 +86,7 @@ fun TimelineActionRow(
         ) {
             Icon(
                 Lucide.SquarePlus,
-                contentDescription = "Add Frame",
+                contentDescription = stringResource(R.string.timeline_add_frame),
                 tint = EditorTokens.accent,
                 modifier = Modifier.size(18.dp),
             )
@@ -97,7 +99,7 @@ fun TimelineActionRow(
         ) {
             Icon(
                 if (toolbarVisible) Lucide.Eye else Lucide.EyeOff,
-                contentDescription = "Focus canvas",
+                contentDescription = stringResource(R.string.timeline_focus_canvas),
                 tint = if (toolbarVisible) EditorTokens.accent else EditorTokens.muted,
                 modifier = Modifier.size(18.dp),
             )
@@ -111,7 +113,7 @@ fun TimelineActionRow(
             Box {
                 Icon(
                     Lucide.Layers,
-                    contentDescription = "Layers",
+                    contentDescription = stringResource(R.string.layers_title),
                     tint = EditorTokens.accent,
                     modifier = Modifier.size(18.dp),
                 )

@@ -11,12 +11,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import com.composables.icons.lucide.Clapperboard
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.actors.domain.PerformanceChoices
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
 import kotlinx.coroutines.Dispatchers
@@ -47,10 +49,16 @@ internal fun SwitchPerformanceButton(
         }
     }
     Box {
-        ContextIconButton(ContextIconAction(Lucide.Clapperboard, "Switch performance", { menuOpen = true }))
+        ContextIconButton(
+            ContextIconAction(Lucide.Clapperboard, stringResource(R.string.performances_switch), { menuOpen = true }),
+        )
         DropdownMenu(menuOpen, { menuOpen = false }) {
             if (error != null) {
-                DropdownMenuItem(text = { Text("Couldn't load performances") }, enabled = false, onClick = {})
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.performances_load_failed)) },
+                    enabled = false,
+                    onClick = {},
+                )
             } else {
                 PerformanceChooserItems(
                     performances = performances,

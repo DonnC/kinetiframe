@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -42,6 +43,7 @@ import com.composables.icons.lucide.GripVertical
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.DenseTextField
 
 @Composable
@@ -82,7 +84,7 @@ fun LayerItem(
             if (!layer.isVisible) {
                 Icon(
                     Lucide.EyeOff,
-                    contentDescription = "Hidden",
+                    contentDescription = stringResource(R.string.layer_hidden),
                     tint = EditorTokens.accent,
                     modifier = Modifier
                         .size(EditorTokens.iconSmall)
