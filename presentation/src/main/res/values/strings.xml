@@ -22,6 +22,9 @@
     <string name="action_back">Back</string>
     <string name="action_close">Close</string>
     <string name="action_cancel">Cancel</string>
+    <string name="action_ok">OK</string>
+    <string name="action_done">Done</string>
+    <string name="action_save">Save</string>
     <string name="action_retry">Retry</string>
     <string name="action_delete">Delete</string>
     <string name="action_rename">Rename</string>
@@ -41,6 +44,8 @@
     <string name="filter_all">All</string>
     <!-- A canvas or stage size in pixels, width then height. -->
     <string name="size_dimensions">%1$d×%2$d</string>
+    <!-- A range of frames, first to last, counted from 1. -->
+    <string name="frame_range">%1$d–%2$d</string>
 
     <!-- Library -->
     <string name="library_title">Library</string>
@@ -187,6 +192,83 @@
     <string name="export_failed">Export failed</string>
     <string name="export_saved_to_gallery">Saved to your gallery</string>
     <string name="export_storage_permission_needed">Storage permission is needed to save to your gallery on this Android version</string>
+
+    <!-- Camera effects -->
+    <string name="camera_action_push_in">Push in</string>
+    <string name="camera_action_pull_out">Pull out</string>
+    <string name="camera_action_pan">Pan</string>
+    <string name="camera_action_tilt">Tilt</string>
+    <string name="camera_action_shake">Impact shake</string>
+    <string name="camera_action_handheld">Gentle handheld</string>
+    <string name="camera_action_fade_in">Fade in</string>
+    <string name="camera_action_fade_out">Fade out</string>
+    <string name="camera_action_whip_pan">Whip pan</string>
+    <string name="camera_action_follow">Follow actor</string>
+    <!-- A camera effect and the frames it covers, such as "Pan 12–24". -->
+    <string name="camera_action_frames">%1$s %2$d–%3$d</string>
+    <!-- A camera effect in the menu: effect · first–last frame. -->
+    <string name="camera_shot_range">%1$s · %2$d–%3$d</string>
+    <string name="camera_effects">Camera effects</string>
+    <string name="camera_edit_artwork">Edit artwork</string>
+    <string name="camera_preview">Preview camera</string>
+    <string name="camera_presets_menu">Cinematic and saved presets</string>
+    <string name="camera_no_free_range">No free camera range</string>
+    <string name="camera_undo_edit">Undo effect edit</string>
+    <string name="camera_redo_edit">Redo effect edit</string>
+    <string name="camera_presets_title">Camera presets</string>
+    <string name="camera_remove_preset">Remove saved preset %1$s</string>
+    <plurals name="camera_presets_update_failed">
+        <item quantity="one">Could not update presets. If you have %1$d saved preset, remove it first; otherwise please try again.</item>
+        <item quantity="other">Could not update presets. If you have %1$d saved presets, remove one first; otherwise please try again.</item>
+    </plurals>
+    <string name="camera_range_description">Selected frames %1$d–%2$d. Occupied: %3$s</string>
+    <string name="camera_range_none">none</string>
+    <string name="camera_range_selected">Selected</string>
+    <string name="camera_range_all_free">All other frames available</string>
+    <string name="camera_range_occupied">Occupied · %1$s %2$d–%3$d</string>
+    <!-- %1$s lists the overlapping frame ranges. -->
+    <string name="camera_range_overlaps">Range overlaps %1$s. Choose free frames.</string>
+    <string name="camera_motion_title">Movement timing</string>
+    <string name="camera_wait_seconds">Wait · %1$.2f s</string>
+    <string name="camera_move_seconds">Move · %1$.2f s</string>
+    <string name="camera_settle_seconds">Settle · %1$.2f s</string>
+    <string name="camera_wait_duration">Wait duration</string>
+    <string name="camera_settle_duration">Settle duration</string>
+    <string name="camera_frequency_hz">Frequency · %1$.1f Hz</string>
+    <string name="camera_rotational_movement">Rotational movement</string>
+    <string name="camera_direction_value">Direction · %1$s</string>
+    <string name="camera_direction_both">both</string>
+    <string name="camera_direction_horizontal">horizontal</string>
+    <string name="camera_direction_vertical">vertical</string>
+    <string name="camera_follow_smoothing_seconds">Follow smoothing · %1$.2f s</string>
+    <string name="camera_curve_value">Curve · %1$s</string>
+    <string name="camera_curve_smooth">smooth</string>
+    <string name="camera_curve_linear">linear</string>
+    <string name="camera_curve_ease_in">ease in</string>
+    <string name="camera_curve_ease_out">ease out</string>
+    <string name="camera_phases_note">All phases stay inside the selected frame range.</string>
+    <string name="camera_preview_from_start">Preview from start</string>
+    <string name="camera_remove_effect">Remove camera effect</string>
+    <string name="camera_point_start">Start</string>
+    <string name="camera_point_end">End</string>
+    <!-- Marks the Start or End pose being edited. -->
+    <string name="camera_point_selected">• %1$s</string>
+    <string name="camera_preview_movement">Preview camera movement</string>
+    <string name="camera_motion_options">Movement timing and customization</string>
+    <string name="camera_save_preset">Save camera preset</string>
+    <string name="camera_save_effect">Save camera effect</string>
+    <string name="camera_hint_strength">Adjust movement strength</string>
+    <string name="camera_hint_fade">Fade to or from black</string>
+    <string name="camera_hint_framing">Drag to frame · pinch to zoom · twist to tilt. Choose Start and End.</string>
+    <string name="camera_follow_target">Follow · %1$s</string>
+    <string name="camera_choose_actor">Choose actor</string>
+    <string name="camera_hold_end">Keep final state after this range</string>
+    <!-- The selected frame range, then how many frames the project has. -->
+    <plurals name="camera_frames_summary">
+        <item quantity="one">Frames %1$d–%2$d · %3$d total</item>
+        <item quantity="other">Frames %1$d–%2$d · %3$d total</item>
+    </plurals>
+    <string name="camera_preset_name">Name</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
