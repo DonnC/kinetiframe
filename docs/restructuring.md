@@ -105,6 +105,9 @@ fixed after the module work, unless one blocks testing.
 - Frame thumbnails are dark grey while the canvas is white, so strokes are barely visible in them.
 - With one frame, the frame strip floats in the middle of a mostly empty bar.
 - Undo doesn't remove a frame added with the frame strip's +.
+- The camera effects button is hidden under the frame reference button: both sit in the canvas's
+  top-right corner, and the reference button is drawn on top. The camera button only appears in
+  focus mode.
 
 **Home and actors**
 
