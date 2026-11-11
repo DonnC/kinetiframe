@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.presentation.studio.camera
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -52,6 +55,7 @@ import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.core.document.camera.CameraPose
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.engine.camera.SceneCamera
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.camera.CameraFraming
 import com.donnclab.kinetiframe.studio.camera.CameraRanges
@@ -100,20 +104,31 @@ internal fun CameraShotEditor(
                         TextButton({
                             ending = false
                             playing = false
-                        }) { Text(if (!ending) "• Start" else "Start") }
+                        }) { Text(framePointLabel(R.string.camera_point_start, selected = !ending)) }
                         TextButton({
                             ending = true
                             playing = false
-                        }) { Text(if (ending) "• End" else "End") }
+                        }) { Text(framePointLabel(R.string.camera_point_end, selected = ending)) }
                     }
                     IconButton({
                         playing = !playing
-                    }) { Icon(if (playing) Lucide.Pause else Lucide.Play, "Preview camera movement") }
-                    IconButton({ motionOptions = true }) { Icon(Lucide.Settings2, "Movement timing and customization") }
-                    IconButton({ saveRecipe = true }) { Icon(Lucide.BookmarkPlus, "Save camera preset") }
-                    IconButton(onRemove) { Icon(Lucide.Trash2, "Remove camera effect") }
-                    IconButton(onDismiss) { Icon(Lucide.X, "Cancel") }
-                    IconButton({ onSave(shot) }, enabled = canSave) { Icon(Lucide.Check, "Save camera effect") }
+                    }) {
+                        Icon(
+                            if (playing) Lucide.Pause else Lucide.Play,
+                            stringResource(R.string.camera_preview_movement),
+                        )
+                    }
+                    IconButton({ motionOptions = true }) {
+                        Icon(Lucide.Settings2, stringResource(R.string.camera_motion_options))
+                    }
+                    IconButton({ saveRecipe = true }) {
+                        Icon(Lucide.BookmarkPlus, stringResource(R.string.camera_save_preset))
+                    }
+                    IconButton(onRemove) { Icon(Lucide.Trash2, stringResource(R.string.camera_remove_effect)) }
+                    IconButton(onDismiss) { Icon(Lucide.X, stringResource(R.string.action_cancel)) }
+                    IconButton({ onSave(shot) }, enabled = canSave) {
+                        Icon(Lucide.Check, stringResource(R.string.camera_save_effect))
+                    }
                 }
                 Box(Modifier.weight(1f).fillMaxWidth().onSizeChanged { previewSize = it }) {
                     content(
@@ -161,13 +176,15 @@ internal fun CameraShotEditor(
                     }
                 }
                 Text(
-                    if (procedural) {
-                        "Adjust movement strength"
-                    } else if (fade) {
-                        "Fade to or from black"
-                    } else {
-                        "Drag to frame · pinch to zoom · twist to tilt. Choose Start and End."
-                    },
+                    stringResource(
+                        if (procedural) {
+                            R.string.camera_hint_strength
+                        } else if (fade) {
+                            R.string.camera_hint_fade
+                        } else {
+                            R.string.camera_hint_framing
+                        },
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                 )
                 if (procedural) Slider(shot.strength, { shot = shot.copy(strength = it) })
@@ -177,7 +194,11 @@ internal fun CameraShotEditor(
                         targets = true
                     }) {
                         Text(
-                            "Follow · ${state.project.actorPlacements[shot.targetPlacementId]?.label ?: "Choose actor"}",
+                            stringResource(
+                                R.string.camera_follow_target,
+                                state.project.actorPlacements[shot.targetPlacementId]?.label
+                                    ?: stringResource(R.string.camera_choose_actor),
+                            ),
                         )
                     }
                     DropdownMenu(targets, { targets = false }) {
@@ -193,7 +214,7 @@ internal fun CameraShotEditor(
                 if (!procedural && !follow) {
                     Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                         Text(
-                            "Keep final state after this range",
+                            stringResource(R.string.camera_hold_end),
                             Modifier.weight(1f),
                             style = MaterialTheme.typography.labelSmall,
                         )
@@ -201,7 +222,13 @@ internal fun CameraShotEditor(
                     }
                 }
                 Text(
-                    "Frames ${shot.startFrame + 1}–${shot.endFrame} · ${state.animation.totalFrames} total",
+                    pluralStringResource(
+                        R.plurals.camera_frames_summary,
+                        state.animation.totalFrames,
+                        shot.startFrame + 1,
+                        shot.endFrame,
+                        state.animation.totalFrames,
+                    ),
                     style = MaterialTheme.typography.labelMedium,
                 )
                 CameraRangeOverview(shot, state.project.cameraShots, state.animation.totalFrames)
@@ -223,19 +250,33 @@ internal fun CameraShotEditor(
     if (saveRecipe) {
         AlertDialog(
             onDismissRequest = { saveRecipe = false },
-            title = { Text("Save camera preset") },
+            title = { Text(stringResource(R.string.camera_save_preset)) },
             text = {
-                OutlinedTextField(recipeName, { recipeName = it.take(80) }, label = { Text("Name") }, singleLine = true)
+                OutlinedTextField(
+                    recipeName,
+                    { recipeName = it.take(80) },
+                    label = { Text(stringResource(R.string.camera_preset_name)) },
+                    singleLine = true,
+                )
             },
             confirmButton = {
                 TextButton({
                     onSaveRecipe(recipeName.trim(), shot)
                     saveRecipe = false
-                }, enabled = recipeName.isNotBlank()) { Text("Save") }
+                }, enabled = recipeName.isNotBlank()) { Text(stringResource(R.string.action_save)) }
             },
-            dismissButton = { TextButton({ saveRecipe = false }) { Text("Cancel") } },
+            dismissButton = {
+                TextButton({ saveRecipe = false }) { Text(stringResource(R.string.action_cancel)) }
+            },
         )
     }
+}
+
+/** A Start or End button's label, marked when it is the pose being edited. */
+@Composable
+private fun framePointLabel(@StringRes point: Int, selected: Boolean): String {
+    val label = stringResource(point)
+    return if (selected) stringResource(R.string.camera_point_selected, label) else label
 }
 
 @Preview(widthDp = 800, heightDp = 420)

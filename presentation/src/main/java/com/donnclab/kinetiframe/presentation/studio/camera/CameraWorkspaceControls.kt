@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.presentation.studio.camera
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,12 +16,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.Box
 import com.composables.icons.lucide.Camera
@@ -38,25 +42,32 @@ import com.donnclab.kinetiframe.core.document.camera.CameraPose
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.engine.camera.SceneCamera
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.camera.CameraRanges
 import com.donnclab.kinetiframe.studio.camera.CameraRecipe
+import com.donnclab.kinetiframe.studio.camera.CameraRecipeStore
 import com.donnclab.kinetiframe.studio.camera.CameraRecipes
 import kotlinx.coroutines.launch
 
-internal fun CameraAction.label() = when (this) {
-    CameraAction.PUSH_IN -> "Push in"
-    CameraAction.PULL_OUT -> "Pull out"
-    CameraAction.PAN -> "Pan"
-    CameraAction.TILT -> "Tilt"
-    CameraAction.SHAKE -> "Impact shake"
-    CameraAction.HANDHELD -> "Gentle handheld"
-    CameraAction.FADE_IN -> "Fade in"
-    CameraAction.FADE_OUT -> "Fade out"
-    CameraAction.WHIP_PAN -> "Whip pan"
-    CameraAction.FOLLOW -> "Follow actor"
+@StringRes
+internal fun CameraAction.labelRes(): Int = when (this) {
+    CameraAction.PUSH_IN -> R.string.camera_action_push_in
+    CameraAction.PULL_OUT -> R.string.camera_action_pull_out
+    CameraAction.PAN -> R.string.camera_action_pan
+    CameraAction.TILT -> R.string.camera_action_tilt
+    CameraAction.SHAKE -> R.string.camera_action_shake
+    CameraAction.HANDHELD -> R.string.camera_action_handheld
+    CameraAction.FADE_IN -> R.string.camera_action_fade_in
+    CameraAction.FADE_OUT -> R.string.camera_action_fade_out
+    CameraAction.WHIP_PAN -> R.string.camera_action_whip_pan
+    CameraAction.FOLLOW -> R.string.camera_action_follow
 }
+
+@Composable
+@ReadOnlyComposable
+internal fun CameraAction.label(): String = stringResource(labelRes())
 
 /** Camera edits have their own bounded undo history, separate from drawing strokes. */
 @Composable
@@ -79,15 +90,18 @@ fun CameraWorkspaceControls(
     LaunchedEffect(store) { recipes = store.load() }
     Box(modifier) {
         Row {
-            IconButton(onClick = { menu = true }) { Icon(Lucide.Camera, "Camera effects") }
+            IconButton(onClick = { menu = true }) { Icon(Lucide.Camera, stringResource(R.string.camera_effects)) }
             if (state.project.cameraShots.isNotEmpty()) {
                 IconButton(onClick = { onPreview(!preview) }) {
-                    Icon(if (preview) Lucide.Pen else Lucide.Play, if (preview) "Edit artwork" else "Preview camera")
+                    Icon(
+                        if (preview) Lucide.Pen else Lucide.Play,
+                        stringResource(if (preview) R.string.camera_edit_artwork else R.string.camera_preview),
+                    )
                 }
             }
         }
         DropdownMenu(menu, { menu = false }) {
-            DropdownMenuItem(text = { Text("Cinematic and saved presets") }, onClick = {
+            DropdownMenuItem(text = { Text(stringResource(R.string.camera_presets_menu)) }, onClick = {
                 menu = false
                 library = true
             })
@@ -132,13 +146,26 @@ fun CameraWorkspaceControls(
             if (available ==
                 null
             ) {
-                DropdownMenuItem(text = { Text("No free camera range") }, onClick = {}, enabled = false)
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.camera_no_free_range)) },
+                    onClick = {},
+                    enabled = false,
+                )
             }
             if (state.project.cameraShots.isNotEmpty()) {
                 HorizontalDivider()
                 state.project.cameraShots.forEach { shot ->
                     DropdownMenuItem(
-                        text = { Text("${shot.action.label()} · ${shot.startFrame + 1}–${shot.endFrame}") },
+                        text = {
+                            Text(
+                                stringResource(
+                                    R.string.camera_shot_range,
+                                    shot.action.label(),
+                                    shot.startFrame + 1,
+                                    shot.endFrame,
+                                ),
+                            )
+                        },
                         onClick = {
                             menu = false
                             onIntent(StudioIntent.Playback.Pause)
@@ -148,11 +175,11 @@ fun CameraWorkspaceControls(
                 }
             }
             HorizontalDivider()
-            DropdownMenuItem(text = { Text("Undo effect edit") }, onClick = {
+            DropdownMenuItem(text = { Text(stringResource(R.string.camera_undo_edit)) }, onClick = {
                 menu = false
                 onIntent(StudioIntent.Camera.Undo)
             })
-            DropdownMenuItem(text = { Text("Redo effect edit") }, onClick = {
+            DropdownMenuItem(text = { Text(stringResource(R.string.camera_redo_edit)) }, onClick = {
                 menu = false
                 onIntent(StudioIntent.Camera.Redo)
             })
@@ -185,7 +212,9 @@ fun CameraWorkspaceControls(
         }, content = content)
     }
     if (library) {
-        AlertDialog(onDismissRequest = { library = false }, title = { Text("Camera presets") }, text = {
+        AlertDialog(onDismissRequest = {
+            library = false
+        }, title = { Text(stringResource(R.string.camera_presets_title)) }, text = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
                 (CameraRecipes.builtIn(state.project.fps) + recipes).forEach { recipe ->
                     val range = CameraRanges.available(
@@ -236,12 +265,12 @@ fun CameraWorkspaceControls(
                                 scope.launch {
                                     if (store.remove(recipe.name)) recipes = store.load() else presetError = true
                                 }
-                            }) { Icon(Lucide.Trash2, "Remove saved preset ${recipe.name}") }
+                            }) { Icon(Lucide.Trash2, stringResource(R.string.camera_remove_preset, recipe.name)) }
                         }
                     }
                 }
             }
-        }, confirmButton = { TextButton({ library = false }) { Text("Close") } })
+        }, confirmButton = { TextButton({ library = false }) { Text(stringResource(R.string.action_close)) } })
     }
     if (presetError) {
         AlertDialog(
@@ -250,10 +279,14 @@ fun CameraWorkspaceControls(
             },
             text = {
                 Text(
-                    "Could not update presets. If you have 64 saved presets, remove one first; otherwise please try again.",
+                    pluralStringResource(
+                        R.plurals.camera_presets_update_failed,
+                        CameraRecipeStore.MAX_RECIPES,
+                        CameraRecipeStore.MAX_RECIPES,
+                    ),
                 )
             },
-            confirmButton = { TextButton({ presetError = false }) { Text("OK") } },
+            confirmButton = { TextButton({ presetError = false }) { Text(stringResource(R.string.action_ok)) } },
         )
     }
 }

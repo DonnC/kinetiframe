@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.Box
 import com.composables.icons.lucide.Camera
@@ -19,6 +20,7 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Play
 import com.composables.icons.lucide.Trash2
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 import com.donnclab.kinetiframe.presentation.studio.timeline.TRACK_HEIGHT
@@ -61,11 +63,11 @@ internal fun CameraTimelineLane(
                             menu,
                             { menu = false },
                             listOf(
-                                ContextIconAction(Lucide.Play, "Preview from start", {
+                                ContextIconAction(Lucide.Play, stringResource(R.string.camera_preview_from_start), {
                                     menu = false
                                     onIntent(StudioIntent.Playback.SetCurrentFrame(shot.startFrame))
                                 }),
-                                ContextIconAction(Lucide.Trash2, "Remove camera effect", {
+                                ContextIconAction(Lucide.Trash2, stringResource(R.string.camera_remove_effect), {
                                     menu = false
                                     onIntent(StudioIntent.Camera.Remove(shot.id))
                                 }),

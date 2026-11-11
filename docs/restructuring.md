@@ -13,25 +13,30 @@ Keep this page current:
 
 ## Now
 
-**Strings to resources, part 2: ViewModel messages.** #58 moved the shell screens' text. This
-pull request gives ViewModels `UiText`, a string resource or already-worded text that the screen
-turns into a string, so they no longer hold English. The Home actions, Settings and Export
-ViewModels use it. `ExportPreset` becomes an enum that the screen names from resources, and the
-Local canvas preset takes its name from resources too.
+**Strings to resources, part 3: camera effects.** #58 moved the shell screens' text and #59
+gave ViewModels `UiText`. This pull request moves the camera effect screens' text: the effect
+menu, the shot editor, movement timing, the range overview and the timeline lane. Effect names,
+shake directions and easing curves come from resources instead of enum names, and decimal values
+format through the string resource.
 
 ## Next
 
-**Strings, part 3: the studio screens**, a feature at a time. The projects, actors and packs
-ViewModels' `ShowError` effects, and every `StoreResult.Failure`, still carry English from the
-layers below. They move with the **Typed errors** track, through `UiText.Verbatim` until then.
+**Strings, part 4: the rest of the studio**, a feature at a time: the timeline, Actor Studio, the
+library and the tool dock. The projects, actors and packs ViewModels' `ShowError` effects, and
+every `StoreResult.Failure`, still carry English from the layers below. They move with the
+**Typed errors** track, through `UiText.Verbatim` until then.
 
 ## Later
 
 Tracks that run alongside the module work, a screen or feature at a time:
 
-- **Strings to resources.** 247 inline text values in 83 files, plus messages assigned to state
+- **Strings to resources.** 217 inline text values in 79 files, plus messages assigned to state
   that the check doesn't count. Then right-to-left layouts, per-app language and a pseudo-locale
   check.
+- **Built-in camera presets.** `CameraRecipes.builtIn` in `studio` names its five presets in
+  English ("Dramatic reveal" and so on), and saved presets share the same `CameraRecipe.name`
+  field. Give built-in presets an ID the screen names from resources, without changing how saved
+  presets are stored.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
   code. Screens already reach storage only through their ViewModels (step 8d).
@@ -73,13 +78,13 @@ fixed after the module work, unless one blocks testing.
 
 **Actor Studio**
 
-- The part chips (Head, Eyes, Mouth…) are pale text on pale chips over a white band: unreadable.
+- The part chips (Head, Eyes, Mouthâ€¦) are pale text on pale chips over a white band: unreadable.
 - That band cuts across the tool dock and covers the bottom of the stage.
 - The character is drawn small. In Pose mode the joint pins hide it completely.
 - The floating part toolbar sits on top of the character.
 - About nine unlabelled icons in the top bar. The bone icon appears twice, and a faint icon in the
   stage's top-left corner has no explanation.
-- The tool dock clips the timeline label ("rame 1 · 0 keys").
+- The tool dock clips the timeline label ("rame 1 Â· 0 keys").
 - The timeline shows "0 keys" while a motion preset animates the actor.
 - The preset sheet covers the stage, so you can't see the preview you're choosing.
 - Selecting a preset makes the sheet jump to full height and moves the apply button.
@@ -87,7 +92,7 @@ fixed after the module work, unless one blocks testing.
 
 **Editor**
 
-- The asset menu cuts off "Actor perfor…" and "Import audio …".
+- The asset menu cuts off "Actor perforâ€¦" and "Import audio â€¦".
 - In the brush panel, the brush name ("Pen") is white text on the white preview card.
 - The export screen has no back button.
 - In portrait, Actor Studio's hint banner runs into the gold asset button.
@@ -100,6 +105,9 @@ fixed after the module work, unless one blocks testing.
 - Frame thumbnails are dark grey while the canvas is white, so strokes are barely visible in them.
 - With one frame, the frame strip floats in the middle of a mostly empty bar.
 - Undo doesn't remove a frame added with the frame strip's +.
+- The camera effects button is hidden under the frame reference button: both sit in the canvas's
+  top-right corner, and the reference button is drawn on top. The camera button only appears in
+  focus mode.
 
 **Home and actors**
 
@@ -174,6 +182,8 @@ fixed after the module work, unless one blocks testing.
 | #54 | Moved Home and Settings into `presentation`, ending the module work (step 9 done) |
 | #55 | Made `checkArchitecture` describe the nine-module layout |
 | #56 | Used one Compose version (BOM 2026.09.00) in every module and fixed the newer lint checks |
+| #58 | Moved the shell screens' text into string resources (strings, part 1) |
+| #59 | Gave ViewModels `UiText` instead of English sentences (strings, part 2) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -226,9 +236,9 @@ From `.architecture/` during step 9. Each count may only go down.
 | Debt | Count | Files |
 | --- | --- | --- |
 | Compose imports outside UI code | 38 | 25 |
-| UI imports of `data` packages | 0 | — |
-| Functions over the parameter limit | 52 | — |
-| Inline text values | 247 | 83 |
+| UI imports of `data` packages | 0 | â€” |
+| Functions over the parameter limit | 52 | â€” |
+| Inline text values | 217 | 79 |
 | Inline colours | 64 | 24 |
 | Inline `.dp` sizes | 806 | 132 |
-| Files over 500 lines | 0 | — |
+| Files over 500 lines | 0 | â€” |

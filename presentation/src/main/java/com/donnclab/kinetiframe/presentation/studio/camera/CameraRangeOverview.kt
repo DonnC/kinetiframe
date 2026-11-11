@@ -17,6 +17,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
@@ -24,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.camera.CameraRanges
 
 /** Occupied ranges share the slider's frame scale, with readable labels below it. */
@@ -33,13 +36,24 @@ internal fun CameraRangeOverview(shot: CameraShot, shots: List<CameraShot>, tota
     val collisions = remember(shot, shots) { CameraRanges.conflicts(shot, shots) }
     val occupiedColor = MaterialTheme.colorScheme.secondary.copy(alpha = .45f)
     val selectedColor = if (collisions.isEmpty()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
-    val summary = occupied.joinToString { "${it.action.label()} ${it.startFrame + 1}–${it.endFrame}" }
+    val resources = LocalResources.current
+    val summary = occupied.joinToString {
+        resources.getString(
+            R.string.camera_action_frames,
+            resources.getString(it.action.labelRes()),
+            it.startFrame + 1,
+            it.endFrame,
+        )
+    }
+    val description = stringResource(
+        R.string.camera_range_description,
+        shot.startFrame + 1,
+        shot.endFrame,
+        summary.ifEmpty { stringResource(R.string.camera_range_none) },
+    )
     Column {
         Canvas(
-            Modifier.fillMaxWidth().height(14.dp).semantics {
-                contentDescription =
-                    "Selected frames ${shot.startFrame + 1}–${shot.endFrame}. Occupied: ${summary.ifEmpty { "none" }}"
-            },
+            Modifier.fillMaxWidth().height(14.dp).semantics { contentDescription = description },
         ) {
             val unit = size.width / totalFrames.coerceAtLeast(1)
             occupied.forEach { range ->
@@ -62,20 +76,34 @@ internal fun CameraRangeOverview(shot: CameraShot, shots: List<CameraShot>, tota
             Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text("Selected", color = selectedColor, style = MaterialTheme.typography.labelSmall)
-            if (occupied.isEmpty()) Text("All other frames available", style = MaterialTheme.typography.labelSmall)
+            Text(
+                stringResource(R.string.camera_range_selected),
+                color = selectedColor,
+                style = MaterialTheme.typography.labelSmall,
+            )
+            if (occupied.isEmpty()) {
+                Text(stringResource(R.string.camera_range_all_free), style = MaterialTheme.typography.labelSmall)
+            }
             occupied.forEach { range ->
                 Text(
-                    "Occupied · ${range.action.label()} ${range.startFrame + 1}–${range.endFrame}",
+                    stringResource(
+                        R.string.camera_range_occupied,
+                        range.action.label(),
+                        range.startFrame + 1,
+                        range.endFrame,
+                    ),
                     style = MaterialTheme.typography.labelSmall,
                 )
             }
         }
         if (collisions.isNotEmpty()) {
             Text(
-                "Range overlaps ${collisions.joinToString {
-                    "${it.startFrame + 1}–${it.endFrame}"
-                }}. Choose free frames.",
+                stringResource(
+                    R.string.camera_range_overlaps,
+                    collisions.joinToString {
+                        resources.getString(R.string.frame_range, it.startFrame + 1, it.endFrame)
+                    },
+                ),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.labelSmall,
             )
