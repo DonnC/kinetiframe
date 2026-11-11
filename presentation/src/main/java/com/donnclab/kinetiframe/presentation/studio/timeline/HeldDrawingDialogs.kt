@@ -21,8 +21,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 @Composable
@@ -32,16 +35,19 @@ fun HoldDrawingDialog(firstFrame: Int, totalFrames: Int, onDismiss: () -> Unit, 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text("Hold drawing", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.hold_drawing_title), style = MaterialTheme.typography.titleMedium)
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Frame ${firstFrame + 1} →", style = MaterialTheme.typography.labelMedium)
+                Text(
+                    stringResource(R.string.hold_drawing_from_frame, firstFrame + 1),
+                    style = MaterialTheme.typography.labelMedium,
+                )
                 CompactTextField(end, {
                     end = it.filter(Char::isDigit).take(4)
-                }, singleLine = true, label = { Text("Last frame") })
+                }, singleLine = true, label = { Text(stringResource(R.string.hold_drawing_last_frame)) })
                 Text(
-                    "Replaces this layer’s drawings in the range. Other layers stay unchanged.",
+                    stringResource(R.string.hold_drawing_note),
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
@@ -50,9 +56,11 @@ fun HoldDrawingDialog(firstFrame: Int, totalFrames: Int, onDismiss: () -> Unit, 
             IconButton(
                 enabled = last != null && last > firstFrame && last < totalFrames,
                 onClick = { last?.let(onHold) },
-            ) { Icon(Icons.Default.Check, "Hold range") }
+            ) { Icon(Icons.Default.Check, stringResource(R.string.hold_drawing_confirm)) }
         },
-        dismissButton = { IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, "Cancel") } },
+        dismissButton = {
+            IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, stringResource(R.string.action_cancel)) }
+        },
     )
 }
 
@@ -66,25 +74,42 @@ fun LinkedDrawingScopeDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Drawing · $linkedFrames linked frames", style = MaterialTheme.typography.titleMedium) },
+        title = {
+            Text(
+                pluralStringResource(R.plurals.linked_drawing_title, linkedFrames, linkedFrames),
+                style = MaterialTheme.typography.titleMedium,
+            )
+        },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("Choose where your next edits apply.", style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.linked_drawing_prompt), style = MaterialTheme.typography.bodySmall)
                 // Scope labels are essential decisions, not optional toolbar captions.
                 TextButton(onClick = onLocal) {
                     Icon(Icons.Default.Edit, null)
                     Spacer(Modifier.width(8.dp))
-                    Text("This frame only", style = MaterialTheme.typography.labelMedium)
+                    Text(
+                        stringResource(R.string.linked_drawing_this_frame),
+                        style = MaterialTheme.typography.labelMedium,
+                    )
                 }
                 TextButton(onClick = onShared) {
                     Icon(Icons.Default.Link, null)
                     Spacer(Modifier.width(8.dp))
-                    Text("All linked frames", style = MaterialTheme.typography.labelMedium)
+                    Text(
+                        stringResource(R.string.linked_drawing_all_frames),
+                        style = MaterialTheme.typography.labelMedium,
+                    )
                 }
             }
         },
-        confirmButton = { IconButton(onClick = onHold) { Icon(Icons.Default.Link, "Hold another range") } },
-        dismissButton = { IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, "Cancel") } },
+        confirmButton = {
+            IconButton(onClick = onHold) {
+                Icon(Icons.Default.Link, stringResource(R.string.linked_drawing_hold_another))
+            }
+        },
+        dismissButton = {
+            IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, stringResource(R.string.action_cancel)) }
+        },
     )
 }
 

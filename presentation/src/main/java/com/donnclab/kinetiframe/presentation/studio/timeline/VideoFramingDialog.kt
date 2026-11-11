@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.presentation.studio.timeline
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
@@ -30,12 +31,15 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 import com.donnclab.kinetiframe.core.document.VideoFit
 import com.donnclab.kinetiframe.media.video.VideoFrameDecoder
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.choiceLabel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -73,7 +77,7 @@ internal fun VideoFramingDialog(
         }
     }
     DisposableEffect(Unit) { onDispose { bitmap?.recycle() } }
-    AlertDialog(onDismissRequest = onDismiss, title = { Text("Video framing") }, text = {
+    AlertDialog(onDismissRequest = onDismiss, title = { Text(stringResource(R.string.video_framing_title)) }, text = {
         Column(Modifier.verticalScroll(rememberScrollState())) {
             Box(
                 Modifier.fillMaxWidth().aspectRatio(clip.width / clip.height).onSizeChanged { size = it }
@@ -93,7 +97,7 @@ internal fun VideoFramingDialog(
                 bitmap?.let {
                     Image(
                         it.asImageBitmap(),
-                        "Video crop preview",
+                        stringResource(R.string.video_crop_preview),
                         Modifier.fillMaxSize(),
                         alignment = BiasAlignment(x * 2 - 1, y * 2 - 1),
                         contentScale = when (fit) {
@@ -103,18 +107,27 @@ internal fun VideoFramingDialog(
                         },
                     )
                 }
-                if (error) Text("Preview unavailable. Your source is unchanged.")
+                if (error) Text(stringResource(R.string.video_preview_unavailable))
             }
             Row {
                 VideoFit.entries.forEach { option ->
-                    TextButton({ fit = option }) { Text((if (fit == option) "• " else "") + option.name.lowercase()) }
+                    TextButton({ fit = option }) {
+                        Text(choiceLabel(stringResource(option.labelRes()), selected = fit == option))
+                    }
                 }
             }
-            Text("Fill: drag the picture to choose the crop. Use Transform video to move or resize it on stage.")
+            Text(stringResource(R.string.video_framing_hint))
         }
     }, confirmButton = {
-        TextButton({ onSave(fit, x, y) }) { Text("Apply") }
-    }, dismissButton = { TextButton(onDismiss) { Text("Cancel") } })
+        TextButton({ onSave(fit, x, y) }) { Text(stringResource(R.string.action_apply)) }
+    }, dismissButton = { TextButton(onDismiss) { Text(stringResource(R.string.action_cancel)) } })
+}
+
+@StringRes
+private fun VideoFit.labelRes(): Int = when (this) {
+    VideoFit.STRETCH -> R.string.video_fit_stretch
+    VideoFit.FIT -> R.string.video_fit_fit
+    VideoFit.FILL -> R.string.video_fit_fill
 }
 
 @Preview

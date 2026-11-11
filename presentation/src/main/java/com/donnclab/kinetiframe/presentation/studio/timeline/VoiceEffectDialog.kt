@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.presentation.studio.timeline
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -15,9 +16,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.core.document.VoiceEffect
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.choiceLabel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,24 +38,15 @@ internal fun VoiceEffectDialog(
     var busy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    AlertDialog(onDismissRequest = onDismiss, title = { Text("Voice style") }, text = {
+    val processFailed = stringResource(R.string.voice_process_failed)
+    AlertDialog(onDismissRequest = onDismiss, title = { Text(stringResource(R.string.voice_title)) }, text = {
         Column(Modifier.verticalScroll(rememberScrollState())) {
             VoiceEffect.entries.forEach { effect ->
                 TextButton({ selected = effect }, enabled = !busy) {
-                    Text(
-                        (
-                            if (selected ==
-                                effect
-                            ) {
-                                "• "
-                            } else {
-                                ""
-                            }
-                            ) + effect.name.lowercase().replaceFirstChar { it.uppercase() },
-                    )
+                    Text(choiceLabel(stringResource(effect.labelRes()), selected = selected == effect))
                 }
             }
-            Text("Changes the sound, not the speech timing. Original audio is retained.")
+            Text(stringResource(R.string.voice_note))
             if (busy) LinearProgressIndicator()
             error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
         }
@@ -74,13 +69,21 @@ internal fun VoiceEffectDialog(
                 } catch (
                     failure: Exception,
                 ) {
-                    error = failure.message ?: "Could not process audio"
+                    error = failure.message ?: processFailed
                 } finally {
                     busy = false
                 }
             }
-        }, enabled = !busy) { Text("Apply") }
-    }, dismissButton = { TextButton(onDismiss) { Text("Cancel") } })
+        }, enabled = !busy) { Text(stringResource(R.string.action_apply)) }
+    }, dismissButton = { TextButton(onDismiss) { Text(stringResource(R.string.action_cancel)) } })
+}
+
+@StringRes
+private fun VoiceEffect.labelRes(): Int = when (this) {
+    VoiceEffect.ORIGINAL -> R.string.voice_original
+    VoiceEffect.WARM -> R.string.voice_warm
+    VoiceEffect.RADIO -> R.string.voice_radio
+    VoiceEffect.ROBOT -> R.string.voice_robot
 }
 
 @androidx.compose.ui.tooling.preview.Preview

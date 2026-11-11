@@ -10,9 +10,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.R
 import kotlin.math.roundToInt
 
 @Composable
@@ -21,17 +23,21 @@ internal fun AudioFadeDialog(clip: AudioClipPlacement, fps: Int, onDismiss: () -
     var outgoing by remember(clip.clipId) { mutableFloatStateOf(clip.fadeOutFrames.toFloat()) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Audio fades") },
+        title = { Text(stringResource(R.string.audio_fades_title)) },
         text = {
             Column {
-                Text("Fade in · ${"%.2f".format(incoming / fps)} s")
+                Text(stringResource(R.string.audio_fade_in_seconds, incoming / fps))
                 Slider(incoming, { incoming = it }, valueRange = 0f..clip.durationFrames.coerceAtLeast(1).toFloat())
-                Text("Fade out · ${"%.2f".format(outgoing / fps)} s")
+                Text(stringResource(R.string.audio_fade_out_seconds, outgoing / fps))
                 Slider(outgoing, { outgoing = it }, valueRange = 0f..clip.durationFrames.coerceAtLeast(1).toFloat())
             }
         },
-        confirmButton = { TextButton({ onSave(incoming.roundToInt(), outgoing.roundToInt()) }) { Text("Apply") } },
-        dismissButton = { TextButton(onDismiss) { Text("Cancel") } },
+        confirmButton = {
+            TextButton({ onSave(incoming.roundToInt(), outgoing.roundToInt()) }) {
+                Text(stringResource(R.string.action_apply))
+            }
+        },
+        dismissButton = { TextButton(onDismiss) { Text(stringResource(R.string.action_cancel)) } },
     )
 }
 
