@@ -32,11 +32,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
 import com.donnclab.kinetiframe.presentation.studio.dock.ColorPicker
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -60,14 +62,14 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
                 IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
                     Icon(
                         Lucide.X,
-                        contentDescription = "Close",
+                        contentDescription = stringResource(R.string.action_close),
                         modifier = Modifier.size(16.dp),
                         tint = EditorTokens.dark,
                     )
                 }
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    "Onion Skin",
+                    stringResource(R.string.onion_title),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.ExtraBold,
                     color = EditorTokens.dark,
@@ -80,7 +82,7 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Refresh,
-                        contentDescription = "Reset onion skin",
+                        contentDescription = stringResource(R.string.onion_reset),
                         modifier = Modifier.size(16.dp),
                         tint = accentColor,
                     )
@@ -157,9 +159,9 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
         Spacer(Modifier.height(16.dp))
 
         OnionAdjusterRow(
-            label = "Opacity",
+            label = stringResource(R.string.onion_opacity),
             value = state.onionSkin.opacity,
-            valueDisplay = "${(state.onionSkin.opacity * 100).toInt()}%",
+            valueDisplay = stringResource(R.string.value_percent, (state.onionSkin.opacity * 100).toInt()),
             range = 0.05f..1f,
             onValueChange = { onIntent(StudioIntent.OnionSkin.SetOpacity(it)) },
         )
@@ -167,7 +169,7 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
         Spacer(Modifier.height(12.dp))
 
         OnionAdjusterRow(
-            label = "Frames Before",
+            label = stringResource(R.string.onion_frames_before),
             value = state.onionSkin.depthBefore.toFloat(),
             valueDisplay = "${state.onionSkin.depthBefore}",
             range = 0f..4f,
@@ -178,7 +180,7 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
         Spacer(Modifier.height(12.dp))
 
         OnionAdjusterRow(
-            label = "Frames After",
+            label = stringResource(R.string.onion_frames_after),
             value = state.onionSkin.depthAfter.toFloat(),
             valueDisplay = "${state.onionSkin.depthAfter}",
             range = 0f..4f,
@@ -195,7 +197,7 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
         ) {
             Column {
                 Text(
-                    "Before",
+                    stringResource(R.string.onion_before),
                     style = MaterialTheme.typography.labelSmall,
                     color = EditorTokens.muted,
                     fontWeight = FontWeight.SemiBold,
@@ -204,7 +206,7 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    "After",
+                    stringResource(R.string.onion_after),
                     style = MaterialTheme.typography.labelSmall,
                     color = EditorTokens.muted,
                     fontWeight = FontWeight.SemiBold,

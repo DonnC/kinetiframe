@@ -18,12 +18,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.actors.domain.PerformanceChoices
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.presentation.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -87,7 +89,7 @@ fun ActorPerformancePicker(
     }
     Box(modifier) {
         IconButton(onClick = { expanded = true }) {
-            Icon(Icons.Default.Add, "Add assets")
+            Icon(Icons.Default.Add, stringResource(R.string.timeline_add_assets))
         }
         TimelineAssetSourceMenu(
             expanded && !showActorPicker,
@@ -112,10 +114,13 @@ fun ActorPerformancePicker(
         )
         DropdownMenu(expanded && showActorPicker, { closeMenu() }) {
             if (selectedActor == null) {
-                DropdownMenuItem(text = { Text("‹ Add") }, onClick = { showActorPicker = false })
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.menu_back_to, stringResource(R.string.timeline_add))) },
+                    onClick = { showActorPicker = false },
+                )
                 if (actorItems.isEmpty()) {
                     DropdownMenuItem(text = {
-                        Text("No saved actors")
+                        Text(stringResource(R.string.timeline_no_saved_actors))
                     }, enabled = false, onClick = {})
                 }
                 actorItems.forEach { actor ->
@@ -126,7 +131,10 @@ fun ActorPerformancePicker(
                 }
             } else {
                 val actor = selectedActor ?: return@DropdownMenu
-                DropdownMenuItem(text = { Text("‹ ${actor.displayName}") }, onClick = { selectedActor = null })
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.menu_back_to, actor.displayName)) },
+                    onClick = { selectedActor = null },
+                )
                 PerformanceChooserItems(
                     performances = performanceItems,
                     onCreatePerformance = onCreatePerformance?.let { create ->
@@ -169,9 +177,9 @@ fun ActorPerformancePicker(
     error?.let { message ->
         AlertDialog(
             onDismissRequest = { error = null },
-            title = { Text("Actor performances") },
+            title = { Text(stringResource(R.string.timeline_actor_performances)) },
             text = { Text(message) },
-            confirmButton = { TextButton(onClick = { error = null }) { Text("OK") } },
+            confirmButton = { TextButton(onClick = { error = null }) { Text(stringResource(R.string.action_ok)) } },
         )
     }
 }

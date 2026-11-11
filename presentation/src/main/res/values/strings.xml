@@ -28,6 +28,9 @@
     <string name="action_apply">Apply</string>
     <!-- Marks the selected option in a row of choices, such as "• Fill". -->
     <string name="choice_selected">• %1$s</string>
+    <!-- A menu row that goes back up one level, naming the level, such as "‹ Add". -->
+    <string name="menu_back_to">‹ %1$s</string>
+    <string name="value_percent">%1$d%%</string>
     <string name="action_retry">Retry</string>
     <string name="action_delete">Delete</string>
     <string name="action_rename">Rename</string>
@@ -313,6 +316,56 @@
     <string name="voice_robot">Robot</string>
     <string name="voice_note">Changes the sound, not the speech timing. Original audio is retained.</string>
     <string name="voice_process_failed">Could not process audio</string>
+
+    <!-- Timeline -->
+    <string name="timeline_frame_actions">Frame and canvas actions</string>
+    <string name="timeline_add_frame">Add Frame</string>
+    <string name="timeline_focus_canvas">Focus canvas</string>
+    <string name="timeline_add_assets">Add assets</string>
+    <string name="timeline_add">Add</string>
+    <string name="timeline_no_saved_actors">No saved actors</string>
+    <string name="timeline_actor_performances">Actor performances</string>
+    <string name="playback_speed">Playback speed</string>
+    <string name="playback_fps">Playback FPS</string>
+    <string name="playback_fps_short">FPS</string>
+    <string name="layers_title">Layers</string>
+    <string name="layers_add">Add Layer</string>
+    <string name="layers_drawing_layer">Drawing layer</string>
+    <string name="layers_empty">No layers</string>
+    <string name="layer_hidden">Hidden</string>
+    <string name="onion_title">Onion Skin</string>
+    <string name="onion_reset">Reset onion skin</string>
+    <string name="onion_opacity">Opacity</string>
+    <string name="onion_frames_before">Frames Before</string>
+    <string name="onion_frames_after">Frames After</string>
+    <string name="onion_before">Before</string>
+    <string name="onion_after">After</string>
+    <string name="performances_none">No saved performances</string>
+    <string name="performances_no_others">No other saved performances</string>
+    <string name="performances_new">New performance in Actor Studio</string>
+    <string name="performances_switch">Switch performance</string>
+    <string name="performances_load_failed">Couldn\'t load performances</string>
+    <string name="tracks_title">Asset tracks</string>
+    <string name="tracks_close">Close asset tracks</string>
+    <string name="tracks_no_clips">No clips yet</string>
+    <plurals name="tracks_summary">
+        <item quantity="one">Tracks · %d clip</item>
+        <item quantity="other">Tracks · %d clips</item>
+    </plurals>
+    <string name="tracks_expand_collapse">Expand or collapse asset tracks</string>
+    <string name="tracks_clip_actions">Clip actions</string>
+    <string name="tracks_deselect_clip">Deselect clip</string>
+    <string name="tracks_frames">Frames</string>
+    <string name="tracks_camera">Camera</string>
+    <!-- Lane label for the nth actor on the timeline. -->
+    <string name="tracks_actor_lane">Actor %1$d</string>
+    <!-- Short lane label for the nth audio track, such as "A1". -->
+    <string name="tracks_audio_lane">A%1$d</string>
+    <string name="tracks_video">Video</string>
+    <string name="tracks_unlock_linked_sound">Unlock the linked sound lane to change video timing</string>
+    <string name="tracks_video_overlap">Video clips cannot overlap</string>
+    <string name="tracks_detach_sound_first">Detach sound from video before moving it separately</string>
+    <string name="tracks_audio_lane_locked">Track A%1$d is locked</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>

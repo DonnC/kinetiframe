@@ -13,23 +13,23 @@ Keep this page current:
 
 ## Now
 
-**Strings to resources, part 4: timeline dialogs.** The audio crossfade and fade, clip
-position, held drawing, video framing and voice style dialogs take their text from string
-resources. Video fits and voice styles come from resources instead of enum names, and
-`choiceLabel` marks the selected option in a row of choices.
+**Strings to resources, part 5: the rest of the timeline.** The layer panel, onion skin
+options, playback speed, the action row, the asset tracks panel and workspace, and the
+performance pickers take their text from string resources. The tracks panel's notices, such as
+"Track A2 is locked", are formatted from resources, and its clip count is a plural.
 
 ## Next
 
-**Strings, part 5: the rest of the timeline** (layers, onion skin, speed, the action row, the
-tracks panel and the performance picker), then Actor Studio, the library and the tool dock. The projects, actors and packs ViewModels' `ShowError` effects, and
-every `StoreResult.Failure`, still carry English from the layers below. They move with the
+**Strings, part 6: Actor Studio**, then the library and the tool dock. The projects, actors and
+packs ViewModels' `ShowError` effects, and every `StoreResult.Failure`, still carry English from
+the layers below. They move with the
 **Typed errors** track, through `UiText.Verbatim` until then.
 
 ## Later
 
 Tracks that run alongside the module work, a screen or feature at a time:
 
-- **Strings to resources.** 184 inline text values in 73 files, plus messages assigned to state
+- **Strings to resources.** 159 inline text values in 62 files, plus messages assigned to state
   that the check doesn't count. Then right-to-left layouts, per-app language and a pseudo-locale
   check.
 - **Built-in camera presets.** `CameraRecipes.builtIn` in `studio` names its five presets in
@@ -184,6 +184,7 @@ fixed after the module work, unless one blocks testing.
 | #58 | Moved the shell screens' text into string resources (strings, part 1) |
 | #59 | Gave ViewModels `UiText` instead of English sentences (strings, part 2) |
 | #60 | Moved the camera effect screens' text into string resources (strings, part 3) |
+| #61 | Moved the timeline dialogs' text into string resources (strings, part 4) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -238,7 +239,7 @@ From `.architecture/` during step 9. Each count may only go down.
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 0 | â€” |
 | Functions over the parameter limit | 52 | â€” |
-| Inline text values | 184 | 73 |
+| Inline text values | 159 | 62 |
 | Inline colours | 64 | 24 |
 | Inline `.dp` sizes | 806 | 132 |
 | Files over 500 lines | 0 | â€” |

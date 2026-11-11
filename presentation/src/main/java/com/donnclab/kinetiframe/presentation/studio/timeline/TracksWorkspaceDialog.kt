@@ -17,10 +17,12 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 
 /** An explicit editing workspace: opening lanes must never remeasure the drawing viewport. */
@@ -44,13 +46,13 @@ fun TracksWorkspaceDialog(
         Column(Modifier.fillMaxSize()) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    "Asset tracks",
+                    stringResource(R.string.tracks_title),
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f).padding(start = 16.dp),
                 )
                 PlaybackControls(isPlaying, onIntent)
                 assetPicker?.invoke()
-                IconButton(onClick = onDismiss) { Icon(Lucide.X, "Close asset tracks") }
+                IconButton(onClick = onDismiss) { Icon(Lucide.X, stringResource(R.string.tracks_close)) }
             }
             content()
         }

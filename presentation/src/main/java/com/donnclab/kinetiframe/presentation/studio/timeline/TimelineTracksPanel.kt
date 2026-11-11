@@ -33,7 +33,10 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Box
@@ -50,6 +53,7 @@ import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.AudioTrackSettings
 import com.donnclab.kinetiframe.core.document.MAX_AUDIO_TRACKS
 import com.donnclab.kinetiframe.core.document.VideoClipPlacement
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.studio.timeline.audio.AudioLaneHeader
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
@@ -75,9 +79,16 @@ fun TimelineTracksPanel(
         remember(state.project.videoClips) { state.project.videoClips.values.sortedBy { it.timelineStartFrame } }
     val camera = state.project.cameraShots
     if (actors.isEmpty() && audio.isEmpty() && videos.isEmpty() && camera.isEmpty()) {
-        if (workspaceMode) Text("No clips yet", Modifier.padding(16.dp), style = MaterialTheme.typography.bodySmall)
+        if (workspaceMode) {
+            Text(
+                stringResource(R.string.tracks_no_clips),
+                Modifier.padding(16.dp),
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
         return
     }
+    val resources = LocalResources.current
     var expanded by rememberSaveable { mutableStateOf(false) }
     val windowHeight = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() }
     val laneHeight = if (workspaceMode) {
@@ -111,12 +122,12 @@ fun TimelineTracksPanel(
     fun placeVideo(clip: VideoClipPlacement, start: Int, end: Int, sourceOffset: Double) {
         val linkedAudio = clip.linkedAudioClipId?.let { state.project.audioClips[it] }
         if (linkedAudio != null && state.project.audioTracks[linkedAudio.trackIndex]?.isLocked == true) {
-            notice = "Unlock the linked sound lane to change video timing"
+            notice = resources.getString(R.string.tracks_unlock_linked_sound)
         } else if (videos.any {
                 it.clipId != clip.clipId && start < it.timelineEndFrame && it.timelineStartFrame < end
             }
         ) {
-            notice = "Video clips cannot overlap"
+            notice = resources.getString(R.string.tracks_video_overlap)
         } else {
             onIntent(StudioIntent.Video.Trim(clip.clipId, start, end, sourceOffset))
         }
@@ -127,10 +138,9 @@ fun TimelineTracksPanel(
 
             sound != null -> {
                 if (state.project.videoClips.values.any { it.linkedAudioClipId == sound.clipId }) {
-                    notice =
-                        "Detach sound from video before moving it separately"
+                    notice = resources.getString(R.string.tracks_detach_sound_first)
                 } else if (state.project.audioTracks[lane]?.isLocked == true) {
-                    notice = "Track A${lane + 1} is locked"
+                    notice = resources.getString(R.string.tracks_audio_lane_locked, lane + 1)
                 } else {
                     onIntent(StudioIntent.Audio.Move(sound.clipId, lane, start))
                 }
@@ -177,40 +187,43 @@ fun TimelineTracksPanel(
                     }) {
                         Icon(
                             if (expanded) Lucide.ChevronDown else Lucide.ChevronRight,
-                            "Expand or collapse asset tracks",
+                            stringResource(R.string.tracks_expand_collapse),
                         )
                     }
                 }
+                val clipCount = actors.size + audio.size + videos.size
                 Text(
-                    notice ?: label ?: "Tracks · ${actors.size + audio.size + videos.size} clips",
+                    notice ?: label ?: pluralStringResource(R.plurals.tracks_summary, clipCount, clipCount),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.weight(1f),
                 )
                 if (label != null) {
-                    IconButton(onClick = { actionsOpen = true }) { Icon(Lucide.Ellipsis, "Clip actions") }
+                    IconButton(onClick = { actionsOpen = true }) {
+                        Icon(Lucide.Ellipsis, stringResource(R.string.tracks_clip_actions))
+                    }
                     IconButton(onClick = {
                         selected = null
                         actionsOpen = false
-                    }) { Icon(Lucide.X, "Deselect clip") }
+                    }) { Icon(Lucide.X, stringResource(R.string.tracks_deselect_clip)) }
                 }
             }
             if (expanded || workspaceMode) {
                 Row(Modifier.heightIn(max = laneHeight).verticalScroll(rememberScrollState())) {
                     Column(Modifier.width(TRACK_GUTTER)) {
                         Text(
-                            "Frames",
+                            stringResource(R.string.tracks_frames),
                             Modifier.height(24.dp).padding(start = 8.dp),
                             style = MaterialTheme.typography.labelSmall,
                         )
-                        if (camera.isNotEmpty()) TrackLabel("Camera")
-                        actors.forEachIndexed { i, _ -> TrackLabel("Actor ${i + 1}") }
+                        if (camera.isNotEmpty()) TrackLabel(stringResource(R.string.tracks_camera))
+                        actors.forEachIndexed { i, _ -> TrackLabel(stringResource(R.string.tracks_actor_lane, i + 1)) }
                         repeat(audioLaneCount) { lane ->
                             val settings = state.project.audioTracks[lane] ?: AudioTrackSettings()
                             Row(Modifier.height(TRACK_HEIGHT), verticalAlignment = Alignment.CenterVertically) {
                                 Text(
-                                    "A${lane + 1}",
+                                    stringResource(R.string.tracks_audio_lane, lane + 1),
                                     style = MaterialTheme.typography.labelSmall,
                                     modifier = Modifier.width(24.dp),
                                 )
@@ -222,7 +235,7 @@ fun TimelineTracksPanel(
                                 )
                             }
                         }
-                        if (videos.isNotEmpty()) TrackLabel("Video")
+                        if (videos.isNotEmpty()) TrackLabel(stringResource(R.string.tracks_video))
                     }
                     TimelineTrackViewport(
                         frameCount,
@@ -318,7 +331,11 @@ fun TimelineTracksPanel(
                                                     if (state.project.audioTracks[target]?.isLocked ==
                                                         true
                                                     ) {
-                                                        notice = "Track A${target + 1} is locked"
+                                                        notice =
+                                                            resources.getString(
+                                                                R.string.tracks_audio_lane_locked,
+                                                                target + 1,
+                                                            )
                                                     } else {
                                                         onIntent(
                                                             StudioIntent.Audio.Move(clip.clipId, target, start),
