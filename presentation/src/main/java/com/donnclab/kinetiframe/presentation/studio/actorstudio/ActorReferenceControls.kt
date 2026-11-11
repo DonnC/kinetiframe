@@ -26,6 +26,8 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Blend
@@ -42,6 +44,7 @@ import com.composables.icons.lucide.Move
 import com.composables.icons.lucide.Spline
 import com.composables.icons.lucide.Text
 import com.composables.icons.lucide.Trash2
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ReferenceImageSize
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextSliderButton
@@ -57,13 +60,14 @@ fun ActorReferenceControls(
     width: Int,
     height: Int,
     modifier: Modifier = Modifier,
-    description: String = "Reference image layer (temporary)",
+    description: String = stringResource(R.string.reference_layer_description),
     onReplace: (android.graphics.Bitmap) -> Boolean = {
         session.replace(it, width, height)
         true
     },
 ) {
     val context = LocalContext.current
+    val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     var expanded by session::menuOpen
     var loading by remember { mutableStateOf(false) }
@@ -96,12 +100,12 @@ fun ActorReferenceControls(
                         }
                     }
                     if (importGeneration == session.importGeneration && !latestReplace(image)) {
-                        error = "Reference memory limit reached. Remove another frame's reference and try again."
+                        error = resources.getString(R.string.reference_memory_limit)
                     }
                 } catch (cancelled: kotlinx.coroutines.CancellationException) {
                     throw cancelled
                 } catch (_: Exception) {
-                    error = "Could not read this reference image."
+                    error = resources.getString(R.string.reference_read_failed)
                 } finally {
                     loading = false
                 }
@@ -119,7 +123,7 @@ fun ActorReferenceControls(
             }
             if (session.editing) {
                 FilledTonalIconButton(onClick = { session.editing = false }) {
-                    Icon(Lucide.Check, "Finish positioning reference")
+                    Icon(Lucide.Check, stringResource(R.string.reference_finish_positioning))
                 }
             }
         }
@@ -130,13 +134,9 @@ fun ActorReferenceControls(
                 add(
                     ContextIconAction(
                         Lucide.ImagePlus,
-                        if (session.bitmap ==
-                            null
-                        ) {
-                            "Import image"
-                        } else {
-                            "Replace image"
-                        },
+                        stringResource(
+                            if (session.bitmap == null) R.string.reference_import else R.string.reference_replace,
+                        ),
                         {
                             expanded = false
                             importGeneration = session.importGeneration
@@ -147,23 +147,37 @@ fun ActorReferenceControls(
                 )
                 if (session.bitmap != null) {
                     add(
-                        ContextIconAction(if (session.editing) Lucide.Check else Lucide.Move, "Position reference", {
-                            session.visible = true
-                            session.editing = !session.editing
-                            expanded = false
-                        }, selected = session.editing),
+                        ContextIconAction(
+                            if (session.editing) Lucide.Check else Lucide.Move,
+                            stringResource(R.string.reference_position),
+                            {
+                                session.visible = true
+                                session.editing = !session.editing
+                                expanded = false
+                            },
+                            selected = session.editing,
+                        ),
                     )
                     add(
-                        ContextIconAction(if (session.visible) Lucide.Eye else Lucide.EyeOff, "Reference visibility", {
-                            session.visible = !session.visible
-                            session.editing = false
-                        }, selected = session.visible),
+                        ContextIconAction(
+                            if (session.visible) Lucide.Eye else Lucide.EyeOff,
+                            stringResource(R.string.reference_visibility),
+                            {
+                                session.visible = !session.visible
+                                session.editing = false
+                            },
+                            selected = session.visible,
+                        ),
                     )
-                    add(ContextIconAction(Lucide.Maximize, "Fit to canvas", { session.fit(width, height) }))
+                    add(
+                        ContextIconAction(Lucide.Maximize, stringResource(R.string.reference_fit_canvas), {
+                            session.fit(width, height)
+                        }),
+                    )
                     add(
                         ContextIconAction(
                             Lucide.Lock,
-                            "Lock proportions",
+                            stringResource(R.string.reference_lock_proportions),
                             {
                                 session.lockAspectRatio =
                                     !session.lockAspectRatio
@@ -174,13 +188,13 @@ fun ActorReferenceControls(
                     add(
                         ContextIconAction(
                             Lucide.Spline,
-                            "Skew side handles",
+                            stringResource(R.string.reference_skew_handles),
                             { session.skewMode = !session.skewMode },
                             selected = session.skewMode,
                         ),
                     )
                     add(
-                        ContextIconAction(Lucide.Trash2, "Remove reference", {
+                        ContextIconAction(Lucide.Trash2, stringResource(R.string.reference_remove), {
                             session.remove()
                             expanded = false
                         }),
@@ -191,7 +205,7 @@ fun ActorReferenceControls(
             if (session.bitmap != null) {
                 ContextSliderButton(
                     Lucide.Blend,
-                    "Opacity",
+                    stringResource(R.string.onion_opacity),
                     session.opacity,
                     { session.opacity = it },
                     valueRange = .1f..1f,
@@ -205,7 +219,7 @@ fun ActorReferenceControls(
             TextButton(onClick = {
                 error =
                     null
-            }) { Text("OK") }
+            }) { Text(stringResource(R.string.action_ok)) }
         })
     }
 }

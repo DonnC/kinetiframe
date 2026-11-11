@@ -30,12 +30,15 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.library.model.PackArtworkRegistration
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.library.LibraryPickerDialog
 import com.donnclab.kinetiframe.ui.appViewModel
 
@@ -72,11 +75,14 @@ fun ActorArtworkPicker(onDismiss: () -> Unit, onSelected: (String, Bitmap, PackA
                             onClick = { model.handleIntent(ActorArtworkPickerIntent.BackToLibrary) },
                             enabled = !busy,
                         ) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back to packs")
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                stringResource(R.string.actor_artwork_back_to_packs),
+                            )
                         }
                         Text(selectedPack.displayName, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
                         IconButton(onClick = onDismiss, enabled = !busy) {
-                            Icon(Icons.Default.Close, "Cancel artwork selection")
+                            Icon(Icons.Default.Close, stringResource(R.string.actor_artwork_cancel))
                         }
                     }
                     if (busy) LinearProgressIndicator(Modifier.fillMaxWidth())
@@ -103,9 +109,11 @@ fun ActorArtworkPicker(onDismiss: () -> Unit, onSelected: (String, Bitmap, PackA
     state.error?.let { message ->
         AlertDialog(
             onDismissRequest = { model.handleIntent(ActorArtworkPickerIntent.DismissError) },
-            text = { Text(message) },
+            text = { Text(message.asString()) },
             confirmButton = {
-                TextButton(onClick = { model.handleIntent(ActorArtworkPickerIntent.DismissError) }) { Text("OK") }
+                TextButton(onClick = { model.handleIntent(ActorArtworkPickerIntent.DismissError) }) {
+                    Text(stringResource(R.string.action_ok))
+                }
             },
         )
     }

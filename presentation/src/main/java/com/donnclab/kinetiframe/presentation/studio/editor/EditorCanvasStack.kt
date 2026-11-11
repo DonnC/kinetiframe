@@ -19,9 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.LocalAppPreferences
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.ActorReferenceControls
@@ -93,7 +95,7 @@ internal fun BoxScope.EditorCanvasStack(
                 stage.width,
                 stage.height,
                 Modifier.align(Alignment.TopEnd).padding(8.dp),
-                description = "Reference for frame ${state.animation.currentFrame + 1} (temporary)",
+                description = stringResource(R.string.reference_frame_description, state.animation.currentFrame + 1),
                 onReplace = { image -> viewModel.frameReferences.replace(reference, image, stage.width, stage.height) },
             )
         }
