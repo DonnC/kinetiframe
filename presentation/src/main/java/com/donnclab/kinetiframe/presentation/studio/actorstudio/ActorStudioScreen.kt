@@ -19,10 +19,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ActorPerformanceNameDialog
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioDocumentEffect
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioDocumentIntent
@@ -55,6 +58,7 @@ fun ActorStudioScreen(
             set(ActorStudioDocumentViewModel.TargetKey, target)
         }
     val state by model.state.collectAsStateWithLifecycle()
+    val resources = LocalResources.current
     val saveScope = rememberCoroutineScope()
     var writingArtwork by remember { mutableStateOf(false) }
     val references =
@@ -130,7 +134,7 @@ fun ActorStudioScreen(
                         val paths = runCatching {
                             model.saveArtwork(revisionId, definition.sceneGraph, runtime)
                         }.getOrElse { throwable ->
-                            error = throwable.message ?: "Could not save actor artwork"
+                            error = throwable.message ?: resources.getString(R.string.actor_save_artwork_failed)
                             writingArtwork = false
                             return@launch
                         }
@@ -170,7 +174,7 @@ fun ActorStudioScreen(
     pendingPerformance?.let { (instance, durationMicros) ->
         ActorPerformanceNameDialog(
             initialName =
-            state.performance?.displayName ?: "New performance",
+            state.performance?.displayName ?: stringResource(R.string.actor_new_performance),
             onDismiss = {
                 pendingPerformance = null
                 saveAndExitPending =
@@ -196,8 +200,8 @@ fun ActorStudioScreen(
     duplicatePerformanceName?.let { name ->
         ActorPerformanceNameDialog(
             initialName = name,
-            title = "Duplicate performance",
-            confirmLabel = "Duplicate",
+            title = stringResource(R.string.actor_duplicate_performance),
+            confirmLabel = stringResource(R.string.action_duplicate),
             onDismiss = { duplicatePerformanceName = null },
             onSave = { copiedName ->
                 model.handleIntent(ActorStudioDocumentIntent.DuplicatePerformance(copiedName))
@@ -208,9 +212,9 @@ fun ActorStudioScreen(
     error?.let { message ->
         AlertDialog(
             onDismissRequest = { error = null },
-            title = { Text("Actor Studio") },
+            title = { Text(stringResource(R.string.actor_studio_title)) },
             text = { Text(message) },
-            confirmButton = { TextButton(onClick = { error = null }) { Text("OK") } },
+            confirmButton = { TextButton(onClick = { error = null }) { Text(stringResource(R.string.action_ok)) } },
         )
     }
     if (showDiscardConfirmation) {
@@ -235,27 +239,31 @@ fun ActorStudioScreen(
     if (showPerformanceActions) {
         AlertDialog(
             onDismissRequest = { showPerformanceActions = false },
-            title = { Text("Performance actions") },
+            title = { Text(stringResource(R.string.actor_performance_actions)) },
             text = {
                 Text(
-                    if (returnPlacementId == null) {
-                        "Duplicate this reusable gesture or archive it from this project."
-                    } else {
-                        "This performance is currently used by the placement you are editing. Duplicate it to make a variant; archive is unavailable until the placement is removed."
-                    },
+                    stringResource(
+                        if (returnPlacementId == null) {
+                            R.string.actor_performance_actions_hint
+                        } else {
+                            R.string.actor_performance_in_use
+                        },
+                    ),
                 )
             },
             confirmButton = {
                 TextButton(onClick = {
                     showPerformanceActions = false
                     model.handleIntent(ActorStudioDocumentIntent.ArchivePerformance)
-                }, enabled = returnPlacementId == null) { Text("Archive") }
+                }, enabled = returnPlacementId == null) { Text(stringResource(R.string.action_archive)) }
             },
             dismissButton = {
                 TextButton(onClick = {
                     showPerformanceActions = false
-                    duplicatePerformanceName = "${state.performance?.displayName ?: "Performance"} copy"
-                }) { Text("Duplicate") }
+                    val source =
+                        state.performance?.displayName ?: resources.getString(R.string.actor_performance_default)
+                    duplicatePerformanceName = resources.getString(R.string.actor_performance_copy, source)
+                }) { Text(stringResource(R.string.action_duplicate)) }
             },
         )
     }
@@ -286,16 +294,21 @@ private fun RestoredActorEditor(
     DisposableEffect(canvasOwner) { onDispose { canvasOwner.viewModelStore.clear() } }
     var restored by remember(manifest.actorId, revision.revisionId) { mutableStateOf(false) }
     var restoreError by remember(manifest.actorId, revision.revisionId) { mutableStateOf<String?>(null) }
+    val resources = LocalResources.current
     LaunchedEffect(manifest.actorId, revision.revisionId) {
         try {
             val missing = documents.restoreArtwork(revision.artworkAssetPaths, revision.sceneGraph, runtime)
-            check(missing.isEmpty()) { "Missing actor artwork: ${missing.joinToString()}" }
-            restored = true
+            if (missing.isEmpty()) {
+                restored = true
+            } else {
+                runtime.clear()
+                restoreError = resources.getString(R.string.actor_artwork_missing, missing.joinToString())
+            }
         } catch (cancelled: kotlinx.coroutines.CancellationException) {
             throw cancelled
         } catch (error: Exception) {
             runtime.clear() // No canvas has been shown yet, so no render/history owns these textures.
-            restoreError = error.message ?: "Could not restore actor artwork"
+            restoreError = error.message ?: resources.getString(R.string.actor_restore_artwork_failed)
         }
     }
     restoreError?.let { message ->

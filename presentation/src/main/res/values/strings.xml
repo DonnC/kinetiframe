@@ -367,6 +367,38 @@
     <string name="tracks_detach_sound_first">Detach sound from video before moving it separately</string>
     <string name="tracks_audio_lane_locked">Track A%1$d is locked</string>
 
+    <!-- Actor Studio -->
+    <string name="actor_studio_title">Actor Studio</string>
+    <string name="actor_new_performance">New performance</string>
+    <string name="actor_duplicate_performance">Duplicate performance</string>
+    <string name="actor_performance_actions">Performance actions</string>
+    <string name="actor_performance_actions_hint">Duplicate this reusable gesture or archive it from this project.</string>
+    <string name="actor_performance_in_use">This performance is currently used by the placement you are editing. Duplicate it to make a variant; archive is unavailable until the placement is removed.</string>
+    <!-- Fallback name for a performance being duplicated when it has no name. -->
+    <string name="actor_performance_default">Performance</string>
+    <!-- Suggested name for a duplicated performance. -->
+    <string name="actor_performance_copy">%1$s copy</string>
+    <string name="actor_save_artwork_failed">Could not save actor artwork</string>
+    <string name="actor_restore_artwork_failed">Could not restore actor artwork</string>
+    <!-- %1$s lists the artwork files that could not be found. -->
+    <string name="actor_artwork_missing">Missing actor artwork: %1$s</string>
+    <string name="actor_artwork_read_failed">Could not read artwork</string>
+    <string name="actor_artwork_back_to_packs">Back to packs</string>
+    <string name="actor_artwork_cancel">Cancel artwork selection</string>
+    <string name="reference_layer_description">Reference image layer (temporary)</string>
+    <string name="reference_frame_description">Reference for frame %1$d (temporary)</string>
+    <string name="reference_memory_limit">Reference memory limit reached. Remove another frame\'s reference and try again.</string>
+    <string name="reference_read_failed">Could not read this reference image.</string>
+    <string name="reference_finish_positioning">Finish positioning reference</string>
+    <string name="reference_import">Import image</string>
+    <string name="reference_replace">Replace image</string>
+    <string name="reference_position">Position reference</string>
+    <string name="reference_visibility">Reference visibility</string>
+    <string name="reference_fit_canvas">Fit to canvas</string>
+    <string name="reference_lock_proportions">Lock proportions</string>
+    <string name="reference_skew_handles">Skew side handles</string>
+    <string name="reference_remove">Remove reference</string>
+
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_appearance">Appearance</string>

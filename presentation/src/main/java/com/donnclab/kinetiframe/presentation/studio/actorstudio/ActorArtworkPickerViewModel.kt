@@ -7,6 +7,8 @@ import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.library.domain.LibraryArtwork
 import com.donnclab.kinetiframe.library.model.PackArtworkRegistration
 import com.donnclab.kinetiframe.library.model.PackItemEntry
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
@@ -23,7 +25,7 @@ data class ActorArtworkPickerState(
     val pack: LibraryItemManifest? = null,
     val items: List<PackItemEntry> = emptyList(),
     val busy: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
 ) : ViewState
 
 sealed interface ActorArtworkPickerIntent : ViewIntent {
@@ -75,7 +77,7 @@ class ActorArtworkPickerViewModel(
         viewModelScope.launch {
             when (val loaded = withContext(ioDispatcher) { artwork.packItems(pack) }) {
                 is StoreResult.Value -> updateState { if (it.pack == pack) it.copy(items = loaded.value) else it }
-                is StoreResult.Failure -> updateState { it.copy(error = loaded.message) }
+                is StoreResult.Failure -> updateState { it.copy(error = UiText.Verbatim(loaded.message)) }
             }
         }
     }
@@ -90,7 +92,9 @@ class ActorArtworkPickerViewModel(
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (failure: Exception) {
-                updateState { it.copy(error = failure.message ?: "Could not read artwork") }
+                val message =
+                    failure.message?.let(UiText::Verbatim) ?: UiText.Resource(R.string.actor_artwork_read_failed)
+                updateState { it.copy(error = message) }
             } finally {
                 updateState { it.copy(busy = false) }
             }
