@@ -12,8 +12,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton
 import com.donnclab.kinetiframe.studio.StudioIntent
 
@@ -22,9 +24,18 @@ import com.donnclab.kinetiframe.studio.StudioIntent
 fun ActorArtworkMenu(bone: BoneNode, onIntent: (StudioIntent) -> Unit) {
     var open by remember(bone.id) { mutableStateOf(false) }
     Box {
-        ActorToolButton(Icons.Default.Collections, "Part artwork", bone.artworkVariants.isNotEmpty()) { open = true }
+        ActorToolButton(
+            Icons.Default.Collections,
+            stringResource(R.string.part_artwork),
+            bone.artworkVariants.isNotEmpty(),
+        ) {
+            open =
+                true
+        }
         DropdownMenu(open, { open = false }) {
-            DropdownMenuItem(text = { Text("Default", style = MaterialTheme.typography.labelSmall) }, onClick = {
+            DropdownMenuItem(text = {
+                Text(stringResource(R.string.part_artwork_default), style = MaterialTheme.typography.labelSmall)
+            }, onClick = {
                 open = false
                 onIntent(StudioIntent.Actor.SelectArtwork(bone.id, ""))
             })

@@ -8,7 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.activeActor
@@ -19,7 +21,10 @@ fun ActorKeyStrip(state: StudioState, onIntent: (StudioIntent) -> Unit) {
     Row(Modifier.horizontalScroll(rememberScrollState())) {
         state.activeActor()?.poseKeys.orEmpty().forEach { key ->
             TextButton(onClick = { onIntent(StudioIntent.ActorMotion.Scrub(key.timeMicros)) }) {
-                Text("◆ ${"%.2f".format(key.timeMicros / 1_000_000.0)}s", style = MaterialTheme.typography.labelSmall)
+                Text(
+                    stringResource(R.string.key_strip_time, key.timeMicros / 1_000_000.0),
+                    style = MaterialTheme.typography.labelSmall,
+                )
             }
         }
     }

@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Image
@@ -24,6 +25,7 @@ import com.composables.icons.lucide.Plus
 import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.rigging.ActorPartTree
 import com.donnclab.kinetiframe.presentation.actors.rigging.CoverageBadge
 import com.donnclab.kinetiframe.presentation.actors.rigging.RasterLayerGroupHeader
@@ -55,7 +57,7 @@ fun PartPickerSheet(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 4.dp),
                 ) {
                     Text(
-                        "Parts",
+                        stringResource(R.string.parts_title),
                         color = ActorStudioTokens.onPanel,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
@@ -64,7 +66,7 @@ fun PartPickerSheet(
                     IconButton(onClick = { onIntent(StudioIntent.Layer.AddLayer(LayerType.RASTER)) }) {
                         Icon(
                             Lucide.Plus,
-                            "Add layer",
+                            stringResource(R.string.parts_add_layer),
                             tint = ActorStudioTokens.onPanel,
                             modifier = Modifier.size(20.dp),
                         )
@@ -83,9 +85,17 @@ fun PartPickerSheet(
                         Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text("Reference · temporary", modifier = Modifier.weight(1f), color = ActorStudioTokens.onPanel)
+                        Text(
+                            stringResource(R.string.parts_reference),
+                            modifier = Modifier.weight(1f),
+                            color = ActorStudioTokens.onPanel,
+                        )
                         IconButton(onClick = onReferenceClick) {
-                            Icon(Lucide.Image, "Manage temporary reference", tint = ActorStudioTokens.onPanel)
+                            Icon(
+                                Lucide.Image,
+                                stringResource(R.string.parts_manage_reference),
+                                tint = ActorStudioTokens.onPanel,
+                            )
                         }
                     }
                 }

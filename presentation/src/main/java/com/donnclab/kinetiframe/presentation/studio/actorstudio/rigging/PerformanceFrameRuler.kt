@@ -18,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.domain.PerformanceRulerTiming
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.studio.FrameThumbnailContent
 import com.donnclab.kinetiframe.presentation.studio.timeline.ObserveTimelineScrubbing
 import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineCenterPointer
@@ -97,6 +99,15 @@ fun PerformanceFrameRuler(
                 val key = frame in keyedFrames
                 val tweened = !key && isTweenedFrame(frame, poseFrames)
                 val selected = frame == selectedFrame
+                val frameDescription = stringResource(
+                    when {
+                        frame in poseFrames -> R.string.ruler_frame_pose_key
+                        key -> R.string.ruler_frame_artwork_key
+                        tweened -> R.string.ruler_frame_interpolated
+                        else -> R.string.ruler_frame
+                    },
+                    frame + 1,
+                )
                 Box(
                     modifier = Modifier
                         .size(width = 44.dp, height = 48.dp)
@@ -107,18 +118,7 @@ fun PerformanceFrameRuler(
                                 else -> MaterialTheme.colorScheme.surfaceVariant
                             },
                         )
-                        .semantics {
-                            contentDescription =
-                                "Frame ${frame + 1}${if (frame in poseFrames) {
-                                    ", pose key"
-                                } else if (key) {
-                                    ", artwork key"
-                                } else if (tweened) {
-                                    ", interpolated"
-                                } else {
-                                    ""
-                                }}"
-                        }
+                        .semantics { contentDescription = frameDescription }
                         .clickable {
                             // Select the authored timestamp, so Delete/replace act on the pose key
                             // even for imported keys that do not fall exactly on this FPS grid.
