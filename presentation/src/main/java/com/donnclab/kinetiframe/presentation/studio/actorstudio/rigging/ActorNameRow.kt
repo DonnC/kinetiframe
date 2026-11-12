@@ -17,12 +17,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Folder
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.studio.StudioIntent
 
@@ -55,7 +57,7 @@ fun ActorNameRow(actorName: String, onIntent: (StudioIntent) -> Unit) {
         if (editingName) {
             AlertDialog(
                 onDismissRequest = { editingName = false },
-                title = { Text("Rename Actor") },
+                title = { Text(stringResource(R.string.actor_rename_title)) },
                 text = {
                     CompactTextField(value = currentName, onValueChange = { currentName = it }, singleLine = true)
                 },
@@ -63,9 +65,11 @@ fun ActorNameRow(actorName: String, onIntent: (StudioIntent) -> Unit) {
                     TextButton(onClick = {
                         onIntent(StudioIntent.Actor.RenameActor(currentName))
                         editingName = false
-                    }) { Text("Save") }
+                    }) { Text(stringResource(R.string.action_save)) }
                 },
-                dismissButton = { TextButton(onClick = { editingName = false }) { Text("Cancel") } },
+                dismissButton = {
+                    TextButton(onClick = { editingName = false }) { Text(stringResource(R.string.action_cancel)) }
+                },
             )
         }
     }

@@ -14,9 +14,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton
+import com.donnclab.kinetiframe.presentation.common.checkedLabel
 import com.donnclab.kinetiframe.studio.StudioIntent
 
 /** One compact entry covers the selected part's default and alternate artwork, for any rig. */
@@ -38,13 +41,16 @@ fun ActorArtworkControls(
     }
     val binding = if (selected.isEmpty()) bone.textureBinding else bone.artworkVariants[selected]?.binding
     Box {
-        ActorToolButton(Icons.Default.Tune, "Edit part artwork") { open = true }
+        ActorToolButton(Icons.Default.Tune, stringResource(R.string.part_artwork_edit)) { open = true }
         DropdownMenu(open, { open = false }) {
             if (bone.artworkVariants.isNotEmpty()) {
                 DropdownMenuItem(
                     text = {
                         Text(
-                            "${if (selected.isEmpty()) "✓ " else ""}Default artwork",
+                            checkedLabel(
+                                stringResource(R.string.part_artwork_default_full),
+                                checked = selected.isEmpty(),
+                            ),
                             style = MaterialTheme.typography.labelSmall,
                         )
                     },
@@ -54,7 +60,7 @@ fun ActorArtworkControls(
                     DropdownMenuItem(
                         text = {
                             Text(
-                                "${if (selected == id) "✓ " else ""}${artwork.name}",
+                                checkedLabel(artwork.name, checked = selected == id),
                                 style = MaterialTheme.typography.labelSmall,
                             )
                         },
@@ -66,13 +72,15 @@ fun ActorArtworkControls(
             DropdownMenuItem(
                 text = {
                     Text(
-                        if (binding ==
-                            null
-                        ) {
-                            "Attach artwork"
-                        } else {
-                            "Replace artwork"
-                        },
+                        stringResource(
+                            if (binding ==
+                                null
+                            ) {
+                                R.string.part_artwork_attach
+                            } else {
+                                R.string.part_artwork_replace
+                            },
+                        ),
                         style = MaterialTheme.typography.labelSmall,
                     )
                 },
@@ -83,7 +91,7 @@ fun ActorArtworkControls(
             )
             DropdownMenuItem(
                 text = {
-                    Text("Resize / align artwork", style = MaterialTheme.typography.labelSmall)
+                    Text(stringResource(R.string.part_artwork_resize), style = MaterialTheme.typography.labelSmall)
                 },
                 enabled =
                 binding != null,
@@ -96,7 +104,10 @@ fun ActorArtworkControls(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            "${if (binding.skin?.attachmentBlend == true) "✓ " else ""}Blend attachment",
+                            checkedLabel(
+                                stringResource(R.string.part_artwork_blend),
+                                checked = binding.skin?.attachmentBlend == true,
+                            ),
                             style = MaterialTheme.typography.labelSmall,
                         )
                     },
@@ -113,7 +124,9 @@ fun ActorArtworkControls(
                 )
             }
             DropdownMenuItem(
-                text = { Text("Move artwork", style = MaterialTheme.typography.labelSmall) },
+                text = {
+                    Text(stringResource(R.string.part_artwork_move), style = MaterialTheme.typography.labelSmall)
+                },
                 enabled =
                 bone.textureBinding != null,
                 onClick = {
@@ -123,7 +136,9 @@ fun ActorArtworkControls(
                 },
             )
             DropdownMenuItem(
-                text = { Text("Remove artwork", style = MaterialTheme.typography.labelSmall) },
+                text = {
+                    Text(stringResource(R.string.part_artwork_remove), style = MaterialTheme.typography.labelSmall)
+                },
                 enabled =
                 binding != null,
                 onClick = {
