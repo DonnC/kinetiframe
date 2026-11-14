@@ -28,6 +28,8 @@
     <string name="action_apply">Apply</string>
     <!-- Marks the selected option in a row of choices, such as "• Fill". -->
     <string name="choice_selected">• %1$s</string>
+    <!-- Marks a checked menu item, such as "✓ Default artwork". -->
+    <string name="choice_checked">✓ %1$s</string>
     <!-- A menu row that goes back up one level, naming the level, such as "‹ Add". -->
     <string name="menu_back_to">‹ %1$s</string>
     <string name="value_percent">%1$d%%</string>
@@ -398,6 +400,88 @@
     <string name="reference_lock_proportions">Lock proportions</string>
     <string name="reference_skew_handles">Skew side handles</string>
     <string name="reference_remove">Remove reference</string>
+
+    <!-- Actor Studio: rigging and performance -->
+    <string name="puppet_back">Back from Actor Studio</string>
+    <string name="puppet_performance">Performance</string>
+    <string name="puppet_edit_joints">Edit skeleton joints</string>
+    <string name="puppet_undo">Undo actor edit</string>
+    <string name="puppet_redo">Redo actor edit</string>
+    <string name="puppet_motion_presets">Motion presets</string>
+    <string name="puppet_hierarchy">Character hierarchy</string>
+    <string name="puppet_save_revision">Save actor revision</string>
+    <string name="puppet_save_performance">Save performance</string>
+    <string name="puppet_more_tools">More actor tools</string>
+    <string name="puppet_skeleton_overlay">Skeleton overlay</string>
+    <string name="puppet_fit_canvas">Fit puppet canvas</string>
+    <string name="studio_mode_rig">Rig Fabricator</string>
+    <string name="studio_mode_performance">Performance Stage</string>
+    <string name="actor_rename_title">Rename Actor</string>
+    <string name="take_record">Record movement</string>
+    <string name="take_armed_move_handle">Drag the move handle to start</string>
+    <string name="take_armed_move_part">Move a part to start</string>
+    <!-- Recording time so far, out of a 30-second limit. -->
+    <string name="take_recording_seconds">Recording · %1$.1fs / 30s</string>
+    <string name="take_review">Review take</string>
+    <string name="take_replay">Replay take</string>
+    <string name="take_smoothness">Recording smoothness</string>
+    <string name="take_smoothness_faithful">Faithful</string>
+    <string name="take_smoothness_gentle">Gentle</string>
+    <string name="take_smoothness_smooth">Smooth</string>
+    <string name="take_keep">Keep take</string>
+    <string name="take_retake">Retake movement</string>
+    <string name="take_move_character">Move whole character</string>
+    <string name="take_stop">Stop recording</string>
+    <string name="take_discard">Discard take</string>
+    <string name="motion_timing">Motion timing</string>
+    <string name="motion_timing_flow">Flow · continuous</string>
+    <string name="motion_timing_ease">Ease · pose to pose</string>
+    <string name="motion_timing_linear">Linear</string>
+    <string name="motion_timing_hold">Hold</string>
+    <!-- Current frame and how many pose keys the performance has. -->
+    <plurals name="pose_timeline_summary">
+        <item quantity="one">Frame %1$d · %2$d key</item>
+        <item quantity="other">Frame %1$d · %2$d keys</item>
+    </plurals>
+    <string name="pose_previous_key">Previous pose key</string>
+    <string name="pose_next_key">Next pose key</string>
+    <string name="pose_play_pause">Play or pause actor preview</string>
+    <string name="pose_record_key">Record pose key</string>
+    <string name="pose_delete_key">Delete pose key</string>
+    <string name="pose_delete_artwork_key">Delete artwork key</string>
+    <!-- A pose key's time in seconds. -->
+    <string name="key_strip_time">◆ %1$.2fs</string>
+    <string name="ruler_frame">Frame %1$d</string>
+    <string name="ruler_frame_pose_key">Frame %1$d, pose key</string>
+    <string name="ruler_frame_artwork_key">Frame %1$d, artwork key</string>
+    <string name="ruler_frame_interpolated">Frame %1$d, interpolated</string>
+    <plurals name="actor_placements_need_attention">
+        <item quantity="one">%d actor placement needs attention</item>
+        <item quantity="other">%d actor placements need attention</item>
+    </plurals>
+    <string name="part_artwork">Part artwork</string>
+    <string name="part_artwork_default">Default</string>
+    <string name="part_artwork_default_full">Default artwork</string>
+    <string name="part_artwork_edit">Edit part artwork</string>
+    <string name="part_artwork_attach">Attach artwork</string>
+    <string name="part_artwork_replace">Replace artwork</string>
+    <string name="part_artwork_resize">Resize / align artwork</string>
+    <string name="part_artwork_blend">Blend attachment</string>
+    <string name="part_artwork_move">Move artwork</string>
+    <string name="part_artwork_remove">Remove artwork</string>
+    <string name="part_move_artwork">Move part artwork</string>
+    <string name="part_move_joint">Move attachment joint</string>
+    <string name="part_attach_library_artwork">Attach library artwork</string>
+    <string name="part_stacking">Part stacking order</string>
+    <string name="part_bring_forward">Bring part forward</string>
+    <string name="part_send_backward">Send part backward</string>
+    <string name="part_rename">Rename part</string>
+    <string name="part_capture_sketch">Capture sketch artwork</string>
+    <string name="part_detach_artwork">Detach artwork</string>
+    <string name="parts_title">Parts</string>
+    <string name="parts_add_layer">Add layer</string>
+    <string name="parts_reference">Reference · temporary</string>
+    <string name="parts_manage_reference">Manage temporary reference</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>

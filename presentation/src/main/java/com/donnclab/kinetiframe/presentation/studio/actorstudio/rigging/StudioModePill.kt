@@ -10,11 +10,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Bone
 import com.composables.icons.lucide.Drama
 import com.composables.icons.lucide.Lucide
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioMode
 
 /**
@@ -36,12 +38,19 @@ fun StudioModePill(current: StudioMode, onSelect: (StudioMode) -> Unit, modifier
     val inPerformance = current == StudioMode.ANIMATE_IK
     Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceVariant, modifier = modifier) {
         Row(modifier = Modifier.padding(3.dp)) {
-            ModeSegment(Lucide.Bone, "Rig Fabricator", selected = !inPerformance, onClick = {
+            ModeSegment(Lucide.Bone, stringResource(R.string.studio_mode_rig), selected = !inPerformance, onClick = {
                 if (inPerformance) onSelect(StudioMode.RIG_SETUP)
             })
-            ModeSegment(Lucide.Drama, "Performance Stage", selected = inPerformance, onClick = {
-                if (!inPerformance) onSelect(StudioMode.ANIMATE_IK)
-            })
+            ModeSegment(
+                Lucide.Drama,
+                stringResource(
+                    R.string.studio_mode_performance,
+                ),
+                selected = inPerformance,
+                onClick = {
+                    if (!inPerformance) onSelect(StudioMode.ANIMATE_IK)
+                },
+            )
         }
     }
 }

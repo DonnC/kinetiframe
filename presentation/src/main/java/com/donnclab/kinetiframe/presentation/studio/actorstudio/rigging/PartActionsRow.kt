@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Bone
@@ -31,6 +32,7 @@ import com.composables.icons.lucide.Scissors
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ActorNameDialog
 import com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton
 import com.donnclab.kinetiframe.studio.ActorEditTarget
@@ -62,7 +64,7 @@ fun PartActionsRow(
             if (setup && bone.textureBinding != null) {
                 ActorToolButton(
                     Lucide.Move,
-                    "Move part artwork",
+                    stringResource(R.string.part_move_artwork),
                     selected = editTarget == ActorEditTarget.ARTWORK,
                 ) {
                     onIntent(StudioIntent.Actor.SetEditTarget(ActorEditTarget.ARTWORK))
@@ -70,7 +72,7 @@ fun PartActionsRow(
             }
             ActorToolButton(
                 Lucide.Bone,
-                "Move attachment joint",
+                stringResource(R.string.part_move_joint),
                 enabled = setup,
                 selected = editTarget == ActorEditTarget.JOINT_START,
             ) {
@@ -85,7 +87,7 @@ fun PartActionsRow(
                     IconButton(onClick = choose, enabled = setup) {
                         Icon(
                             Icons.Default.Collections,
-                            "Attach library artwork",
+                            stringResource(R.string.part_attach_library_artwork),
                             modifier = Modifier.size(18.dp),
                         )
                     }
@@ -95,14 +97,14 @@ fun PartActionsRow(
             Box {
                 IconButton(onClick = {
                     stackMenu = true
-                }) { Icon(Lucide.Layers, "Part stacking order", modifier = Modifier.size(18.dp)) }
+                }) { Icon(Lucide.Layers, stringResource(R.string.part_stacking), modifier = Modifier.size(18.dp)) }
                 DropdownMenu(stackMenu, onDismissRequest = { stackMenu = false }) {
-                    DropdownMenuItem(text = { Text("Bring part forward") }, onClick = {
+                    DropdownMenuItem(text = { Text(stringResource(R.string.part_bring_forward)) }, onClick = {
                         onIntent(StudioIntent.Actor.MovePart(bone.id, true))
                         stackMenu =
                             false
                     })
-                    DropdownMenuItem(text = { Text("Send part backward") }, onClick = {
+                    DropdownMenuItem(text = { Text(stringResource(R.string.part_send_backward)) }, onClick = {
                         onIntent(StudioIntent.Actor.MovePart(bone.id, false))
                         stackMenu =
                             false
@@ -112,7 +114,7 @@ fun PartActionsRow(
             IconButton(onClick = { rename = true }, enabled = setup) {
                 Icon(
                     Lucide.Pen,
-                    "Rename part",
+                    stringResource(R.string.part_rename),
                     tint = if (setup) ActorStudioTokens.accent else ActorStudioTokens.onPanelMuted,
                     modifier = Modifier.size(16.dp),
                 )
@@ -123,7 +125,7 @@ fun PartActionsRow(
                 IconButton(onClick = { onIntent(StudioIntent.Draw.SelectTool(DrawingTool.LASSO_CUT)) }) {
                     Icon(
                         Lucide.Scissors,
-                        "Capture sketch artwork",
+                        stringResource(R.string.part_capture_sketch),
                         tint = ActorStudioTokens.accent,
                         modifier = Modifier.size(16.dp),
                     )
@@ -133,7 +135,7 @@ fun PartActionsRow(
                 IconButton(onClick = { onIntent(StudioIntent.Actor.Unbind) }) {
                     Icon(
                         Lucide.Link2Off,
-                        "Detach artwork",
+                        stringResource(R.string.part_detach_artwork),
                         tint = ActorStudioTokens.accent,
                         modifier = Modifier.size(16.dp),
                     )
@@ -142,7 +144,7 @@ fun PartActionsRow(
         }
     }
     if (rename) {
-        ActorNameDialog(bone.name, "Rename part", { rename = false }) { name ->
+        ActorNameDialog(bone.name, stringResource(R.string.part_rename), { rename = false }) { name ->
             onIntent(StudioIntent.Actor.RenameBone(name))
             rename = false
         }

@@ -20,10 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
 import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.render.completedPreviewFrames
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -117,7 +119,7 @@ private fun ProjectActorRenderWarning(diagnostics: List<ActorFrameRenderer.Diagn
             ) {
                 diagnostics.first().message
             } else {
-                "${diagnostics.size} actor placements need attention"
+                pluralStringResource(R.plurals.actor_placements_need_attention, diagnostics.size, diagnostics.size)
             },
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
             color = MaterialTheme.colorScheme.onErrorContainer,

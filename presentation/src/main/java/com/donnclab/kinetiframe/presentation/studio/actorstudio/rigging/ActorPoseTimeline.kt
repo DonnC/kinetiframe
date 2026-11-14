@@ -22,6 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
@@ -29,6 +31,7 @@ import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.rigging.ActorContactMenu
 import com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton
 import com.donnclab.kinetiframe.presentation.actors.rigging.PerformanceDurationMenu
@@ -87,7 +90,12 @@ fun ActorPoseTimeline(
                 PerformanceTakeControls(state, onIntent)
                 if (!taking) {
                     Text(
-                        "Frame ${frame + 1} · ${rulerKeys.size} keys",
+                        pluralStringResource(
+                            R.plurals.pose_timeline_summary,
+                            rulerKeys.size,
+                            frame + 1,
+                            rulerKeys.size,
+                        ),
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.widthIn(min = 84.dp).padding(end = 6.dp),
                         maxLines = 1,
@@ -102,15 +110,19 @@ fun ActorPoseTimeline(
                     }
                     val previous = rulerKeys.lastOrNull { it.timeMicros < state.actor.previewTimeMicros }
                     val next = rulerKeys.firstOrNull { it.timeMicros > state.actor.previewTimeMicros }
-                    ActorToolButton(Icons.Default.SkipPrevious, "Previous pose key", previous != null) {
+                    ActorToolButton(
+                        Icons.Default.SkipPrevious,
+                        stringResource(R.string.pose_previous_key),
+                        previous != null,
+                    ) {
                         previous?.let { onIntent(StudioIntent.ActorMotion.Scrub(it.timeMicros)) }
                     }
-                    ActorToolButton(Icons.Default.SkipNext, "Next pose key", next != null) {
+                    ActorToolButton(Icons.Default.SkipNext, stringResource(R.string.pose_next_key), next != null) {
                         next?.let { onIntent(StudioIntent.ActorMotion.Scrub(it.timeMicros)) }
                     }
                     ActorToolButton(
                         if (state.actor.previewPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                        "Play or pause actor preview",
+                        stringResource(R.string.pose_play_pause),
                         rulerKeys.isNotEmpty() || !state.activeActor()?.rotationCurves.isNullOrEmpty() || hasPreset,
                     ) {
                         onIntent(StudioIntent.ActorMotion.TogglePlayback)
@@ -132,18 +144,18 @@ fun ActorPoseTimeline(
                     ) {
                         onIntent(StudioIntent.ActorMotion.ToggleContact)
                     }
-                    ActorToolButton(Icons.Default.Add, "Record pose key", !hasPreset) {
+                    ActorToolButton(Icons.Default.Add, stringResource(R.string.pose_record_key), !hasPreset) {
                         onIntent(StudioIntent.ActorMotion.RecordKey)
                     }
                     ActorToolButton(
                         Icons.Default.DeleteOutline,
-                        "Delete pose key",
+                        stringResource(R.string.pose_delete_key),
                         !hasPreset && keys.any { it.timeMicros == state.actor.previewTimeMicros },
                     ) {
                         onIntent(StudioIntent.ActorMotion.DeleteKey)
                     }
                     if (artworkKeys.any { it.timeMicros == state.actor.previewTimeMicros }) {
-                        ActorToolButton(Icons.Default.DeleteOutline, "Delete artwork key") {
+                        ActorToolButton(Icons.Default.DeleteOutline, stringResource(R.string.pose_delete_artwork_key)) {
                             onIntent(StudioIntent.ActorMotion.DeleteArtworkKey)
                         }
                     }

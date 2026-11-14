@@ -10,3 +10,9 @@ import com.donnclab.kinetiframe.presentation.R
 @ReadOnlyComposable
 fun choiceLabel(label: String, selected: Boolean): String =
     if (selected) stringResource(R.string.choice_selected, label) else label
+
+/** A menu item's [label], marked with a check when it is [checked]. */
+@Composable
+@ReadOnlyComposable
+fun checkedLabel(label: String, checked: Boolean): String =
+    if (checked) stringResource(R.string.choice_checked, label) else label
