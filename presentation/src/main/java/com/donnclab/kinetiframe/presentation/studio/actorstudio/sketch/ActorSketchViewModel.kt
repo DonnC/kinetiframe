@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
+import androidx.annotation.StringRes
 import androidx.core.graphics.createBitmap
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.actors.rig.math.ActorDrawingBinder
@@ -20,11 +21,13 @@ import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.document.BrushId
 import com.donnclab.kinetiframe.core.document.BrushSnapshot
 import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchEffect
 import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchIntent
 import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchState
 import com.donnclab.kinetiframe.presentation.actors.sketch.SketchLayer
 import com.donnclab.kinetiframe.presentation.actors.sketch.SketchTool
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.studio.drawing.BrushRenderers
 import com.donnclab.kinetiframe.studio.drawing.SketchColourFill
 import com.donnclab.kinetiframe.ui.BaseViewModel
@@ -149,10 +152,12 @@ class ActorSketchViewModel(
 
             is ActorSketchIntent.BindRegion -> {
                 val part = currentState.bindingPartId ?: return
-                if (currentState.regions.size >=
-                    32
-                ) {
-                    sendEffect(ActorSketchEffect.Error("This drawing already has 32 binding corrections"))
+                if (currentState.regions.size >= MAX_BINDING_REGIONS) {
+                    sendEffect(
+                        ActorSketchEffect.Error(
+                            UiText.Plural(R.plurals.sketch_binding_limit, MAX_BINDING_REGIONS),
+                        ),
+                    )
                     return
                 }
                 val points = intent.outline.filter {
@@ -251,7 +256,7 @@ class ActorSketchViewModel(
                 failure: Exception,
             ) {
                 updateState { it.copy(busy = false) }
-                sendEffect(ActorSketchEffect.Error(failure.message ?: "Could not edit drawing"))
+                sendEffect(ActorSketchEffect.Error(failure.toUiText(R.string.sketch_edit_failed)))
             }
         }
     }
@@ -301,9 +306,7 @@ class ActorSketchViewModel(
                         }
                         return false
                     }
-                    require(hasArtwork(snapshot.ink) || hasArtwork(snapshot.colour)) {
-                        "Draw your character before making it movable"
-                    }
+                    if (!hasArtwork(snapshot.ink) && !hasArtwork(snapshot.colour)) return@withContext null
                     val rest = com.donnclab.kinetiframe.actors.rig.math.ArtworkSkinRestBinding.rebase(
                         snapshot.graph,
                     )
@@ -326,7 +329,7 @@ class ActorSketchViewModel(
                         rest,
                     )
                 }
-                sendEffect(result)
+                sendEffect(result ?: ActorSketchEffect.Error(UiText.Resource(R.string.sketch_empty)))
                 updateState { it.copy(busy = false) }
             } catch (
                 cancel: CancellationException,
@@ -336,8 +339,16 @@ class ActorSketchViewModel(
                 failure: Exception,
             ) {
                 updateState { it.copy(busy = false) }
-                sendEffect(ActorSketchEffect.Error(failure.message ?: "Could not bind sketch"))
+                sendEffect(ActorSketchEffect.Error(failure.toUiText(R.string.sketch_bind_failed)))
             }
         }
+    }
+
+    private fun Exception.toUiText(@StringRes fallback: Int): UiText =
+        message?.let(UiText::Verbatim) ?: UiText.Resource(fallback)
+
+    private companion object {
+        /** The most binding corrections one drawing can hold. */
+        const val MAX_BINDING_REGIONS = 32
     }
 }

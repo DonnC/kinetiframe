@@ -8,6 +8,7 @@ import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawingRegion
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingPoint
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.document.TouchPoint
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
 import com.donnclab.kinetiframe.ui.ViewState
@@ -46,7 +47,7 @@ sealed interface ActorSketchIntent : ViewIntent {
     data object Bind : ActorSketchIntent
 }
 sealed interface ActorSketchEffect : ViewEffect {
-    data class Error(val message: String) : ActorSketchEffect
+    data class Error(val message: UiText) : ActorSketchEffect
     data class Bound(val ink: Bitmap, val colour: Bitmap, val drawing: ActorDrawing, val restGraph: SceneGraph) :
         ActorSketchEffect
 }

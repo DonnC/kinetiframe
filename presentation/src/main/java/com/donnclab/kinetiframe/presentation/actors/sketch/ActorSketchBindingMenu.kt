@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.Lasso
 import com.composables.icons.lucide.ListTree
@@ -21,6 +22,7 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Text
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.presentation.R
 
 /** Choose a named part, then lasso its artwork. Reset is local to that part and undoable. */
 @Composable
@@ -30,13 +32,15 @@ fun ActorSketchBindingMenu(state: ActorSketchState, graph: SceneGraph, onIntent:
         IconButton({ open = true }, enabled = !state.busy) {
             Icon(
                 if (state.tool == SketchTool.JOINT) Lucide.ListTree else Lucide.Lasso,
-                if (state.tool ==
-                    SketchTool.JOINT
-                ) {
-                    "Select drawing joint"
-                } else {
-                    "Correct drawing binding"
-                },
+                stringResource(
+                    if (state.tool ==
+                        SketchTool.JOINT
+                    ) {
+                        R.string.sketch_select_joint
+                    } else {
+                        R.string.sketch_correct_binding
+                    },
+                ),
                 tint = if (state.tool ==
                     SketchTool.BIND_REGION
                 ) {
@@ -57,7 +61,9 @@ fun ActorSketchBindingMenu(state: ActorSketchState, graph: SceneGraph, onIntent:
             state.bindingPartId?.let { part ->
                 if (state.regions.any { it.boneId == part }) {
                     HorizontalDivider()
-                    DropdownMenuItem(text = { Text("Reset ${graph.bones[part]?.name ?: part} binding") }, onClick = {
+                    DropdownMenuItem(text = {
+                        Text(stringResource(R.string.sketch_reset_binding, graph.bones[part]?.name ?: part))
+                    }, onClick = {
                         onIntent(ActorSketchIntent.ClearRegions(part))
                         open = false
                     })

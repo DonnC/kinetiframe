@@ -13,14 +13,15 @@ Keep this page current:
 
 ## Now
 
-**Strings to resources, part 7: Actor Studio's rigging tools.** The top bar, mode switch, take
-recording, pose timeline and frame ruler, motion timing, part actions and part list, and the part
-artwork menus take their text from string resources. Key and placement counts are plurals, and
-`checkedLabel` marks a checked menu item.
+**Strings to resources, part 8: Actor Studio's sketch tools.** The sketch editor, its tool
+rail and layer rail, the binding menu, the drawing mode button and the sketch artwork controls
+take their text from string resources. The sketch ViewModel reports errors as `UiText`, and an
+empty drawing is an explicit message instead of a `require` failure.
 
 ## Next
 
-**Strings, part 8: Actor Studio's sketch tools**, then the library and the tool dock. The
+**Strings, part 9: the library**, then the rest of `presentation.actors`, the tool dock and the
+editor dialogs. The
 projects, actors and packs ViewModels' `ShowError` effects, and every `StoreResult.Failure`,
 still carry English from the layers below. They move with the **Typed errors** track, through
 `UiText.Verbatim` until then.
@@ -29,7 +30,7 @@ still carry English from the layers below. They move with the **Typed errors** t
 
 Tracks that run alongside the module work, a screen or feature at a time:
 
-- **Strings to resources.** 137 inline text values in 52 files, plus messages assigned to state
+- **Strings to resources.** 124 inline text values in 49 files, plus messages assigned to state
   that the check doesn't count. Then right-to-left layouts, per-app language and a pseudo-locale
   check.
 - **Built-in camera presets.** `CameraRecipes.builtIn` in `studio` names its five presets in
@@ -187,6 +188,7 @@ fixed after the module work, unless one blocks testing.
 | #61 | Moved the timeline dialogs' text into string resources (strings, part 4) |
 | #62 | Moved the rest of the timeline's text into string resources (strings, part 5) |
 | #63 | Moved the Actor Studio screen's text into string resources (strings, part 6) |
+| #64 | Moved Actor Studio's rigging tools' text into string resources (strings, part 7) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -241,7 +243,7 @@ From `.architecture/` during step 9. Each count may only go down.
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 0 | â€” |
 | Functions over the parameter limit | 52 | â€” |
-| Inline text values | 137 | 52 |
+| Inline text values | 124 | 49 |
 | Inline colours | 64 | 24 |
 | Inline `.dp` sizes | 806 | 132 |
 | Files over 500 lines | 0 | â€” |

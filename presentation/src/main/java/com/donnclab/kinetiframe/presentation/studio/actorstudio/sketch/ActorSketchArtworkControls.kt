@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import com.composables.icons.lucide.Box
 import com.composables.icons.lucide.Eye
 import com.composables.icons.lucide.EyeOff
@@ -19,6 +20,8 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Move
 import com.composables.icons.lucide.Text
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.checkedLabel
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.ActorArtworkControls
 import com.donnclab.kinetiframe.studio.ActorEditTarget
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -40,19 +43,23 @@ fun ActorSketchArtworkControls(
     ) {
         Icon(
             if (enabled) Lucide.Eye else Lucide.EyeOff,
-            if (enabled) "Hide attached artwork" else "Show attached artwork",
+            stringResource(if (enabled) R.string.sketch_hide_artwork else R.string.sketch_show_artwork),
         )
     }
     if (enabled) {
         androidx.compose.foundation.layout.Box {
-            IconButton({ layerMenu = true }) { Icon(Lucide.Layers, "Artwork above or behind sketch") }
+            IconButton({ layerMenu = true }) { Icon(Lucide.Layers, stringResource(R.string.sketch_artwork_layering)) }
             DropdownMenu(layerMenu, { layerMenu = false }) {
-                DropdownMenuItem(text = { Text("${if (!behind) "✓ " else ""}Above sketch") }, onClick = {
+                DropdownMenuItem(text = {
+                    Text(checkedLabel(stringResource(R.string.sketch_artwork_above), checked = !behind))
+                }, onClick = {
                     onIntent(StudioIntent.Actor.SetDrawingOverlay(bone.id, true))
                     layerMenu =
                         false
                 })
-                DropdownMenuItem(text = { Text("${if (behind) "✓ " else ""}Behind sketch") }, onClick = {
+                DropdownMenuItem(text = {
+                    Text(checkedLabel(stringResource(R.string.sketch_artwork_behind), checked = behind))
+                }, onClick = {
                     onIntent(StudioIntent.Actor.SetDrawingOverlay(bone.id, true, true))
                     layerMenu =
                         false
@@ -64,7 +71,7 @@ fun ActorSketchArtworkControls(
         bone.textureBinding != null
     ) {
         IconButton({ onIntent(StudioIntent.Actor.SetEditTarget(ActorEditTarget.ARTWORK)) }) {
-            Icon(Lucide.Move, "Move artwork above sketch")
+            Icon(Lucide.Move, stringResource(R.string.sketch_move_artwork))
         }
     }
     ActorArtworkControls(bone, onIntent, onAttach, onEdit)
