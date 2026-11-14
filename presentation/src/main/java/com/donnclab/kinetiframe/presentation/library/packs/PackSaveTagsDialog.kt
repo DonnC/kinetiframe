@@ -19,9 +19,11 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.library.model.PackFrameTag
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
@@ -42,7 +44,7 @@ fun PackSaveTagsDialog(
     }
     var selected by remember { mutableIntStateOf(currentFrame.coerceIn(0, totalFrames - 1)) }
     val tag = draft.getValue(selected)
-    AlertDialog(onDismissRequest = onDismiss, title = { Text("Save pack") }, text = {
+    AlertDialog(onDismissRequest = onDismiss, title = { Text(stringResource(R.string.pack_save)) }, text = {
         Column(
             Modifier.heightIn(max = 240.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -58,7 +60,7 @@ fun PackSaveTagsDialog(
                     draft[selected] =
                         tag.copy(name = it.take(com.donnclab.kinetiframe.library.model.PackItemEntry.MAX_NAME_LENGTH))
                 },
-                label = { Text("Item name") },
+                label = { Text(stringResource(R.string.pack_item_name)) },
                 singleLine = true,
             )
             CompactTextField(
@@ -71,7 +73,7 @@ fun PackSaveTagsDialog(
                             ),
                         )
                 },
-                label = { Text("Description (optional)") },
+                label = { Text(stringResource(R.string.pack_item_description)) },
                 singleLine = true,
             )
         }
@@ -79,12 +81,14 @@ fun PackSaveTagsDialog(
         ContextIconButton(
             ContextIconAction(
                 Icons.Default.Save,
-                "Save pack",
+                stringResource(R.string.pack_save),
                 { onSave(draft.toMap()) },
                 enabled = draft.values.all { it.isValid },
             ),
         )
-    }, dismissButton = { ContextIconButton(ContextIconAction(Icons.Default.Close, "Cancel", onDismiss)) })
+    }, dismissButton = {
+        ContextIconButton(ContextIconAction(Icons.Default.Close, stringResource(R.string.action_cancel), onDismiss))
+    })
 }
 
 @Preview

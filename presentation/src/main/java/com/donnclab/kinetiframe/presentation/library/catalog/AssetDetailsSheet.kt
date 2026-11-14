@@ -48,7 +48,7 @@ fun AssetDetailsSheet(
     ) {
         if (details.kind == AssetKind.AUDIO) {
             details.audioPath?.let { com.donnclab.kinetiframe.presentation.media.audio.AudioPreview(it) }
-                ?: Text("Audio file is unavailable", color = MaterialTheme.colorScheme.error)
+                ?: Text(stringResource(R.string.library_audio_unavailable), color = MaterialTheme.colorScheme.error)
         } else {
             AssetPreviewArea(details)
         }

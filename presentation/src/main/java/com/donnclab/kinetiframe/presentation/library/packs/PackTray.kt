@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.ChevronDown
@@ -49,6 +50,7 @@ import com.composables.icons.lucide.GripHorizontal
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.library.model.PackTrayItem
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.studio.dock.dockContainer
 import com.donnclab.kinetiframe.presentation.studio.dock.dockDragHandle
 import com.donnclab.kinetiframe.presentation.studio.dock.dockSurface
@@ -108,7 +110,11 @@ fun PackTray(
                         .padding(horizontal = 10.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(Lucide.GripHorizontal, contentDescription = "Move pack tray", modifier = Modifier.size(16.dp))
+                    Icon(
+                        Lucide.GripHorizontal,
+                        contentDescription = stringResource(R.string.pack_tray_move),
+                        modifier = Modifier.size(16.dp),
+                    )
                     Spacer(Modifier.width(6.dp))
                     Text(
                         packName,
@@ -120,12 +126,18 @@ fun PackTray(
                     IconButton(onClick = { minimized = !minimized }, modifier = Modifier.size(28.dp)) {
                         Icon(
                             if (minimized) Lucide.ChevronRight else Lucide.ChevronDown,
-                            contentDescription = if (minimized) "Expand pack" else "Minimize pack",
+                            contentDescription = stringResource(
+                                if (minimized) R.string.pack_tray_expand else R.string.pack_tray_minimize,
+                            ),
                             modifier = Modifier.size(16.dp),
                         )
                     }
                     IconButton(onClick = onDismiss, modifier = Modifier.size(28.dp)) {
-                        Icon(Lucide.X, contentDescription = "Close pack", modifier = Modifier.size(16.dp))
+                        Icon(
+                            Lucide.X,
+                            contentDescription = stringResource(R.string.pack_tray_close),
+                            modifier = Modifier.size(16.dp),
+                        )
                     }
                 }
                 if (!minimized) {
@@ -143,7 +155,7 @@ fun PackTray(
                             )
 
                             items.isEmpty() -> Text(
-                                "This pack has no drawings.",
+                                stringResource(R.string.pack_no_drawings),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )

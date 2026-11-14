@@ -13,9 +13,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.library.model.PackFrameTag
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
@@ -27,26 +29,28 @@ fun PackItemDialog(initial: PackFrameTag, creating: Boolean, onDismiss: () -> Un
     var description by remember(initial) { mutableStateOf(initial.description) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (creating) "New item" else "Edit item") },
+        title = { Text(stringResource(if (creating) R.string.pack_item_new else R.string.pack_item_edit)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 CompactTextField(name, {
                     name = it.take(com.donnclab.kinetiframe.library.model.PackItemEntry.MAX_NAME_LENGTH)
-                }, label = { Text("Name") }, singleLine = true)
+                }, label = { Text(stringResource(R.string.pack_item_name_short)) }, singleLine = true)
                 CompactTextField(description, {
                     description =
                         it.take(com.donnclab.kinetiframe.library.model.PackItemEntry.MAX_DESCRIPTION_LENGTH)
-                }, label = { Text("Description (optional)") }, singleLine = true)
+                }, label = { Text(stringResource(R.string.pack_item_description)) }, singleLine = true)
             }
         },
         confirmButton = {
             ContextIconButton(
-                ContextIconAction(Icons.Default.Check, "Confirm item", {
+                ContextIconAction(Icons.Default.Check, stringResource(R.string.pack_item_confirm), {
                     onSave(PackFrameTag(name.trim(), description.trim()))
                 }, enabled = PackFrameTag(name, description).isValid),
             )
         },
-        dismissButton = { ContextIconButton(ContextIconAction(Icons.Default.Close, "Cancel", onDismiss)) },
+        dismissButton = {
+            ContextIconButton(ContextIconAction(Icons.Default.Close, stringResource(R.string.action_cancel), onDismiss))
+        },
     )
 }
 

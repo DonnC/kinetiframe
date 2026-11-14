@@ -32,6 +32,9 @@ fun UiText.asString(): String = when (this) {
     is UiText.Verbatim -> text
 }
 
+/** A failure's own message, or [fallback] when it has none. */
+fun Throwable.toUiText(@StringRes fallback: Int): UiText = message?.let(UiText::Verbatim) ?: UiText.Resource(fallback)
+
 /** For effects handled outside composition, such as a snackbar shown from a LaunchedEffect. */
 fun UiText.asString(resources: Resources): String = when (this) {
     is UiText.Resource -> resources.getString(id, *args.toTypedArray())

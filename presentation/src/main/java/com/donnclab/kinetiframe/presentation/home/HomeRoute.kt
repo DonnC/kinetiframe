@@ -124,7 +124,7 @@ fun HomeRoute(
     LaunchedEffect(packModel) {
         packModel.effect.collect { effect ->
             when (effect) {
-                is PacksTabEffect.ShowError -> snackbar.showSnackbar(effect.message)
+                is PacksTabEffect.ShowError -> snackbar.showSnackbar(effect.message.asString(resources))
             }
         }
     }

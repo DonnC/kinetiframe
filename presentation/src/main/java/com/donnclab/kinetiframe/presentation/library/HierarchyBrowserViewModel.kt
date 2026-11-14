@@ -6,6 +6,9 @@ import com.donnclab.kinetiframe.library.model.AssetOrganization
 import com.donnclab.kinetiframe.library.model.BrowseMode
 import com.donnclab.kinetiframe.library.model.BrowserPosition
 import com.donnclab.kinetiframe.library.model.LibraryOrganization
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
@@ -19,7 +22,7 @@ import kotlinx.coroutines.withContext
 
 data class HierarchyBrowserState(
     val organization: LibraryOrganization = LibraryOrganization(),
-    val error: String? = null,
+    val error: UiText? = null,
 ) : ViewState
 sealed interface HierarchyBrowserIntent : ViewIntent {
     data class Organise(val key: String, val item: AssetOrganization) : HierarchyBrowserIntent
@@ -69,7 +72,7 @@ class HierarchyBrowserViewModel(
                     updateState {
                         it.copy(
                             error =
-                            error.message ?: "Organisation could not be saved",
+                            error.toUiText(R.string.library_organisation_save_failed),
                         )
                     }
                 }

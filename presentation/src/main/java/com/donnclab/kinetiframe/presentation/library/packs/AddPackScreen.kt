@@ -20,8 +20,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AddFlowBottomBar
 import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
@@ -38,13 +40,13 @@ import com.donnclab.kinetiframe.presentation.studio.dialogs.SelectionDot
 fun AddPackScreen(state: AddPackFormState, callbacks: AddPackCallbacks, modifier: Modifier = Modifier) {
     Scaffold(
         modifier = modifier,
-        topBar = { AddFlowTopBar(title = "New Pack", onBack = callbacks.onBack) },
+        topBar = { AddFlowTopBar(title = stringResource(R.string.pack_new_title), onBack = callbacks.onBack) },
         bottomBar = {
             AddFlowBottomBar(
-                buttonLabel = "Create Pack",
+                buttonLabel = stringResource(R.string.pack_create),
                 enabled = state.name.isNotBlank(),
                 onClick = callbacks.onCreate,
-                subtitle = "${state.dimension} × ${state.dimension}",
+                subtitle = stringResource(R.string.pack_size_square, state.dimension),
             )
         },
     ) { padding ->
@@ -54,12 +56,12 @@ fun AddPackScreen(state: AddPackFormState, callbacks: AddPackCallbacks, modifier
             CompactTextField(
                 value = state.name,
                 onValueChange = callbacks.onNameChange,
-                label = { Text("Pack name") },
+                label = { Text(stringResource(R.string.pack_name)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
             )
             Text(
-                "Pack canvas size",
+                stringResource(R.string.pack_canvas_size),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
@@ -68,7 +70,7 @@ fun AddPackScreen(state: AddPackFormState, callbacks: AddPackCallbacks, modifier
                 PACK_SIZES.forEach { (size, tag) ->
                     PackSizeCard(
                         size = size,
-                        tag = tag,
+                        tag = stringResource(tag),
                         selected = size == state.dimension,
                         onClick = { callbacks.onDimensionChange(size) },
                         modifier = Modifier.weight(1f),
@@ -81,7 +83,8 @@ fun AddPackScreen(state: AddPackFormState, callbacks: AddPackCallbacks, modifier
 }
 
 /** The three square sizes New Pack offers, each paired with its S/M/L shorthand. */
-private val PACK_SIZES = listOf(512 to "S", 768 to "M", 1024 to "L")
+private val PACK_SIZES =
+    listOf(512 to R.string.pack_size_small, 768 to R.string.pack_size_medium, 1024 to R.string.pack_size_large)
 
 /** One selectable square-size option: its S/M/L shorthand, its exact pixel size, and a
  *  [SelectionDot]. */
@@ -108,7 +111,7 @@ private fun PackSizeCard(
             Spacer(Modifier.height(12.dp))
             Text(tag, style = MaterialTheme.typography.headlineSmall)
             Text(
-                "$size × $size",
+                stringResource(R.string.pack_size_square, size),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

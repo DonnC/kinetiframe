@@ -13,26 +13,30 @@ Keep this page current:
 
 ## Now
 
-**Strings to resources, part 8: Actor Studio's sketch tools.** The sketch editor, its tool
-rail and layer rail, the binding menu, the drawing mode button and the sketch artwork controls
-take their text from string resources. The sketch ViewModel reports errors as `UiText`, and an
-empty drawing is an explicit message instead of a `require` failure.
+**Strings to resources, part 9: the library.** The Library screen, the library picker and save
+dialogs, the pack screens, dialogs and tray, and the collection filters take their text from
+string resources. The library, packs and organisation ViewModels report messages and errors as
+`UiText`.
 
 ## Next
 
-**Strings, part 9: the library**, then the rest of `presentation.actors`, the tool dock and the
-editor dialogs. The
-projects, actors and packs ViewModels' `ShowError` effects, and every `StoreResult.Failure`,
-still carry English from the layers below. They move with the **Typed errors** track, through
-`UiText.Verbatim` until then.
+**Strings, part 10: the rest of `presentation.actors`**, then the tool dock, the editor dialogs,
+the canvas and media. The projects and actors ViewModels' `ShowError` effects, and every
+`StoreResult.Failure`, still carry English from the layers below. They move with the **Typed
+errors** track, through `UiText.Verbatim` until then.
 
 ## Later
 
 Tracks that run alongside the module work, a screen or feature at a time:
 
-- **Strings to resources.** 124 inline text values in 49 files, plus messages assigned to state
+- **Strings to resources.** 83 inline text values in 32 files, plus messages assigned to state
   that the check doesn't count. Then right-to-left layouts, per-app language and a pseudo-locale
   check.
+- **Library labels.** `AssetCategory` and `BrowseMode` in `studio`'s library model carry
+  English labels that the filters show, and `LocalLibraryCatalog` builds item info lines
+  ("12 FPS · 1080×1920", "Personal Library") in English. Map the enums to string resources in
+  `presentation` and build the info lines where they're shown, without changing the saved enum
+  names.
 - **Built-in camera presets.** `CameraRecipes.builtIn` in `studio` names its five presets in
   English ("Dramatic reveal" and so on), and saved presets share the same `CameraRecipe.name`
   field. Give built-in presets an ID the screen names from resources, without changing how saved
@@ -189,6 +193,7 @@ fixed after the module work, unless one blocks testing.
 | #62 | Moved the rest of the timeline's text into string resources (strings, part 5) |
 | #63 | Moved the Actor Studio screen's text into string resources (strings, part 6) |
 | #64 | Moved Actor Studio's rigging tools' text into string resources (strings, part 7) |
+| #65 | Moved Actor Studio's sketch tools' text into string resources (strings, part 8) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -243,7 +248,7 @@ From `.architecture/` during step 9. Each count may only go down.
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 0 | â€” |
 | Functions over the parameter limit | 52 | â€” |
-| Inline text values | 124 | 49 |
+| Inline text values | 83 | 32 |
 | Inline colours | 64 | 24 |
 | Inline `.dp` sizes | 806 | 132 |
 | Files over 500 lines | 0 | â€” |

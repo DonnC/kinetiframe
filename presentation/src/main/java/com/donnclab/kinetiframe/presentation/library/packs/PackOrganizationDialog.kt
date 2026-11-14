@@ -18,11 +18,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.model.AssetCategory
 import com.donnclab.kinetiframe.library.model.AssetOrganization
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 @Composable
@@ -38,16 +40,16 @@ fun PackOrganizationDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text("Organise", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.action_organise), style = MaterialTheme.typography.titleMedium)
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 CompactTextField(displayName, {
                     displayName = it.take(60)
-                }, singleLine = true, label = { Text("Library name") })
+                }, singleLine = true, label = { Text(stringResource(R.string.library_item_name)) })
                 CompactTextField(collection, {
                     collection = it.take(60)
-                }, singleLine = true, label = { Text("Collection") })
+                }, singleLine = true, label = { Text(stringResource(R.string.library_collection)) })
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     items(AssetCategory.entries) { value ->
                         FilterChip(
@@ -72,10 +74,12 @@ fun PackOrganizationDialog(
                     )
                 },
             ) {
-                Icon(Icons.Default.Check, "Save organisation")
+                Icon(Icons.Default.Check, stringResource(R.string.library_organisation_save))
             }
         },
-        dismissButton = { IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, "Cancel") } },
+        dismissButton = {
+            IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, stringResource(R.string.action_cancel)) }
+        },
     )
 }
 

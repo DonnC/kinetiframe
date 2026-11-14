@@ -29,6 +29,7 @@ import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerState
 import com.donnclab.kinetiframe.presentation.actors.ActorNameDialog
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.library.CollectionAssignmentDialog
 import com.donnclab.kinetiframe.presentation.library.CollectionBrowserControls
 import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserIndex
@@ -73,7 +74,7 @@ internal fun ProjectsTabContent(
             }, organization),
             { onHierarchyIntent(HierarchyBrowserIntent.Browse("projects", it)) },
         )
-        hierarchy.error?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
+        hierarchy.error?.let { Text(it.asString(), style = MaterialTheme.typography.labelSmall) }
         Box(Modifier.weight(1f)) {
             val error = state.error
             when {
@@ -193,7 +194,7 @@ internal fun ActorsTabContent(
             }, organization),
             { onHierarchyIntent(HierarchyBrowserIntent.Browse("actors", it)) },
         )
-        hierarchy.error?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
+        hierarchy.error?.let { Text(it.asString(), style = MaterialTheme.typography.labelSmall) }
         Box(Modifier.weight(1f)) {
             when {
                 state.loading -> LoadingBox()

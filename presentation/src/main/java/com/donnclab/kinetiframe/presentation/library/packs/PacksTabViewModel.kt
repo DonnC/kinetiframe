@@ -8,6 +8,9 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.model.PackItemEntry
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -96,7 +99,7 @@ class PacksTabViewModel(
             ) {
                 throw cancelled
             } catch (error: Exception) {
-                sendEffect(PacksTabEffect.ShowError(error.message ?: "Could not save organisation"))
+                sendEffect(PacksTabEffect.ShowError(error.toUiText(R.string.library_organisation_save_failed)))
             } finally {
                 mutations.unlock()
             }
@@ -156,7 +159,9 @@ class PacksTabViewModel(
                         }
                     }
 
-                    is StoreResult.Failure -> updateState { it.copy(loading = false, error = result.message) }
+                    is StoreResult.Failure -> updateState {
+                        it.copy(loading = false, error = UiText.Verbatim(result.message))
+                    }
                 }
             } catch (
                 cancelled: kotlinx.coroutines.CancellationException,
@@ -167,7 +172,7 @@ class PacksTabViewModel(
                     it.copy(
                         loading = false,
                         error =
-                        error.message ?: "Could not load packs",
+                        error.toUiText(R.string.library_packs_load_failed),
                     )
                 }
             }
@@ -182,7 +187,7 @@ class PacksTabViewModel(
                 }
             ) {
                 is StoreResult.Value -> reload()
-                is StoreResult.Failure -> sendEffect(PacksTabEffect.ShowError(result.message))
+                is StoreResult.Failure -> sendEffect(PacksTabEffect.ShowError(UiText.Verbatim(result.message)))
             }
         }
     }
@@ -231,7 +236,7 @@ class PacksTabViewModel(
                             it
                         }
                     }
-                    sendEffect(PacksTabEffect.ShowError(loaded.message))
+                    sendEffect(PacksTabEffect.ShowError(UiText.Verbatim(loaded.message)))
                 }
             }
         }

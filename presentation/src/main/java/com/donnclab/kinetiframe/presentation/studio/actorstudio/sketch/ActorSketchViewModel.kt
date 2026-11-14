@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
-import androidx.annotation.StringRes
 import androidx.core.graphics.createBitmap
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.actors.rig.math.ActorDrawingBinder
@@ -28,6 +27,7 @@ import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchState
 import com.donnclab.kinetiframe.presentation.actors.sketch.SketchLayer
 import com.donnclab.kinetiframe.presentation.actors.sketch.SketchTool
 import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.studio.drawing.BrushRenderers
 import com.donnclab.kinetiframe.studio.drawing.SketchColourFill
 import com.donnclab.kinetiframe.ui.BaseViewModel
@@ -343,9 +343,6 @@ class ActorSketchViewModel(
             }
         }
     }
-
-    private fun Exception.toUiText(@StringRes fallback: Int): UiText =
-        message?.let(UiText::Verbatim) ?: UiText.Resource(fallback)
 
     private companion object {
         /** The most binding corrections one drawing can hold. */

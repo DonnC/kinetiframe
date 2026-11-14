@@ -6,6 +6,7 @@ import com.donnclab.kinetiframe.library.model.BrowserPosition
 import com.donnclab.kinetiframe.library.model.LibraryOrganization
 import com.donnclab.kinetiframe.library.model.PackItemEntry
 import com.donnclab.kinetiframe.library.model.PackManifest
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
 import com.donnclab.kinetiframe.ui.ViewState
@@ -28,7 +29,7 @@ data class PacksTabState(
     val itemNames: Map<String, List<String>> = emptyMap(),
     val organization: LibraryOrganization = LibraryOrganization(),
     val browser: BrowserPosition = BrowserPosition(),
-    val error: String? = null,
+    val error: UiText? = null,
     val openDetails: LibraryItemManifest? = null,
     val detailsItems: List<PackItemEntry> = emptyList(),
     val detailsLoading: Boolean = false,
@@ -46,7 +47,7 @@ sealed interface PacksTabIntent : ViewIntent {
 }
 
 sealed interface PacksTabEffect : ViewEffect {
-    data class ShowError(val message: String) : PacksTabEffect
+    data class ShowError(val message: UiText) : PacksTabEffect
 }
 
 /**

@@ -7,6 +7,7 @@ import com.donnclab.kinetiframe.presentation.common.AssetDetails
 import com.donnclab.kinetiframe.presentation.common.AssetSummary
 import com.donnclab.kinetiframe.presentation.common.AudioTrackSummary
 import com.donnclab.kinetiframe.presentation.common.StampAsset
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
 import com.donnclab.kinetiframe.ui.ViewState
@@ -33,7 +34,7 @@ data class LibraryState(
     val openDetails: AssetDetails? = null,
     val openPackContents: AssetSummary? = null,
     val packLoading: Boolean = false,
-    val packError: String? = null,
+    val packError: UiText? = null,
 ) : ViewState
 
 sealed interface LibraryIntent : ViewIntent {
@@ -51,7 +52,7 @@ sealed interface LibraryIntent : ViewIntent {
 }
 
 sealed interface LibraryEffect : ViewEffect {
-    data class ShowMessage(val message: String) : LibraryEffect
+    data class ShowMessage(val message: UiText) : LibraryEffect
     data class OpenDocument(val target: LibraryOpenTarget) : LibraryEffect
     data class EditPack(val item: LibraryItemManifest) : LibraryEffect
 }

@@ -11,10 +11,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalResources
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.presentation.common.BottomNavDestination
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.launch
 
@@ -29,6 +31,7 @@ fun LibraryRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val resources = LocalResources.current
     LifecycleResumeEffect(viewModel) {
         viewModel.handleIntent(LibraryIntent.Reload)
         onPauseOrDispose { }
@@ -37,8 +40,12 @@ fun LibraryRoute(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is LibraryEffect.ShowMessage -> scope.launch { snackbarHostState.showSnackbar(effect.message) }
+                is LibraryEffect.ShowMessage -> scope.launch {
+                    snackbarHostState.showSnackbar(effect.message.asString(resources))
+                }
+
                 is LibraryEffect.OpenDocument -> onOpenDocument(effect.target)
+
                 is LibraryEffect.EditPack -> onEditPack(effect.item)
             }
         }

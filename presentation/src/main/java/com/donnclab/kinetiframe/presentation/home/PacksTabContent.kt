@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserControls
 import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserIndex
 import com.donnclab.kinetiframe.presentation.library.packs.PackDetailsScreen
@@ -71,7 +72,7 @@ internal fun PacksTabContent(
             when {
                 state.loading -> LoadingBox()
 
-                error != null -> ActorManagerMessage(error, stringResource(R.string.action_retry)) {
+                error != null -> ActorManagerMessage(error.asString(), stringResource(R.string.action_retry)) {
                     onIntent(PacksTabIntent.Reload)
                 }
 

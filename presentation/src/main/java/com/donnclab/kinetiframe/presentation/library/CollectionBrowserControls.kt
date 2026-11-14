@@ -16,6 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.library.model.AssetCategory
 import com.donnclab.kinetiframe.library.model.BrowseMode
 import com.donnclab.kinetiframe.library.model.BrowserPosition
+import com.donnclab.kinetiframe.presentation.R
 
 @Composable
 fun CollectionBrowserControls(
@@ -32,6 +34,8 @@ fun CollectionBrowserControls(
     showCategories: Boolean = false,
 ) {
     val names = collections.distinct().sorted()
+    val allCollections = stringResource(R.string.library_all_collections)
+    val allCategories = stringResource(R.string.library_all_categories)
     Column(
         Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -66,9 +70,9 @@ fun CollectionBrowserControls(
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (position.mode == BrowseMode.COLLECTIONS) {
                     BrowserFilterMenu(
-                        label = position.collection ?: "All collections",
+                        label = position.collection ?: allCollections,
                         icon = Icons.Default.FolderOpen,
-                        options = listOf("All collections") + names,
+                        options = listOf(allCollections) + names,
                         selectedIndex = position.collection?.let { names.indexOf(it) + 1 } ?: 0,
                         modifier = Modifier.weight(1f),
                         onSelect = { index ->
@@ -88,9 +92,9 @@ fun CollectionBrowserControls(
                 }
                 if (showCategories) {
                     BrowserFilterMenu(
-                        label = position.category?.label ?: "All categories",
+                        label = position.category?.label ?: allCategories,
                         icon = Icons.Default.Category,
-                        options = listOf("All categories") + AssetCategory.entries.map { it.label },
+                        options = listOf(allCategories) + AssetCategory.entries.map { it.label },
                         selectedIndex = position.category?.ordinal?.plus(1) ?: 0,
                         modifier = Modifier.weight(1f),
                         onSelect = { index ->

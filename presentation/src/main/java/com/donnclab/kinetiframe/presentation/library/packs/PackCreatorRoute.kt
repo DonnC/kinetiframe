@@ -17,8 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.FullScreenDialog
 import com.donnclab.kinetiframe.presentation.studio.EditorScreen
 import com.donnclab.kinetiframe.ui.appViewModel
@@ -76,9 +78,9 @@ fun PackCreatorRoute(
 
         state.draftError != null -> AlertDialog(
             onDismissRequest = onExit,
-            title = { Text("Pack Creator") },
+            title = { Text(stringResource(R.string.pack_creator_title)) },
             text = { Text(state.draftError.orEmpty()) },
-            confirmButton = { TextButton(onClick = onExit) { Text("OK") } },
+            confirmButton = { TextButton(onClick = onExit) { Text(stringResource(R.string.action_ok)) } },
         )
 
         draftId == null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -106,7 +108,7 @@ fun PackCreatorRoute(
     if (state.saving) {
         AlertDialog(
             onDismissRequest = {},
-            title = { Text("Saving pack...") },
+            title = { Text(stringResource(R.string.pack_saving)) },
             text = { CircularProgressIndicator() },
             confirmButton = {},
         )
@@ -114,10 +116,12 @@ fun PackCreatorRoute(
     state.saveError?.let { message ->
         AlertDialog(
             onDismissRequest = { model.handleIntent(PackCreatorIntent.DismissSaveError) },
-            title = { Text("Could not save this pack") },
+            title = { Text(stringResource(R.string.pack_save_failed)) },
             text = { Text(message) },
             confirmButton = {
-                TextButton(onClick = { model.handleIntent(PackCreatorIntent.DismissSaveError) }) { Text("OK") }
+                TextButton(onClick = {
+                    model.handleIntent(PackCreatorIntent.DismissSaveError)
+                }) { Text(stringResource(R.string.action_ok)) }
             },
         )
     }
