@@ -32,6 +32,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,6 +41,7 @@ import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
+import com.donnclab.kinetiframe.presentation.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,6 +55,7 @@ fun CharacterDetailsSheet(
     projectNames: Map<String, String> = emptyMap(),
 ) {
     var tab by remember(actor.actorId) { mutableIntStateOf(0) }
+    val viewCount = actor.authoredViews().size
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
             Row(Modifier.fillMaxWidth().padding(bottom = 16.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -73,15 +77,25 @@ fun CharacterDetailsSheet(
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(
-                        "${actor.authoredViews().size} views · ${performances.size} performances",
+                        stringResource(
+                            R.string.actor_details_summary,
+                            pluralStringResource(R.plurals.home_chip_views, viewCount, viewCount),
+                            pluralStringResource(
+                                R.plurals.actor_performance_count,
+                                performances.size,
+                                performances.size,
+                            ),
+                        ),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
             TabRow(tab) {
-                Tab(tab == 0, { tab = 0 }, text = { Text("Views · ${actor.authoredViews().size}") })
-                Tab(tab == 1, { tab = 1 }, text = { Text("Performances · ${performances.size}") })
+                Tab(tab == 0, { tab = 0 }, text = { Text(stringResource(R.string.actor_tab_views, viewCount)) })
+                Tab(tab == 1, {
+                    tab = 1
+                }, text = { Text(stringResource(R.string.actor_tab_performances, performances.size)) })
             }
             LazyColumn(Modifier.fillMaxWidth().heightIn(max = 360.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
                 if (tab == 0) {
@@ -94,7 +108,7 @@ fun CharacterDetailsSheet(
                             trailingContent = {
                                 IconButton(onClick = {
                                     onEditView(view)
-                                }) { Icon(Icons.Default.Edit, "Edit ${view.title}") }
+                                }) { Icon(Icons.Default.Edit, stringResource(R.string.actor_edit_view, view.title)) }
                             },
                         )
                     }
@@ -102,7 +116,7 @@ fun CharacterDetailsSheet(
                     if (performances.isEmpty()) {
                         item {
                             Text(
-                                "No saved performances",
+                                stringResource(R.string.actor_no_performances),
                                 style = MaterialTheme.typography.bodySmall,
                                 modifier = Modifier.padding(16.dp),
                             )
@@ -124,11 +138,13 @@ fun CharacterDetailsSheet(
                             },
                             supportingContent = {
                                 Text(
-                                    "${view?.title ?: "Saved view"} · ${String.format(
-                                        java.util.Locale.ROOT,
-                                        "%.1f",
+                                    stringResource(
+                                        R.string.actor_performance_details,
+                                        view?.title ?: stringResource(R.string.actor_saved_view),
                                         performance.durationMicros / 1_000_000.0,
-                                    )} s\n${projectNames[performance.projectId] ?: "Saved project"}",
+                                        projectNames[performance.projectId]
+                                            ?: stringResource(R.string.actor_saved_project),
+                                    ),
                                     style = MaterialTheme.typography.labelSmall,
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis,
@@ -137,7 +153,7 @@ fun CharacterDetailsSheet(
                             trailingContent = {
                                 IconButton(onClick = {
                                     onOpenProject(performance.projectId)
-                                }) { Icon(Icons.Default.Movie, "Open owning project") }
+                                }) { Icon(Icons.Default.Movie, stringResource(R.string.actor_open_project)) }
                             },
                         )
                     }

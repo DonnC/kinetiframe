@@ -8,14 +8,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 @Composable
 fun ActorPerformanceNameDialog(
-    initialName: String = "New performance",
-    title: String = "Save performance",
-    confirmLabel: String = "Save & Return",
+    initialName: String = stringResource(R.string.actor_new_performance),
+    title: String = stringResource(R.string.puppet_save_performance),
+    confirmLabel: String = stringResource(R.string.actor_save_and_return),
     onDismiss: () -> Unit,
     onSave: (String) -> Unit,
 ) {
@@ -24,10 +26,12 @@ fun ActorPerformanceNameDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
         text = {
-            CompactTextField(name, { name = it }, label = { Text("Performance name") }, singleLine = true)
+            CompactTextField(name, {
+                name = it
+            }, label = { Text(stringResource(R.string.actor_performance_name)) }, singleLine = true)
         },
         confirmButton = { TextButton(onClick = { onSave(name) }, enabled = name.isNotBlank()) { Text(confirmLabel) } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
     )
 }
 

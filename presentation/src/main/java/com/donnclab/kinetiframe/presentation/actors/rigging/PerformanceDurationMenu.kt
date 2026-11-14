@@ -11,8 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.donnclab.kinetiframe.presentation.R
 
 /** Contextual timing choices keep the stage visible and avoid dozens of frame-step taps. */
 @Composable
@@ -24,15 +25,14 @@ fun PerformanceDurationMenu(
     onDuration: (Long) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val locale = LocalConfiguration.current.locales[0]
     Box {
         TextButton(onClick = { expanded = true }) {
-            Text(String.format(locale, "%.2f s", durationMicros / 1_000_000.0))
+            Text(stringResource(R.string.performance_duration, durationMicros / 1_000_000.0))
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             listOf(500_000L, 1_000_000L, 2_000_000L, 3_000_000L, 5_000_000L, 10_000_000L).forEach { duration ->
                 DropdownMenuItem(
-                    text = { Text(String.format(locale, "%.1f seconds", duration / 1_000_000.0)) },
+                    text = { Text(stringResource(R.string.performance_duration_choice, duration / 1_000_000.0)) },
                     enabled = duration in minimumMicros..maximumMicros,
                     onClick = {
                         onDuration(duration)
@@ -42,7 +42,7 @@ fun PerformanceDurationMenu(
             }
             HorizontalDivider()
             DropdownMenuItem(
-                text = { Text("Shorten by one frame") },
+                text = { Text(stringResource(R.string.performance_shorten_frame)) },
                 enabled = durationMicros - frameMicros >= minimumMicros,
                 onClick = {
                     onDuration(durationMicros - frameMicros)
@@ -50,7 +50,7 @@ fun PerformanceDurationMenu(
                 },
             )
             DropdownMenuItem(
-                text = { Text("Extend by one frame") },
+                text = { Text(stringResource(R.string.performance_extend_frame)) },
                 enabled = durationMicros + frameMicros <= maximumMicros,
                 onClick = {
                     onDuration(durationMicros + frameMicros)

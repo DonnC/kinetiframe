@@ -17,9 +17,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AddFlowBottomBar
 import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
@@ -42,11 +44,17 @@ fun AddActorScreen(
 
     Scaffold(
         modifier = modifier,
-        topBar = { AddFlowTopBar(title = "New Actor", onBack = onBack) },
+        topBar = { AddFlowTopBar(title = stringResource(R.string.home_new_actor), onBack = onBack) },
         bottomBar = {
-            AddFlowBottomBar(buttonLabel = "Create Actor", enabled = name.isNotBlank(), onClick = {
-                onCreate(name, template)
-            })
+            AddFlowBottomBar(
+                buttonLabel = stringResource(
+                    R.string.actor_create,
+                ),
+                enabled = name.isNotBlank(),
+                onClick = {
+                    onCreate(name, template)
+                },
+            )
         },
     ) { padding ->
         Column(
@@ -55,33 +63,33 @@ fun AddActorScreen(
             CompactTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Actor name") },
+                label = { Text(stringResource(R.string.actor_name)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
             )
             Text(
-                "Starting structure",
+                stringResource(R.string.actor_starting_structure),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
             )
             TemplateOptionRow(
                 template = ActorTemplate.HUMAN,
-                description = "Paired limbs for figures. Choose the drawing view in Actor Studio.",
+                description = stringResource(R.string.actor_template_two_legs_description),
                 selected = template == ActorTemplate.HUMAN,
                 onClick = { template = ActorTemplate.HUMAN },
             )
             Spacer(Modifier.height(10.dp))
             TemplateOptionRow(
                 template = ActorTemplate.ANIMAL,
-                description = "A horizontal body with four linked supports and a tail.",
+                description = stringResource(R.string.actor_template_four_supports_description),
                 selected = template == ActorTemplate.ANIMAL,
                 onClick = { template = ActorTemplate.ANIMAL },
             )
             Spacer(Modifier.height(10.dp))
             TemplateOptionRow(
                 template = ActorTemplate.CUSTOM,
-                description = "One root. Add branches, joints and endpoints yourself.",
+                description = stringResource(R.string.actor_template_empty_root_description),
                 selected = template == ActorTemplate.CUSTOM,
                 onClick = { template = ActorTemplate.CUSTOM },
             )

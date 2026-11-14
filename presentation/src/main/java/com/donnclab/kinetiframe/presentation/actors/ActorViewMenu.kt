@@ -19,9 +19,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
+import com.donnclab.kinetiframe.presentation.R
 
 /** Views are explicit drawings. No turn/rotate affordance implies synthesized unseen artwork. */
 @Composable
@@ -40,11 +42,17 @@ fun ActorViewMenu(
             expanded = true
             adding = false
         }, modifier = Modifier.size(40.dp)) {
-            Icon(Icons.Default.Flip, "Actor views: ${current.title}", modifier = Modifier.size(18.dp))
+            Icon(
+                Icons.Default.Flip,
+                stringResource(R.string.actor_views_current, current.title),
+                modifier = Modifier.size(18.dp),
+            )
         }
         DropdownMenu(expanded, { expanded = false }) {
             if (adding) {
-                DropdownMenuItem(text = { Text("New authored view") }, enabled = false, onClick = {})
+                DropdownMenuItem(text = {
+                    Text(stringResource(R.string.actor_new_view))
+                }, enabled = false, onClick = {})
                 ActorView.entries.filter { it != ActorView.ORIGINAL && it !in views }.forEach { view ->
                     DropdownMenuItem(
                         text = { Text(view.title) },
@@ -70,7 +78,7 @@ fun ActorViewMenu(
                 if (canCreate && ActorView.entries.any { it != ActorView.ORIGINAL && it !in views }) {
                     HorizontalDivider()
                     DropdownMenuItem(text = {
-                        Text("Add view")
+                        Text(stringResource(R.string.actor_add_view))
                     }, leadingIcon = { Icon(Icons.Default.Add, null) }, onClick = {
                         adding =
                             true

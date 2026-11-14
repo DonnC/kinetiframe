@@ -19,8 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.presentation.R
 
 /** Non-interactive row telling the user that more skeleton templates are coming, shown after
  *  [TemplateOptionRow]'s working options. */
@@ -47,12 +49,12 @@ fun ComingSoonTemplateRow(modifier: Modifier = Modifier) {
             }
             Column(Modifier.weight(1f).padding(horizontal = 14.dp)) {
                 Text(
-                    "Bird, insect & more",
+                    stringResource(R.string.actor_template_coming_soon_title),
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    "Additional skeleton templates are on the way.",
+                    stringResource(R.string.actor_template_coming_soon_description),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

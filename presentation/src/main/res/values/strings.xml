@@ -27,6 +27,9 @@
     <string name="action_save">Save</string>
     <string name="action_apply">Apply</string>
     <string name="action_insert">Insert</string>
+    <string name="action_continue">Continue</string>
+    <!-- Label for a name field. -->
+    <string name="field_name">Name</string>
     <!-- Marks the selected option in a row of choices, such as "• Fill". -->
     <string name="choice_selected">• %1$s</string>
     <!-- Marks a checked menu item, such as "✓ Default artwork". -->
@@ -602,6 +605,76 @@
     <string name="sketch_undo">Undo sketch</string>
     <string name="sketch_redo">Redo sketch</string>
     <string name="sketch_make_movable">Make drawing movable</string>
+
+    <!-- Actors -->
+    <string name="actor_add_to_library">Add to library</string>
+    <!-- The last characters of the actor's current revision ID. -->
+    <string name="actor_card_revision">Actor · revision %1$s</string>
+    <string name="actor_save_and_return">Save &amp; Return</string>
+    <string name="actor_performance_name">Performance name</string>
+    <!-- Describes the view menu button, naming the current view. -->
+    <string name="actor_views_current">Actor views: %1$s</string>
+    <string name="actor_new_view">New authored view</string>
+    <string name="actor_add_view">Add view</string>
+    <string name="actor_create">Create Actor</string>
+    <string name="actor_name">Actor name</string>
+    <string name="actor_starting_structure">Starting structure</string>
+    <string name="actor_template_two_legs_description">Paired limbs for figures. Choose the drawing view in Actor Studio.</string>
+    <string name="actor_template_four_supports_description">A horizontal body with four linked supports and a tail.</string>
+    <string name="actor_template_empty_root_description">One root. Add branches, joints and endpoints yourself.</string>
+    <string name="actor_template_coming_soon_title">Bird, insect &amp; more</string>
+    <string name="actor_template_coming_soon_description">Additional skeleton templates are on the way.</string>
+    <!-- An actor's view count, then its performance count, such as "4 views · 2 performances". -->
+    <string name="actor_details_summary">%1$s · %2$s</string>
+    <plurals name="actor_performance_count">
+        <item quantity="one">%d performance</item>
+        <item quantity="other">%d performances</item>
+    </plurals>
+    <string name="actor_tab_views">Views · %1$d</string>
+    <string name="actor_tab_performances">Performances · %1$d</string>
+    <!-- Describes the edit button for one of the actor's views, naming the view. -->
+    <string name="actor_edit_view">Edit %1$s</string>
+    <string name="actor_no_performances">No saved performances</string>
+    <string name="actor_open_project">Open owning project</string>
+    <!-- A saved performance: its view · length in seconds, then the project it belongs to. -->
+    <string name="actor_performance_details">%1$s · %2$.1f s\n%3$s</string>
+    <string name="actor_saved_view">Saved view</string>
+    <string name="actor_saved_project">Saved project</string>
+    <!-- %1$s is the actor part the artwork attaches to. -->
+    <string name="artwork_attach_to">Attach to %1$s</string>
+    <string name="artwork_gesture_hint">Drag · pinch to resize · twist to rotate</string>
+    <string name="artwork_alternate">Alternate artwork</string>
+    <string name="artwork_continuous_limb">Continuous limb</string>
+    <string name="artwork_continuous_limb_description">One uncut image spanning both bones</string>
+    <string name="artwork_save_changes">Save artwork changes</string>
+    <string name="artwork_confirm_attachment">Confirm artwork attachment</string>
+    <string name="artwork_cancel_attachment">Cancel attachment</string>
+    <!-- How many of the actor's parts have artwork, out of the total, which picks the plural. -->
+    <plurals name="artwork_coverage">
+        <item quantity="one">%1$d of %2$d part has artwork</item>
+        <item quantity="other">%1$d of %2$d parts have artwork</item>
+    </plurals>
+    <!-- A performance's length in seconds. -->
+    <string name="performance_duration">%1$.2f s</string>
+    <!-- A length the performance can be set to, in seconds. -->
+    <string name="performance_duration_choice">%1$.1f seconds</string>
+    <string name="performance_shorten_frame">Shorten by one frame</string>
+    <string name="performance_extend_frame">Extend by one frame</string>
+    <string name="preset_preview_motion">Preview motion</string>
+    <string name="preset_select_motion">Select a motion</string>
+    <string name="preset_remove_motion">Remove applied motion</string>
+    <string name="preset_strength">Strength</string>
+    <string name="preset_speed">Speed</string>
+    <string name="preset_replaces_keys">Apply replaces this performance\'s keys · undo available</string>
+    <string name="preset_library_title">Preset Library</string>
+    <string name="preset_library_switch_mode">Switch to Animate mode to preview and apply presets.</string>
+    <string name="preset_library_empty">No presets available</string>
+    <string name="preset_library_apply_hint">Apply to this actor\'s rig</string>
+    <string name="preset_library_apply">Apply retargeting</string>
+    <string name="raster_layers_title">Raster Layers</string>
+    <!-- %1$s is the layer's name. -->
+    <string name="raster_layer_hide">Hide %1$s</string>
+    <string name="raster_layer_show">Show %1$s</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>

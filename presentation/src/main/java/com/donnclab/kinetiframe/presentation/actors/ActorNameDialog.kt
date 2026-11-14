@@ -8,7 +8,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 @Composable
@@ -18,12 +20,16 @@ fun ActorNameDialog(initialName: String, title: String, onDismiss: () -> Unit, o
         onDismissRequest = onDismiss,
         title = { Text(title) },
         text = {
-            CompactTextField(name, { name = it }, label = { Text("Name") }, singleLine = true)
+            CompactTextField(name, {
+                name = it
+            }, label = { Text(stringResource(R.string.field_name)) }, singleLine = true)
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(name) }, enabled = name.trim().length in 1..60) { Text("Continue") }
+            TextButton(onClick = {
+                onConfirm(name)
+            }, enabled = name.trim().length in 1..60) { Text(stringResource(R.string.action_continue)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
     )
 }
 

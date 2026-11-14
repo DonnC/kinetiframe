@@ -17,12 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Check
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.R
 
 /** Preset auditioning strip plus the Apply button. One of the sections composed by [PuppetInspector]. */
 @Composable
@@ -38,7 +40,7 @@ fun PresetLibrarySection(
     Column(modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                "Preset Library",
+                stringResource(R.string.preset_library_title),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 color = ActorStudioTokens.onPanel,
@@ -48,7 +50,7 @@ fun PresetLibrarySection(
 
         if (!inPerformanceMode) {
             Text(
-                "Switch to Animate mode to preview and apply presets.",
+                stringResource(R.string.preset_library_switch_mode),
                 style = MaterialTheme.typography.labelSmall,
                 color = ActorStudioTokens.onPanelMuted,
                 modifier = Modifier.padding(top = 4.dp),
@@ -59,7 +61,7 @@ fun PresetLibrarySection(
             if (presets.isEmpty()) {
                 item {
                     Text(
-                        "No presets available",
+                        stringResource(R.string.preset_library_empty),
                         style = MaterialTheme.typography.labelSmall,
                         color = ActorStudioTokens.onPanelMuted,
                     )
@@ -83,7 +85,7 @@ fun PresetLibrarySection(
         // spanning the whole sheet width.
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                "Apply to this actor's rig",
+                stringResource(R.string.preset_library_apply_hint),
                 style = MaterialTheme.typography.labelSmall,
                 color = ActorStudioTokens.onPanelMuted,
                 modifier = Modifier.weight(1f),
@@ -98,7 +100,7 @@ fun PresetLibrarySection(
             ) {
                 Icon(
                     Lucide.Check,
-                    "Apply retargeting",
+                    stringResource(R.string.preset_library_apply),
                     tint = if (canApply && inPerformanceMode) Color(0xFF0B1416) else ActorStudioTokens.onPanelMuted,
                 )
             }
