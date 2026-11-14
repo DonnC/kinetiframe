@@ -483,6 +483,55 @@
     <string name="parts_reference">Reference · temporary</string>
     <string name="parts_manage_reference">Manage temporary reference</string>
 
+    <!-- Actor Studio: sketch -->
+    <string name="sketch_restore_failed">The original drawing layers could not be restored. Reopen the actor before editing; its saved artwork has not been replaced.</string>
+    <string name="sketch_too_large">This source exceeds the mobile sketch editor\'s pixel budget. It remains available for rendering and cutout editing.</string>
+    <string name="sketch_hint_joints">Drag joints to fit your drawing · two fingers to pan/zoom</string>
+    <!-- %1$s is the actor part the lasso binds artwork to. -->
+    <string name="sketch_hint_lasso">Lasso artwork for %1$s</string>
+    <string name="sketch_selected_part">selected part</string>
+    <string name="sketch_hint_draw">Draw your character · colour beneath the lines</string>
+    <string name="sketch_keep_title">Keep your sketch?</string>
+    <string name="sketch_keep_message">Make it movable to apply it to the actor, or discard this draft.</string>
+    <string name="sketch_discard">Discard</string>
+    <plurals name="sketch_binding_limit">
+        <item quantity="one">This drawing already has %1$d binding correction</item>
+        <item quantity="other">This drawing already has %1$d binding corrections</item>
+    </plurals>
+    <string name="sketch_edit_failed">Could not edit drawing</string>
+    <string name="sketch_empty">Draw your character before making it movable</string>
+    <string name="sketch_bind_failed">Could not bind sketch</string>
+    <string name="sketch_fit_bone_end">Fit bone endpoint</string>
+    <string name="sketch_edit_drawing">Edit continuous drawing</string>
+    <string name="sketch_hide_artwork">Hide attached artwork</string>
+    <string name="sketch_show_artwork">Show attached artwork</string>
+    <string name="sketch_artwork_layering">Artwork above or behind sketch</string>
+    <string name="sketch_artwork_above">Above sketch</string>
+    <string name="sketch_artwork_behind">Behind sketch</string>
+    <string name="sketch_move_artwork">Move artwork above sketch</string>
+    <string name="sketch_tool_joints">Fit drawing joints</string>
+    <string name="sketch_tool_draw">Draw</string>
+    <string name="sketch_tool_erase">Erase selected drawing layer</string>
+    <string name="sketch_tool_fill">Fill colour beneath linework</string>
+    <string name="sketch_layer_linework">Linework</string>
+    <string name="sketch_layer_colour">Colour</string>
+    <string name="sketch_workflow">Actor drawing workflow</string>
+    <string name="sketch_draw_and_animate">Draw &amp; Animate</string>
+    <string name="sketch_use_cutouts">Use cutout artwork</string>
+    <string name="sketch_use_drawing">Use continuous drawing</string>
+    <string name="sketch_select_joint">Select drawing joint</string>
+    <string name="sketch_correct_binding">Correct drawing binding</string>
+    <!-- %1$s is the actor part whose binding corrections are cleared. -->
+    <string name="sketch_reset_binding">Reset %1$s binding</string>
+    <string name="sketch_close">Close sketch</string>
+    <string name="sketch_eraser_size">Eraser size</string>
+    <string name="sketch_choose_colour">Choose colour</string>
+    <string name="sketch_hide_joints">Hide sketch joints</string>
+    <string name="sketch_show_joints">Show sketch joints</string>
+    <string name="sketch_undo">Undo sketch</string>
+    <string name="sketch_redo">Redo sketch</string>
+    <string name="sketch_make_movable">Make drawing movable</string>
+
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_appearance">Appearance</string>

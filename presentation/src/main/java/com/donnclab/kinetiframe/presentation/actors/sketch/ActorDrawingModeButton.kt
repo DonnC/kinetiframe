@@ -11,10 +11,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.PencilRuler
 import com.composables.icons.lucide.Text
+import com.donnclab.kinetiframe.presentation.R
 
 @Composable
 fun ActorDrawingModeButton(
@@ -25,10 +27,10 @@ fun ActorDrawingModeButton(
 ) {
     var expanded by remember { mutableStateOf(false) }
     Box {
-        IconButton({ expanded = true }) { Icon(Lucide.PencilRuler, "Actor drawing workflow") }
+        IconButton({ expanded = true }) { Icon(Lucide.PencilRuler, stringResource(R.string.sketch_workflow)) }
         DropdownMenu(expanded, { expanded = false }) {
             DropdownMenuItem(text = {
-                Text(if (hasDrawing) "Edit continuous drawing" else "Draw & Animate")
+                Text(stringResource(if (hasDrawing) R.string.sketch_edit_drawing else R.string.sketch_draw_and_animate))
             }, onClick = {
                 expanded =
                     false
@@ -36,7 +38,11 @@ fun ActorDrawingModeButton(
             })
             if (hasDrawing) {
                 DropdownMenuItem(text = {
-                    Text(if (drawingEnabled) "Use cutout artwork" else "Use continuous drawing")
+                    Text(
+                        stringResource(
+                            if (drawingEnabled) R.string.sketch_use_cutouts else R.string.sketch_use_drawing,
+                        ),
+                    )
                 }, onClick = {
                     expanded =
                         false

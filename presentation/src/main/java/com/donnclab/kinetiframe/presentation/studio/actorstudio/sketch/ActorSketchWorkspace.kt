@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Bone
@@ -35,6 +36,7 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.PaintBucket
 import com.composables.icons.lucide.Pen
 import com.composables.icons.lucide.Text
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchIntent
 import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchState
 import com.donnclab.kinetiframe.presentation.actors.sketch.SketchLayer
@@ -52,14 +54,14 @@ internal fun ActorSketchToolDock(state: ActorSketchState, onIntent: (ActorSketch
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             listOf(
-                Triple(SketchTool.JOINT, Lucide.Bone, "Fit drawing joints"),
-                Triple(SketchTool.PEN, Lucide.Pen, "Draw"),
-                Triple(SketchTool.ERASER, Lucide.Eraser, "Erase selected drawing layer"),
-                Triple(SketchTool.FILL, Lucide.PaintBucket, "Fill colour beneath linework"),
+                Triple(SketchTool.JOINT, Lucide.Bone, R.string.sketch_tool_joints),
+                Triple(SketchTool.PEN, Lucide.Pen, R.string.sketch_tool_draw),
+                Triple(SketchTool.ERASER, Lucide.Eraser, R.string.sketch_tool_erase),
+                Triple(SketchTool.FILL, Lucide.PaintBucket, R.string.sketch_tool_fill),
             ).forEach { (tool, icon, label) ->
                 ToolButton(
                     icon,
-                    label,
+                    stringResource(label),
                     state.tool == tool,
                     onClick = { if (!state.busy) onIntent(ActorSketchIntent.Tool(tool)) },
                     onOpenMenu = {},
@@ -89,13 +91,15 @@ internal fun ActorSketchLayerRail(state: ActorSketchState, onIntent: (ActorSketc
                     { onIntent(ActorSketchIntent.Layer(layer)) },
                     label = {
                         Text(
-                            if (layer ==
-                                SketchLayer.LINEWORK
-                            ) {
-                                "Linework"
-                            } else {
-                                "Colour"
-                            },
+                            stringResource(
+                                if (layer ==
+                                    SketchLayer.LINEWORK
+                                ) {
+                                    R.string.sketch_layer_linework
+                                } else {
+                                    R.string.sketch_layer_colour
+                                },
+                            ),
                         )
                     },
                     enabled = !state.busy,
