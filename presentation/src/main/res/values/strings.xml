@@ -26,6 +26,7 @@
     <string name="action_done">Done</string>
     <string name="action_save">Save</string>
     <string name="action_apply">Apply</string>
+    <string name="action_insert">Insert</string>
     <!-- Marks the selected option in a row of choices, such as "• Fill". -->
     <string name="choice_selected">• %1$s</string>
     <!-- Marks a checked menu item, such as "✓ Default artwork". -->
@@ -86,6 +87,76 @@
         <item quantity="one">%d item</item>
         <item quantity="other">%d items</item>
     </plurals>
+    <string name="library_search">Search your Library</string>
+    <string name="library_refresh">Refresh Library</string>
+    <string name="library_palettes">Palettes</string>
+    <string name="library_open_project">Open project</string>
+    <string name="library_open_actor">Open actor</string>
+    <string name="library_no_matches">No matching items. Try another filter or search.</string>
+    <!-- Describes a library item's thumbnail, naming the item. -->
+    <string name="library_item_preview">%1$s preview</string>
+    <string name="library_audio_unavailable">Audio file is unavailable</string>
+    <string name="library_audio_details">Audio details and preview</string>
+    <string name="library_close_preview">Close preview</string>
+    <string name="library_all_collections">All collections</string>
+    <string name="library_all_categories">All categories</string>
+    <string name="library_collection">Collection</string>
+    <string name="library_collection_save">Save collection</string>
+    <!-- The name an item shows in the library, which can differ from its file name. -->
+    <string name="library_item_name">Library name</string>
+    <string name="library_organisation_save">Save organisation</string>
+    <string name="library_save_title">Save to library</string>
+    <!-- %1$s names what is saved, such as "this background image". -->
+    <string name="library_save_message">Save %1$s to your Personal library (every project can use it) or just this project\'s own vault?</string>
+    <string name="library_scope_personal">Personal</string>
+    <string name="library_scope_project">This Project</string>
+    <string name="library_picker_title">My Library</string>
+    <string name="library_picker_empty">Nothing here yet.</string>
+    <string name="library_preview_audio">Preview audio</string>
+    <string name="library_kind_actors">Actors</string>
+    <string name="library_kind_performances">Performances</string>
+    <string name="library_kind_bundles">Bundles</string>
+    <string name="library_kind_audio">Audio</string>
+    <string name="library_kind_backgrounds">Backgrounds</string>
+    <string name="library_kind_frames">Frames</string>
+    <string name="library_kind_projects">Projects</string>
+    <string name="library_kind_packs">Packs</string>
+    <string name="library_kind_palettes">Palettes</string>
+    <string name="library_starter_assets_failed">Some starter assets could not be added to Library; they will retry next launch.</string>
+    <string name="library_filters_save_failed">Could not remember filters</string>
+    <string name="library_pack_read_failed">Could not read pack</string>
+    <string name="library_open_project_first">Open a project, then use Add → From Library to insert this item.</string>
+    <string name="library_read_failed">Could not read Library</string>
+    <string name="library_organisation_save_failed">Organisation could not be saved</string>
+    <string name="library_packs_load_failed">Could not load packs</string>
+    <string name="pack_edit_action">Edit pack</string>
+    <string name="pack_no_drawings">This pack has no drawings</string>
+    <string name="pack_picker_search">Search packs &amp; items</string>
+    <string name="pack_picker_empty">No matching packs</string>
+    <string name="pack_tray_move">Move pack tray</string>
+    <string name="pack_tray_expand">Expand pack</string>
+    <string name="pack_tray_minimize">Minimize pack</string>
+    <string name="pack_tray_close">Close pack</string>
+    <string name="pack_new_title">New Pack</string>
+    <string name="pack_create">Create Pack</string>
+    <string name="pack_name">Pack name</string>
+    <string name="pack_canvas_size">Pack canvas size</string>
+    <!-- A square pack canvas size in pixels, such as "512 × 512". -->
+    <string name="pack_size_square">%1$d × %1$d</string>
+    <!-- Size shorthand: small, medium and large. -->
+    <string name="pack_size_small">S</string>
+    <string name="pack_size_medium">M</string>
+    <string name="pack_size_large">L</string>
+    <string name="pack_creator_title">Pack Creator</string>
+    <string name="pack_saving">Saving pack…</string>
+    <string name="pack_save_failed">Could not save this pack</string>
+    <string name="pack_save">Save pack</string>
+    <string name="pack_item_new">New item</string>
+    <string name="pack_item_edit">Edit item</string>
+    <string name="pack_item_name">Item name</string>
+    <string name="pack_item_name_short">Name</string>
+    <string name="pack_item_description">Description (optional)</string>
+    <string name="pack_item_confirm">Confirm item</string>
 
     <!-- Actor Studio workflow hint: the next thing to do at each step -->
     <string name="actor_hint_needs_skeleton">Add a reference skeleton to start this actor</string>

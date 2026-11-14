@@ -1,6 +1,9 @@
 package com.donnclab.kinetiframe.presentation.library
 
 import androidx.lifecycle.viewModelScope
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -29,11 +32,7 @@ class LibraryViewModel(
                 val errors = withContext(ioDispatcher) { content.installLibraryItems() }
                 reload()
                 if (errors.isNotEmpty()) {
-                    sendEffect(
-                        LibraryEffect.ShowMessage(
-                            "Some starter assets could not be added to Library; they will retry next launch.",
-                        ),
-                    )
+                    sendEffect(LibraryEffect.ShowMessage(UiText.Resource(R.string.library_starter_assets_failed)))
                 }
             }
         }
@@ -63,7 +62,7 @@ class LibraryViewModel(
                     ) {
                         throw cancelled
                     } catch (error: Exception) {
-                        sendEffect(LibraryEffect.ShowMessage(error.message ?: "Could not remember filters"))
+                        sendEffect(LibraryEffect.ShowMessage(error.toUiText(R.string.library_filters_save_failed)))
                     } finally {
                         organizationWrites.unlock()
                     }
@@ -110,7 +109,7 @@ class LibraryViewModel(
                             it.copy(
                                 packLoading = false,
                                 packError =
-                                error.message ?: "Could not read pack",
+                                error.toUiText(R.string.library_pack_read_failed),
                             )
                         }
                     }
@@ -136,7 +135,7 @@ class LibraryViewModel(
             updateState { it.copy(openDetails = null) }
             sendEffect(LibraryEffect.OpenDocument(target))
         } else {
-            sendEffect(LibraryEffect.ShowMessage("Open a project, then use Add → From Library to insert this item."))
+            sendEffect(LibraryEffect.ShowMessage(UiText.Resource(R.string.library_open_project_first)))
         }
     }
 
@@ -178,7 +177,7 @@ class LibraryViewModel(
                 throw cancelled
             } catch (error: Exception) {
                 updateState { it.copy(loading = false) }
-                sendEffect(LibraryEffect.ShowMessage(error.message ?: "Could not read Library"))
+                sendEffect(LibraryEffect.ShowMessage(error.toUiText(R.string.library_read_failed)))
             }
         }
     }

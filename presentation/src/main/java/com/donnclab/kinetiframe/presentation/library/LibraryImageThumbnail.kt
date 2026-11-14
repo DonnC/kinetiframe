@@ -9,10 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.R
 import java.io.File
 
 /** Lazy bounded Coil decoding: the picker displays thumbnails, never full-resolution bitmaps. */
@@ -20,7 +22,7 @@ import java.io.File
 internal fun LibraryImageThumbnail(file: File, label: String, modifier: Modifier = Modifier) {
     AsyncImage(
         model = file,
-        contentDescription = "$label preview",
+        contentDescription = stringResource(R.string.library_item_preview, label),
         contentScale = ContentScale.Fit,
         modifier = modifier.fillMaxWidth().aspectRatio(16f / 9f).clip(RoundedCornerShape(6.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant),

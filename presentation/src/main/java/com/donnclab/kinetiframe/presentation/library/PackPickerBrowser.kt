@@ -15,11 +15,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserControls
 import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserIndex
 import com.donnclab.kinetiframe.presentation.library.packs.PacksTabEffect
@@ -36,14 +40,16 @@ internal fun PackPickerBrowser(scope: LibraryScope, projectId: String?, onOpen: 
     }
     val state by model.state.collectAsStateWithLifecycle()
     var query by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf("") }
-    var actionError by remember { mutableStateOf<String?>(null) }
+    var actionError by remember { mutableStateOf<UiText?>(null) }
     LaunchedEffect(model) { model.handleIntent(PacksTabIntent.Reload) }
     LaunchedEffect(model) { model.effect.collect { if (it is PacksTabEffect.ShowError) actionError = it.message } }
     val visible = remember(state, query) {
         PackBrowserIndex.filter(state.packs, state.itemNames, state.organization.items, state.browser, query)
     }
     Column(Modifier.fillMaxSize()) {
-        CompactTextField(query, { query = it }, singleLine = true, placeholder = { Text("Search packs & items") })
+        CompactTextField(query, {
+            query = it
+        }, singleLine = true, placeholder = { Text(stringResource(R.string.pack_picker_search)) })
         PackBrowserControls(
             state.browser,
             state.packs.map {
@@ -51,11 +57,11 @@ internal fun PackPickerBrowser(scope: LibraryScope, projectId: String?, onOpen: 
             }.distinct().sorted(),
             { model.handleIntent(PacksTabIntent.Browse(it)) },
         )
-        if (state.error != null || actionError != null) Text(state.error ?: actionError.orEmpty())
+        (state.error ?: actionError)?.let { Text(it.asString()) }
         if (state.loading) {
             androidx.compose.material3.CircularProgressIndicator()
         } else if (visible.isEmpty()) {
-            Text("No matching packs")
+            Text(stringResource(R.string.pack_picker_empty))
         } else {
             LazyVerticalGrid(
                 GridCells.Adaptive(140.dp),

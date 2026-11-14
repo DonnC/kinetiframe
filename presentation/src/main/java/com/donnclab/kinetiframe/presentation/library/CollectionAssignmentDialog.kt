@@ -13,8 +13,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.library.model.AssetOrganization
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 @Composable
@@ -23,17 +25,19 @@ fun CollectionAssignmentDialog(initial: AssetOrganization, onDismiss: () -> Unit
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text("Collection", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.library_collection), style = MaterialTheme.typography.titleMedium)
         },
         text = { CompactTextField(collection, { collection = it.take(60) }, singleLine = true) },
         confirmButton = {
             IconButton(enabled = collection.isNotBlank(), onClick = {
                 onSave(initial.copy(collection = collection.trim()))
             }) {
-                Icon(Icons.Default.Check, "Save collection")
+                Icon(Icons.Default.Check, stringResource(R.string.library_collection_save))
             }
         },
-        dismissButton = { IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, "Cancel") } },
+        dismissButton = {
+            IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, stringResource(R.string.action_cancel)) }
+        },
     )
 }
 

@@ -86,7 +86,7 @@ fun LibraryScreen(
     if (showPalettes) {
         ModalBottomSheet(onDismissRequest = { showPalettes = false }) {
             Column(Modifier.padding(Dimens.spaceXl)) {
-                Text("Palettes", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.library_palettes), style = MaterialTheme.typography.titleMedium)
                 com.donnclab.kinetiframe.presentation.studio.color.PaletteBrowser(previewColor, { previewColor = it })
             }
         }
@@ -99,8 +99,8 @@ fun LibraryScreen(
                 context = AssetDetailsContext(
                     hasOpenProject = state.hasOpenProject,
                     openLabel = when (libraryOpenTarget(details.id)) {
-                        is LibraryOpenTarget.Project -> "Open project"
-                        is LibraryOpenTarget.Actor -> "Open actor"
+                        is LibraryOpenTarget.Project -> stringResource(R.string.library_open_project)
+                        is LibraryOpenTarget.Actor -> stringResource(R.string.library_open_actor)
                         null -> null
                     },
                 ),
@@ -120,17 +120,19 @@ private fun LibraryTopBar(query: String, onIntent: (LibraryIntent) -> Unit, onPa
         ) {
             Text(stringResource(R.string.library_title), style = MaterialTheme.typography.headlineSmall)
             Row {
-                IconButton(onClick = onPalettes) { Icon(Icons.Filled.Palette, "Palettes") }
+                IconButton(onClick = onPalettes) {
+                    Icon(Icons.Filled.Palette, stringResource(R.string.library_palettes))
+                }
                 IconButton(onClick = {
                     onIntent(LibraryIntent.Reload)
-                }) { Icon(Icons.Filled.Refresh, "Refresh Library") }
+                }) { Icon(Icons.Filled.Refresh, stringResource(R.string.library_refresh)) }
             }
         }
         CompactTextField(
             value = query,
             onValueChange = { onIntent(LibraryIntent.Search(it)) },
             placeholder = {
-                Text("Search your Library")
+                Text(stringResource(R.string.library_search))
             },
             singleLine = true,
             leadingIcon = { Icon(Icons.Filled.Search, null) },

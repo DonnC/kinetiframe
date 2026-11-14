@@ -41,6 +41,8 @@ import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StampAsset
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
 
 /** The title + stamp list [PackContentsGrid] renders -- bundled so the screen stays a
@@ -49,7 +51,7 @@ data class PackContentsData(
     val packTitle: String,
     val stamps: List<StampAsset>,
     val loading: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
 )
 
 /**
@@ -97,7 +99,7 @@ fun PackContentsGrid(
                 }
                 onEdit?.let { edit ->
                     IconButton(onClick = edit, enabled = !data.loading && data.error == null) {
-                        Icon(Icons.Filled.Edit, "Edit pack")
+                        Icon(Icons.Filled.Edit, stringResource(R.string.pack_edit_action))
                     }
                 }
             }
@@ -106,12 +108,16 @@ fun PackContentsGrid(
                     data.loading -> CircularProgressIndicator()
 
                     data.error != null -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(data.error, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(20.dp))
-                        TextButton(onClick = onRetry) { Text("Retry") }
+                        Text(
+                            data.error.asString(),
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(20.dp),
+                        )
+                        TextButton(onClick = onRetry) { Text(stringResource(R.string.action_retry)) }
                     }
 
                     data.stamps.isEmpty() -> Text(
-                        "This pack has no drawings",
+                        stringResource(R.string.pack_no_drawings),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
 

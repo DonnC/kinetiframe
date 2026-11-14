@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.presentation.library
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -54,6 +56,7 @@ import com.composables.icons.lucide.Square
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -121,7 +124,7 @@ fun LibraryPickerDialog(
             modifier = Modifier.fillMaxWidth(0.95f).fillMaxHeight(0.85f),
         ) {
             Column(Modifier.fillMaxSize().padding(16.dp)) {
-                Text("My Library", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.library_picker_title), style = MaterialTheme.typography.titleMedium)
                 if (projectId != null) {
                     Spacer(Modifier.height(8.dp))
                     SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
@@ -129,12 +132,12 @@ fun LibraryPickerDialog(
                             selected = scope == LibraryScope.PERSONAL,
                             onClick = { model.handleIntent(LibraryPickerIntent.SelectScope(LibraryScope.PERSONAL)) },
                             shape = SegmentedButtonDefaults.itemShape(0, 2),
-                        ) { Text("Personal") }
+                        ) { Text(stringResource(R.string.library_scope_personal)) }
                         SegmentedButton(
                             selected = scope == LibraryScope.PROJECT,
                             onClick = { model.handleIntent(LibraryPickerIntent.SelectScope(LibraryScope.PROJECT)) },
                             shape = SegmentedButtonDefaults.itemShape(1, 2),
-                        ) { Text("This Project") }
+                        ) { Text(stringResource(R.string.library_scope_project)) }
                     }
                 }
                 Spacer(Modifier.height(8.dp))
@@ -143,12 +146,12 @@ fun LibraryPickerDialog(
                         item {
                             FilterChip(selected = kindFilter == null, onClick = {
                                 model.handleIntent(LibraryPickerIntent.Filter(null))
-                            }, label = { Text("All") })
+                            }, label = { Text(stringResource(R.string.filter_all)) })
                         }
                         items(filterableKinds) { kind ->
                             FilterChip(selected = kindFilter == kind, onClick = {
                                 model.handleIntent(LibraryPickerIntent.Filter(kind))
-                            }, label = { Text(kindLabel(kind)) })
+                            }, label = { Text(stringResource(kind.labelRes())) })
                         }
                     }
                     Spacer(Modifier.height(8.dp))
@@ -169,7 +172,7 @@ fun LibraryPickerDialog(
                         )
 
                         visibleItems.isEmpty() -> Text(
-                            "Nothing here yet.",
+                            stringResource(R.string.library_picker_empty),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -202,7 +205,9 @@ fun LibraryPickerDialog(
                     }
                 }
                 Spacer(Modifier.height(8.dp))
-                TextButton(onClick = onDismiss, modifier = Modifier.align(Alignment.End)) { Text("Cancel") }
+                TextButton(onClick = onDismiss, modifier = Modifier.align(Alignment.End)) {
+                    Text(stringResource(R.string.action_cancel))
+                }
             }
         }
     }
@@ -234,7 +239,10 @@ internal fun LibraryItemCard(
                 Spacer(Modifier.weight(1f))
                 onPreview?.let { preview ->
                     IconButton(onClick = preview) {
-                        Icon(androidx.compose.material.icons.Icons.Filled.PlayArrow, "Preview audio")
+                        Icon(
+                            androidx.compose.material.icons.Icons.Filled.PlayArrow,
+                            stringResource(R.string.library_preview_audio),
+                        )
                     }
                 }
             }
@@ -246,7 +254,7 @@ internal fun LibraryItemCard(
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                kindLabel(item.kind),
+                stringResource(item.kind.labelRes()),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
@@ -263,16 +271,17 @@ internal fun LibraryItemCard(
     }
 }
 
-private fun kindLabel(kind: LibraryItemKind): String = when (kind) {
-    LibraryItemKind.ACTOR -> "Actors"
-    LibraryItemKind.PERFORMANCE -> "Performances"
-    LibraryItemKind.BUNDLE -> "Bundles"
-    LibraryItemKind.AUDIO -> "Audio"
-    LibraryItemKind.BACKGROUND_IMAGE -> "Backgrounds"
-    LibraryItemKind.FRAME -> "Frames"
-    LibraryItemKind.PROJECT -> "Projects"
-    LibraryItemKind.PACK -> "Packs"
-    LibraryItemKind.PALETTE -> "Palettes"
+@StringRes
+private fun LibraryItemKind.labelRes(): Int = when (this) {
+    LibraryItemKind.ACTOR -> R.string.library_kind_actors
+    LibraryItemKind.PERFORMANCE -> R.string.library_kind_performances
+    LibraryItemKind.BUNDLE -> R.string.library_kind_bundles
+    LibraryItemKind.AUDIO -> R.string.library_kind_audio
+    LibraryItemKind.BACKGROUND_IMAGE -> R.string.library_kind_backgrounds
+    LibraryItemKind.FRAME -> R.string.library_kind_frames
+    LibraryItemKind.PROJECT -> R.string.library_kind_projects
+    LibraryItemKind.PACK -> R.string.library_kind_packs
+    LibraryItemKind.PALETTE -> R.string.library_kind_palettes
 }
 
 private fun iconFor(kind: LibraryItemKind): ImageVector = when (kind) {

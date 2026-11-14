@@ -24,9 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AudioTrackSummary
 import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
 
@@ -44,7 +46,11 @@ fun AudioTrackRow(track: AudioTrackSummary, onClick: () -> Unit, modifier: Modif
                 Modifier.size(Dimens.playButtonSize).clip(CircleShape).background(playGradient),
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(Icons.Filled.AudioFile, contentDescription = "Audio details and preview", tint = Color.White)
+                Icon(
+                    Icons.Filled.AudioFile,
+                    contentDescription = stringResource(R.string.library_audio_details),
+                    tint = Color.White,
+                )
             }
             Column(Modifier.weight(1f)) {
                 Text(track.title, style = MaterialTheme.typography.labelLarge, maxLines = 1)

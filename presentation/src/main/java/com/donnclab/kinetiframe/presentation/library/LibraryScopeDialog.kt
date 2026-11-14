@@ -7,8 +7,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.presentation.R
 
 /**
  * The Project-vs-Personal save choice -- shown right before an export actually runs, so every
@@ -20,15 +22,23 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 fun LibraryScopeDialog(itemLabel: String, onDismiss: () -> Unit, onChoose: (LibraryScope) -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Save to library") },
+        title = { Text(stringResource(R.string.library_save_title)) },
         text = {
             Column(Modifier.padding(top = 4.dp)) {
                 Text(
-                    "Save $itemLabel to your Personal library (every project can use it) or just this project's own vault?",
+                    stringResource(R.string.library_save_message, itemLabel),
                 )
             }
         },
-        confirmButton = { TextButton(onClick = { onChoose(LibraryScope.PERSONAL) }) { Text("Personal") } },
-        dismissButton = { TextButton(onClick = { onChoose(LibraryScope.PROJECT) }) { Text("This Project") } },
+        confirmButton = {
+            TextButton(onClick = {
+                onChoose(LibraryScope.PERSONAL)
+            }) { Text(stringResource(R.string.library_scope_personal)) }
+        },
+        dismissButton = {
+            TextButton(onClick = {
+                onChoose(LibraryScope.PROJECT)
+            }) { Text(stringResource(R.string.library_scope_project)) }
+        },
     )
 }
