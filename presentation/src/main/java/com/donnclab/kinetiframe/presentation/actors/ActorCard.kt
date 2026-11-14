@@ -23,10 +23,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.presentation.R
 
 /** One compact dashboard card; its artwork is a thumbnail, never an editable rig surface. */
 @Composable
@@ -51,27 +53,29 @@ fun ActorCard(
                 } else {
                     AsyncImage(
                         model = "file://$thumbnailPath",
-                        contentDescription = "${actor.displayName} actor preview",
+                        contentDescription = stringResource(R.string.actor_preview_description, actor.displayName),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Fit,
                     )
                 }
                 Box(Modifier.align(Alignment.TopEnd)) {
-                    IconButton(onClick = { menuOpen = true }) { Icon(Icons.Default.MoreVert, "Actor actions") }
+                    IconButton(onClick = {
+                        menuOpen = true
+                    }) { Icon(Icons.Default.MoreVert, stringResource(R.string.actor_actions)) }
                     DropdownMenu(menuOpen, { menuOpen = false }) {
-                        DropdownMenuItem(text = { Text("Rename") }, onClick = {
+                        DropdownMenuItem(text = { Text(stringResource(R.string.action_rename)) }, onClick = {
                             menuOpen = false
                             onRename()
                         })
-                        DropdownMenuItem(text = { Text("Duplicate") }, onClick = {
+                        DropdownMenuItem(text = { Text(stringResource(R.string.action_duplicate)) }, onClick = {
                             menuOpen = false
                             onDuplicate()
                         })
-                        DropdownMenuItem(text = { Text("Add to library") }, onClick = {
+                        DropdownMenuItem(text = { Text(stringResource(R.string.actor_add_to_library)) }, onClick = {
                             menuOpen = false
                             onExport()
                         })
-                        DropdownMenuItem(text = { Text("Archive") }, onClick = {
+                        DropdownMenuItem(text = { Text(stringResource(R.string.action_archive)) }, onClick = {
                             menuOpen = false
                             onArchive()
                         })
@@ -80,7 +84,7 @@ fun ActorCard(
             }
             Text(actor.displayName, style = MaterialTheme.typography.titleSmall, maxLines = 1)
             Text(
-                "Actor · revision ${actor.currentRevisionId.takeLast(6)}",
+                stringResource(R.string.actor_card_revision, actor.currentRevisionId.takeLast(6)),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

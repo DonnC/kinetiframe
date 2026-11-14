@@ -12,9 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.R
 
 /** How many rig parts already have artwork bound, so the user can tell at a glance when an
  *  actor is fully covered instead of discovering a bare bone only at pose time. */
@@ -27,7 +29,7 @@ fun CoverageBadge(definition: PuppetDefinition) {
     Column(Modifier.padding(top = 4.dp, bottom = 8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
             Text(
-                "$bound of $total parts have artwork",
+                pluralStringResource(R.plurals.artwork_coverage, total, bound, total),
                 style = MaterialTheme.typography.labelSmall,
                 color = if (bound == total) ActorStudioTokens.accent else ActorStudioTokens.onPanelMuted,
             )

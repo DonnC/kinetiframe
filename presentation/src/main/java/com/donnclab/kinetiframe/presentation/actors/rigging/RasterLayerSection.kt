@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Eye
@@ -21,6 +22,7 @@ import com.composables.icons.lucide.EyeOff
 import com.composables.icons.lucide.FolderOpen
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.R
 
 /** "Raster Layers" group label above the actor's drawable layers in [PuppetInspector]. */
 @Composable
@@ -35,7 +37,11 @@ fun RasterLayerGroupHeader() {
             tint = ActorStudioTokens.onPanelMuted,
             modifier = Modifier.size(16.dp).padding(end = 4.dp),
         )
-        Text("Raster Layers", style = MaterialTheme.typography.bodySmall, color = ActorStudioTokens.onPanelMuted)
+        Text(
+            stringResource(R.string.raster_layers_title),
+            style = MaterialTheme.typography.bodySmall,
+            color = ActorStudioTokens.onPanelMuted,
+        )
     }
 }
 
@@ -71,7 +77,10 @@ fun RasterLayerRow(
         )
         Icon(
             if (isVisible) Lucide.Eye else Lucide.EyeOff,
-            contentDescription = if (isVisible) "Hide $name" else "Show $name",
+            contentDescription = stringResource(
+                if (isVisible) R.string.raster_layer_hide else R.string.raster_layer_show,
+                name,
+            ),
             tint = if (isVisible) ActorStudioTokens.onPanelMuted else ActorStudioTokens.accent,
             modifier = Modifier.size(14.dp).clickable(onClick = onVisibilityClick),
         )

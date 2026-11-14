@@ -17,10 +17,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.R
 
 /** All audition controls stay in the dark sheet; no stacked dialog obscures the actor. */
 @Composable
@@ -39,28 +41,32 @@ fun PresetAuditionControls(
             IconButton(onClick = onPlay, enabled = preview != null) {
                 Icon(
                     if (playing) Icons.Default.Pause else Icons.Default.PlayArrow,
-                    "Preview motion",
+                    stringResource(R.string.preset_preview_motion),
                     tint = ActorStudioTokens.accent,
                 )
             }
             Text(
-                preview?.recipe?.name ?: "Select a motion",
+                preview?.recipe?.name ?: stringResource(R.string.preset_select_motion),
                 style = MaterialTheme.typography.labelMedium,
                 color = ActorStudioTokens.onPanel,
                 modifier = Modifier.weight(1f),
             )
             if (onRemove != null) {
                 IconButton(onClick = onRemove) {
-                    Icon(Icons.Default.DeleteOutline, "Remove applied motion", tint = ActorStudioTokens.onPanelMuted)
+                    Icon(
+                        Icons.Default.DeleteOutline,
+                        stringResource(R.string.preset_remove_motion),
+                        tint = ActorStudioTokens.onPanelMuted,
+                    )
                 }
             }
         }
         if (preview != null) {
-            PresetDial("Strength", preview.intensity, 0f..2f, onIntensity)
-            PresetDial("Speed", preview.speed, .25f..3f, onSpeed)
+            PresetDial(stringResource(R.string.preset_strength), preview.intensity, 0f..2f, onIntensity)
+            PresetDial(stringResource(R.string.preset_speed), preview.speed, .25f..3f, onSpeed)
             if (replacesKeys) {
                 Text(
-                    "Apply replaces this performance's keys · undo available",
+                    stringResource(R.string.preset_replaces_keys),
                     style = MaterialTheme.typography.labelSmall,
                     color = ActorStudioTokens.onPanelMuted,
                 )

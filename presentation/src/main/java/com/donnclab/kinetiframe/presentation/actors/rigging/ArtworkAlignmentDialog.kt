@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.coerceIn
@@ -41,6 +42,7 @@ import com.donnclab.kinetiframe.core.actor.artwork.ArtworkAlignment
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
 /** A non-mutating touch audition; Check commits alignment and Cancel preserves the actor. */
@@ -96,10 +98,10 @@ fun ArtworkAlignmentDialog(
         title = {
             Text(
                 if (editing) {
-                    "Edit artwork"
+                    stringResource(R.string.camera_edit_artwork)
                 } else {
-                    targetPartName?.let { "Attach to $it" }
-                        ?: "Attach artwork"
+                    targetPartName?.let { stringResource(R.string.artwork_attach_to, it) }
+                        ?: stringResource(R.string.part_artwork_attach)
                 },
                 style = MaterialTheme.typography.titleSmall,
             )
@@ -119,27 +121,33 @@ fun ArtworkAlignmentDialog(
                     onChange = { binding = it },
                     modifier = Modifier.fillMaxWidth().height(200.dp),
                 )
-                Text("Drag · pinch to resize · twist to rotate", style = MaterialTheme.typography.labelSmall)
+                Text(stringResource(R.string.artwork_gesture_hint), style = MaterialTheme.typography.labelSmall)
                 if (showName) {
                     CompactTextField(label, {
                         label = it.take(60)
-                    }, singleLine = true, label = { Text("Name") })
+                    }, singleLine = true, label = { Text(stringResource(R.string.field_name)) })
                 }
                 if (!editing &&
                     allowAlternate
                 ) {
                     Row {
                         Checkbox(variant, { variant = it })
-                        Text("Alternate artwork", style = MaterialTheme.typography.labelSmall)
+                        Text(stringResource(R.string.artwork_alternate), style = MaterialTheme.typography.labelSmall)
                     }
                 }
                 if (continuousChildren.isNotEmpty()) {
                     Row {
                         Checkbox(continuous, { continuous = it })
-                        Text("Continuous limb", style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            stringResource(R.string.artwork_continuous_limb),
+                            style = MaterialTheme.typography.labelSmall,
+                        )
                     }
                     if (continuous) {
-                        Text("One uncut image spanning both bones", style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            stringResource(R.string.artwork_continuous_limb_description),
+                            style = MaterialTheme.typography.labelSmall,
+                        )
                         continuousChildren.forEach { (id, title) ->
                             Row {
                                 RadioButton(child == id, { child = id })
@@ -158,9 +166,18 @@ fun ArtworkAlignmentDialog(
                     variant,
                     child.takeIf { continuous },
                 )
-            }) { Icon(Icons.Default.Check, if (editing) "Save artwork changes" else "Confirm artwork attachment") }
+            }) {
+                Icon(
+                    Icons.Default.Check,
+                    stringResource(if (editing) R.string.artwork_save_changes else R.string.artwork_confirm_attachment),
+                )
+            }
         },
-        dismissButton = { IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, "Cancel attachment") } },
+        dismissButton = {
+            IconButton(onClick = onDismiss) {
+                Icon(Icons.Default.Close, stringResource(R.string.artwork_cancel_attachment))
+            }
+        },
     )
 }
 
