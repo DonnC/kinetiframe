@@ -28,12 +28,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
 import com.donnclab.kinetiframe.studio.EraserType
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -49,13 +51,18 @@ fun EraserOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, o
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                "Handwriting eraser",
+                stringResource(R.string.eraser_title),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 color = EditorTokens.dark,
             )
             IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
-                Icon(Lucide.X, contentDescription = "Close", modifier = Modifier.size(16.dp), tint = EditorTokens.dark)
+                Icon(
+                    Lucide.X,
+                    contentDescription = stringResource(R.string.action_close),
+                    modifier = Modifier.size(16.dp),
+                    tint = EditorTokens.dark,
+                )
             }
         }
 
@@ -65,12 +72,12 @@ fun EraserOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, o
         // Radio options for "Stroke eraser" and "Area eraser"
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             EraserTypeRow(
-                label = "Stroke eraser",
+                label = stringResource(R.string.eraser_stroke),
                 selected = eraserConfig.eraserType == EraserType.STROKE,
                 onClick = { onIntent(StudioIntent.Draw.SetEraserType(EraserType.STROKE)) },
             )
             EraserTypeRow(
-                label = "Area eraser",
+                label = stringResource(R.string.eraser_area),
                 selected = eraserConfig.eraserType == EraserType.AREA,
                 onClick = { onIntent(StudioIntent.Draw.SetEraserType(EraserType.AREA)) },
             )
@@ -79,7 +86,7 @@ fun EraserOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, o
         Spacer(Modifier.height(20.dp))
 
         StandardSlider(
-            label = "Size",
+            label = stringResource(R.string.tool_size),
             value = eraserConfig.size,
             onValueChange = { onIntent(StudioIntent.Draw.SetEraserSize(it)) },
             range = 1f..100f,
@@ -99,7 +106,7 @@ fun EraserOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, o
             contentPadding = PaddingValues(0.dp),
         ) {
             Text(
-                "Erase all handwriting",
+                stringResource(R.string.eraser_clear_all),
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold,
             )

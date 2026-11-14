@@ -29,12 +29,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
 import com.donnclab.kinetiframe.studio.CanvasState
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -54,14 +56,14 @@ fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onD
                 IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
                     Icon(
                         Lucide.X,
-                        contentDescription = "Close",
+                        contentDescription = stringResource(R.string.action_close),
                         modifier = Modifier.size(16.dp),
                         tint = EditorTokens.dark,
                     )
                 }
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    "Grid",
+                    stringResource(R.string.grid_title),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.ExtraBold,
                     color = EditorTokens.dark,
@@ -74,7 +76,7 @@ fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onD
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Refresh,
-                        contentDescription = "Reset grid",
+                        contentDescription = stringResource(R.string.grid_reset),
                         modifier = Modifier.size(16.dp),
                         tint = EditorTokens.muted,
                     )
@@ -137,9 +139,9 @@ fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onD
         Spacer(Modifier.height(24.dp))
 
         GridAdjusterRow(
-            label = "Opacity",
+            label = stringResource(R.string.tool_opacity),
             value = state.canvas.gridOpacity,
-            valueDisplay = "${(state.canvas.gridOpacity * 100).toInt()}%",
+            valueDisplay = stringResource(R.string.value_percent, (state.canvas.gridOpacity * 100).toInt()),
             range = 0.05f..1f,
             onValueChange = { onIntent(StudioIntent.View.SetGridOpacity(it)) },
         )
@@ -147,9 +149,9 @@ fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onD
         Spacer(Modifier.height(20.dp))
 
         GridAdjusterRow(
-            label = "Vertical Spacing",
+            label = stringResource(R.string.grid_vertical_spacing),
             value = state.canvas.gridSpacingVertical,
-            valueDisplay = "${state.canvas.gridSpacingVertical.toInt()}px",
+            valueDisplay = stringResource(R.string.value_pixels, state.canvas.gridSpacingVertical.toInt()),
             range = 10f..250f,
             onValueChange = { onIntent(StudioIntent.View.SetGridSpacingVertical(it)) },
         )
@@ -157,9 +159,9 @@ fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onD
         Spacer(Modifier.height(20.dp))
 
         GridAdjusterRow(
-            label = "Horizontal Spacing",
+            label = stringResource(R.string.grid_horizontal_spacing),
             value = state.canvas.gridSpacingHorizontal,
-            valueDisplay = "${state.canvas.gridSpacingHorizontal.toInt()}px",
+            valueDisplay = stringResource(R.string.value_pixels, state.canvas.gridSpacingHorizontal.toInt()),
             range = 10f..250f,
             onValueChange = { onIntent(StudioIntent.View.SetGridSpacingHorizontal(it)) },
         )

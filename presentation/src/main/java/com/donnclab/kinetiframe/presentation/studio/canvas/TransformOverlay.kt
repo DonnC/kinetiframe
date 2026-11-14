@@ -16,7 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.presentation.R
 
 @Composable
 fun TransformationOverlay(
@@ -41,7 +43,13 @@ fun TransformationOverlay(
                 shape = RoundedCornerShape(8.dp),
             ) {
                 Text(
-                    text = "${(zoom * 100).toInt()}% x:${offset.x.toInt()} y:${offset.y.toInt()} ${rotation.toInt()}°",
+                    text = stringResource(
+                        R.string.canvas_transform_summary,
+                        (zoom * 100).toInt(),
+                        offset.x.toInt(),
+                        offset.y.toInt(),
+                        rotation.toInt(),
+                    ),
                     color = Color.White,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                     style = MaterialTheme.typography.labelMedium,

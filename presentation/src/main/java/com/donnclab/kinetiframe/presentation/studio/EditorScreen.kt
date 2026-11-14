@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
@@ -21,6 +22,7 @@ import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.ProjectSaveDocument
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.library.packs.PackCreatorConfig
 import com.donnclab.kinetiframe.presentation.project.ProjectDraftSession
 import com.donnclab.kinetiframe.presentation.project.ProjectDraftSessionIntent
@@ -154,7 +156,7 @@ fun EditorScreen(
     }
     if (projectLoadError != null) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Could not open this project: $projectLoadError")
+            Text(stringResource(R.string.editor_project_open_failed, projectLoadError.orEmpty()))
         }
         return
     }

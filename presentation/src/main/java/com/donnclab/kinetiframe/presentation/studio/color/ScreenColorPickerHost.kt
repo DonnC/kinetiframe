@@ -28,11 +28,13 @@ import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.donnclab.kinetiframe.presentation.R
 
 fun interface ScreenColorRequest {
     fun begin(onSelected: (Color) -> Unit)
@@ -136,7 +138,7 @@ fun ScreenColorPickerHost(content: @Composable () -> Unit) {
             AlertDialog(
                 onDismissRequest = cancel,
                 text = { Text(message) },
-                confirmButton = { TextButton(onClick = cancel) { Text("Close") } },
+                confirmButton = { TextButton(onClick = cancel) { Text(stringResource(R.string.action_close)) } },
             )
         }
     }

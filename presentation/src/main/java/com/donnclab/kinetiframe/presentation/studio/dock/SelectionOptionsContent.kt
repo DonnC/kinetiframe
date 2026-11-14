@@ -24,11 +24,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
 import com.donnclab.kinetiframe.studio.SelectionToolType
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -43,13 +45,18 @@ fun SelectionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                "Selection mode",
+                stringResource(R.string.selection_title),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 color = EditorTokens.dark,
             )
             IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
-                Icon(Lucide.X, contentDescription = "Close", modifier = Modifier.size(16.dp), tint = EditorTokens.dark)
+                Icon(
+                    Lucide.X,
+                    contentDescription = stringResource(R.string.action_close),
+                    modifier = Modifier.size(16.dp),
+                    tint = EditorTokens.dark,
+                )
             }
         }
 
@@ -57,12 +64,12 @@ fun SelectionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit
 
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             SelectionTypeRow(
-                label = "Lasso",
+                label = stringResource(R.string.tool_lasso),
                 selected = state.selection.toolType == SelectionToolType.LASSO,
                 onClick = { onIntent(StudioIntent.Selection.SetTool(SelectionToolType.LASSO)) },
             )
             SelectionTypeRow(
-                label = "Rectangle",
+                label = stringResource(R.string.selection_rectangle),
                 selected = state.selection.toolType == SelectionToolType.RECTANGLE,
                 onClick = { onIntent(StudioIntent.Selection.SetTool(SelectionToolType.RECTANGLE)) },
             )
@@ -88,7 +95,7 @@ fun SelectionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit
             )
             Spacer(Modifier.width(8.dp))
             Text(
-                "Include partially selected objects",
+                stringResource(R.string.selection_partial),
                 style = MaterialTheme.typography.bodyMedium,
                 color = EditorTokens.dark,
             )

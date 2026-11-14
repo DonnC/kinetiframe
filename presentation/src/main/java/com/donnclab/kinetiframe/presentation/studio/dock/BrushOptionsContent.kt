@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -72,9 +73,9 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
             verticalAlignment = Alignment.CenterVertically,
         ) {
             val title = when (tool) {
-                DrawingTool.BRUSH -> "Brush"
-                DrawingTool.COLOR_FILL -> "Fill"
-                else -> "Tool"
+                DrawingTool.BRUSH -> stringResource(R.string.tool_brush)
+                DrawingTool.COLOR_FILL -> stringResource(R.string.tool_fill)
+                else -> stringResource(R.string.tool_generic)
             }
             Text(title, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
             ColorPicker(config.color) { onIntent(StudioIntent.Draw.SetBrushColor(it)) }
@@ -97,7 +98,7 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
         Spacer(modifier = Modifier.height(12.dp))
 
         StandardSlider(
-            label = if (tool == DrawingTool.COLOR_FILL) "Tolerance" else "Size",
+            label = stringResource(if (tool == DrawingTool.COLOR_FILL) R.string.tool_tolerance else R.string.tool_size),
             value = config.size,
             onValueChange = {
                 onIntent(StudioIntent.Draw.SetBrushSize(it))
@@ -108,7 +109,7 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
         Spacer(modifier = Modifier.height(12.dp))
 
         StandardSlider(
-            label = "Opacity",
+            label = stringResource(R.string.tool_opacity),
             value = config.opacity,
             onValueChange = {
                 onIntent(StudioIntent.Draw.SetBrushOpacity(it))
@@ -121,45 +122,65 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                ToolIconButton(Lucide.Minus, "Line", state.canvas.rulerMode == RulerMode.LINE) {
+                ToolIconButton(
+                    Lucide.Minus,
+                    stringResource(R.string.ruler_line),
+                    state.canvas.rulerMode == RulerMode.LINE,
+                ) {
                     onIntent(StudioIntent.View.SetRulerMode(RulerMode.LINE))
                 }
-                ToolIconButton(Lucide.Circle, "Circle", state.canvas.rulerMode == RulerMode.CIRCLE) {
+                ToolIconButton(
+                    Lucide.Circle,
+                    stringResource(R.string.ruler_circle),
+                    state.canvas.rulerMode == RulerMode.CIRCLE,
+                ) {
                     onIntent(StudioIntent.View.SetRulerMode(RulerMode.CIRCLE))
                 }
-                ToolIconButton(Lucide.Square, "Box", state.canvas.rulerMode == RulerMode.BOX) {
+                ToolIconButton(
+                    Lucide.Square,
+                    stringResource(R.string.ruler_box),
+                    state.canvas.rulerMode == RulerMode.BOX,
+                ) {
                     onIntent(StudioIntent.View.SetRulerMode(RulerMode.BOX))
                 }
-                ToolIconButton(Lucide.FlipHorizontal, "Mirror", state.canvas.rulerMode == RulerMode.MIRROR) {
+                ToolIconButton(
+                    Lucide.FlipHorizontal,
+                    stringResource(R.string.ruler_mirror),
+                    state.canvas.rulerMode == RulerMode.MIRROR,
+                ) {
                     onIntent(StudioIntent.View.SetRulerMode(RulerMode.MIRROR))
                 }
-                ToolIconButton(Lucide.X, "Off", state.canvas.rulerMode == RulerMode.NONE) {
+                ToolIconButton(Lucide.X, stringResource(R.string.ruler_off), state.canvas.rulerMode == RulerMode.NONE) {
                     onIntent(StudioIntent.View.SetRulerMode(RulerMode.NONE))
                 }
             }
         } else if (state.tool.constructionShape != null) {
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                ToolIconButton(Lucide.Pill, "Capsule", state.tool.constructionShape == ConstructionShape.CAPSULE) {
+                ToolIconButton(
+                    Lucide.Pill,
+                    stringResource(R.string.shape_capsule),
+                    state.tool.constructionShape == ConstructionShape.CAPSULE,
+                ) {
                     onIntent(StudioIntent.Draw.SelectConstructionShape(ConstructionShape.CAPSULE))
                 }
                 ToolIconButton(
                     Lucide.Triangle,
-                    "Triangle",
+                    stringResource(R.string.shape_triangle),
                     state.tool.constructionShape == ConstructionShape.TRIANGLE,
                 ) {
                     onIntent(StudioIntent.Draw.SelectConstructionShape(ConstructionShape.TRIANGLE))
                 }
                 ToolIconButton(
                     Lucide.CirclePlus,
-                    "Head guide",
+                    stringResource(R.string.shape_head_guide),
                     state.tool.constructionShape == ConstructionShape.HEAD_GUIDE,
                 ) {
                     onIntent(StudioIntent.Draw.SelectConstructionShape(ConstructionShape.HEAD_GUIDE))
                 }
                 ToolIconButton(
                     Lucide.Spline,
-                    "Three-point arc",
+                    stringResource(R.string.shape_three_point_arc),
                     state.tool.constructionShape == ConstructionShape.THREE_POINT_ARC,
                 ) {
                     onIntent(StudioIntent.Draw.SelectConstructionShape(ConstructionShape.THREE_POINT_ARC))
@@ -190,7 +211,11 @@ private fun BrushPickerRow(
     onDismiss: () -> Unit,
 ) {
     Column {
-        Text("Type", style = MaterialTheme.typography.labelMedium, color = EditorTokens.dark)
+        Text(
+            stringResource(R.string.brush_type),
+            style = MaterialTheme.typography.labelMedium,
+            color = EditorTokens.dark,
+        )
         Spacer(Modifier.height(6.dp))
         Row(
             modifier = Modifier
@@ -203,7 +228,7 @@ private fun BrushPickerRow(
         ) {
             Image(
                 painter = painterResource(brushPreviewResource(brush)),
-                contentDescription = "${brush.displayName} brush",
+                contentDescription = stringResource(R.string.brush_named, brush.displayName),
                 modifier = Modifier.size(48.dp),
                 contentScale = ContentScale.Fit,
             )

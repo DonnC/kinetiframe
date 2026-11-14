@@ -30,9 +30,11 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.SelectionInteractionMode
 
 @Composable
@@ -45,27 +47,31 @@ fun SelectionHUD(transform: SelectionTransformMath.TransformInfo, modifier: Modi
     ) {
         Column(Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Pos: ", color = Color.Gray, fontSize = 10.sp)
+                Text(stringResource(R.string.transform_position_label), color = Color.Gray, fontSize = 10.sp)
                 Text(
-                    "${transform.translation.x.toInt()}, ${transform.translation.y.toInt()}",
+                    stringResource(
+                        R.string.transform_position,
+                        transform.translation.x.toInt(),
+                        transform.translation.y.toInt(),
+                    ),
                     color = Color.White,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Scale: ", color = Color.Gray, fontSize = 10.sp)
+                Text(stringResource(R.string.transform_scale_label), color = Color.Gray, fontSize = 10.sp)
                 Text(
-                    "${(transform.scale.x * 100).toInt()}%",
+                    stringResource(R.string.value_percent, (transform.scale.x * 100).toInt()),
                     color = Color.White,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Angle: ", color = Color.Gray, fontSize = 10.sp)
+                Text(stringResource(R.string.transform_angle_label), color = Color.Gray, fontSize = 10.sp)
                 Text(
-                    "${transform.rotation.toInt()}°",
+                    stringResource(R.string.value_degrees, transform.rotation.toInt()),
                     color = Color.White,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,

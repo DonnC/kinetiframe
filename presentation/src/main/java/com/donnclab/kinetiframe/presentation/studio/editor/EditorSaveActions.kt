@@ -8,7 +8,11 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import com.donnclab.kinetiframe.core.contracts.StoreResult
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import com.donnclab.kinetiframe.presentation.studio.dialogs.SaveBeforeExitDialog
 import kotlinx.coroutines.CancellationException
@@ -56,7 +60,7 @@ internal class EditorSaveActions(
                 viewModel.prepareProjectSave().totalFrames
             } catch (error: Exception) {
                 if (error is CancellationException) throw error
-                messages.projectSaveMessage = error.message ?: "Pack was not saved"
+                messages.projectSaveMessage = error.toUiText(R.string.editor_pack_not_saved)
                 return@launch
             }
         }
@@ -77,7 +81,7 @@ internal class EditorSaveActions(
                 viewModel.prepareProjectSave(target.nodeDensity)
             } catch (error: Exception) {
                 if (error is CancellationException) throw error
-                messages.projectSaveMessage = error.message ?: "Project was not saved"
+                messages.projectSaveMessage = error.toUiText(R.string.editor_project_not_saved)
                 if (leaveWhenSaved) exit.returnHomeAfterSave = false
                 return@launchSave
             }
@@ -95,12 +99,12 @@ internal class EditorSaveActions(
                         exit.returnHomeAfterSave = false
                         exit.destination?.invoke()
                     }
-                    "Project saved"
+                    UiText.Resource(R.string.editor_project_saved)
                 }
 
                 is StoreResult.Failure -> {
                     if (leaveWhenSaved) exit.returnHomeAfterSave = false
-                    result.message
+                    UiText.Verbatim(result.message)
                 }
             }
         }
@@ -111,7 +115,8 @@ internal class EditorSaveActions(
 @Composable
 internal fun EditorExitDialogs(exit: EditorExitState, saves: EditorSaveActions, isPackCreator: Boolean) {
     if (exit.returnHomeAfterSave) {
-        AlertDialog(onDismissRequest = {}, text = { Text("Saving project…") }, confirmButton = {})
+        AlertDialog(onDismissRequest = {
+        }, text = { Text(stringResource(R.string.editor_saving_project)) }, confirmButton = {})
     }
     if (!exit.showConfirmation) return
     SaveBeforeExitDialog(

@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Bone
@@ -54,6 +55,7 @@ import com.composables.icons.lucide.Save
 import com.composables.icons.lucide.Spline
 import com.composables.icons.lucide.Undo
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
 import com.donnclab.kinetiframe.presentation.common.IconContextMenu
@@ -124,7 +126,9 @@ fun EditorTopBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (isActorStudio) {
-                onHomeClick?.let { home -> ContextIconButton(ContextIconAction(Icons.Filled.Home, "Home", home)) }
+                onHomeClick?.let { home ->
+                    ContextIconButton(ContextIconAction(Icons.Filled.Home, stringResource(R.string.editor_home), home))
+                }
                 StudioModePill(
                     current = state.scene.studioMode,
                     onSelect = { onIntent(StudioIntent.Rigging.SetStudioMode(it)) },
@@ -137,13 +141,15 @@ fun EditorTopBar(
             ) {
                 if (!isActorStudio) {
                     onHomeClick?.let { home ->
-                        ContextIconButton(ContextIconAction(Icons.Filled.Home, "Home", home))
+                        ContextIconButton(
+                            ContextIconAction(Icons.Filled.Home, stringResource(R.string.editor_home), home),
+                        )
                     }
                 }
                 if (isActorStudio) {
                     com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(
                         Lucide.Bone,
-                        "Edit skeleton joints",
+                        stringResource(R.string.puppet_edit_joints),
                     ) {
                         onIntent(
                             StudioIntent.Rigging.SetStudioMode(com.donnclab.kinetiframe.studio.StudioMode.RIG_SETUP),
@@ -152,19 +158,25 @@ fun EditorTopBar(
                             StudioIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.studio.ActorEditTarget.JOINT_END),
                         )
                     }
-                    com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(Lucide.Undo, "Undo") {
+                    com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(
+                        Lucide.Undo,
+                        stringResource(R.string.editor_undo),
+                    ) {
                         onIntent(StudioIntent.Draw.Undo)
                     }
-                    com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(Lucide.Redo, "Redo") {
+                    com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(
+                        Lucide.Redo,
+                        stringResource(R.string.editor_redo),
+                    ) {
                         onIntent(StudioIntent.Draw.Redo)
                     }
                 } else {
                     IconButton(onClick = {
                         onIntent(StudioIntent.Draw.Undo)
-                    }) { Icon(Lucide.Undo, "Undo", tint = EditorTokens.dark) }
+                    }) { Icon(Lucide.Undo, stringResource(R.string.editor_undo), tint = EditorTokens.dark) }
                     IconButton(onClick = {
                         onIntent(StudioIntent.Draw.Redo)
-                    }) { Icon(Lucide.Redo, "Redo", tint = EditorTokens.muted) }
+                    }) { Icon(Lucide.Redo, stringResource(R.string.editor_redo), tint = EditorTokens.muted) }
                 }
             }
 
@@ -180,111 +192,135 @@ fun EditorTopBar(
                 onSaveActorClick?.let { save ->
                     com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(
                         Lucide.Save,
-                        "Save actor revision",
+                        stringResource(R.string.puppet_save_revision),
                         onClick = save,
                     )
                 }
             }
             (onSavePackClick ?: onSaveProjectClick)?.let { save ->
-                IconButton(onClick = save) { Icon(Lucide.Save, "Save", tint = EditorTokens.dark) }
+                IconButton(onClick = save) {
+                    Icon(Lucide.Save, stringResource(R.string.action_save), tint = EditorTokens.dark)
+                }
             }
             onTracksOpen?.let { open ->
-                ContextIconButton(ContextIconAction(Icons.Filled.ViewTimeline, "Edit asset tracks", open))
+                ContextIconButton(
+                    ContextIconAction(Icons.Filled.ViewTimeline, stringResource(R.string.editor_asset_tracks), open),
+                )
             }
             onEditPackItem?.let { edit ->
-                ContextIconButton(ContextIconAction(Icons.Filled.EditNote, "Edit pack item details", edit))
+                ContextIconButton(
+                    ContextIconAction(Icons.Filled.EditNote, stringResource(R.string.editor_pack_item_details), edit),
+                )
             }
             onFocusCanvas?.takeIf { !isActorStudio }?.let { focus ->
-                ContextIconButton(ContextIconAction(com.composables.icons.lucide.Lucide.Eye, "Focus canvas", focus))
+                ContextIconButton(
+                    ContextIconAction(
+                        com.composables.icons.lucide.Lucide.Eye,
+                        stringResource(R.string.timeline_focus_canvas),
+                        focus,
+                    ),
+                )
             }
             Box {
                 if (isActorStudio) {
                     com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(
                         Lucide.EllipsisVertical,
-                        "More Settings",
+                        stringResource(R.string.editor_more_settings),
                     ) {
                         onOverflowMenuToggle(true)
                     }
                 } else {
                     IconButton(onClick = {
                         onOverflowMenuToggle(true)
-                    }) { Icon(Lucide.EllipsisVertical, "More Settings", tint = EditorTokens.dark) }
+                    }) {
+                        Icon(
+                            Lucide.EllipsisVertical,
+                            stringResource(R.string.editor_more_settings),
+                            tint = EditorTokens.dark,
+                        )
+                    }
                 }
                 IconContextMenu(
                     showOverflowMenu,
                     { onOverflowMenuToggle(false) },
                     buildList {
                         add(
-                            ContextIconAction(Lucide.Copy, "Copy", {
+                            ContextIconAction(Lucide.Copy, stringResource(R.string.editor_copy), {
                                 onOverflowMenuToggle(false)
                                 onIntent(StudioIntent.Selection.Copy)
                             }),
                         )
                         add(
-                            ContextIconAction(Lucide.ClipboardPaste, "Paste", {
+                            ContextIconAction(Lucide.ClipboardPaste, stringResource(R.string.editor_paste), {
                                 onOverflowMenuToggle(false)
                                 onIntent(StudioIntent.Selection.Paste)
                             }),
                         )
                         add(
-                            ContextIconAction(Lucide.Clapperboard, "Frames", {
+                            ContextIconAction(Lucide.Clapperboard, stringResource(R.string.library_kind_frames), {
                                 onOverflowMenuToggle(false)
                                 onStudioClick()
                             }),
                         )
                         if (state.isCanvasTransformed) {
                             add(
-                                ContextIconAction(Lucide.Maximize, "Reset view", {
+                                ContextIconAction(Lucide.Maximize, stringResource(R.string.editor_reset_view), {
                                     onOverflowMenuToggle(false)
                                     onIntent(StudioIntent.View.ResetCanvasTransform)
                                 }),
                             )
                         }
                         add(
-                            ContextIconAction(Icons.Filled.Image, "Background", {
+                            ContextIconAction(Icons.Filled.Image, stringResource(R.string.editor_background), {
                                 onOverflowMenuToggle(false)
                                 assetsExpanded =
                                     true
                             }),
                         )
                         add(
-                            ContextIconAction(Icons.Filled.Speed, "Speed", {
+                            ContextIconAction(Icons.Filled.Speed, stringResource(R.string.preset_speed), {
                                 onOverflowMenuToggle(false)
                                 speedOpen = true
                             }),
                         )
                         if (state.actorDefinition() != null) {
                             add(
-                                ContextIconAction(Lucide.Bone, "Skeleton overlay", {
+                                ContextIconAction(Lucide.Bone, stringResource(R.string.puppet_skeleton_overlay), {
                                     onOverflowMenuToggle(false)
                                     onIntent(StudioIntent.Rigging.ToggleSkeletonOverlay)
                                 }, selected = state.scene.skeletonOverlayVisible),
                             )
                         }
                         add(
-                            ContextIconAction(Lucide.Maximize, "Safe frame", {
+                            ContextIconAction(Lucide.Maximize, stringResource(R.string.editor_safe_frame), {
                                 onIntent(StudioIntent.View.ToggleSafeFrame)
                                 onOverflowMenuToggle(false)
                             }, selected = state.canvas.showSafeFrame),
                         )
                         add(
-                            ContextIconAction(Lucide.Grid2x2, "Grid", {
+                            ContextIconAction(Lucide.Grid2x2, stringResource(R.string.grid_title), {
                                 onOverflowMenuToggle(false)
                                 onGridSettingsClick()
                             }),
                         )
                         add(
-                            ContextIconAction(Lucide.Ghost, "Onion skin", {
+                            ContextIconAction(Lucide.Ghost, stringResource(R.string.editor_onion_skin), {
                                 onOverflowMenuToggle(false)
                                 onOnionSettingsClick()
                             }),
                         )
                         onImportFrameImage?.let { import ->
                             add(
-                                ContextIconAction(Icons.Filled.AddPhotoAlternate, "Frame image", {
-                                    onOverflowMenuToggle(false)
-                                    import()
-                                }),
+                                ContextIconAction(
+                                    Icons.Filled.AddPhotoAlternate,
+                                    stringResource(
+                                        R.string.editor_frame_image,
+                                    ),
+                                    {
+                                        onOverflowMenuToggle(false)
+                                        import()
+                                    },
+                                ),
                             )
                         }
                     },
@@ -301,11 +337,18 @@ fun EditorTopBar(
     if (speedOpen) {
         androidx.compose.material3.AlertDialog(
             onDismissRequest = { speedOpen = false },
-            title = { Text("Playback FPS") },
+            title = { Text(stringResource(R.string.playback_fps)) },
             text = {
                 com.donnclab.kinetiframe.presentation.studio.timeline.TimelineFpsSlider(state.animation.fps, onIntent)
             },
-            confirmButton = { ContextIconButton(ContextIconAction(Icons.Filled.Check, "Done", { speedOpen = false })) },
+            confirmButton = {
+                ContextIconButton(
+                    ContextIconAction(Icons.Filled.Check, stringResource(R.string.action_done), {
+                        speedOpen =
+                            false
+                    }),
+                )
+            },
         )
     }
 }

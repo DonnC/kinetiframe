@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +51,7 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Plus
 import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
 import com.donnclab.kinetiframe.presentation.studio.dialogs.TextInsertionDialog
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -102,7 +104,7 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
                         .fillMaxWidth(),
                 ) {
                     Text(
-                        "Text Tool",
+                        stringResource(R.string.text_tool_title),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
@@ -122,17 +124,25 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
                         ) {
                             Icon(Lucide.Plus, contentDescription = null, modifier = Modifier.size(18.dp))
                             Spacer(Modifier.width(8.dp))
-                            Text("Add Text")
+                            Text(stringResource(R.string.text_add))
                         }
                     } else {
-                        Text("Edit text", style = MaterialTheme.typography.labelMedium, color = EditorTokens.muted)
-                        TextButton(onClick = { showEditDialog = true }) { Text("Edit") }
+                        Text(
+                            stringResource(R.string.text_edit_label),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = EditorTokens.muted,
+                        )
+                        TextButton(onClick = { showEditDialog = true }) { Text(stringResource(R.string.pack_edit)) }
                     }
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
 
                     // Font Selection
-                    Text("Font", style = MaterialTheme.typography.labelMedium, color = EditorTokens.muted)
+                    Text(
+                        stringResource(R.string.text_font),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = EditorTokens.muted,
+                    )
                     Spacer(Modifier.height(4.dp))
                     OutlinedButton(
                         onClick = { currentScreen = "fonts" },
@@ -142,7 +152,7 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
                         val currentFontName = selectedNode?.fontFileName ?: state.tool.textToolOptions.fontFileName
                         val currentFont = fontRegistry.availableFonts.find { it.fileName == currentFontName }
                         Text(
-                            text = currentFont?.displayName ?: "Select Font",
+                            text = currentFont?.displayName ?: stringResource(R.string.text_select_font),
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 1,
                         )
@@ -152,7 +162,7 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
 
                     // Size
                     StandardSlider(
-                        label = "Size",
+                        label = stringResource(R.string.tool_size),
                         value = selectedNode?.fontSizeSp ?: state.tool.textToolOptions.fontSizeSp,
                         onValueChange = { value ->
                             selectedNode?.let { node ->
@@ -171,7 +181,11 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
                     HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
 
                     // Color
-                    Text("Color", style = MaterialTheme.typography.labelMedium, color = EditorTokens.muted)
+                    Text(
+                        stringResource(R.string.text_color),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = EditorTokens.muted,
+                    )
                     Spacer(Modifier.height(8.dp))
                     ColorPicker(
                         selectedNode?.let {
@@ -241,11 +255,11 @@ fun FontSelectionPanel(
             IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.action_back),
                 )
             }
             Text(
-                "Select Font",
+                stringResource(R.string.text_select_font),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(start = 8.dp),
             )
@@ -291,7 +305,7 @@ private fun FontItemRow(font: FontItem, selected: Boolean, onClick: () -> Unit) 
             if (selected) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
-                    contentDescription = "Selected",
+                    contentDescription = stringResource(R.string.state_selected),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp),
                 )

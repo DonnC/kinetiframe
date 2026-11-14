@@ -6,6 +6,8 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.ActorArtworkAttachmentFlow
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.ActorArtworkEditor
@@ -58,7 +60,7 @@ internal class ActorArtworkState {
             } catch (failure: Exception) {
                 if (failure is CancellationException) throw failure
                 viewModel.handleIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
-                messages.projectSaveMessage = failure.message ?: "Could not open drawing"
+                messages.projectSaveMessage = failure.toUiText(R.string.editor_drawing_open_failed)
             } finally {
                 openingSketch = false
             }

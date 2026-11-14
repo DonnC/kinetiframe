@@ -13,25 +13,27 @@ Keep this page current:
 
 ## Now
 
-**Strings to resources, part 10: the rest of `presentation.actors`.** The actor card and
-details sheet, New Actor, the name dialogs, the view menu, and the rigging panels (artwork
-alignment, coverage, performance length, preset audition and library, raster layers) take their
-text from string resources. View, performance and part counts use plurals.
+**Strings to resources, parts 11 and 12: the editor.** The editor's top bar and overflow menu,
+the tool dock and its option panels, the editor dialogs, the canvas overlays, the colour tools
+and the exact audio trim dialog take their text from string resources. The editor's save
+messages are `UiText`. This finishes the inline text check: no file in `presentation` has
+inline text left.
 
 ## Next
 
-**Strings, part 11: the tool dock and the editor dialogs**, then the canvas, colour tools and
-media. The projects and actors ViewModels' `ShowError` effects, and every
-`StoreResult.Failure`, still carry English from the layers below. They move with the **Typed
-errors** track, through `UiText.Verbatim` until then.
+**Model labels**, then **built-in camera presets** (both under Later), so the names screens
+show from lower modules come from resources too. The projects and actors ViewModels'
+`ShowError` effects, the editor's other messages, and every `StoreResult.Failure` still carry
+English from the layers below. They move with the **Typed errors** track, through
+`UiText.Verbatim` until then.
 
 ## Later
 
 Tracks that run alongside the module work, a screen or feature at a time:
 
-- **Strings to resources.** 47 inline text values in 19 files, plus messages assigned to state
-  that the check doesn't count. Then right-to-left layouts, per-app language and a pseudo-locale
-  check.
+- **Strings to resources.** The inline text check is at zero. Left: messages assigned to state
+  that the check doesn't count, and slider value labels built in lambdas ("%", "sp"). Then
+  right-to-left layouts, per-app language and a pseudo-locale check.
 - **Model labels.** Some enums below `presentation` carry the English names screens show:
   `AssetCategory` and `BrowseMode` in `studio`'s library model, `ActorView` in `core` and
   `ActorTemplate` in `actors`. `LocalLibraryCatalog` also builds item info lines
@@ -83,13 +85,13 @@ fixed after the module work, unless one blocks testing.
 
 **Actor Studio**
 
-- The part chips (Head, Eyes, Mouthâ€¦) are pale text on pale chips over a white band: unreadable.
+- The part chips (Head, Eyes, Mouth…) are pale text on pale chips over a white band: unreadable.
 - That band cuts across the tool dock and covers the bottom of the stage.
 - The character is drawn small. In Pose mode the joint pins hide it completely.
 - The floating part toolbar sits on top of the character.
 - About nine unlabelled icons in the top bar. The bone icon appears twice, and a faint icon in the
   stage's top-left corner has no explanation.
-- The tool dock clips the timeline label ("rame 1 Â· 0 keys").
+- The tool dock clips the timeline label ("rame 1 · 0 keys").
 - The timeline shows "0 keys" while a motion preset animates the actor.
 - The preset sheet covers the stage, so you can't see the preview you're choosing.
 - Selecting a preset makes the sheet jump to full height and moves the apply button.
@@ -97,7 +99,7 @@ fixed after the module work, unless one blocks testing.
 
 **Editor**
 
-- The asset menu cuts off "Actor perforâ€¦" and "Import audio â€¦".
+- The asset menu cuts off "Actor perfor…" and "Import audio …".
 - In the brush panel, the brush name ("Pen") is white text on the white preview card.
 - The export screen has no back button.
 - In portrait, Actor Studio's hint banner runs into the gold asset button.
@@ -196,6 +198,7 @@ fixed after the module work, unless one blocks testing.
 | #64 | Moved Actor Studio's rigging tools' text into string resources (strings, part 7) |
 | #65 | Moved Actor Studio's sketch tools' text into string resources (strings, part 8) |
 | #66 | Moved the library's text into string resources (strings, part 9) |
+| #67 | Moved the rest of the actor screens' text into string resources (strings, part 10) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -248,9 +251,9 @@ From `.architecture/` during step 9. Each count may only go down.
 | Debt | Count | Files |
 | --- | --- | --- |
 | Compose imports outside UI code | 38 | 25 |
-| UI imports of `data` packages | 0 | â€” |
-| Functions over the parameter limit | 52 | â€” |
-| Inline text values | 47 | 19 |
+| UI imports of `data` packages | 0 | — |
+| Functions over the parameter limit | 52 | — |
+| Inline text values | 0 | — |
 | Inline colours | 64 | 24 |
 | Inline `.dp` sizes | 806 | 132 |
-| Files over 500 lines | 0 | â€” |
+| Files over 500 lines | 0 | — |
