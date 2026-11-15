@@ -29,6 +29,8 @@ import com.donnclab.kinetiframe.presentation.common.AssetDetails
 import com.donnclab.kinetiframe.presentation.common.AssetKind
 import com.donnclab.kinetiframe.presentation.common.CardThumbnail
 import com.donnclab.kinetiframe.presentation.common.PreviewKind
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.asString
 
 /** How [AssetDetailsSheet]'s action button behaves. [openLabel] replaces "Add to project" with an
  *  open action for items that are documents in their own right (projects and actors). */
@@ -55,7 +57,7 @@ fun AssetDetailsSheet(
         Column(verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
             Text(details.title, style = MaterialTheme.typography.titleLarge)
             Text(
-                details.specsLine,
+                details.specsLine.asString(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -116,7 +118,7 @@ private fun AssetDetailsSheetPreview() {
         kind = AssetKind.ACTOR_PERFORMANCE,
         previewKind = PreviewKind.LIVE_MOTION,
         title = "Walk Cycle Take 3",
-        specsLine = "Humanoid  ·  12 FPS  ·  1080×1920",
+        specsLine = UiText.Verbatim("Humanoid  ·  12 FPS  ·  1080×1920"),
         thumbnail = CardThumbnail.SolidGradient(Color(0xFFFFD9CC), Color(0xFFFF6A45)),
     )
     KinetiFrameTheme { AssetDetailsSheet(sample, AssetDetailsContext(), onAction = {}) }

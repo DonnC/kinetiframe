@@ -48,21 +48,25 @@ data class CameraRecipe(
     )
 }
 
+/** The presets every project offers. Screens name each one from their own string resources. */
+enum class BuiltInCameraPreset { DRAMATIC_REVEAL, COMIC_IMPACT, SUSPENSE_PUSH, ENERGETIC_PAN, DOCUMENTARY_HANDHELD }
+
 object CameraRecipes {
-    fun builtIn(fps: Int): List<CameraRecipe> {
+    /** Each built-in preset's recipe. A built-in recipe's [CameraRecipe.name] is its preset's ID. */
+    fun builtIn(fps: Int): Map<BuiltInCameraPreset, CameraRecipe> {
         fun recipe(
-            name: String,
+            preset: BuiltInCameraPreset,
             action: CameraAction,
             strength: Float,
             seconds: Int = 2,
             transform: (CameraShot) -> CameraShot = { it },
-        ) = CameraRecipe(
-            name,
-            transform(SceneCamera.preset(name, action, 0, fps * seconds, CameraPose(), strength)),
+        ) = preset to CameraRecipe(
+            preset.name,
+            transform(SceneCamera.preset(preset.name, action, 0, fps * seconds, CameraPose(), strength)),
             fps,
         )
-        return listOf(
-            recipe("Dramatic reveal", CameraAction.PULL_OUT, .8f, 3) {
+        return mapOf(
+            recipe(BuiltInCameraPreset.DRAMATIC_REVEAL, CameraAction.PULL_OUT, .8f, 3) {
                 it.copy(
                     start = CameraPose(zoom = 1.8f),
                     end = CameraPose(),
@@ -71,12 +75,14 @@ object CameraRecipes {
                     settleFrames = fps / 2,
                 )
             },
-            recipe("Comic impact", CameraAction.SHAKE, .9f, 1) { it.copy(frequencyHz = 18f, rotationStrength = .4f) },
-            recipe("Suspense push", CameraAction.PUSH_IN, .4f, 4) {
+            recipe(BuiltInCameraPreset.COMIC_IMPACT, CameraAction.SHAKE, .9f, 1) {
+                it.copy(frequencyHz = 18f, rotationStrength = .4f)
+            },
+            recipe(BuiltInCameraPreset.SUSPENSE_PUSH, CameraAction.PUSH_IN, .4f, 4) {
                 it.copy(waitFrames = fps, easing = CameraEasing.EASE_IN)
             },
-            recipe("Energetic pan", CameraAction.WHIP_PAN, .8f),
-            recipe("Documentary handheld", CameraAction.HANDHELD, .5f, 4) {
+            recipe(BuiltInCameraPreset.ENERGETIC_PAN, CameraAction.WHIP_PAN, .8f),
+            recipe(BuiltInCameraPreset.DOCUMENTARY_HANDHELD, CameraAction.HANDHELD, .5f, 4) {
                 it.copy(frequencyHz = .8f, rotationStrength = .15f)
             },
         )

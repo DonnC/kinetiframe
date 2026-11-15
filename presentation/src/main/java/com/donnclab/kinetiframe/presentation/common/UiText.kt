@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
  * string, so it follows the device language.
  */
 sealed interface UiText {
-    /** A string resource, formatted with [args]. */
+    /** A string resource, formatted with [args]. An arg that is itself a [UiText] is resolved first. */
     data class Resource(@StringRes val id: Int, val args: List<Any> = emptyList()) : UiText
 
     /** A plurals resource chosen by [count] and formatted with [args]. */
@@ -27,8 +27,8 @@ sealed interface UiText {
 @Composable
 @ReadOnlyComposable
 fun UiText.asString(): String = when (this) {
-    is UiText.Resource -> stringResource(id, *args.toTypedArray())
-    is UiText.Plural -> pluralStringResource(id, count, *args.toTypedArray())
+    is UiText.Resource -> stringResource(id, *args.resolved())
+    is UiText.Plural -> pluralStringResource(id, count, *args.resolved())
     is UiText.Verbatim -> text
 }
 
@@ -37,7 +37,14 @@ fun Throwable.toUiText(@StringRes fallback: Int): UiText = message?.let(UiText::
 
 /** For effects handled outside composition, such as a snackbar shown from a LaunchedEffect. */
 fun UiText.asString(resources: Resources): String = when (this) {
-    is UiText.Resource -> resources.getString(id, *args.toTypedArray())
-    is UiText.Plural -> resources.getQuantityString(id, count, *args.toTypedArray())
+    is UiText.Resource -> resources.getString(id, *args.resolved(resources))
+    is UiText.Plural -> resources.getQuantityString(id, count, *args.resolved(resources))
     is UiText.Verbatim -> text
 }
+
+@Composable
+@ReadOnlyComposable
+private fun List<Any>.resolved(): Array<Any> = map { if (it is UiText) it.asString() else it }.toTypedArray()
+
+private fun List<Any>.resolved(resources: Resources): Array<Any> =
+    map { if (it is UiText) it.asString(resources) else it }.toTypedArray()

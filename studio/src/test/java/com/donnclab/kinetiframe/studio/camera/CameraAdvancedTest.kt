@@ -51,10 +51,10 @@ class CameraAdvancedTest {
     }
 
     @Test fun `presets serialize and retime without extending occupied range`() {
-        val reveal = CameraRecipes.builtIn(12).first().place("reveal", 0, 36, CameraPose())
+        val reveal = CameraRecipes.builtIn(12).values.first().place("reveal", 0, 36, CameraPose())
         assertEquals(1.8f, reveal.start.zoom, .0001f)
         assertEquals(1f, reveal.end.zoom, .0001f)
-        CameraRecipes.builtIn(12).forEach { recipe ->
+        CameraRecipes.builtIn(12).values.forEach { recipe ->
             assertEquals(recipe, Json.decodeFromString<CameraRecipe>(Json.encodeToString(recipe)))
             val placed = recipe.retime(24).place("new", 8, 16, CameraPose())
             assertEquals(8, placed.startFrame)

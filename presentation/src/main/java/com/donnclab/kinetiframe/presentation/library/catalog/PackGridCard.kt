@@ -21,6 +21,8 @@ import com.donnclab.kinetiframe.presentation.common.AssetKind
 import com.donnclab.kinetiframe.presentation.common.AssetSummary
 import com.donnclab.kinetiframe.presentation.common.CardThumbnail
 import com.donnclab.kinetiframe.presentation.common.PreviewKind
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.asString
 
 /**
  * "Info panel" style grid card, used only for Packs: a collage thumbnail on top, then a plain
@@ -39,7 +41,7 @@ fun PackGridCard(item: AssetSummary, onClick: () -> Unit, modifier: Modifier = M
             Column(Modifier.padding(Dimens.spaceM)) {
                 Text(item.title, style = MaterialTheme.typography.labelLarge, maxLines = 1)
                 Text(
-                    item.scrimSubtitle,
+                    item.scrimSubtitle.asString(),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -51,14 +53,14 @@ fun PackGridCard(item: AssetSummary, onClick: () -> Unit, modifier: Modifier = M
 private fun previewSample() = AssetSummary(
     id = "preview",
     title = "Mouth Expressions",
-    scrimSubtitle = "12 Items",
+    scrimSubtitle = UiText.Verbatim("12 Items"),
     thumbnail = CardThumbnail.SolidGradient(Color(0xFFFFE1D6), Color(0xFFFFC9B3)),
     details = AssetDetails(
         id = "preview",
         kind = AssetKind.PACK,
         previewKind = PreviewKind.LIVE_COLLAGE,
         title = "Mouth Expressions",
-        specsLine = "12 Items in this pack",
+        specsLine = UiText.Verbatim("12 Items in this pack"),
         thumbnail = CardThumbnail.SolidGradient(Color(0xFFFFE1D6), Color(0xFFFFC9B3)),
     ),
 )

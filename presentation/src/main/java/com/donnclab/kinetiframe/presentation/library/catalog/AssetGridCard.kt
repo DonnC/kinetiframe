@@ -19,6 +19,8 @@ import com.donnclab.kinetiframe.presentation.common.AssetSummary
 import com.donnclab.kinetiframe.presentation.common.CardChips
 import com.donnclab.kinetiframe.presentation.common.CardThumbnail
 import com.donnclab.kinetiframe.presentation.common.PreviewKind
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.asString
 
 /**
  * "Overlay" style grid card -- the thumbnail fills the whole card, spec chips float in its top
@@ -35,7 +37,7 @@ fun AssetGridCard(item: AssetSummary, onClick: () -> Unit, modifier: Modifier = 
         AssetThumbnailBox(thumbnail = item.thumbnail, modifier = Modifier.aspectRatio(1f)) {
             item.chips.topStart?.let { SpecChip(it, Modifier.align(Alignment.TopStart).padding(Dimens.spaceS)) }
             item.chips.topEnd?.let { SpecChip(it, Modifier.align(Alignment.TopEnd).padding(Dimens.spaceS)) }
-            CardBottomScrim(title = item.title, subtitle = item.scrimSubtitle)
+            CardBottomScrim(title = item.title, subtitle = item.scrimSubtitle.asString())
         }
     }
 }
@@ -43,7 +45,7 @@ fun AssetGridCard(item: AssetSummary, onClick: () -> Unit, modifier: Modifier = 
 private fun previewSample() = AssetSummary(
     id = "preview",
     title = "Walk Cycle Take 3",
-    scrimSubtitle = "Performance  ·  0:04",
+    scrimSubtitle = UiText.Verbatim("Performance  ·  0:04"),
     thumbnail = CardThumbnail.SolidGradient(Color(0xFFFFD9CC), Color(0xFFFF6A45)),
     chips = CardChips(topEnd = "Performance"),
     details = AssetDetails(
@@ -51,7 +53,7 @@ private fun previewSample() = AssetSummary(
         kind = AssetKind.ACTOR_PERFORMANCE,
         previewKind = PreviewKind.LIVE_MOTION,
         title = "Walk Cycle Take 3",
-        specsLine = "Humanoid  ·  12 FPS",
+        specsLine = UiText.Verbatim("Humanoid  ·  12 FPS"),
         thumbnail = CardThumbnail.SolidGradient(Color(0xFFFFD9CC), Color(0xFFFF6A45)),
     ),
 )

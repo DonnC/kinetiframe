@@ -26,6 +26,7 @@ import com.donnclab.kinetiframe.library.model.AssetCategory
 import com.donnclab.kinetiframe.library.model.AssetOrganization
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
+import com.donnclab.kinetiframe.presentation.library.labelRes
 
 @Composable
 fun PackOrganizationDialog(
@@ -55,7 +56,9 @@ fun PackOrganizationDialog(
                         FilterChip(
                             category == value,
                             { category = value },
-                            label = { Text(value.label, style = MaterialTheme.typography.labelSmall) },
+                            label = {
+                                Text(stringResource(value.labelRes()), style = MaterialTheme.typography.labelSmall)
+                            },
                         )
                     }
                 }

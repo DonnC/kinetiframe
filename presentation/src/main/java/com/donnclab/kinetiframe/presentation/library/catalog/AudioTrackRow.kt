@@ -30,6 +30,7 @@ import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AudioTrackSummary
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
 
 /** One row in an Audio tab's list: a play button, the title, duration and a small kind tag. */
@@ -56,7 +57,7 @@ fun AudioTrackRow(track: AudioTrackSummary, onClick: () -> Unit, modifier: Modif
                 Text(track.title, style = MaterialTheme.typography.labelLarge, maxLines = 1)
                 Row(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
                     Text(
-                        track.durationLabel,
+                        track.durationLabel.asString(),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

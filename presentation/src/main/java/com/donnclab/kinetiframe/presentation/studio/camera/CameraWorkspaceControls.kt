@@ -45,6 +45,7 @@ import com.donnclab.kinetiframe.engine.camera.SceneCamera
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
+import com.donnclab.kinetiframe.studio.camera.BuiltInCameraPreset
 import com.donnclab.kinetiframe.studio.camera.CameraRanges
 import com.donnclab.kinetiframe.studio.camera.CameraRecipe
 import com.donnclab.kinetiframe.studio.camera.CameraRecipeStore
@@ -68,6 +69,15 @@ internal fun CameraAction.labelRes(): Int = when (this) {
 @Composable
 @ReadOnlyComposable
 internal fun CameraAction.label(): String = stringResource(labelRes())
+
+@StringRes
+private fun BuiltInCameraPreset.labelRes(): Int = when (this) {
+    BuiltInCameraPreset.DRAMATIC_REVEAL -> R.string.camera_preset_dramatic_reveal
+    BuiltInCameraPreset.COMIC_IMPACT -> R.string.camera_preset_comic_impact
+    BuiltInCameraPreset.SUSPENSE_PUSH -> R.string.camera_preset_suspense_push
+    BuiltInCameraPreset.ENERGETIC_PAN -> R.string.camera_preset_energetic_pan
+    BuiltInCameraPreset.DOCUMENTARY_HANDHELD -> R.string.camera_preset_documentary_handheld
+}
 
 /** Camera edits have their own bounded undo history, separate from drawing strokes. */
 @Composable
@@ -216,7 +226,10 @@ fun CameraWorkspaceControls(
             library = false
         }, title = { Text(stringResource(R.string.camera_presets_title)) }, text = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
-                (CameraRecipes.builtIn(state.project.fps) + recipes).forEach { recipe ->
+                val builtIn = CameraRecipes.builtIn(state.project.fps).map { (preset, recipe) ->
+                    stringResource(preset.labelRes()) to recipe
+                }
+                (builtIn + recipes.map { it.name to it }).forEach { (name, recipe) ->
                     val range = CameraRanges.available(
                         state.project.cameraShots,
                         state.animation.totalFrames,
@@ -258,7 +271,7 @@ fun CameraWorkspaceControls(
                                         state.project.actorPlacements.isNotEmpty()
                                     ),
                         ) {
-                            Text(recipe.name)
+                            Text(name)
                         }
                         if (recipe in recipes) {
                             IconButton({

@@ -101,12 +101,12 @@ class ActorStudioManager(
                     val definition =
                         PuppetDefinition(
                             id,
-                            intent.template.title,
+                            intent.template.name,
                             ActorTemplates.create(intent.template, state.project.stage),
                         )
                     val instance = PuppetInstance("instance-$id", id)
                     val layer = Layer(
-                        intent.template.title,
+                        intent.template.name,
                         id = "layer-$id",
                         type = LayerType.PUPPET,
                         zIndex = state.currentFrameLayers().size,

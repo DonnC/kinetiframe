@@ -2,21 +2,23 @@ package com.donnclab.kinetiframe.library.model
 
 import kotlinx.serialization.Serializable
 
-@Serializable enum class AssetCategory(val label: String) {
-    CHARACTERS("Characters"),
-    EXPRESSIONS("Expressions"),
-    GESTURES("Gestures"),
-    SCENES("Scenes"),
-    PROPS("Props"),
-    AUDIO("Audio"),
-    COLOURS("Colours"),
+// The names below are saved. Screens name each value from their own string resources.
+
+@Serializable enum class AssetCategory {
+    CHARACTERS,
+    EXPRESSIONS,
+    GESTURES,
+    SCENES,
+    PROPS,
+    AUDIO,
+    COLOURS,
 }
 
-@Serializable enum class BrowseMode(val label: String) {
-    RECENT("Recent"),
-    FAVOURITES("Favourites"),
-    COLLECTIONS("Collections"),
-    ALL("All"),
+@Serializable enum class BrowseMode {
+    RECENT,
+    FAVOURITES,
+    COLLECTIONS,
+    ALL,
 }
 
 @Serializable data class AssetOrganization(

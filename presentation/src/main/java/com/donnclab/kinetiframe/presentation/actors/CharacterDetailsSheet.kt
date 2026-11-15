@@ -104,11 +104,18 @@ fun CharacterDetailsSheet(
                             modifier = Modifier.clickable {
                                 onEditView(view)
                             },
-                            headlineContent = { Text(view.title, style = MaterialTheme.typography.bodyMedium) },
+                            headlineContent = {
+                                Text(stringResource(view.labelRes()), style = MaterialTheme.typography.bodyMedium)
+                            },
                             trailingContent = {
                                 IconButton(onClick = {
                                     onEditView(view)
-                                }) { Icon(Icons.Default.Edit, stringResource(R.string.actor_edit_view, view.title)) }
+                                }) {
+                                    Icon(
+                                        Icons.Default.Edit,
+                                        stringResource(R.string.actor_edit_view, stringResource(view.labelRes())),
+                                    )
+                                }
                             },
                         )
                     }
@@ -140,7 +147,8 @@ fun CharacterDetailsSheet(
                                 Text(
                                     stringResource(
                                         R.string.actor_performance_details,
-                                        view?.title ?: stringResource(R.string.actor_saved_view),
+                                        view?.let { stringResource(it.labelRes()) }
+                                            ?: stringResource(R.string.actor_saved_view),
                                         performance.durationMicros / 1_000_000.0,
                                         projectNames[performance.projectId]
                                             ?: stringResource(R.string.actor_saved_project),
