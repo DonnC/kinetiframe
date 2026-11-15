@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.actors.rig.presets
 import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
 import java.io.File
 
@@ -34,8 +35,9 @@ class PresetChannelValidationBridgeTest {
                     val actual = runCatching {
                         prototype.copy(schemaVersion = schema, loop = loop, channels = channels).validate()
                     }.exceptionOrNull()
-                    assertEquals(expected?.javaClass, actual?.javaClass)
-                    assertEquals(expected?.message, actual?.message)
+                    assertEquals(expected == null, actual == null)
+                    actual?.let { assertInstanceOf(IllegalArgumentException::class.java, it) }
+                    assertEquals(expected?.message, LegacyPresetValidationMessages.of(actual, schema))
                 }
             }
         }

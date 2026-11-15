@@ -21,6 +21,9 @@ import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.contracts.StoreResult
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
@@ -178,9 +181,9 @@ class ActorStudioDocumentViewModel(
             sendEffect(
                 ActorStudioDocumentEffect.ShowError(
                     if (currentState.isDirty) {
-                        "Save your edits before changing views."
+                        UiText.Resource(R.string.actor_save_before_view_change)
                     } else {
-                        "Edit actor views in rig setup. Existing performances keep their authored view."
+                        UiText.Resource(R.string.actor_views_in_rig_setup)
                     },
                 ),
             )
@@ -208,7 +211,7 @@ class ActorStudioDocumentViewModel(
 
                 is StoreResult.Failure -> {
                     updateState { it.copy(loading = false) }
-                    sendEffect(ActorStudioDocumentEffect.ShowError(result.message))
+                    sendEffect(ActorStudioDocumentEffect.ShowError(result.toUiText()))
                 }
             }
         }
@@ -239,7 +242,7 @@ class ActorStudioDocumentViewModel(
 
                 is StoreResult.Failure -> {
                     updateState { it.copy(isSaving = false) }
-                    sendEffect(ActorStudioDocumentEffect.ShowError(result.message))
+                    sendEffect(ActorStudioDocumentEffect.ShowError(result.toUiText()))
                 }
             }
         }
@@ -262,7 +265,7 @@ class ActorStudioDocumentViewModel(
             projectId
                 ?: run {
                     sendEffect(
-                        ActorStudioDocumentEffect.ShowError("Open Actor Studio from a project to save a performance."),
+                        ActorStudioDocumentEffect.ShowError(UiText.Resource(R.string.actor_performance_needs_project)),
                     )
                     return
                 }
@@ -330,7 +333,7 @@ class ActorStudioDocumentViewModel(
 
                 is StoreResult.Failure -> {
                     updateState { it.copy(isSaving = false) }
-                    sendEffect(ActorStudioDocumentEffect.ShowError(result.message))
+                    sendEffect(ActorStudioDocumentEffect.ShowError(result.toUiText()))
                 }
             }
         }
@@ -354,7 +357,7 @@ class ActorStudioDocumentViewModel(
                 }
             ) {
                 is StoreResult.Value -> updateState { it.copy(performance = result.value, isDirty = false) }
-                is StoreResult.Failure -> sendEffect(ActorStudioDocumentEffect.ShowError(result.message))
+                is StoreResult.Failure -> sendEffect(ActorStudioDocumentEffect.ShowError(result.toUiText()))
             }
         }
     }
@@ -370,7 +373,7 @@ class ActorStudioDocumentViewModel(
                     }
             ) {
                 is StoreResult.Value -> sendEffect(ActorStudioDocumentEffect.Exit)
-                is StoreResult.Failure -> sendEffect(ActorStudioDocumentEffect.ShowError(result.message))
+                is StoreResult.Failure -> sendEffect(ActorStudioDocumentEffect.ShowError(result.toUiText()))
             }
         }
     }

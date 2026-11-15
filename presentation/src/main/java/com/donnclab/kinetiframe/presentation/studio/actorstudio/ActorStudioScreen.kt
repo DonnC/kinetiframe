@@ -34,6 +34,8 @@ import com.donnclab.kinetiframe.presentation.actors.ActorStudioDocumentViewModel
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioEditorCallbacks
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioTarget
 import com.donnclab.kinetiframe.presentation.actors.ActorViewMenu
+import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.presentation.studio.EditorScreen
 import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -91,7 +93,7 @@ fun ActorStudioScreen(
 
                 is ActorStudioDocumentEffect.ShowError -> {
                     saveAndExitPending = false
-                    error = effect.message
+                    error = effect.message.asString(resources)
                 }
             }
         }
@@ -134,7 +136,7 @@ fun ActorStudioScreen(
                         val paths = runCatching {
                             model.saveArtwork(revisionId, definition.sceneGraph, runtime)
                         }.getOrElse { throwable ->
-                            error = throwable.message ?: resources.getString(R.string.actor_save_artwork_failed)
+                            error = throwable.toUiText(R.string.actor_save_artwork_failed).asString(resources)
                             writingArtwork = false
                             return@launch
                         }
@@ -308,7 +310,7 @@ private fun RestoredActorEditor(
             throw cancelled
         } catch (error: Exception) {
             runtime.clear() // No canvas has been shown yet, so no render/history owns these textures.
-            restoreError = error.message ?: resources.getString(R.string.actor_restore_artwork_failed)
+            restoreError = error.toUiText(R.string.actor_restore_artwork_failed).asString(resources)
         }
     }
     restoreError?.let { message ->

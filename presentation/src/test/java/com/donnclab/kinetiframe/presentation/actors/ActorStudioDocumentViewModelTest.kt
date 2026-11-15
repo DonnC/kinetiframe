@@ -8,6 +8,8 @@ import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.ActorRevision
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -125,7 +127,7 @@ class ActorStudioDocumentViewModelTest {
             ActorStudioDocumentIntent.SelectView(com.donnclab.kinetiframe.core.actor.rigging.ActorView.ORIGINAL),
         )
         val error = model.effect.first() as ActorStudioDocumentEffect.ShowError
-        assertEquals("Save your edits before changing views.", error.message)
+        assertEquals(UiText.Resource(R.string.actor_save_before_view_change), error.message)
         assertEquals("profile", model.state.value.revision?.revisionId)
         model.handleIntent(ActorStudioDocumentIntent.SetDirty(false))
         model.handleIntent(

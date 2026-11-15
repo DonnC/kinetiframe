@@ -10,6 +10,7 @@ import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.ActorRevision
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -53,7 +54,7 @@ class ActorManagerViewModel(
                     }
                 ) {
                     is StoreResult.Value -> sendEffect(ActorManagerEffect.OpenActorStudio(intent.actorId))
-                    is StoreResult.Failure -> sendEffect(ActorManagerEffect.ShowError(result.message))
+                    is StoreResult.Failure -> sendEffect(ActorManagerEffect.ShowError(result.toUiText()))
                 }
             }
             Unit
@@ -183,7 +184,7 @@ class ActorManagerViewModel(
                 }
             ) {
                 is StoreResult.Value -> reload()
-                is StoreResult.Failure -> sendEffect(ActorManagerEffect.ShowError(result.message))
+                is StoreResult.Failure -> sendEffect(ActorManagerEffect.ShowError(result.toUiText()))
             }
         }
     }

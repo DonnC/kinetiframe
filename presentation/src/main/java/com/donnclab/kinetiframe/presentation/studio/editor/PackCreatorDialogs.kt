@@ -3,6 +3,8 @@ package com.donnclab.kinetiframe.presentation.studio.editor
 
 import androidx.compose.runtime.Composable
 import com.donnclab.kinetiframe.library.model.PackFrameTag
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.presentation.library.packs.PackCreatorConfig
 import com.donnclab.kinetiframe.presentation.library.packs.PackItemDialog
 import com.donnclab.kinetiframe.presentation.library.packs.PackSaveTagsDialog
@@ -27,7 +29,7 @@ internal fun PackCreatorDialogs(
             onDismiss = { panels.packItemDetails = null },
             onSave = { tag ->
                 if (creating && state.animation.totalFrames >= MAX_PACK_ITEMS) {
-                    ui.messages.timelineError = "Maximum item limit reached"
+                    ui.messages.timelineError = UiText.Resource(R.string.editor_item_limit)
                 } else if (creating) {
                     onIntent(StudioIntent.PackItem.Add(index, tag))
                 } else {

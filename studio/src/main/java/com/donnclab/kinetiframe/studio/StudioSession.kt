@@ -300,7 +300,7 @@ class StudioSession(
         store.scope.launch {
             runCatching { loadActorPresets() }
                 .onSuccess { presets -> store.update { it.copy(actor = it.actor.copy(presets = presets)) } }
-                .onFailure { store.send(StudioEffect.ShowError("Actor presets could not load: ${it.message}")) }
+                .onFailure { store.send(StudioEffect.ShowError("Actor presets could not load: ${it.message}", it)) }
         }
         if (shouldInitialize) {
             pendingOperations.launch(store.scope, engineDispatcher) {

@@ -134,7 +134,7 @@ class ActorArtworkManager(
         } catch (failure: Exception) {
             intent.ink.takeUnless { it.isRecycled }?.recycle()
             intent.colour.takeUnless { it.isRecycled }?.recycle()
-            sendEffect(StudioEffect.ShowError(failure.message ?: "Could not bind drawing"))
+            sendEffect(StudioEffect.ShowError(failure.message ?: "Could not bind drawing", failure))
         }
     }
 
@@ -171,7 +171,7 @@ class ActorArtworkManager(
                 replaceSkin = true,
             )
         } catch (error: Exception) {
-            sendEffect(StudioEffect.ShowError(error.message ?: "Could not blend attachment"))
+            sendEffect(StudioEffect.ShowError(error.message ?: "Could not blend attachment", error))
         }
     }
 
@@ -220,7 +220,7 @@ class ActorArtworkManager(
             }
             reconcile()
         } catch (error: Exception) {
-            sendEffect(StudioEffect.ShowError(error.message ?: "Could not edit artwork"))
+            sendEffect(StudioEffect.ShowError(error.message ?: "Could not edit artwork", error))
         }
     }
 
@@ -384,7 +384,7 @@ class ActorArtworkManager(
             reconcile()
         } catch (error: Exception) {
             if (!intent.bitmap.isRecycled) intent.bitmap.recycle()
-            sendEffect(StudioEffect.ShowError(error.message ?: "Could not attach artwork"))
+            sendEffect(StudioEffect.ShowError(error.message ?: "Could not attach artwork", error))
         }
     }
 

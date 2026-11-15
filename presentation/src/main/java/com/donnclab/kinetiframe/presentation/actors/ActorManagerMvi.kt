@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.presentation.actors
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
 import com.donnclab.kinetiframe.ui.ViewState
@@ -29,5 +30,5 @@ sealed interface ActorManagerIntent : ViewIntent {
 
 sealed interface ActorManagerEffect : ViewEffect {
     data class OpenActorStudio(val actorId: String) : ActorManagerEffect
-    data class ShowError(val message: String) : ActorManagerEffect
+    data class ShowError(val message: UiText) : ActorManagerEffect
 }

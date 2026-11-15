@@ -9,7 +9,7 @@ import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
-import com.donnclab.kinetiframe.core.actor.presets.PresetValidationDiagnostics
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeValidation
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
@@ -181,7 +181,7 @@ data class PerformanceDocument(
         ) { "Invalid root motion channels" }
         rootMotionCurves.forEach { it.validate(durationMicros) }
         presetSnapshot?.let { preset ->
-            PresetValidationDiagnostics.requireValidRecipe(preset.recipe.recipe)
+            PresetRecipeValidation.requireValid(preset.recipe.recipe)
             require(preset.intensity.isFinite() && preset.intensity in 0f..2f) { "Invalid preset intensity" }
             require(preset.speed.isFinite() && preset.speed in 0.25f..3f) { "Invalid preset speed" }
         }

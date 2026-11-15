@@ -17,6 +17,8 @@ import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.validation.ActorGraphValidation
+import com.donnclab.kinetiframe.core.actor.validation.GraphValidationException
+import com.donnclab.kinetiframe.core.actor.validation.GraphValidationIssue
 import com.donnclab.kinetiframe.core.geometry.Point2
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
@@ -32,19 +34,19 @@ class ActorGraphValidationBridgeTest {
         SkinMesh(listOf(SkinBone("root", matrix)), List(4) { SkinVertex(0f, 0f, listOf(1f)) }),
     )
 
-    @Test fun `native validation preserves old messages and first failure order`() {
+    @Test fun `validation reports the first failure as a typed issue`() {
         val cases = mapOf(
-            SceneGraph() to "Actor needs 1–512 parts",
+            SceneGraph() to GraphValidationIssue.PART_COUNT,
             graph.copy(rootBoneIds = emptyList(), bones = mapOf("root" to root.withRest(length = -1f))) to
-                "Actor roots do not match its hierarchy",
-            graph.copy(bones = mapOf("root" to root.withRest(length = -1f))) to "Invalid part length",
+                GraphValidationIssue.ROOTS,
+            graph.copy(bones = mapOf("root" to root.withRest(length = -1f))) to GraphValidationIssue.PART_LENGTH,
         )
-        cases.forEach { (candidate, message) ->
+        cases.forEach { (candidate, issue) ->
             assertEquals(
-                message,
-                assertThrows(IllegalArgumentException::class.java) {
+                issue,
+                assertThrows(GraphValidationException::class.java) {
                     ActorGraphValidation.validate(candidate)
-                }.message,
+                }.issue,
             )
         }
     }
@@ -56,22 +58,22 @@ class ActorGraphValidationBridgeTest {
                 "root" to root.withArtwork(textureBinding = TextureBinding("body", 0f, 0f).copy(skin = skin(singular))),
             ),
         )
-        val failure = assertThrows(IllegalArgumentException::class.java) { ActorGraphValidation.validate(candidate) }
-        assertEquals("Singular skin bind transform", failure.message)
+        val failure = assertThrows(GraphValidationException::class.java) { ActorGraphValidation.validate(candidate) }
+        assertEquals(GraphValidationIssue.SINGULAR_BIND, failure.issue)
         assertInstanceOf(SkinTransformException::class.java, failure.cause)
     }
 
-    @Test fun `drawing checks without legacy messages retain the default diagnostic`() {
+    @Test fun `drawing checks report their typed issue`() {
         val drawing = ActorDrawing(
             DrawingSource("same", "same", SkinSourceSize(10, 10)),
             DrawingPlacement(Point2(0f, 0f), DrawingExtent(10f, 10f)),
             DrawingBinding(skin(SkinAffine.Identity)),
         )
         assertEquals(
-            "Failed requirement.",
-            assertThrows(IllegalArgumentException::class.java) {
+            GraphValidationIssue.DRAWING_SOURCES,
+            assertThrows(GraphValidationException::class.java) {
                 ActorGraphValidation.validate(graph.copy(drawing = drawing))
-            }.message,
+            }.issue,
         )
     }
 }
