@@ -12,7 +12,8 @@ import com.donnclab.kinetiframe.core.document.StageDimensions
 
 // Internal identifiers remain readable for saved actors; creation now describes topology,
 // never a stock character illustration or a promise of automatically generated viewpoints.
-enum class ActorTemplate(val title: String) { HUMAN("Two legs"), ANIMAL("Four supports"), CUSTOM("Empty root") }
+// Screens name each template ("Two legs" and so on) from their own string resources.
+enum class ActorTemplate { HUMAN, ANIMAL, CUSTOM }
 
 /** Stable semantic IDs allow motion recipes to target roles rather than editable display names. */
 object ActorTemplates {

@@ -39,7 +39,8 @@ class ActorPresetManager(
                 if (!recipe.supportsView(state.actor.authoredView)) {
                     sendEffect(
                         StudioEffect.ShowError(
-                            "This preset was authored for ${recipe.authoredView.title}. Use a performance authored for this view.",
+                            // The preset card names the view it was authored for.
+                            "This preset was authored for another view. Use a performance authored for this view.",
                         ),
                     )
                     return

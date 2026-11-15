@@ -75,6 +75,9 @@ sealed class StudioIntent : ViewIntent {
         data class RemoveArtwork(val partId: String, val variantId: String = "") : Actor()
         data class SetAttachmentBlend(val partId: String, val variantId: String = "", val enabled: Boolean) : Actor()
         data class AddSampleArtwork(val color: Int) : Actor()
+
+        /** Builds an unsaved actor from [template], named by the template's ID. Only tests send it;
+         *  the app creates actors through the actor library. */
         data class Create(val template: ActorTemplate) : Actor()
         data class Drag(val id: String, val target: Offset) : Actor()
         object CommitDrag : Actor()

@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,7 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.MessageCircle
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.actors.labelRes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -162,7 +164,7 @@ fun ActorPresetCard(
                 maxLines = 1,
             )
             Text(
-                preset.authoredView.title,
+                stringResource(preset.authoredView.labelRes()),
                 style = MaterialTheme.typography.labelSmall,
                 color = ActorStudioTokens.onPanelMuted,
                 maxLines = 1,

@@ -18,6 +18,7 @@ import com.donnclab.kinetiframe.presentation.common.CardChips
 import com.donnclab.kinetiframe.presentation.common.CardThumbnail
 import com.donnclab.kinetiframe.presentation.common.PreviewKind
 import com.donnclab.kinetiframe.presentation.common.StampAsset
+import com.donnclab.kinetiframe.presentation.common.UiText
 
 /**
  * Sample Library content for Compose previews only. The running app reads real items through
@@ -115,7 +116,7 @@ object PreviewCatalog {
     ) = AssetSummary(
         id = id,
         title = title,
-        scrimSubtitle = specs,
+        scrimSubtitle = UiText.Verbatim(specs),
         thumbnail = CardThumbnail.IconOnGradient(colors.first, colors.second, icon),
         chips = CardChips(topEnd = if (isRig) "Human" else "Performance"),
         details = AssetDetails(
@@ -123,7 +124,7 @@ object PreviewCatalog {
             if (isRig) AssetKind.ACTOR_RIG else AssetKind.ACTOR_PERFORMANCE,
             PreviewKind.LIVE_MOTION,
             title,
-            specs,
+            UiText.Verbatim(specs),
             CardThumbnail.IconOnGradient(colors.first, colors.second, icon),
         ),
     )
@@ -138,7 +139,7 @@ object PreviewCatalog {
     ) = AssetSummary(
         id = id,
         title = title,
-        scrimSubtitle = duration,
+        scrimSubtitle = UiText.Verbatim(duration),
         thumbnail = CardThumbnail.SolidGradient(colors.first, colors.second),
         chips = CardChips(topStart = fps, topEnd = canvasSize),
         details = AssetDetails(
@@ -146,7 +147,7 @@ object PreviewCatalog {
             AssetKind.PROJECT,
             PreviewKind.STATIC_SCREENSHOT,
             title,
-            "$fps  ·  $canvasSize",
+            UiText.Verbatim("$fps  ·  $canvasSize"),
             CardThumbnail.SolidGradient(colors.first, colors.second),
         ),
     )
@@ -154,14 +155,14 @@ object PreviewCatalog {
     private fun packSummary(id: String, title: String, itemCount: Int, collage: CardThumbnail.Collage) = AssetSummary(
         id = id,
         title = title,
-        scrimSubtitle = "$itemCount Items",
+        scrimSubtitle = UiText.Verbatim("$itemCount Items"),
         thumbnail = collage,
         details = AssetDetails(
             id,
             AssetKind.PACK,
             PreviewKind.LIVE_COLLAGE,
             title,
-            "$itemCount Items in this pack",
+            UiText.Verbatim("$itemCount Items in this pack"),
             collage,
         ),
     )
@@ -169,7 +170,7 @@ object PreviewCatalog {
     private fun audioSummary(id: String, title: String, duration: String, tag: String, seed: Int) = AudioTrackSummary(
         id = id,
         title = title,
-        durationLabel = duration,
+        durationLabel = UiText.Verbatim(duration),
         tagLabel = tag,
         waveformSeed = seed,
         details = AssetDetails(
@@ -177,7 +178,7 @@ object PreviewCatalog {
             AssetKind.AUDIO,
             PreviewKind.AUDIO_PLAYER,
             title,
-            "$tag  ·  $duration",
+            UiText.Verbatim("$tag  ·  $duration"),
             CardThumbnail.SolidGradient(Color(0xFF2A2622), Color(0xFF4A423B)),
             waveformSeed = seed,
         ),

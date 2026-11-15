@@ -15,7 +15,7 @@ class CameraRecipeStoreTest {
     @Test fun namedPresetsSurviveNewStoreInstancesAndReplaceByName() = runBlocking {
         val context = RuntimeEnvironment.getApplication()
         context.getSharedPreferences("camera-recipes", 0).edit().clear().commit()
-        val recipe = CameraRecipes.builtIn(12).first()
+        val recipe = CameraRecipes.builtIn(12).values.first()
         assertTrue(CameraRecipeStore(context).save(recipe))
         assertEquals(listOf(recipe), CameraRecipeStore(context).load())
         val changed = recipe.copy(shot = recipe.shot.copy(waitFrames = 2))

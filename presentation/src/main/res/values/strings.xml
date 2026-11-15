@@ -130,6 +130,27 @@
     <string name="library_kind_projects">Projects</string>
     <string name="library_kind_packs">Packs</string>
     <string name="library_kind_palettes">Palettes</string>
+    <string name="library_category_characters">Characters</string>
+    <string name="library_category_expressions">Expressions</string>
+    <string name="library_category_gestures">Gestures</string>
+    <string name="library_category_scenes">Scenes</string>
+    <string name="library_category_props">Props</string>
+    <string name="library_category_audio">Audio</string>
+    <string name="library_category_colours">Colours</string>
+    <string name="library_browse_recent">Recent</string>
+    <string name="library_browse_favourites">Favourites</string>
+    <string name="library_browse_collections">Collections</string>
+    <string name="library_location_personal">Personal Library</string>
+    <string name="library_location_project">Project Library</string>
+    <!-- A project card's frame rate, then its canvas size, such as "12 FPS · 1080×1920". -->
+    <string name="library_info_project">%1$d FPS · %2$d×%3$d</string>
+    <!-- A performance card's project name, then its length in seconds. -->
+    <string name="library_info_performance">%1$s · %2$.1f s</string>
+    <!-- A pack's drawing count, then where it is saved, such as "12 drawings · Personal Library". -->
+    <plurals name="library_info_drawings">
+        <item quantity="one">%1$d drawing · %2$s</item>
+        <item quantity="other">%1$d drawings · %2$s</item>
+    </plurals>
     <string name="library_starter_assets_failed">Some starter assets could not be added to Library; they will retry next launch.</string>
     <string name="library_filters_save_failed">Could not remember filters</string>
     <string name="library_pack_read_failed">Could not read pack</string>
@@ -304,6 +325,11 @@
     <string name="camera_redo_edit">Redo effect edit</string>
     <string name="camera_presets_title">Camera presets</string>
     <string name="camera_remove_preset">Remove saved preset %1$s</string>
+    <string name="camera_preset_dramatic_reveal">Dramatic reveal</string>
+    <string name="camera_preset_comic_impact">Comic impact</string>
+    <string name="camera_preset_suspense_push">Suspense push</string>
+    <string name="camera_preset_energetic_pan">Energetic pan</string>
+    <string name="camera_preset_documentary_handheld">Documentary handheld</string>
     <plurals name="camera_presets_update_failed">
         <item quantity="one">Could not update presets. If you have %1$d saved preset, remove it first; otherwise please try again.</item>
         <item quantity="other">Could not update presets. If you have %1$d saved presets, remove one first; otherwise please try again.</item>
@@ -624,6 +650,14 @@
     <string name="actor_create">Create Actor</string>
     <string name="actor_name">Actor name</string>
     <string name="actor_starting_structure">Starting structure</string>
+    <string name="actor_template_two_legs">Two legs</string>
+    <string name="actor_template_four_supports">Four supports</string>
+    <string name="actor_template_empty_root">Empty root</string>
+    <string name="actor_view_original">Original</string>
+    <string name="actor_view_front">Front</string>
+    <string name="actor_view_profile">Profile</string>
+    <string name="actor_view_three_quarter">Three quarter</string>
+    <string name="actor_view_back">Back</string>
     <string name="actor_template_two_legs_description">Paired limbs for figures. Choose the drawing view in Actor Studio.</string>
     <string name="actor_template_four_supports_description">A horizontal body with four linked supports and a tail.</string>
     <string name="actor_template_empty_root_description">One root. Add branches, joints and endpoints yourself.</string>

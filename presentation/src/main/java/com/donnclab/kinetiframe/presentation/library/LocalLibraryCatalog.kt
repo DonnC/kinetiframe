@@ -15,6 +15,8 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.library.domain.LibraryCatalog
 import com.donnclab.kinetiframe.library.model.LibraryOrganization
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.actors.actorTemplateLabelRes
 import com.donnclab.kinetiframe.presentation.common.AssetDetails
 import com.donnclab.kinetiframe.presentation.common.AssetKind
 import com.donnclab.kinetiframe.presentation.common.AssetSummary
@@ -22,6 +24,7 @@ import com.donnclab.kinetiframe.presentation.common.AudioTrackSummary
 import com.donnclab.kinetiframe.presentation.common.CardThumbnail
 import com.donnclab.kinetiframe.presentation.common.PreviewKind
 import com.donnclab.kinetiframe.presentation.common.StampAsset
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserIndex
 
 /**
@@ -50,7 +53,7 @@ class LocalLibraryCatalog(val source: LibraryCatalog) {
                 project.id,
                 project.name,
                 AssetKind.PROJECT,
-                "${project.fps} FPS · ${project.width}×${project.height}",
+                UiText.Resource(R.string.library_info_project, listOf(project.fps, project.width, project.height)),
                 project.thumbnailPath,
             )
         }
@@ -59,17 +62,27 @@ class LocalLibraryCatalog(val source: LibraryCatalog) {
                 performance.id,
                 performance.name,
                 AssetKind.ACTOR_PERFORMANCE,
-                "${performance.projectName} · ${performance.durationMicros / 1_000_000f}s",
+                UiText.Resource(
+                    R.string.library_info_performance,
+                    listOf(performance.projectName, performance.durationMicros / 1_000_000f),
+                ),
             )
         }
         contents.actors.forEach { actor ->
-            actors += card(actor.id, actor.name, AssetKind.ACTOR_RIG, actor.templateId, actor.thumbnailPath)
+            val template = actorTemplateLabelRes(actor.templateId)?.let { UiText.Resource(it) }
+            actors += card(
+                actor.id,
+                actor.name,
+                AssetKind.ACTOR_RIG,
+                template ?: UiText.Verbatim(actor.templateId),
+                actor.thumbnailPath,
+            )
         }
         contents.items.forEach { entry ->
             val item = entry.item
             val location = when {
-                item.scope == LibraryScope.PERSONAL -> "Personal Library"
-                else -> entry.projectName ?: "Project Library"
+                item.scope == LibraryScope.PERSONAL -> UiText.Resource(R.string.library_location_personal)
+                else -> entry.projectName?.let(UiText::Verbatim) ?: UiText.Resource(R.string.library_location_project)
             }
             val kind = when (item.kind) {
                 LibraryItemKind.PROJECT -> AssetKind.PROJECT
@@ -81,7 +94,9 @@ class LocalLibraryCatalog(val source: LibraryCatalog) {
                 LibraryItemKind.AUDIO -> AssetKind.AUDIO
                 LibraryItemKind.PALETTE -> error("Palettes use the colour browser")
             }
-            val info = entry.drawingCount?.let { "$it drawings · $location" } ?: location
+            val info =
+                entry.drawingCount?.let { UiText.Plural(R.plurals.library_info_drawings, it, listOf(it, location)) }
+                    ?: location
             val summary = card(entry.id, item.displayName, kind, info, entry.imagePath)
             when (kind) {
                 AssetKind.PROJECT, AssetKind.BACKGROUND_IMAGE, AssetKind.FRAME -> projects += summary
@@ -120,7 +135,7 @@ class LocalLibraryCatalog(val source: LibraryCatalog) {
         StampAsset(drawing.fileName, drawing.name, Icons.Filled.Folder, Color.Gray, drawing.path)
     }
 
-    private fun card(id: String, name: String, kind: AssetKind, info: String, image: String? = null): AssetSummary {
+    private fun card(id: String, name: String, kind: AssetKind, info: UiText, image: String? = null): AssetSummary {
         val thumbnail = image?.let { CardThumbnail.LocalImage(it) }
             ?: CardThumbnail.IconOnGradient(
                 Color(0xFF677D9A),

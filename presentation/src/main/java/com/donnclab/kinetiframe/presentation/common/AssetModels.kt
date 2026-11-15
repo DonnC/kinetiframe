@@ -32,7 +32,7 @@ data class AssetDetails(
     val kind: AssetKind,
     val previewKind: PreviewKind,
     val title: String,
-    val specsLine: String,
+    val specsLine: UiText,
     val thumbnail: CardThumbnail,
     val waveformSeed: Int = 0,
     val audioPath: String? = null,
@@ -43,7 +43,7 @@ data class AssetDetails(
 data class AssetSummary(
     val id: String,
     val title: String,
-    val scrimSubtitle: String,
+    val scrimSubtitle: UiText,
     val thumbnail: CardThumbnail,
     val chips: CardChips = CardChips(),
     val details: AssetDetails,
@@ -53,7 +53,7 @@ data class AssetSummary(
 data class AudioTrackSummary(
     val id: String,
     val title: String,
-    val durationLabel: String,
+    val durationLabel: UiText,
     val tagLabel: String,
     val waveformSeed: Int,
     val details: AssetDetails,

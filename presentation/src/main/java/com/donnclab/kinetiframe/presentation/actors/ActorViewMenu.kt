@@ -44,7 +44,7 @@ fun ActorViewMenu(
         }, modifier = Modifier.size(40.dp)) {
             Icon(
                 Icons.Default.Flip,
-                stringResource(R.string.actor_views_current, current.title),
+                stringResource(R.string.actor_views_current, stringResource(current.labelRes())),
                 modifier = Modifier.size(18.dp),
             )
         }
@@ -55,7 +55,7 @@ fun ActorViewMenu(
                 }, enabled = false, onClick = {})
                 ActorView.entries.filter { it != ActorView.ORIGINAL && it !in views }.forEach { view ->
                     DropdownMenuItem(
-                        text = { Text(view.title) },
+                        text = { Text(stringResource(view.labelRes())) },
                         leadingIcon = { Icon(Icons.Default.Add, null) },
                         onClick = {
                             expanded = false
@@ -66,7 +66,7 @@ fun ActorViewMenu(
             } else {
                 views.forEach { view ->
                     DropdownMenuItem(
-                        text = { Text(view.title) },
+                        text = { Text(stringResource(view.labelRes())) },
                         enabled = !pinned,
                         trailingIcon = { if (view == current) Icon(Icons.Default.Check, null) },
                         onClick = {

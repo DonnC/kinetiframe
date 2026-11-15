@@ -13,18 +13,18 @@ Keep this page current:
 
 ## Now
 
-**Strings to resources, parts 11 and 12: the editor.** The editor's top bar and overflow menu,
-the tool dock and its option panels, the editor dialogs, the canvas overlays, the colour tools
-and the exact audio trim dialog take their text from string resources. The editor's save
-messages are `UiText`. This finishes the inline text check: no file in `presentation` has
-inline text left.
+**Model labels and built-in camera presets.** `ActorView`, `ActorTemplate`, `AssetCategory` and
+`BrowseMode` no longer carry English names; screens name them from string resources. The
+library's card info lines ("12 FPS · 1080×1920", "3 drawings · Personal Library") are `UiText`
+built from resources and plurals, and actor cards name their template instead of showing its ID.
+The five built-in camera presets have a `BuiltInCameraPreset` ID that the preset list names from
+resources. Saved enum names and saved camera presets don't change.
 
 ## Next
 
-**Model labels**, then **built-in camera presets** (both under Later), so the names screens
-show from lower modules come from resources too. The projects and actors ViewModels'
-`ShowError` effects, the editor's other messages, and every `StoreResult.Failure` still carry
-English from the layers below. They move with the **Typed errors** track, through
+**Typed errors in `core`** (under Later), then the same for the layers above: the projects and
+actors ViewModels' `ShowError` effects, `StudioEffect.ShowError`, the editor's other messages,
+and every `StoreResult.Failure` still carry English from the layers below, through
 `UiText.Verbatim` until then.
 
 ## Later
@@ -32,18 +32,9 @@ English from the layers below. They move with the **Typed errors** track, throug
 Tracks that run alongside the module work, a screen or feature at a time:
 
 - **Strings to resources.** The inline text check is at zero. Left: messages assigned to state
-  that the check doesn't count, and slider value labels built in lambdas ("%", "sp"). Then
-  right-to-left layouts, per-app language and a pseudo-locale check.
-- **Model labels.** Some enums below `presentation` carry the English names screens show:
-  `AssetCategory` and `BrowseMode` in `studio`'s library model, `ActorView` in `core` and
-  `ActorTemplate` in `actors`. `LocalLibraryCatalog` also builds item info lines
-  ("12 FPS · 1080×1920", "Personal Library", "1 drawings") in English. Map the enums to string
-  resources in `presentation` and build the info lines where they're shown, with plurals,
-  without changing the saved enum names.
-- **Built-in camera presets.** `CameraRecipes.builtIn` in `studio` names its five presets in
-  English ("Dramatic reveal" and so on), and saved presets share the same `CameraRecipe.name`
-  field. Give built-in presets an ID the screen names from resources, without changing how saved
-  presets are stored.
+  that the check doesn't count, slider value labels built in lambdas ("%", "sp"), and the
+  library audio tags ("MUSIC", "VOICE", "SFX"), which double as filter keys. Then right-to-left
+  layouts, per-app language and a pseudo-locale check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
   code. Screens already reach storage only through their ViewModels (step 8d).
@@ -199,6 +190,7 @@ fixed after the module work, unless one blocks testing.
 | #65 | Moved Actor Studio's sketch tools' text into string resources (strings, part 8) |
 | #66 | Moved the library's text into string resources (strings, part 9) |
 | #67 | Moved the rest of the actor screens' text into string resources (strings, part 10) |
+| #68 | Moved the editor's text into string resources (strings, parts 11 and 12) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.

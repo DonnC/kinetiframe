@@ -61,7 +61,7 @@ fun CollectionBrowserControls(
                     },
                 ) {
                     Box(contentAlignment = androidx.compose.ui.Alignment.Center) {
-                        Text(mode.label, style = MaterialTheme.typography.labelSmall, maxLines = 1)
+                        Text(stringResource(mode.labelRes()), style = MaterialTheme.typography.labelSmall, maxLines = 1)
                     }
                 }
             }
@@ -92,9 +92,9 @@ fun CollectionBrowserControls(
                 }
                 if (showCategories) {
                     BrowserFilterMenu(
-                        label = position.category?.label ?: allCategories,
+                        label = position.category?.let { stringResource(it.labelRes()) } ?: allCategories,
                         icon = Icons.Default.Category,
-                        options = listOf(allCategories) + AssetCategory.entries.map { it.label },
+                        options = listOf(allCategories) + AssetCategory.entries.map { stringResource(it.labelRes()) },
                         selectedIndex = position.category?.ordinal?.plus(1) ?: 0,
                         modifier = Modifier.weight(1f),
                         onSelect = { index ->
