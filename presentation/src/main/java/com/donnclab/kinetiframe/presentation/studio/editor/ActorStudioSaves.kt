@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.presentation.studio.editor
 
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.hasActorStudioChanges
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -27,7 +29,7 @@ internal class ActorStudioSaves(
                     viewModel.state.value.actorDefinition()?.let { save(it, viewModel.rigAssetManager) }
                 } catch (error: Exception) {
                     if (error is CancellationException) throw error
-                    messages.projectSaveMessage = error.message ?: "Actor was not saved"
+                    messages.projectSaveMessage = error.toUiText(R.string.editor_actor_not_saved)
                 }
             }
         }
@@ -51,7 +53,7 @@ internal class ActorStudioSaves(
                 }
             } catch (error: Exception) {
                 if (error is CancellationException) throw error
-                messages.projectSaveMessage = error.message ?: "Studio work was not saved"
+                messages.projectSaveMessage = error.toUiText(R.string.editor_studio_not_saved)
                 host.onActorSavePreparationFailed?.invoke()
             }
         }
@@ -69,7 +71,7 @@ internal class ActorStudioSaves(
                 host.onExitActorStudio?.invoke()
             } catch (error: Exception) {
                 if (error is CancellationException) throw error
-                messages.projectSaveMessage = error.message ?: "Could not prepare studio exit"
+                messages.projectSaveMessage = error.toUiText(R.string.editor_studio_exit_failed)
             }
         }
     }

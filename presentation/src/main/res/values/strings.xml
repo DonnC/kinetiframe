@@ -28,6 +28,11 @@
     <string name="action_apply">Apply</string>
     <string name="action_insert">Insert</string>
     <string name="action_continue">Continue</string>
+    <string name="action_discard">Discard</string>
+    <!-- Describes a selected item, such as the chosen font. -->
+    <string name="state_selected">Selected</string>
+    <string name="value_pixels">%1$dpx</string>
+    <string name="value_degrees">%1$d°</string>
     <!-- Label for a name field. -->
     <string name="field_name">Name</string>
     <!-- Marks the selected option in a row of choices, such as "• Fill". -->
@@ -675,6 +680,107 @@
     <!-- %1$s is the layer's name. -->
     <string name="raster_layer_hide">Hide %1$s</string>
     <string name="raster_layer_show">Show %1$s</string>
+
+    <!-- Editor -->
+    <string name="editor_home">Home</string>
+    <string name="editor_undo">Undo</string>
+    <string name="editor_redo">Redo</string>
+    <string name="editor_asset_tracks">Edit asset tracks</string>
+    <string name="editor_pack_item_details">Edit pack item details</string>
+    <string name="editor_more_settings">More Settings</string>
+    <string name="editor_copy">Copy</string>
+    <string name="editor_paste">Paste</string>
+    <string name="editor_reset_view">Reset view</string>
+    <string name="editor_background">Background</string>
+    <string name="editor_safe_frame">Safe frame</string>
+    <string name="editor_onion_skin">Onion skin</string>
+    <string name="editor_frame_image">Frame image</string>
+    <string name="editor_actor_library">Actor library</string>
+    <string name="editor_background_image">Background image</string>
+    <string name="editor_save_project">Save Project</string>
+    <string name="editor_saving_project">Saving project…</string>
+    <string name="editor_project_saved">Project saved</string>
+    <string name="editor_project_not_saved">Project was not saved</string>
+    <string name="editor_pack_not_saved">Pack was not saved</string>
+    <string name="editor_actor_not_saved">Actor was not saved</string>
+    <string name="editor_studio_not_saved">Studio work was not saved</string>
+    <string name="editor_studio_exit_failed">Could not prepare studio exit</string>
+    <string name="editor_drawing_open_failed">Could not open drawing</string>
+    <!-- %1$s is the reason the project could not be opened. -->
+    <string name="editor_project_open_failed">Could not open this project: %1$s</string>
+    <string name="editor_exit_title">Save before leaving?</string>
+    <string name="editor_exit_message">Save your work, discard unsaved changes, or keep editing.</string>
+    <string name="editor_exit_message_no_discard">Save your work before leaving, or cancel to keep editing.</string>
+
+    <!-- Editor tools -->
+    <string name="tool_bone">Bone</string>
+    <string name="tool_pen">Pen</string>
+    <string name="tool_add_bone">Add Bone</string>
+    <string name="tool_pose_limb">Pose Limb</string>
+    <string name="tool_construction_shapes">Construction shapes</string>
+    <string name="tool_eraser">Eraser</string>
+    <string name="tool_select_actor_part">Select actor part</string>
+    <string name="tool_lasso">Lasso</string>
+    <string name="tool_fill">Fill</string>
+    <string name="tool_text">Text</string>
+    <string name="tool_smudge">Smudge</string>
+    <string name="tool_blur">Blur</string>
+    <string name="tool_brush">Brush</string>
+    <!-- Title of a tool's options when the tool has no name of its own. -->
+    <string name="tool_generic">Tool</string>
+    <string name="tool_options">Options</string>
+    <string name="tool_size">Size</string>
+    <!-- How close a colour must be to the tapped colour for fill to spread into it. -->
+    <string name="tool_tolerance">Tolerance</string>
+    <string name="tool_opacity">Opacity</string>
+    <string name="ruler_line">Line</string>
+    <string name="ruler_circle">Circle</string>
+    <string name="ruler_box">Box</string>
+    <string name="ruler_mirror">Mirror</string>
+    <!-- Turns the drawing ruler off. -->
+    <string name="ruler_off">Off</string>
+    <string name="shape_capsule">Capsule</string>
+    <string name="shape_triangle">Triangle</string>
+    <string name="shape_head_guide">Head guide</string>
+    <string name="shape_three_point_arc">Three-point arc</string>
+    <string name="brush_type">Type</string>
+    <!-- Describes a brush preview, naming the brush. -->
+    <string name="brush_named">%1$s brush</string>
+    <string name="eraser_title">Handwriting eraser</string>
+    <string name="eraser_stroke">Stroke eraser</string>
+    <string name="eraser_area">Area eraser</string>
+    <string name="eraser_clear_all">Erase all handwriting</string>
+    <string name="grid_title">Grid</string>
+    <string name="grid_reset">Reset grid</string>
+    <string name="grid_vertical_spacing">Vertical Spacing</string>
+    <string name="grid_horizontal_spacing">Horizontal Spacing</string>
+    <string name="selection_title">Selection mode</string>
+    <string name="selection_rectangle">Rectangle</string>
+    <string name="selection_partial">Include partially selected objects</string>
+    <string name="text_tool_title">Text Tool</string>
+    <string name="text_add">Add Text</string>
+    <string name="text_edit">Edit Text</string>
+    <string name="text_edit_label">Edit text</string>
+    <string name="text_font">Font</string>
+    <string name="text_select_font">Select Font</string>
+    <string name="text_color">Color</string>
+    <string name="pivot_confirm">Confirm pivot</string>
+    <string name="pivot_cancel">Cancel pivot</string>
+    <string name="palette_retry">Retry palettes</string>
+    <string name="palette_empty">No palettes</string>
+    <!-- Labels before a selection's position, scale and angle; each ends with a space. -->
+    <string name="transform_position_label">Pos: </string>
+    <string name="transform_scale_label">Scale: </string>
+    <string name="transform_angle_label">Angle: </string>
+    <!-- A selection's position on the canvas, x then y. -->
+    <string name="transform_position">%1$d, %2$d</string>
+    <!-- The canvas view: zoom percent, x and y offset, then rotation in degrees. -->
+    <string name="canvas_transform_summary">%1$d%% x:%2$d y:%3$d %4$d°</string>
+    <string name="audio_exact_trim_title">Exact source trim</string>
+    <string name="audio_exact_trim_in">In (milliseconds)</string>
+    <string name="audio_exact_trim_out">Out (milliseconds)</string>
+    <!-- The audio source's length in milliseconds. -->
+    <string name="audio_exact_trim_source">Source: %1$d ms</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>

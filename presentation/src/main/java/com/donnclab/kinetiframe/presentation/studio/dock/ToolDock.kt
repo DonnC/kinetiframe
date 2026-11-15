@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -61,6 +62,7 @@ import com.composables.icons.lucide.Type
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
 import com.donnclab.kinetiframe.studio.CanvasState
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -165,7 +167,7 @@ fun ToolDock(
                         item {
                             ToolButton(
                                 Lucide.Bone,
-                                "Bone",
+                                stringResource(R.string.tool_bone),
                                 state.scene.studioMode == StudioMode.RIG_SETUP,
                                 onClick = {
                                     onInteraction()
@@ -179,7 +181,7 @@ fun ToolDock(
                         item {
                             ToolButton(
                                 Lucide.Pen,
-                                "Pen",
+                                stringResource(R.string.tool_pen),
                                 !isPuppetStudio && state.tool.activeTool == DrawingTool.BRUSH &&
                                     state.tool.constructionShape == null,
                                 onClick = {
@@ -207,7 +209,7 @@ fun ToolDock(
                             item {
                                 ToolButton(
                                     Lucide.Plus,
-                                    "Add Bone",
+                                    stringResource(R.string.tool_add_bone),
                                     state.tool.activeTool == DrawingTool.BONE,
                                     onClick = {
                                         onInteraction()
@@ -220,7 +222,7 @@ fun ToolDock(
                         item {
                             ToolButton(
                                 Lucide.Shapes,
-                                "Pose Limb",
+                                stringResource(R.string.tool_pose_limb),
                                 isPosing,
                                 onClick = {
                                     onInteraction()
@@ -235,7 +237,7 @@ fun ToolDock(
                         item {
                             ToolButton(
                                 Lucide.Shapes,
-                                "Construction shapes",
+                                stringResource(R.string.tool_construction_shapes),
                                 state.tool.constructionShape != null,
                                 onClick = {
                                     onInteraction()
@@ -257,7 +259,7 @@ fun ToolDock(
                         item {
                             ToolButton(
                                 Lucide.Eraser,
-                                "Eraser",
+                                stringResource(R.string.tool_eraser),
                                 state.tool.activeTool == DrawingTool.ERASER,
                                 onClick = {
                                     onInteraction()
@@ -277,7 +279,7 @@ fun ToolDock(
                             item {
                                 ToolButton(
                                     Lucide.Lasso,
-                                    "Select actor part",
+                                    stringResource(R.string.tool_select_actor_part),
                                     state.tool.activeTool == DrawingTool.LASSO,
                                     onClick = {
                                         onInteraction()
@@ -291,7 +293,7 @@ fun ToolDock(
                         item {
                             ToolButton(
                                 Lucide.Lasso,
-                                "Lasso",
+                                stringResource(R.string.tool_lasso),
                                 state.tool.activeTool == DrawingTool.LASSO,
                                 onClick = {
                                     onInteraction()
@@ -310,7 +312,7 @@ fun ToolDock(
                         item {
                             ToolButton(
                                 Lucide.PaintBucket,
-                                "Fill",
+                                stringResource(R.string.tool_fill),
                                 state.tool.activeTool == DrawingTool.COLOR_FILL,
                                 onClick = {
                                     onInteraction()
@@ -329,7 +331,7 @@ fun ToolDock(
                         item {
                             ToolButton(
                                 Lucide.Type,
-                                "Text",
+                                stringResource(R.string.tool_text),
                                 state.tool.activeTool == DrawingTool.TEXT,
                                 onClick = {
                                     onInteraction()
@@ -345,7 +347,7 @@ fun ToolDock(
                         item {
                             ToolButton(
                                 Lucide.Hand,
-                                "Smudge",
+                                stringResource(R.string.tool_smudge),
                                 state.tool.activeTool == DrawingTool.SMUDGE,
                                 onClick = {
                                     onInteraction()
@@ -361,7 +363,7 @@ fun ToolDock(
                         item {
                             ToolButton(
                                 Lucide.Droplets,
-                                "Blur",
+                                stringResource(R.string.tool_blur),
                                 state.tool.activeTool == DrawingTool.BLUR,
                                 onClick = {
                                     onInteraction()
@@ -405,7 +407,7 @@ fun ToolDock(
                         DrawingTool.LASSO -> SelectionOptionsContent(state, onIntent) { menuTool = null }
                         DrawingTool.TEXT -> TypographyOptionsPanel(state, onIntent, onDismiss = { menuTool = null })
                         DrawingTool.SMUDGE, DrawingTool.BLUR -> SmudgeBlurOptionsContent(state, menuTool!!, onIntent)
-                        else -> Box(Modifier.padding(16.dp)) { Text("Options") }
+                        else -> Box(Modifier.padding(16.dp)) { Text(stringResource(R.string.tool_options)) }
                     }
                 }
             }

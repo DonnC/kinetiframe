@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Check
@@ -28,6 +29,7 @@ import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.actors.rig.model.PivotPlacement
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.presentation.R
 
 /**
  * Temporary rig-setup surface for one extracted cutout.
@@ -123,14 +125,14 @@ fun PivotPlacementOverlay(
             containerColor = actionColor,
             contentColor = MaterialTheme.colorScheme.onPrimary,
         ) {
-            Icon(Lucide.Check, contentDescription = "Confirm pivot")
+            Icon(Lucide.Check, contentDescription = stringResource(R.string.pivot_confirm))
         }
         FloatingActionButton(
             onClick = onCancelled,
             containerColor = cancelColor,
             contentColor = MaterialTheme.colorScheme.onError,
         ) {
-            Icon(Lucide.X, contentDescription = "Cancel pivot")
+            Icon(Lucide.X, contentDescription = stringResource(R.string.pivot_cancel))
         }
     }
 }

@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 
 /**
  * A custom dialog for inserting text.
@@ -59,7 +61,7 @@ fun TextInsertionDialog(initialText: String = "", onDismiss: () -> Unit, onConfi
                 modifier = Modifier.padding(24.dp),
             ) {
                 Text(
-                    text = if (initialText.isEmpty()) "Add Text" else "Edit Text",
+                    text = stringResource(if (initialText.isEmpty()) R.string.text_add else R.string.text_edit),
                     style = MaterialTheme.typography.titleLarge,
                     color = Color.White,
                 )
@@ -105,7 +107,7 @@ fun TextInsertionDialog(initialText: String = "", onDismiss: () -> Unit, onConfi
                 ) {
                     TextButton(onClick = onDismiss) {
                         Text(
-                            "CANCEL",
+                            stringResource(R.string.action_cancel).uppercase(),
                             color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.labelLarge,
                         )
@@ -116,7 +118,7 @@ fun TextInsertionDialog(initialText: String = "", onDismiss: () -> Unit, onConfi
                         enabled = text.isNotBlank(),
                     ) {
                         Text(
-                            "INSERT",
+                            stringResource(R.string.action_insert).uppercase(),
                             color = if (text.isNotBlank()) {
                                 MaterialTheme.colorScheme.primary
                             } else {

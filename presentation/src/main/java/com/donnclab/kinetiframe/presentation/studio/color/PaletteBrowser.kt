@@ -20,11 +20,13 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.model.BundledPalettes
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.ui.appViewModel
 
 /** Same palette surface in the Library and every brush/fill colour popup. */
@@ -48,7 +50,9 @@ fun PaletteBrowserContent(
 
             state.error != null -> {
                 Text(state.error, style = MaterialTheme.typography.bodySmall)
-                IconButton(onClick = { onIntent(PaletteIntent.Load) }) { Icon(Icons.Default.Refresh, "Retry palettes") }
+                IconButton(onClick = {
+                    onIntent(PaletteIntent.Load)
+                }) { Icon(Icons.Default.Refresh, stringResource(R.string.palette_retry)) }
             }
 
             else -> {
@@ -62,7 +66,12 @@ fun PaletteBrowserContent(
                     }
                 }
                 state.palettes.firstOrNull { it.id == state.selectedId }?.let { PaletteSwatches(it, color, onPick) }
-                if (state.palettes.isEmpty()) Text("No palettes", style = MaterialTheme.typography.bodySmall)
+                if (state.palettes.isEmpty()) {
+                    Text(
+                        stringResource(R.string.palette_empty),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
             }
         }
     }
