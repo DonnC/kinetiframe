@@ -1,7 +1,8 @@
 package com.donnclab.kinetiframe.actors.rig.presets
 
-import com.donnclab.kinetiframe.core.actor.presets.PresetValidationDiagnostics
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeValidation
 
+/** Throws the typed validation failure for the first problem in [recipe]. */
 internal fun validatePresetRecipe(recipe: ActorMotionPreset) {
-    PresetValidationDiagnostics.requireValidRecipe(recipe.document().recipe)
+    PresetRecipeValidation.requireValid(recipe.document().recipe)
 }

@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.presentation.project
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.project.domain.ProjectCatalog
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -37,7 +38,7 @@ class ProjectManagerViewModel(
                     sendEffect(ProjectManagerEffect.OpenProject(created.value.projectId))
                 }
 
-                is StoreResult.Failure -> sendEffect(ProjectManagerEffect.ShowError(created.message))
+                is StoreResult.Failure -> sendEffect(ProjectManagerEffect.ShowError(created.toUiText()))
             }
         }
     }
@@ -46,7 +47,7 @@ class ProjectManagerViewModel(
         viewModelScope.launch {
             when (val result = withContext(ioDispatcher) { catalog.rename(projectId, name) }) {
                 is StoreResult.Value -> reload()
-                is StoreResult.Failure -> sendEffect(ProjectManagerEffect.ShowError(result.message))
+                is StoreResult.Failure -> sendEffect(ProjectManagerEffect.ShowError(result.toUiText()))
             }
         }
     }
@@ -55,7 +56,7 @@ class ProjectManagerViewModel(
         viewModelScope.launch {
             when (val result = withContext(ioDispatcher) { catalog.delete(projectId) }) {
                 is StoreResult.Value -> reload()
-                is StoreResult.Failure -> sendEffect(ProjectManagerEffect.ShowError(result.message))
+                is StoreResult.Failure -> sendEffect(ProjectManagerEffect.ShowError(result.toUiText()))
             }
         }
     }

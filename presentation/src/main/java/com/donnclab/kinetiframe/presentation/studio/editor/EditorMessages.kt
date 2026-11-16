@@ -21,7 +21,7 @@ internal class EditorMessages {
     var placementError by mutableStateOf<String?>(null)
     var actorLibraryMessage by mutableStateOf<String?>(null)
     var backgroundImageError by mutableStateOf<String?>(null)
-    var timelineError by mutableStateOf<String?>(null)
+    var timelineError by mutableStateOf<UiText?>(null)
     var projectSaveMessage by mutableStateOf<UiText?>(null)
     var audioError by mutableStateOf<String?>(null)
     var videoError by mutableStateOf<String?>(null)
@@ -71,7 +71,7 @@ internal fun EditorMessageDialogs(messages: EditorMessages) {
 
 @Composable
 internal fun TimelineErrorDialog(messages: EditorMessages) {
-    messages.timelineError?.let { message -> EditorErrorDialog(message) { messages.timelineError = null } }
+    messages.timelineError?.let { message -> EditorErrorDialog(message.asString()) { messages.timelineError = null } }
 }
 
 @Composable

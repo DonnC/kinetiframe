@@ -6,6 +6,7 @@ import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -85,18 +86,19 @@ class PresetRecipeValidationBridgeTest {
         }
         val count =
             assertThrows(IllegalArgumentException::class.java) { prototype.copy(channels = oversized).validate() }
-        assertEquals("Failed requirement.", count.message)
+        assertEquals("Failed requirement.", LegacyPresetValidationMessages.of(count, 3))
         val schema =
             assertThrows(IllegalArgumentException::class.java) {
                 prototype.copy(schemaVersion = 4, channels = oversized).validate()
             }
-        assertEquals("Unsupported motion preset schema: 4", schema.message)
+        assertEquals("Unsupported motion preset schema: 4", LegacyPresetValidationMessages.of(schema, 4))
     }
 
     private fun compare(recipe: ActorMotionPreset) {
         val expected = runCatching { LegacyPresetRecipeValidationReference.validate(recipe) }.exceptionOrNull()
         val actual = runCatching { recipe.validate() }.exceptionOrNull()
-        assertEquals(expected?.javaClass, actual?.javaClass)
-        assertEquals(expected?.message, actual?.message)
+        assertEquals(expected == null, actual == null)
+        actual?.let { assertInstanceOf(IllegalArgumentException::class.java, it) }
+        assertEquals(expected?.message, LegacyPresetValidationMessages.of(actual, recipe.schemaVersion))
     }
 }

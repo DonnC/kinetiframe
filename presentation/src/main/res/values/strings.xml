@@ -486,6 +486,9 @@
     <!-- Suggested name for a duplicated performance. -->
     <string name="actor_performance_copy">%1$s copy</string>
     <string name="actor_save_artwork_failed">Could not save actor artwork</string>
+    <string name="actor_save_before_view_change">Save your edits before changing views.</string>
+    <string name="actor_views_in_rig_setup">Edit actor views in rig setup. Existing performances keep their authored view.</string>
+    <string name="actor_performance_needs_project">Open Actor Studio from a project to save a performance.</string>
     <string name="actor_restore_artwork_failed">Could not restore actor artwork</string>
     <!-- %1$s lists the artwork files that could not be found. -->
     <string name="actor_artwork_missing">Missing actor artwork: %1$s</string>
@@ -742,6 +745,7 @@
     <string name="editor_drawing_open_failed">Could not open drawing</string>
     <!-- %1$s is the reason the project could not be opened. -->
     <string name="editor_project_open_failed">Could not open this project: %1$s</string>
+    <string name="editor_item_limit">Maximum item limit reached</string>
     <string name="editor_exit_title">Save before leaving?</string>
     <string name="editor_exit_message">Save your work, discard unsaved changes, or keep editing.</string>
     <string name="editor_exit_message_no_discard">Save your work before leaving, or cancel to keep editing.</string>
@@ -839,4 +843,24 @@
     <string name="settings_share_diagnostics">Share diagnostics</string>
     <string name="settings_load_failed">Could not read settings. Your projects are unchanged.</string>
     <string name="settings_save_failed">Settings could not be saved. Please try again.</string>
+
+    <!-- Validation failures -->
+    <string name="actor_invalid_part_count">An actor needs between 1 and 512 parts.</string>
+    <string name="actor_invalid_variant_count">A part can have at most 24 artwork variants.</string>
+    <string name="actor_invalid_attachment_pair">Blending needs the part and the part directly above it.</string>
+    <string name="actor_invalid_ik_root">An IK endpoint must connect to the part directly above it.</string>
+    <string name="actor_invalid_hierarchy_cycle">A part can\'t be placed under one of its own children.</string>
+    <string name="actor_invalid_grid_budget">This actor has too much bound artwork. Simplify a drawing or remove some artwork.</string>
+    <string name="actor_invalid_singular_bind">This artwork can\'t be bound to its parts. Check that no part has zero size.</string>
+    <string name="actor_invalid_surface_descendants">Continuous artwork can only cover the parts below its owner.</string>
+    <string name="actor_invalid_surface_overlap">Two pieces of continuous artwork cover the same parts.</string>
+    <!-- %1$s is the internal name of the problem, for support. -->
+    <string name="actor_invalid_data">This actor\'s data is invalid (%1$s).</string>
+    <string name="preset_newer_version">This motion preset was made with a newer version of KinetiFrame.</string>
+    <string name="preset_unsupported_feature">This motion preset uses a feature its format version doesn\'t support.</string>
+    <string name="preset_invalid_point_count">A motion curve needs 2 to 64 points in order.</string>
+    <string name="preset_invalid_loop">A looping motion must end where it starts.</string>
+    <string name="preset_invalid_compensation">Counter-rotation must use this preset\'s own uncompensated channels.</string>
+    <!-- %1$s is the internal name of the problem, for support. -->
+    <string name="preset_invalid_data">This motion preset\'s data is invalid (%1$s).</string>
 </resources>

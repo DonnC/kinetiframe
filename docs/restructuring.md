@@ -13,19 +13,21 @@ Keep this page current:
 
 ## Now
 
-**Model labels and built-in camera presets.** `ActorView`, `ActorTemplate`, `AssetCategory` and
-`BrowseMode` no longer carry English names; screens name them from string resources. The
-library's card info lines ("12 FPS · 1080×1920", "3 drawings · Personal Library") are `UiText`
-built from resources and plurals, and actor cards name their template instead of showing its ID.
-The five built-in camera presets have a `BuiltInCameraPreset` ID that the preset list names from
-resources. Saved enum names and saved camera presets don't change.
+**Typed errors, part 1: validation in `core`.** `ActorGraphValidation` throws the typed
+`GraphValidationException`, and `PresetValidationDiagnostics` is gone: preset checks throw
+`PresetRecipeValidationException` and `PresetChannelValidationException`. `presentation` words
+each issue from string resources (`FailureText.kt`), looking through a failure's causes. The
+projects, actors and Actor Studio `ShowError` effects and the editor's error message are
+`UiText`, `StoreResult.Failure` and `StudioEffect.ShowError` pass their cause along so typed
+failures reach the screen, and the parity tests keep the former messages in a test helper.
 
 ## Next
 
-**Typed errors in `core`** (under Later), then the same for the layers above: the projects and
-actors ViewModels' `ShowError` effects, `StudioEffect.ShowError`, the editor's other messages,
-and every `StoreResult.Failure` still carry English from the layers below, through
-`UiText.Verbatim` until then.
+**Typed errors, part 2: the layers above `core`.** `StudioEffect.ShowError` (about 25 messages
+in `studio`'s managers), the `require` messages in `core`'s documents, and the fallback text of
+every `StoreResult.Failure` (about 30 in `actors`, `studio` and `data`) are still English, shown
+through `UiText.Verbatim`. Give each layer typed failures, a feature at a time, starting with
+Actor Studio's managers.
 
 ## Later
 
@@ -42,9 +44,6 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
   still mirror `core` types, with bridges and parity tests between them, and `ActorView` duplicates
   `core`'s `PresetAuthoredView`. Merge each pair and delete the parity tests.
-- **Typed errors in `core`.** `ActorGraphValidation` and `PresetValidationDiagnostics` turn typed
-  validation issues into English sentences inside `core`. Return the typed issue and let the UI
-  map it to string resources.
 - **Screen tests left in `app`.** Some tests of `presentation` code still live in `app` and use
   its public API: host tests that need Robolectric or the app's assets, the `studio` package's
   tests that drive `StudioViewModel`, and most device tests in the `studio` and
@@ -191,6 +190,7 @@ fixed after the module work, unless one blocks testing.
 | #66 | Moved the library's text into string resources (strings, part 9) |
 | #67 | Moved the rest of the actor screens' text into string resources (strings, part 10) |
 | #68 | Moved the editor's text into string resources (strings, parts 11 and 12) |
+| #69 | Named model values and built-in camera presets from string resources |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.

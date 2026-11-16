@@ -11,6 +11,7 @@ import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
 import com.donnclab.kinetiframe.ui.ViewState
@@ -63,5 +64,5 @@ sealed interface ActorStudioDocumentEffect : ViewEffect {
     data object Exit : ActorStudioDocumentEffect
     data object ConfirmDiscard : ActorStudioDocumentEffect
     data class PerformanceSaved(val document: PerformanceDocument) : ActorStudioDocumentEffect
-    data class ShowError(val message: String) : ActorStudioDocumentEffect
+    data class ShowError(val message: UiText) : ActorStudioDocumentEffect
 }

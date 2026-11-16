@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.presentation.project
 
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
 import com.donnclab.kinetiframe.ui.ViewState
@@ -22,5 +23,5 @@ sealed interface ProjectManagerIntent : ViewIntent {
 
 sealed interface ProjectManagerEffect : ViewEffect {
     data class OpenProject(val projectId: String) : ProjectManagerEffect
-    data class ShowError(val message: String) : ProjectManagerEffect
+    data class ShowError(val message: UiText) : ProjectManagerEffect
 }

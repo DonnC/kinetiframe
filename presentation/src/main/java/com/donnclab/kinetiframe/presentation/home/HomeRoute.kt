@@ -109,7 +109,7 @@ fun HomeRoute(
         projectModel.effect.collect { effect ->
             when (effect) {
                 is ProjectManagerEffect.OpenProject -> onOpenProject(effect.projectId)
-                is ProjectManagerEffect.ShowError -> snackbar.showSnackbar(effect.message)
+                is ProjectManagerEffect.ShowError -> snackbar.showSnackbar(effect.message.asString(resources))
             }
         }
     }
@@ -117,7 +117,7 @@ fun HomeRoute(
         actorModel.effect.collect { effect ->
             when (effect) {
                 is ActorManagerEffect.OpenActorStudio -> onOpenActor(effect.actorId)
-                is ActorManagerEffect.ShowError -> snackbar.showSnackbar(effect.message)
+                is ActorManagerEffect.ShowError -> snackbar.showSnackbar(effect.message.asString(resources))
             }
         }
     }
