@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.studio.domain.actorstudio
 
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.studio.StudioEffect
+import com.donnclab.kinetiframe.studio.StudioFailure
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
@@ -38,16 +39,16 @@ class ActorPresetManager(
                 val recipe = state.actor.presets.find { it.id == intent.id } ?: return
                 if (!recipe.supportsView(state.actor.authoredView)) {
                     sendEffect(
-                        StudioEffect.ShowError(
-                            // The preset card names the view it was authored for.
-                            "This preset was authored for another view. Use a performance authored for this view.",
-                        ),
+                        // The preset card names the view it was authored for.
+                        StudioEffect.ShowError(StudioFailure.PRESET_FOR_ANOTHER_VIEW),
                     )
                     return
                 }
                 val missing = recipe.missingBones(definition.sceneGraph.bones.keys)
                 if (missing.isNotEmpty()) {
-                    sendEffect(StudioEffect.ShowError("Requires: ${missing.joinToString()}"))
+                    sendEffect(
+                        StudioEffect.ShowError(StudioFailure.PRESET_MISSING_PARTS, detail = missing.joinToString()),
+                    )
                     return
                 }
                 updateState {

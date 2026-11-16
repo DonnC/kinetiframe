@@ -2,6 +2,8 @@ package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
 import com.donnclab.kinetiframe.core.document.AssetKind
+import com.donnclab.kinetiframe.studio.StudioEffect
+import com.donnclab.kinetiframe.studio.StudioFailure
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.media.ProjectAssetManager
@@ -40,7 +42,7 @@ class BackgroundManagerTest {
     private lateinit var storageDir: File
     private lateinit var assets: ProjectAssetManager
     private var state = StudioState()
-    private val errors = mutableListOf<String>()
+    private val errors = mutableListOf<StudioEffect.ShowError>()
     private lateinit var pendingOperations: PendingOperations
 
     private fun bitmap(w: Int = 4, h: Int = 4): Bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
@@ -48,8 +50,7 @@ class BackgroundManagerTest {
     private fun manager() = BackgroundManager(
         scope = testScope,
         dispatcher = testDispatcher,
-        assets = assets,
-        storageDir = storageDir,
+        storage = BackgroundStorage(assets, storageDir),
         getState = { state },
         updateState = { reducer -> state = reducer(state) },
         onError = errors::add,
@@ -197,13 +198,13 @@ class BackgroundManagerTest {
         file.delete()
         manager().restore()
         testScope.advanceUntilIdle()
-        assertTrue(errors.last().contains("missing"))
+        assertEquals(StudioFailure.BACKGROUND_NOT_LOADED, errors.last().failure)
         assertEquals(id, state.project.backgroundAssetId)
         assertNull(assets.getAsset(id))
         file.writeText("not an image")
         manager().restore()
         testScope.advanceUntilIdle()
-        assertTrue(errors.last().contains("decoded"))
+        assertTrue(errors.last().cause?.message.orEmpty().contains("decoded"))
         assertEquals(id, state.project.backgroundAssetId)
     }
 
@@ -213,7 +214,7 @@ class BackgroundManagerTest {
         manager().handle(StudioIntent.Background.SetImage(bitmap()))
         testScope.advanceUntilIdle()
         assertNull(state.project.backgroundAssetId)
-        assertTrue(errors.single().contains("not saved"))
+        assertEquals(StudioFailure.BACKGROUND_NOT_SAVED, errors.single().failure)
     }
 
     @Test fun `restore cannot resurrect an image removed while decoding`() {
@@ -226,14 +227,16 @@ class BackgroundManagerTest {
         restoring = BackgroundManager(
             testScope,
             testDispatcher,
-            assets,
-            storageDir,
+            BackgroundStorage(
+                assets,
+                storageDir,
+                decode = {
+                    restoring.handle(StudioIntent.Background.Remove)
+                    decoded
+                },
+            ),
             { state },
             { state = it(state) },
-            decode = {
-                restoring.handle(StudioIntent.Background.Remove)
-                decoded
-            },
         )
         restoring.restore()
         testScope.advanceUntilIdle()
@@ -265,11 +268,9 @@ class BackgroundManagerTest {
         val importing = BackgroundManager(
             testScope,
             testDispatcher,
-            assets,
-            storageDir,
+            BackgroundStorage(assets, storageDir, id = { ids.next() }),
             { state },
             { state = it(state) },
-            id = { ids.next() },
             onError = errors::add,
         )
         importing.handle(StudioIntent.Background.SetImage(bitmap()))
@@ -279,7 +280,7 @@ class BackgroundManagerTest {
         assertTrue(assets.getAsset(originalId) === original)
         assertTrue(File(requireNotNull(state.project.assets[originalId]?.sourcePath)).isFile)
         assertFalse(File(storageDir, "background-superseded.png").exists())
-        assertTrue(errors.single().contains("not saved"))
+        assertEquals(StudioFailure.BACKGROUND_NOT_SAVED, errors.single().failure)
     }
 
     @Test fun `replacement and removal retain files still referenced by the last saved document`() {

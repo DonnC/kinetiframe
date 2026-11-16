@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.studio.domain
 
 import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.studio.StudioEffect
+import com.donnclab.kinetiframe.studio.StudioFailure
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
@@ -67,7 +68,7 @@ class CelHoldManager(
                 ) {
                     throw cancel
                 } catch (error: Exception) {
-                    sendEffect(StudioEffect.ShowError(error.message ?: "Could not update held drawing"))
+                    sendEffect(StudioEffect.ShowError(StudioFailure.HOLD_UPDATE_FAILED, error))
                 }
             }
         }

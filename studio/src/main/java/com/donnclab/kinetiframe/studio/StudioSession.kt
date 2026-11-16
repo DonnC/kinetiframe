@@ -6,6 +6,7 @@ import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.studio.domain.AnimationEngine
 import com.donnclab.kinetiframe.studio.domain.BackgroundManager
+import com.donnclab.kinetiframe.studio.domain.BackgroundStorage
 import com.donnclab.kinetiframe.studio.domain.CelHoldManager
 import com.donnclab.kinetiframe.studio.domain.DrawingManager
 import com.donnclab.kinetiframe.studio.domain.FrameManager
@@ -261,7 +262,13 @@ class StudioSession(
         onPlaybackStateChanged = { playing -> audioPlaybackManager.onPlaybackStateChanged(playing) },
         onPlaybackError = { error ->
             recordPlaybackFailure(error, "Frame playback failed")
-            store.send(StudioEffect.ShowError("Playback stopped: ${error.message ?: error.javaClass.simpleName}"))
+            store.send(
+                StudioEffect.ShowError(
+                    StudioFailure.PLAYBACK_STOPPED,
+                    error,
+                    error.message ?: error.javaClass.simpleName,
+                ),
+            )
         },
     )
 
@@ -272,11 +279,10 @@ class StudioSession(
     val backgroundManager = BackgroundManager(
         scope = store.scope,
         dispatcher = Dispatchers.IO,
-        assets = projectAssetManager,
-        storageDir = File(directories.files, "project-assets"),
+        storage = BackgroundStorage(projectAssetManager, File(directories.files, "project-assets")),
         getState = { store.state },
         updateState = { store.update(it) },
-        onError = { store.send(StudioEffect.ShowError(it)) },
+        onError = { store.send(it) },
         pendingOperations = pendingOperations,
     )
 
@@ -300,7 +306,7 @@ class StudioSession(
         store.scope.launch {
             runCatching { loadActorPresets() }
                 .onSuccess { presets -> store.update { it.copy(actor = it.actor.copy(presets = presets)) } }
-                .onFailure { store.send(StudioEffect.ShowError("Actor presets could not load: ${it.message}", it)) }
+                .onFailure { store.send(StudioEffect.ShowError(StudioFailure.PRESETS_NOT_LOADED, it, it.message)) }
         }
         if (shouldInitialize) {
             pendingOperations.launch(store.scope, engineDispatcher) {

@@ -28,13 +28,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.library.domain.LibraryPick
-import com.donnclab.kinetiframe.presentation.common.UiText
-import com.donnclab.kinetiframe.presentation.common.typedFailureText
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.hasActorStudioChanges
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.sketch.ActorSketchEditor
 import com.donnclab.kinetiframe.presentation.studio.timeline.LayerPanel
 import com.donnclab.kinetiframe.presentation.studio.timeline.durationFramesFor
+import com.donnclab.kinetiframe.presentation.studio.toUiText
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
@@ -124,11 +123,8 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is StudioEffect.ShowError ->
-                    messages.timelineError = effect.cause?.typedFailureText() ?: UiText.Verbatim(effect.message)
-
+                is StudioEffect.ShowError -> messages.timelineError = effect.toUiText()
                 is StudioEffect.ShowTextAddDialog -> panels.textAddDialog = effect.x to effect.y
-
                 is StudioEffect.ShowTextEditDialog -> panels.textEditDialog = effect.id to effect.initialText
             }
         }

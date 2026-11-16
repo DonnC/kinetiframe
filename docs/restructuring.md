@@ -13,21 +13,19 @@ Keep this page current:
 
 ## Now
 
-**Typed errors, part 1: validation in `core`.** `ActorGraphValidation` throws the typed
-`GraphValidationException`, and `PresetValidationDiagnostics` is gone: preset checks throw
-`PresetRecipeValidationException` and `PresetChannelValidationException`. `presentation` words
-each issue from string resources (`FailureText.kt`), looking through a failure's causes. The
-projects, actors and Actor Studio `ShowError` effects and the editor's error message are
-`UiText`, `StoreResult.Failure` and `StudioEffect.ShowError` pass their cause along so typed
-failures reach the screen, and the parity tests keep the former messages in a test helper.
+**Typed errors, part 2: the studio's errors.** `StudioEffect.ShowError` carries a typed
+`StudioFailure` instead of an English message, with the cause and an optional detail (the parts
+a preset needs, or a lower layer's reason). The 25 messages from `studio`'s managers, the
+background manager's callback included, are string resources that `presentation` chooses
+(`StudioFailureText.kt`). A typed cause's wording still comes first.
 
 ## Next
 
-**Typed errors, part 2: the layers above `core`.** `StudioEffect.ShowError` (about 25 messages
-in `studio`'s managers), the `require` messages in `core`'s documents, and the fallback text of
-every `StoreResult.Failure` (about 30 in `actors`, `studio` and `data`) are still English, shown
-through `UiText.Verbatim`. Give each layer typed failures, a feature at a time, starting with
-Actor Studio's managers.
+**Typed errors, part 3: storage failures.** The fallback text of every `StoreResult.Failure`
+(about 30 in `actors`, `studio` and `data`) and the `require` messages in `core`'s documents
+are still English, and several studio failures still show a lower layer's message ahead of
+their own text. Give storage failures a typed reason, a repository at a time, starting with
+projects.
 
 ## Later
 
@@ -40,7 +38,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
   code. Screens already reach storage only through their ViewModels (step 8d).
-- **Parameter limits.** 52 functions still take more than the allowed number of parameters.
+- **Parameter limits.** 51 functions still take more than the allowed number of parameters.
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
   still mirror `core` types, with bridges and parity tests between them, and `ActorView` duplicates
   `core`'s `PresetAuthoredView`. Merge each pair and delete the parity tests.
@@ -191,6 +189,7 @@ fixed after the module work, unless one blocks testing.
 | #67 | Moved the rest of the actor screens' text into string resources (strings, part 10) |
 | #68 | Moved the editor's text into string resources (strings, parts 11 and 12) |
 | #69 | Named model values and built-in camera presets from string resources |
+| #70 | Returned typed validation failures from `core` and worded them in the UI (typed errors, part 1) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -244,7 +243,7 @@ From `.architecture/` during step 9. Each count may only go down.
 | --- | --- | --- |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 0 | — |
-| Functions over the parameter limit | 52 | — |
+| Functions over the parameter limit | 51 | — |
 | Inline text values | 0 | — |
 | Inline colours | 64 | 24 |
 | Inline `.dp` sizes | 806 | 132 |

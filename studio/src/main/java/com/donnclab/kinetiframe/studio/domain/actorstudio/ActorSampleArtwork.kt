@@ -9,6 +9,7 @@ import com.donnclab.kinetiframe.core.document.AssetKind
 import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.core.document.TextureSlot
 import com.donnclab.kinetiframe.studio.StudioEffect
+import com.donnclab.kinetiframe.studio.StudioFailure
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.actorDefinition
@@ -91,7 +92,7 @@ class ActorSampleArtwork(
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (error: Exception) {
-                sendEffect(StudioEffect.ShowError("Sample artwork could not be created: ${error.message}"))
+                sendEffect(StudioEffect.ShowError(StudioFailure.SAMPLE_ARTWORK_FAILED, error, error.message))
             } finally {
                 if (!installed) prepared.values.forEach { assets.releaseAsset(it.first) }
             }

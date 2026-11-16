@@ -5,6 +5,7 @@ import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.artwork.ArtworkVariant
 import com.donnclab.kinetiframe.core.actor.validation.ActorGraphValidation
 import com.donnclab.kinetiframe.studio.StudioEffect
+import com.donnclab.kinetiframe.studio.StudioFailure
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
@@ -134,7 +135,7 @@ class ActorArtworkManager(
         } catch (failure: Exception) {
             intent.ink.takeUnless { it.isRecycled }?.recycle()
             intent.colour.takeUnless { it.isRecycled }?.recycle()
-            sendEffect(StudioEffect.ShowError(failure.message ?: "Could not bind drawing", failure))
+            sendEffect(StudioEffect.ShowError(StudioFailure.DRAWING_NOT_BOUND, failure))
         }
     }
 
@@ -171,7 +172,7 @@ class ActorArtworkManager(
                 replaceSkin = true,
             )
         } catch (error: Exception) {
-            sendEffect(StudioEffect.ShowError(error.message ?: "Could not blend attachment", error))
+            sendEffect(StudioEffect.ShowError(StudioFailure.BLEND_FAILED, error))
         }
     }
 
@@ -220,7 +221,7 @@ class ActorArtworkManager(
             }
             reconcile()
         } catch (error: Exception) {
-            sendEffect(StudioEffect.ShowError(error.message ?: "Could not edit artwork", error))
+            sendEffect(StudioEffect.ShowError(StudioFailure.ARTWORK_EDIT_FAILED, error))
         }
     }
 
@@ -384,7 +385,7 @@ class ActorArtworkManager(
             reconcile()
         } catch (error: Exception) {
             if (!intent.bitmap.isRecycled) intent.bitmap.recycle()
-            sendEffect(StudioEffect.ShowError(error.message ?: "Could not attach artwork", error))
+            sendEffect(StudioEffect.ShowError(StudioFailure.ARTWORK_NOT_ATTACHED, error))
         }
     }
 
@@ -398,7 +399,7 @@ class ActorArtworkManager(
         if (instance.artworkKeys.size >= 720 &&
             instance.artworkKeys.none { it.timeMicros == state.actor.previewTimeMicros }
         ) {
-            sendEffect(StudioEffect.ShowError("This performance already has 720 artwork keys"))
+            sendEffect(StudioEffect.ShowError(StudioFailure.ARTWORK_KEY_LIMIT))
             return
         }
         checkpoint()

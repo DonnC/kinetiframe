@@ -23,6 +23,7 @@ import com.donnclab.kinetiframe.core.document.TextureSlot
 import com.donnclab.kinetiframe.core.document.bindTextureToBone
 import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.StudioEffect
+import com.donnclab.kinetiframe.studio.StudioFailure
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.activeActor
 import com.donnclab.kinetiframe.studio.actorDefinition
@@ -58,7 +59,7 @@ class RiggingManager(
         val definition = getState().actorDefinition()
         val targetBoneId = getState().scene.selectedBoneId
         if (definition?.sceneGraph?.bones?.containsKey(targetBoneId) != true) {
-            sendEffect(StudioEffect.ShowError("Select a named part in the inspector before extracting its artwork."))
+            sendEffect(StudioEffect.ShowError(StudioFailure.SELECT_PART_FOR_CUTOUT))
             return
         }
         val generation = ++extractionGeneration
@@ -115,7 +116,7 @@ class RiggingManager(
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (error: Exception) {
-                sendEffect(StudioEffect.ShowError(error.message ?: "Unable to prepare cutout"))
+                sendEffect(StudioEffect.ShowError(StudioFailure.CUTOUT_FAILED, error))
             } finally {
                 // Cancellation may happen between worker completion and delivery to the main dispatcher.
                 if (!installed) registeredId?.let(rigAssetManager::releaseAsset)

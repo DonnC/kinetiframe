@@ -5,6 +5,8 @@ import com.donnclab.kinetiframe.core.document.AssetKind
 import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.data.storage.DurableFile
 import com.donnclab.kinetiframe.media.image.BackgroundImageDecoder
+import com.donnclab.kinetiframe.studio.StudioEffect
+import com.donnclab.kinetiframe.studio.StudioFailure
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.media.ProjectAssetManager
@@ -16,6 +18,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
+
+/** Where background images live: the decoded cache, the saved files, and how both are produced. */
+data class BackgroundStorage(
+    val assets: ProjectAssetManager,
+    val directory: File,
+    val id: () -> String = { UUID.randomUUID().toString() },
+    val decode: (File) -> Bitmap = BackgroundImageDecoder::decode,
+)
 
 /**
  * Owns the project's single persistent background image: set once, rendered behind every layer on
@@ -35,15 +45,16 @@ import java.util.UUID
 class BackgroundManager(
     private val scope: CoroutineScope,
     private val dispatcher: CoroutineDispatcher,
-    private val assets: ProjectAssetManager,
-    private val storageDir: File,
+    storage: BackgroundStorage,
     private val getState: () -> StudioState,
     private val updateState: ((StudioState) -> StudioState) -> Unit,
-    private val id: () -> String = { UUID.randomUUID().toString() },
-    private val onError: (String) -> Unit = {},
-    private val decode: (File) -> Bitmap = BackgroundImageDecoder::decode,
+    private val onError: (StudioEffect.ShowError) -> Unit = {},
     private val pendingOperations: PendingOperations = PendingOperations(),
 ) {
+    private val assets = storage.assets
+    private val storageDir = storage.directory
+    private val id = storage.id
+    private val decode = storage.decode
     private var generation = 0L
 
     /** Metadata is durable; the runtime cache is not. Rehydrate once on document creation. */
@@ -67,13 +78,13 @@ class BackgroundManager(
             if (request ==
                 generation
             ) {
-                onError("Not enough memory to load the saved background image.")
+                onError(StudioEffect.ShowError(StudioFailure.BACKGROUND_OUT_OF_MEMORY))
             }
         } catch (error: Exception) {
             if (request ==
                 generation
             ) {
-                onError(error.message ?: "Could not load the saved background image.")
+                onError(StudioEffect.ShowError(StudioFailure.BACKGROUND_NOT_LOADED, error))
             }
         } finally {
             // Only unpublished bitmaps are safe to recycle explicitly.
@@ -112,7 +123,7 @@ class BackgroundManager(
                     if (request ==
                         generation
                     ) {
-                        onError("Background image was not saved: ${error.message}")
+                        onError(StudioEffect.ShowError(StudioFailure.BACKGROUND_NOT_SAVED, error, error.message))
                     }
                 }
                 return@launch

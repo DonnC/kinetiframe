@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.studio.domain
 import android.graphics.Bitmap
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.studio.StudioEffect
+import com.donnclab.kinetiframe.studio.StudioFailure
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers
@@ -45,7 +46,7 @@ class FrameManager(
                 // the same stale index or shift bitmaps under the wrong metadata.
                 val currentState = getState()
                 if (currentState.animation.totalFrames >= 1000) {
-                    sendEffect(StudioEffect.ShowError("Maximum frame limit reached"))
+                    sendEffect(StudioEffect.ShowError(StudioFailure.FRAME_LIMIT))
                     return@withLock
                 }
                 val insertIndex = currentState.animation.currentFrame + 1
@@ -328,7 +329,7 @@ class FrameManager(
             frameOperationMutex.withLock {
                 val currentState = getState()
                 if (currentState.animation.totalFrames >= 1000) {
-                    sendEffect(StudioEffect.ShowError("Maximum frame limit reached"))
+                    sendEffect(StudioEffect.ShowError(StudioFailure.FRAME_LIMIT))
                     return@withLock
                 }
                 if (index !in 0 until currentState.animation.totalFrames) return@withLock
