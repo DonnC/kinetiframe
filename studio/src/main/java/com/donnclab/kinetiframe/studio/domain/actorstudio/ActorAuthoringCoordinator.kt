@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Path
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioEffect
+import com.donnclab.kinetiframe.studio.StudioFailure
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
@@ -169,7 +170,7 @@ class ActorAuthoringCoordinator(
             getState().scene.studioMode == StudioMode.ANIMATE_IK &&
             (getState().activeActor()?.motionPreset != null || getState().actor.presetPreview != null)
         ) {
-            sendEffect(StudioEffect.ShowError("Remove the motion preset before recording manual poses."))
+            sendEffect(StudioEffect.ShowError(StudioFailure.REMOVE_PRESET_BEFORE_POSING))
             return
         }
         if (getState().scene.pivotPlacement != null) rigging.cancelPivot()

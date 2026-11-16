@@ -32,11 +32,11 @@ class BackgroundVisibilityTest {
         val manager = BackgroundManager(
             TestScope(dispatcher),
             dispatcher,
-            assets,
-            File("unused-test-storage"),
+            BackgroundStorage(assets, File("unused-test-storage"), decode = {
+                error("Visibility must not decode an image")
+            }),
             { state },
             { state = it(state) },
-            decode = { error("Visibility must not decode an image") },
         )
         val revision = assets.revision.value
         manager.handle(StudioIntent.Background.ToggleVisibility)
@@ -59,8 +59,7 @@ class BackgroundVisibilityTest {
             BackgroundManager(
                 TestScope(dispatcher),
                 dispatcher,
-                ProjectAssetManager(),
-                File("unused-test-storage"),
+                BackgroundStorage(ProjectAssetManager(), File("unused-test-storage")),
                 { state },
                 { state = it(state) },
             )

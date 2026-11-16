@@ -21,6 +21,7 @@ import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.engine.rigging.math.CompiledMotionCurve
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioEffect
+import com.donnclab.kinetiframe.studio.StudioFailure
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
@@ -97,12 +98,12 @@ class ActorPerformanceRecorder(
         val actor = state.activeActor() ?: return
         if (state.scene.studioMode != StudioMode.ANIMATE_IK) return
         if (state.actor.presetPreview != null) {
-            sendEffect(StudioEffect.ShowError("Apply the preset before recording a take."))
+            sendEffect(StudioEffect.ShowError(StudioFailure.APPLY_PRESET_BEFORE_RECORDING))
             return
         }
         if (state.actor.previewTimeMicros >= MAX_TIME) {
             sendEffect(
-                StudioEffect.ShowError("Move the playhead earlier to record. Performances can be up to two minutes."),
+                StudioEffect.ShowError(StudioFailure.RECORDING_TOO_LATE),
             )
             return
         }
@@ -191,7 +192,7 @@ class ActorPerformanceRecorder(
         tick()
         val time = getState().actor.previewTimeMicros
         if (artwork.size >= RotationCurve.MAX_POINTS && artwork.none { it.timeMicros == time }) {
-            sendEffect(StudioEffect.ShowError("This performance has reached its artwork key limit."))
+            sendEffect(StudioEffect.ShowError(StudioFailure.ARTWORK_KEY_LIMIT))
             return
         }
         val previous = artwork
@@ -200,7 +201,7 @@ class ActorPerformanceRecorder(
             mergedArtwork()
         } catch (error: IllegalArgumentException) {
             artwork = previous
-            sendEffect(StudioEffect.ShowError(error.message ?: "Artwork key limit reached"))
+            sendEffect(StudioEffect.ShowError(StudioFailure.ARTWORK_KEY_LIMIT, error))
             return
         }
         tick()
@@ -413,7 +414,7 @@ class ActorPerformanceRecorder(
             }
         } catch (error: IllegalArgumentException) {
             cancel()
-            sendEffect(StudioEffect.ShowError(error.message ?: "This take exceeded the performance limit."))
+            sendEffect(StudioEffect.ShowError(StudioFailure.TAKE_TOO_LONG, error))
         }
     }
 

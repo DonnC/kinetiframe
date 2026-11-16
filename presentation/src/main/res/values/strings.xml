@@ -844,6 +844,35 @@
     <string name="settings_load_failed">Could not read settings. Your projects are unchanged.</string>
     <string name="settings_save_failed">Settings could not be saved. Please try again.</string>
 
+    <!-- Studio errors -->
+    <string name="studio_error_frame_limit">Maximum frame limit reached</string>
+    <string name="studio_error_artwork_key_limit">This performance has reached its artwork key limit.</string>
+    <string name="studio_error_take_too_long">This take exceeded the performance limit.</string>
+    <string name="studio_error_recording_too_late">Move the playhead earlier to record. Performances can be up to two minutes.</string>
+    <string name="studio_error_apply_preset_first">Apply the preset before recording a take.</string>
+    <string name="studio_error_remove_preset_first">Remove the motion preset before recording manual poses.</string>
+    <string name="studio_error_preset_other_view">This preset was authored for another view. Use a performance authored for this view.</string>
+    <!-- %1$s lists the actor parts the preset needs, such as "head, neck". -->
+    <string name="studio_error_preset_missing_parts">This preset needs these parts: %1$s</string>
+    <string name="studio_error_select_part_for_cutout">Select a named part in the inspector before extracting its artwork.</string>
+    <!-- %1$s is the reason, as the failing component reports it. -->
+    <string name="studio_error_playback_stopped">Playback stopped: %1$s</string>
+    <!-- %1$s is the reason, as the failing component reports it. -->
+    <string name="studio_error_presets_not_loaded">Actor presets could not load: %1$s</string>
+    <string name="studio_error_camera_edit">Could not edit camera</string>
+    <string name="studio_error_hold_update">Could not update held drawing</string>
+    <string name="studio_error_background_memory">Not enough memory to load the saved background image.</string>
+    <string name="studio_error_background_load">Could not load the saved background image.</string>
+    <!-- %1$s is the reason, as the failing component reports it. -->
+    <string name="studio_error_background_save">Background image was not saved: %1$s</string>
+    <string name="studio_error_bind_drawing">Could not bind drawing</string>
+    <string name="studio_error_blend">Could not blend attachment</string>
+    <string name="studio_error_edit_artwork">Could not edit artwork</string>
+    <string name="studio_error_attach_artwork">Could not attach artwork</string>
+    <!-- %1$s is the reason, as the failing component reports it. -->
+    <string name="studio_error_sample_artwork">Sample artwork could not be created: %1$s</string>
+    <string name="studio_error_cutout">Unable to prepare cutout</string>
+
     <!-- Validation failures -->
     <string name="actor_invalid_part_count">An actor needs between 1 and 512 parts.</string>
     <string name="actor_invalid_variant_count">A part can have at most 24 artwork variants.</string>

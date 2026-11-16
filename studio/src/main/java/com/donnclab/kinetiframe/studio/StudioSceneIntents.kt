@@ -14,7 +14,7 @@ class StudioSceneIntents(private val store: StudioStore, private val session: St
                 StudioIntent.Camera.Redo -> session.sceneEffects.redo()
             }
         }.onFailure { error ->
-            store.scope.launch { store.send(StudioEffect.ShowError(error.message ?: "Could not edit camera")) }
+            store.scope.launch { store.send(StudioEffect.ShowError(StudioFailure.CAMERA_EDIT_FAILED, error)) }
         }
     }
 
