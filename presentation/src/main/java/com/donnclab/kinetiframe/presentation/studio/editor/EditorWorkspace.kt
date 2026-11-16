@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -28,6 +29,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.library.domain.LibraryPick
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.hasActorStudioChanges
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.sketch.ActorSketchEditor
@@ -78,11 +83,16 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
                 }
                 .onFailure {
                     if (it is CancellationException) throw it
-                    messages.placementError = it.message ?: "Could not place performance"
+                    messages.placementError = it.toUiText(R.string.editor_placement_failed)
                 }
         }
     }
-    messages.placementError?.let { MessageDialog("Performance placement", it) { messages.placementError = null } }
+    messages.placementError?.let {
+        MessageDialog(stringResource(R.string.editor_performance_placement), it.asString()) {
+            messages.placementError =
+                null
+        }
+    }
     // Repair only legacy identity placements entirely outside the stage; never reposition an
     // explicitly transformed character or change an already visible saved composition.
     LaunchedEffect(state.project.id) {
@@ -208,7 +218,9 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
 
                         is LibraryPick.Stamp -> viewModel.handleIntent(StudioIntent.Selection.StampBitmap(pick.bitmap))
 
-                        is LibraryPick.Actor -> messages.libraryMessage = "Added \"${pick.displayName}\" to your actors"
+                        is LibraryPick.Actor ->
+                            messages.libraryMessage =
+                                UiText.Resource(R.string.editor_added_actor, listOf(pick.displayName))
 
                         is LibraryPick.Performance -> {
                             val performance = pick.document
@@ -227,7 +239,7 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
                         }
                     }
                 },
-                onFailure = { messages.libraryError = it.message ?: "Could not add that item" },
+                onFailure = { messages.libraryError = it.toUiText(R.string.editor_item_not_added) },
             )
         }
     }

@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.library.data
 
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.model.PackManifest
@@ -119,6 +120,5 @@ object PackArchiver {
     }.fold(::value, ::failure)
 
     private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
-    private fun failure(error: Throwable): StoreResult.Failure =
-        StoreResult.Failure(error.message ?: "Pack archive operation failed", error)
+    private fun failure(error: Throwable): StoreResult.Failure = StoreResult.Failure(StoreFailure.PACK_ARCHIVE, error)
 }

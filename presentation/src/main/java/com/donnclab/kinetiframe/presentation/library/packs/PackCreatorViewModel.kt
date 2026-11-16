@@ -7,6 +7,8 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.library.domain.PackDrafts
 import com.donnclab.kinetiframe.library.model.PackFrameTag
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
@@ -25,10 +27,10 @@ data class PackCreatorState(
     val packName: String = "",
     val canvasDimension: Int? = null,
     val draftId: String? = null,
-    val draftError: String? = null,
+    val draftError: UiText? = null,
     val tags: Map<Int, PackFrameTag> = emptyMap(),
     val saving: Boolean = false,
-    val saveError: String? = null,
+    val saveError: UiText? = null,
 ) : ViewState
 
 sealed interface PackCreatorIntent : ViewIntent {
@@ -98,7 +100,7 @@ class PackCreatorViewModel(
         viewModelScope.launch {
             when (val created = withContext(ioDispatcher) { drafts.create(form.dimension) }) {
                 is StoreResult.Value -> updateState { it.copy(draftId = created.value) }
-                is StoreResult.Failure -> updateState { it.copy(draftError = created.message) }
+                is StoreResult.Failure -> updateState { it.copy(draftError = created.toUiText()) }
             }
         }
     }
@@ -120,7 +122,7 @@ class PackCreatorViewModel(
                     }
                 }
 
-                is StoreResult.Failure -> updateState { it.copy(draftError = opened.message) }
+                is StoreResult.Failure -> updateState { it.copy(draftError = opened.toUiText()) }
             }
         }
     }
@@ -140,7 +142,7 @@ class PackCreatorViewModel(
                     sendEffect(PackCreatorEffect.Saved)
                 }
 
-                is StoreResult.Failure -> updateState { it.copy(saving = false, saveError = saved.message) }
+                is StoreResult.Failure -> updateState { it.copy(saving = false, saveError = saved.toUiText()) }
             }
         }
     }

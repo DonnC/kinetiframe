@@ -8,6 +8,7 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
@@ -160,7 +161,7 @@ class LibraryTransfers(
             projectId = projectId,
             nowEpochMs = now(),
         )
-    }.getOrElse { StoreResult.Failure(it.message ?: "Could not add that to your library", it) }
+    }.getOrElse { StoreResult.Failure(StoreFailure.LIBRARY_NOT_ADDED, it) }
 
     /** Copies a raw-asset library item's payload to [destination]. */
     private fun fetchPayload(manifest: LibraryItemManifest, destination: File, projectId: String) {

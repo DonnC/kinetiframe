@@ -9,6 +9,7 @@ import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.domain.ActorPlacementMapper
 import com.donnclab.kinetiframe.actors.domain.ResolveActorRenderUseCase
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
@@ -120,7 +121,7 @@ class ActorFrameRenderer(
         val input = when (val result = resolver.execute(document, frame, fps)) {
             is StoreResult.Value -> result.value
 
-            is StoreResult.Failure -> return if (result.message.startsWith("Placement is not active")) {
+            is StoreResult.Failure -> return if (result.reason == StoreFailure.PLACEMENT_INACTIVE) {
                 Resolution()
             } else {
                 placementDiagnostic(placement, result.message)

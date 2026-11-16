@@ -104,7 +104,9 @@ fun ActorStudioScreen(
         }
 
         stateError != null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            FilledTonalButton(onClick = { model.handleIntent(ActorStudioDocumentIntent.Reload) }) { Text(stateError) }
+            FilledTonalButton(onClick = {
+                model.handleIntent(ActorStudioDocumentIntent.Reload)
+            }) { Text(stateError.asString()) }
         }
 
         manifest != null && revision != null -> RestoredActorEditor(

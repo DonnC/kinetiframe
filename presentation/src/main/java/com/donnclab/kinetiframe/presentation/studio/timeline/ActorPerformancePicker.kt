@@ -26,6 +26,9 @@ import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -64,7 +67,7 @@ fun ActorPerformancePicker(
     var selectedActor by remember { mutableStateOf<ActorManifest?>(null) }
     var actorItems by remember { mutableStateOf<List<ActorManifest>>(emptyList()) }
     var performanceItems by remember { mutableStateOf<List<PerformanceDocument>>(emptyList()) }
-    var error by remember { mutableStateOf<String?>(null) }
+    var error by remember { mutableStateOf<UiText?>(null) }
     val scope = rememberCoroutineScope()
 
     fun closeMenu() {
@@ -77,13 +80,13 @@ fun ActorPerformancePicker(
         if (!showActorPicker) return@LaunchedEffect
         when (val result = withContext(Dispatchers.IO) { choices.actors() }) {
             is StoreResult.Value -> actorItems = result.value
-            is StoreResult.Failure -> error = result.message
+            is StoreResult.Failure -> error = result.toUiText()
         }
         performanceItems = emptyList()
         selectedActor?.let { actor ->
             when (val result = withContext(Dispatchers.IO) { choices.performancesOf(actor.actorId) }) {
                 is StoreResult.Value -> performanceItems = result.value
-                is StoreResult.Failure -> error = result.message
+                is StoreResult.Failure -> error = result.toUiText()
             }
         }
     }
@@ -150,7 +153,7 @@ fun ActorPerformancePicker(
                                 val copied =
                                     withContext(Dispatchers.IO) { choices.copyIntoProject(performance, projectId) }
                             ) {
-                                is StoreResult.Failure -> error = copied.message
+                                is StoreResult.Failure -> error = copied.toUiText()
 
                                 is StoreResult.Value -> {
                                     val local = copied.value
@@ -178,7 +181,7 @@ fun ActorPerformancePicker(
         AlertDialog(
             onDismissRequest = { error = null },
             title = { Text(stringResource(R.string.timeline_actor_performances)) },
-            text = { Text(message) },
+            text = { Text(message.asString()) },
             confirmButton = { TextButton(onClick = { error = null }) { Text(stringResource(R.string.action_ok)) } },
         )
     }

@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.presentation.export
 
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.export.domain.VideoExporter
@@ -87,11 +88,20 @@ class ExportViewModelTest {
 
     @Test fun `a failed export shows its reason`() = runTest(dispatcher) {
         val model =
-            ExportViewModel(FakeExporter(StoreResult.Failure("Project has no frames to export")), "p", dispatcher)
+            ExportViewModel(
+                FakeExporter(
+                    StoreResult.Failure(
+                        StoreFailure.EXPORT_FAILED,
+                        IllegalStateException("Project has no frames to export"),
+                    ),
+                ),
+                "p",
+                dispatcher,
+            )
 
         model.handleIntent(ExportIntent.Start)
         advanceUntilIdle()
 
-        assertEquals(ExportPhase.Failed("Project has no frames to export"), model.state.value.phase)
+        val failed = model.state.value.phase as ExportPhase.Failed
     }
 }

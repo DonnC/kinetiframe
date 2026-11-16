@@ -21,6 +21,8 @@ import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -35,7 +37,7 @@ internal fun SwitchPerformanceButton(
 ) {
     var menuOpen by remember { mutableStateOf(false) }
     var performances by remember(placement.actorId) { mutableStateOf<List<PerformanceDocument>>(emptyList()) }
-    var error by remember(placement.actorId) { mutableStateOf<String?>(null) }
+    var error by remember(placement.actorId) { mutableStateOf<UiText?>(null) }
     val scope = rememberCoroutineScope()
     LaunchedEffect(menuOpen, placement.actorId) {
         if (!menuOpen) return@LaunchedEffect
@@ -45,7 +47,7 @@ internal fun SwitchPerformanceButton(
                 error = null
             }
 
-            is StoreResult.Failure -> error = result.message
+            is StoreResult.Failure -> error = result.toUiText()
         }
     }
     Box {
@@ -83,7 +85,7 @@ internal fun SwitchPerformanceButton(
                                         false
                                 }
 
-                                is StoreResult.Failure -> error = result.message
+                                is StoreResult.Failure -> error = result.toUiText()
                             }
                         }
                     },

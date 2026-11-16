@@ -162,7 +162,7 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.error,
                     )
-                    Text(current.message, style = MaterialTheme.typography.bodyMedium)
+                    Text(current.message.asString(), style = MaterialTheme.typography.bodyMedium)
                     OutlinedButton(onClick = onExit) { Text(stringResource(R.string.action_close)) }
                 }
             }

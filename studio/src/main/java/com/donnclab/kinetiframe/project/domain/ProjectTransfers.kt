@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.project.domain
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
@@ -37,7 +38,7 @@ class ProjectTransfers(
             open()?.use { input -> tempFile.outputStream().use { output -> input.copyTo(output) } }
                 ?: throw IllegalStateException("Could not read the selected file")
             KframeArchiver.import(files, tempFile)
-        }.getOrElse { StoreResult.Failure(it.message ?: "Could not import this project") }
+        }.getOrElse { StoreResult.Failure(StoreFailure.PROJECT_NOT_IMPORTED, it) }
             .also { tempFile.delete() }
     }
 
@@ -56,7 +57,7 @@ class ProjectTransfers(
             projectId = project.projectId,
             nowEpochMs = now(),
         ).also { tempFile.delete() }
-    }.getOrElse { StoreResult.Failure(it.message ?: "Could not save this project to your library") }
+    }.getOrElse { StoreResult.Failure(StoreFailure.PROJECT_NOT_ADDED_TO_LIBRARY, it) }
 
     /** Imports the project saved in the library as [item]. */
     fun importFromLibrary(item: LibraryItemManifest): StoreResult<String> {
@@ -67,7 +68,7 @@ class ProjectTransfers(
                 is StoreResult.Failure -> throw IllegalStateException(copied.message, copied.cause)
             }
             KframeArchiver.import(files, tempFile)
-        }.getOrElse { StoreResult.Failure(it.message ?: "Could not import this project") }
+        }.getOrElse { StoreResult.Failure(StoreFailure.PROJECT_NOT_IMPORTED, it) }
             .also { tempFile.delete() }
     }
 

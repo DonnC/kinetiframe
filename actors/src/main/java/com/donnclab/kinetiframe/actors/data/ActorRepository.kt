@@ -11,6 +11,7 @@ import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.data.db.ActorDao
@@ -417,8 +418,7 @@ class ActorRepository(
         ContainedPaths.resolveWithin(root, relativePath, "Artwork")
 
     private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
-    private fun failure(error: Throwable): StoreResult.Failure =
-        StoreResult.Failure(error.message ?: "Actor storage failed", error)
+    private fun failure(error: Throwable): StoreResult.Failure = StoreResult.Failure(StoreFailure.ACTOR_STORAGE, error)
     private companion object {
         const val MANIFEST = "manifest.json"
     }

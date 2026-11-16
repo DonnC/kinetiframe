@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.core.document.ProjectSaveDocument
@@ -70,7 +71,7 @@ class ProjectSaver(
                 ProjectFrameDraft.publish(draftFrames, File(files.projectDirectory(projectId), "frames"))
             }
         } catch (failure: Exception) {
-            return StoreResult.Failure(failure.message ?: "Could not save frame pixels", failure)
+            return StoreResult.Failure(StoreFailure.FRAME_PIXELS_NOT_SAVED, failure)
         }
         val saveResult = projects.save(manifest, document)
         if (saveResult is StoreResult.Value) {

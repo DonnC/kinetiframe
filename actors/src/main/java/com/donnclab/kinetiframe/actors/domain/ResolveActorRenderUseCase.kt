@@ -6,6 +6,7 @@ import com.donnclab.kinetiframe.core.actor.document.ActorPlacement
 import com.donnclab.kinetiframe.core.actor.document.ActorRevision
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 
 /** Resolves a placement once into render input; the renderer receives no file-system handles. */
@@ -18,7 +19,10 @@ class ResolveActorRenderUseCase(
     fun execute(placement: ActorPlacement, frame: Int, fps: Int): StoreResult<ActorRenderInput> {
         val micros = ActorPlacementTiming.elapsedMicros(placement, frame, fps)
         if (micros == null) {
-            return StoreResult.Failure("Placement is not active at frame $frame")
+            return StoreResult.Failure(
+                StoreFailure.PLACEMENT_INACTIVE,
+                IllegalStateException("Placement is not active at frame $frame"),
+            )
         }
         val performance = when (val result = loadPerformance(placement.projectId, placement.performanceId)) {
             is StoreResult.Value -> result.value

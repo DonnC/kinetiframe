@@ -22,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.FullScreenDialog
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.studio.EditorScreen
 import com.donnclab.kinetiframe.ui.appViewModel
 
@@ -79,7 +80,7 @@ fun PackCreatorRoute(
         state.draftError != null -> AlertDialog(
             onDismissRequest = onExit,
             title = { Text(stringResource(R.string.pack_creator_title)) },
-            text = { Text(state.draftError.orEmpty()) },
+            text = { Text(state.draftError?.asString().orEmpty()) },
             confirmButton = { TextButton(onClick = onExit) { Text(stringResource(R.string.action_ok)) } },
         )
 
@@ -117,7 +118,7 @@ fun PackCreatorRoute(
         AlertDialog(
             onDismissRequest = { model.handleIntent(PackCreatorIntent.DismissSaveError) },
             title = { Text(stringResource(R.string.pack_save_failed)) },
-            text = { Text(message) },
+            text = { Text(message.asString()) },
             confirmButton = {
                 TextButton(onClick = {
                     model.handleIntent(PackCreatorIntent.DismissSaveError)

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.project.data
 
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.core.document.ProjectSaveDocument
@@ -274,5 +275,5 @@ object KframeArchiver {
 
     private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
     private fun failure(error: Throwable): StoreResult.Failure =
-        StoreResult.Failure(error.message ?: "Project archive operation failed", error)
+        StoreResult.Failure(StoreFailure.PROJECT_ARCHIVE, error)
 }

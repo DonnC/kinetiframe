@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.library.LibraryPickerDialog
 import com.donnclab.kinetiframe.presentation.library.LibraryScopeDialog
 import com.donnclab.kinetiframe.presentation.studio.GridOptionsPopup
@@ -63,7 +64,7 @@ internal fun EditorDialogs(
     EditorMessageDialogs(ui.messages)
     panels.pendingLibraryExport?.let { request ->
         LibraryScopeDialog(
-            itemLabel = request.itemLabel,
+            itemLabel = request.itemLabel.asString(),
             onDismiss = { panels.pendingLibraryExport = null },
             onChoose = { chosenScope ->
                 panels.pendingLibraryExport = null

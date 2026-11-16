@@ -1,6 +1,7 @@
 package com.donnclab.kinetiframe.library.bundled
 
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
@@ -87,7 +88,7 @@ class CuratedLibraryMigration(private val files: DocumentFileStore) {
             }
             DurableFile.write(receipt) { it.write("archived-curated-v3\n".toByteArray()) }
             moved
-        }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(it.message ?: "Library cleanup failed", it) })
+        }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(StoreFailure.LIBRARY_CLEANUP, it) })
     }
 
     companion object {

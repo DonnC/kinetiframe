@@ -25,7 +25,7 @@ data class ActorStudioDocumentState(
     val performance: PerformanceDocument? = null,
     /** True only when the shared canvas adapter differs from the persisted document. */
     val isDirty: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
 ) : ViewState
 
 sealed interface ActorStudioDocumentIntent : ViewIntent {

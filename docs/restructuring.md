@@ -13,26 +13,35 @@ Keep this page current:
 
 ## Now
 
-**Typed errors, part 2: the studio's errors.** `StudioEffect.ShowError` carries a typed
-`StudioFailure` instead of an English message, with the cause and an optional detail (the parts
-a preset needs, or a lower layer's reason). The 25 messages from `studio`'s managers, the
-background manager's callback included, are string resources that `presentation` chooses
-(`StudioFailureText.kt`). A typed cause's wording still comes first.
+**Typed errors, part 3: storage failures and the editor's messages.**
+
+- `StoreResult.Failure` carries a typed `StoreFailure` reason instead of an English message. The
+  24 places that build one give the operation that failed, and the cause's message stays
+  available as `message` for logs and rethrows.
+- `presentation` words each reason from string resources (`StoreFailureText.kt`): a typed
+  cause's wording first, else the operation followed by the cause's message as detail.
+- Every screen that showed a failure's message uses that wording: export, the editor, Actor
+  Studio, the library picker, the pack creator and pack tray, home, the projects and actors
+  lists, and the timeline's actor menus. Their error fields are `UiText`.
+- The editor's messages (`EditorMessages`) are all `UiText`. The media pickers, voice-over,
+  placement and library export messages, including "Added … to your library" and the subject of
+  the save-to-library question, are string resources.
 
 ## Next
 
-**Typed errors, part 3: storage failures.** The fallback text of every `StoreResult.Failure`
-(about 30 in `actors`, `studio` and `data`) and the `require` messages in `core`'s documents
-are still English, and several studio failures still show a lower layer's message ahead of
-their own text. Give storage failures a typed reason, a repository at a time, starting with
-projects.
+**Typed errors, part 4: the reasons below.** The detail after a storage failure still comes from
+English messages in lower layers: `require` checks in `core`'s documents and in `data`, and
+exceptions in `actors` and `studio` such as "A project with this ID already exists locally" or
+"No background image is set". Give the ones a person can act on typed causes, starting with
+project names and imports. Audio and video importers' messages in `presentation` move with them.
 
 ## Later
 
 Tracks that run alongside the module work, a screen or feature at a time:
 
 - **Strings to resources.** The inline text check is at zero. Left: messages assigned to state
-  that the check doesn't count, slider value labels built in lambdas ("%", "sp"), and the
+  outside the editor that the check doesn't count (the colour picker, palette and audio preview
+  view models), slider value labels built in lambdas ("%", "sp"), and the
   library audio tags ("MUSIC", "VOICE", "SFX"), which double as filter keys. Then right-to-left
   layouts, per-app language and a pseudo-locale check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
@@ -190,6 +199,7 @@ fixed after the module work, unless one blocks testing.
 | #68 | Moved the editor's text into string resources (strings, parts 11 and 12) |
 | #69 | Named model values and built-in camera presets from string resources |
 | #70 | Returned typed validation failures from `core` and worded them in the UI (typed errors, part 1) |
+| #71 | Reported studio errors as typed failures (typed errors, part 2) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.

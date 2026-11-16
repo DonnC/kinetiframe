@@ -13,7 +13,7 @@ data class ActorManagerState(
     val performances: List<com.donnclab.kinetiframe.core.actor.document.PerformanceDocument> = emptyList(),
     /** Local file paths for card previews; the structural document remains the source of truth. */
     val thumbnailPaths: Map<String, String> = emptyMap(),
-    val error: String? = null,
+    val error: UiText? = null,
 ) : ViewState
 
 sealed interface ActorManagerIntent : ViewIntent {

@@ -7,6 +7,7 @@ import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.library.bundled.BundledContent
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.project.domain.ProjectTransfers
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
@@ -102,7 +103,7 @@ class HomeActionsViewModel(
                     sendEffect(HomeActionsEffect.ShowMessage(UiText.Resource(R.string.home_cleanup_done)))
                 }
 
-                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(UiText.Verbatim(result.message)))
+                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(result.toUiText()))
             }
         }
     }
@@ -114,7 +115,7 @@ class HomeActionsViewModel(
                     HomeActionsEffect.Share(result.value, UiText.Resource(R.string.action_share_named, listOf(name))),
                 )
 
-                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(UiText.Verbatim(result.message)))
+                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(result.toUiText()))
             }
         }
     }
@@ -127,7 +128,7 @@ class HomeActionsViewModel(
                     sendEffect(HomeActionsEffect.ShowMessage(UiText.Resource(R.string.home_project_imported)))
                 }
 
-                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(UiText.Verbatim(result.message)))
+                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(result.toUiText()))
             }
         }
     }
@@ -141,7 +142,7 @@ class HomeActionsViewModel(
                     ),
                 )
 
-                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(UiText.Verbatim(result.message)))
+                is StoreResult.Failure -> sendEffect(HomeActionsEffect.ShowMessage(result.toUiText()))
             }
         }
     }

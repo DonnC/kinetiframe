@@ -4,6 +4,7 @@ import com.donnclab.kinetiframe.core.actor.document.ActorDocumentValidation
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import kotlinx.serialization.encodeToString
@@ -177,5 +178,5 @@ class PerformanceRepository(
 
     private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
     private fun failure(error: Throwable): StoreResult.Failure =
-        StoreResult.Failure(error.message ?: "Performance storage failed", error)
+        StoreResult.Failure(StoreFailure.PERFORMANCE_STORAGE, error)
 }

@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.project.domain
 
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ProjectSaveDocument
 import com.donnclab.kinetiframe.data.project.ProjectFrameDraft
@@ -23,7 +24,7 @@ class ProjectOpener(private val files: DocumentFileStore, private val projects: 
             try {
                 ProjectFrameDraft.open(File(projectDirectory(projectId), "frames"), draftFrames)
             } catch (failure: Exception) {
-                return StoreResult.Failure(failure.message ?: "Could not open frame draft", failure)
+                return StoreResult.Failure(StoreFailure.FRAME_DRAFT_NOT_OPENED, failure)
             }
         }
         return StoreResult.Value(loaded.value.second)

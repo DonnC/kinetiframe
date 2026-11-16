@@ -80,7 +80,7 @@ internal fun ProjectsTabContent(
             when {
                 state.loading -> LoadingBox()
 
-                error != null -> ActorManagerMessage(error, stringResource(R.string.action_retry)) {
+                error != null -> ActorManagerMessage(error.asString(), stringResource(R.string.action_retry)) {
                     onIntent(ProjectManagerIntent.Reload)
                 }
 
@@ -200,7 +200,7 @@ internal fun ActorsTabContent(
                 state.loading -> LoadingBox()
 
                 state.error != null -> ActorManagerMessage(
-                    state.error.orEmpty(),
+                    state.error.asString(),
                     stringResource(R.string.action_retry),
                 ) {
                     onIntent(ActorManagerIntent.Reload)

@@ -7,7 +7,6 @@ import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeIssue
 import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeValidationException
 import com.donnclab.kinetiframe.core.actor.validation.GraphValidationException
 import com.donnclab.kinetiframe.core.actor.validation.GraphValidationIssue
-import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.presentation.R
 
 /** The wording for a typed failure in this throwable or its causes, or null when there is none. */
@@ -19,9 +18,6 @@ fun Throwable.typedFailureText(): UiText? = generateSequence(this) { it.cause }.
         else -> null
     }
 }
-
-/** A store failure's typed wording, or its message as written while its layer has no typed error. */
-fun StoreResult.Failure.toUiText(): UiText = cause?.typedFailureText() ?: UiText.Verbatim(message)
 
 private fun GraphValidationIssue.text(): UiText = when (this) {
     GraphValidationIssue.PART_COUNT -> UiText.Resource(R.string.actor_invalid_part_count)
