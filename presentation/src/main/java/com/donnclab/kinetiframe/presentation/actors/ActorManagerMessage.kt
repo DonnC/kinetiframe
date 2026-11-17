@@ -14,13 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 
 @Composable
 fun ActorManagerMessage(message: String, action: String, onAction: () -> Unit) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(32.dp)) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(Dimens.spaceXxxl)) {
             Text(message, style = MaterialTheme.typography.bodyLarge)
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(Dimens.spaceM))
             FilledTonalButton(onClick = onAction) { Text(action) }
         }
     }

@@ -25,6 +25,8 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
@@ -38,7 +40,7 @@ fun HoldDrawingDialog(firstFrame: Int, totalFrames: Int, onDismiss: () -> Unit, 
             Text(stringResource(R.string.hold_drawing_title), style = MaterialTheme.typography.titleMedium)
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
                 Text(
                     stringResource(R.string.hold_drawing_from_frame, firstFrame + 1),
                     style = MaterialTheme.typography.labelMedium,
@@ -81,12 +83,12 @@ fun LinkedDrawingScopeDialog(
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(TimelineTokens.contextActionPadding)) {
                 Text(stringResource(R.string.linked_drawing_prompt), style = MaterialTheme.typography.bodySmall)
                 // Scope labels are essential decisions, not optional toolbar captions.
                 TextButton(onClick = onLocal) {
                     Icon(Icons.Default.Edit, null)
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.width(Dimens.spaceS))
                     Text(
                         stringResource(R.string.linked_drawing_this_frame),
                         style = MaterialTheme.typography.labelMedium,
@@ -94,7 +96,7 @@ fun LinkedDrawingScopeDialog(
                 }
                 TextButton(onClick = onShared) {
                     Icon(Icons.Default.Link, null)
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.width(Dimens.spaceS))
                     Text(
                         stringResource(R.string.linked_drawing_all_frames),
                         style = MaterialTheme.typography.labelMedium,

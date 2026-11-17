@@ -9,14 +9,22 @@ import androidx.compose.ui.unit.sp
  */
 object Dimens {
     // Spacing scale -- use the closest step rather than inventing a one-off value.
+    val spaceXxs = 2.dp
     val spaceXs = 4.dp
+    val spaceXsPlus = 6.dp
     val spaceS = 8.dp
+    val spaceSPlus = 10.dp
     val spaceM = 12.dp
+    val spaceMPlus = 14.dp
     val spaceL = 16.dp
     val spaceXl = 20.dp
+    val spaceXlPlus = 24.dp
     val spaceXxl = 28.dp
+    val spaceXxxl = 32.dp
 
     // Corner radii.
+    val radiusXxs = 4.dp
+    val radiusXs = 6.dp
     val radiusS = 8.dp
     val radiusM = 12.dp
     val radiusL = 16.dp
@@ -38,6 +46,9 @@ object Dimens {
     val textDisplay = 20.sp
 
     // Component sizing.
+
+    /** Material's minimum touch target. */
+    val touchTarget = 48.dp
     val topBarIconButton = 38.dp
     val avatarSize = 24.dp
     val chipHeight = 22.dp

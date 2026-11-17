@@ -23,6 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 
 /** Views are explicit drawings. No turn/rotate affordance implies synthesized unseen artwork. */
@@ -41,11 +43,11 @@ fun ActorViewMenu(
         IconButton(onClick = {
             expanded = true
             adding = false
-        }, modifier = Modifier.size(40.dp)) {
+        }, modifier = Modifier.size(ActorStudioTokens.toolButton)) {
             Icon(
                 Icons.Default.Flip,
                 stringResource(R.string.actor_views_current, stringResource(current.labelRes())),
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(EditorTokens.icon),
             )
         }
         DropdownMenu(expanded, { expanded = false }) {

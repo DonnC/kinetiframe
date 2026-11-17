@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Folder
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -37,13 +39,13 @@ fun ActorNameRow(actorName: String, onIntent: (StudioIntent) -> Unit) {
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(vertical = 4.dp).clickable { editingName = true },
+            modifier = Modifier.padding(vertical = Dimens.spaceXs).clickable { editingName = true },
         ) {
             Icon(
                 Lucide.Folder,
                 null,
                 tint = ActorStudioTokens.accent,
-                modifier = Modifier.size(18.dp).padding(end = 6.dp),
+                modifier = Modifier.size(EditorTokens.icon).padding(end = Dimens.spaceXsPlus),
             )
             Text(
                 actorName,

@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
 import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.render.completedPreviewFrames
 import kotlinx.coroutines.Dispatchers
@@ -104,7 +106,7 @@ fun ProjectActorRenderLayer(
         if (diagnostics.isNotEmpty()) {
             ProjectActorRenderWarning(
                 diagnostics,
-                Modifier.align(Alignment.TopStart).padding(12.dp),
+                Modifier.align(Alignment.TopStart).padding(Dimens.spaceM),
             )
         }
     }
@@ -121,7 +123,7 @@ private fun ProjectActorRenderWarning(diagnostics: List<ActorFrameRenderer.Diagn
             } else {
                 pluralStringResource(R.plurals.actor_placements_need_attention, diagnostics.size, diagnostics.size)
             },
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
+            modifier = Modifier.padding(horizontal = Dimens.spaceS, vertical = ActorStudioTokens.labelPaddingVertical),
             color = MaterialTheme.colorScheme.onErrorContainer,
             style = MaterialTheme.typography.labelSmall,
         )

@@ -71,9 +71,9 @@ fun ActorSketchCanvas(
         }
     }
     val density = LocalDensity.current
-    val hitRadius = with(density) { 24.dp.toPx() }
-    val handleRadius = with(density) { 6.dp.toPx() }
-    val tieTolerance = with(density) { 3.dp.toPx() }
+    val hitRadius = with(density) { ActorStudioTokens.sketchHitRadius.toPx() }
+    val handleRadius = with(density) { ActorStudioTokens.sketchHandleRadius.toPx() }
+    val tieTolerance = with(density) { ActorStudioTokens.sketchTieTolerance.toPx() }
     var jointDrag by remember { mutableStateOf<Pair<String, Boolean>?>(null) }
     var jointTarget by remember { mutableStateOf<Offset?>(null) }
     var size by remember { mutableStateOf(IntSize.Zero) }

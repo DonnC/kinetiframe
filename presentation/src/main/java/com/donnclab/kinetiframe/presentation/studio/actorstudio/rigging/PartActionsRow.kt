@@ -32,6 +32,8 @@ import com.composables.icons.lucide.Scissors
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ActorNameDialog
 import com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton
@@ -55,12 +57,12 @@ fun PartActionsRow(
 ) {
     var rename by remember(bone.id) { mutableStateOf(false) }
     Surface(
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(Dimens.radiusPill),
         color = ActorStudioTokens.panelSurface,
-        shadowElevation = 6.dp,
+        shadowElevation = ActorStudioTokens.floatingElevation,
         modifier = modifier,
     ) {
-        Row(Modifier.padding(4.dp)) {
+        Row(Modifier.padding(Dimens.spaceXs)) {
             if (setup && bone.textureBinding != null) {
                 ActorToolButton(
                     Lucide.Move,
@@ -88,7 +90,7 @@ fun PartActionsRow(
                         Icon(
                             Icons.Default.Collections,
                             stringResource(R.string.part_attach_library_artwork),
-                            modifier = Modifier.size(18.dp),
+                            modifier = Modifier.size(EditorTokens.icon),
                         )
                     }
                 }
@@ -97,7 +99,13 @@ fun PartActionsRow(
             Box {
                 IconButton(onClick = {
                     stackMenu = true
-                }) { Icon(Lucide.Layers, stringResource(R.string.part_stacking), modifier = Modifier.size(18.dp)) }
+                }) {
+                    Icon(
+                        Lucide.Layers,
+                        stringResource(R.string.part_stacking),
+                        modifier = Modifier.size(EditorTokens.icon),
+                    )
+                }
                 DropdownMenu(stackMenu, onDismissRequest = { stackMenu = false }) {
                     DropdownMenuItem(text = { Text(stringResource(R.string.part_bring_forward)) }, onClick = {
                         onIntent(StudioIntent.Actor.MovePart(bone.id, true))
@@ -116,7 +124,7 @@ fun PartActionsRow(
                     Lucide.Pen,
                     stringResource(R.string.part_rename),
                     tint = if (setup) ActorStudioTokens.accent else ActorStudioTokens.onPanelMuted,
-                    modifier = Modifier.size(16.dp),
+                    modifier = Modifier.size(Dimens.iconS),
                 )
             }
             if (setup &&
@@ -127,7 +135,7 @@ fun PartActionsRow(
                         Lucide.Scissors,
                         stringResource(R.string.part_capture_sketch),
                         tint = ActorStudioTokens.accent,
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(Dimens.iconS),
                     )
                 }
             }
@@ -137,7 +145,7 @@ fun PartActionsRow(
                         Lucide.Link2Off,
                         stringResource(R.string.part_detach_artwork),
                         tint = ActorStudioTokens.accent,
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(Dimens.iconS),
                     )
                 }
             }

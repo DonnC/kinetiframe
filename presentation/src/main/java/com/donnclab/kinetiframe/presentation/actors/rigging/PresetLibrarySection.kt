@@ -24,6 +24,7 @@ import com.composables.icons.lucide.Check
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 
 /** Preset auditioning strip plus the Apply button. One of the sections composed by [PuppetInspector]. */
@@ -53,11 +54,14 @@ fun PresetLibrarySection(
                 stringResource(R.string.preset_library_switch_mode),
                 style = MaterialTheme.typography.labelSmall,
                 color = ActorStudioTokens.onPanelMuted,
-                modifier = Modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = Dimens.spaceXs),
             )
         }
 
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(top = 8.dp)) {
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+            modifier = Modifier.padding(top = Dimens.spaceS),
+        ) {
             if (presets.isEmpty()) {
                 item {
                     Text(
@@ -78,7 +82,7 @@ fun PresetLibrarySection(
             }
         }
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(Dimens.spaceM))
 
         // Icon action, not a full-width button -- Preset Library lives in a small sheet now, and
         // a single confirm affordance beside the row it applies to reads clearer here than a bar

@@ -53,6 +53,8 @@ import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.AudioTrackSettings
 import com.donnclab.kinetiframe.core.document.MAX_AUDIO_TRACKS
 import com.donnclab.kinetiframe.core.document.VideoClipPlacement
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.studio.timeline.audio.AudioLaneHeader
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -82,7 +84,7 @@ fun TimelineTracksPanel(
         if (workspaceMode) {
             Text(
                 stringResource(R.string.tracks_no_clips),
-                Modifier.padding(16.dp),
+                Modifier.padding(Dimens.spaceL),
                 style = MaterialTheme.typography.bodySmall,
             )
         }
@@ -92,9 +94,9 @@ fun TimelineTracksPanel(
     var expanded by rememberSaveable { mutableStateOf(false) }
     val windowHeight = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() }
     val laneHeight = if (workspaceMode) {
-        (windowHeight - 120.dp).coerceAtLeast(48.dp)
+        (windowHeight - TimelineTokens.tracksPanelTopReserve).coerceAtLeast(TimelineTokens.tracksPanelMin)
     } else {
-        (windowHeight * .24f).coerceIn(48.dp, 168.dp)
+        (windowHeight * .24f).coerceIn(TimelineTokens.tracksPanelMin, TimelineTokens.tracksPanelMax)
     }
     var dropLane by remember { mutableStateOf<Int?>(null) }
     // A typed key prevents an actor and an audio clip from exposing competing controls.
@@ -180,7 +182,10 @@ fun TimelineTracksPanel(
     ).coerceAtLeast(1)
     Surface(modifier, color = MaterialTheme.colorScheme.surfaceContainerLow, shape = MaterialTheme.shapes.medium) {
         Column {
-            Row(Modifier.fillMaxWidth().height(40.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.fillMaxWidth().height(TimelineTokens.trackHeaderHeight),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 if (!workspaceMode) {
                     IconButton(onClick = {
                         expanded = !expanded
@@ -214,7 +219,7 @@ fun TimelineTracksPanel(
                     Column(Modifier.width(TRACK_GUTTER)) {
                         Text(
                             stringResource(R.string.tracks_frames),
-                            Modifier.height(24.dp).padding(start = 8.dp),
+                            Modifier.height(TimelineTokens.trackLabelHeight).padding(start = Dimens.spaceS),
                             style = MaterialTheme.typography.labelSmall,
                         )
                         if (camera.isNotEmpty()) TrackLabel(stringResource(R.string.tracks_camera))
@@ -225,7 +230,7 @@ fun TimelineTracksPanel(
                                 Text(
                                     stringResource(R.string.tracks_audio_lane, lane + 1),
                                     style = MaterialTheme.typography.labelSmall,
-                                    modifier = Modifier.width(24.dp),
+                                    modifier = Modifier.width(TimelineTokens.trackIconWidth),
                                 )
                                 AudioLaneHeader(
                                     settings.isMuted,
@@ -405,8 +410,8 @@ fun TimelineTracksPanel(
                         }
                         Box(
                             Modifier.offset(x = FRAME_CELL_WIDTH * (state.animation.currentFrame - offsetFrames))
-                                .width(2.dp).height(
-                                    24.dp +
+                                .width(TimelineTokens.playheadWidth).height(
+                                    TimelineTokens.playheadOverhang +
                                         TRACK_HEIGHT *
                                         (
                                             actors.size + audioLaneCount + (if (videos.isEmpty()) 0 else 1) +
@@ -437,7 +442,7 @@ fun TimelineTracksPanel(
 @Composable
 private fun TrackLabel(label: String) {
     Box(Modifier.width(TRACK_GUTTER).height(TRACK_HEIGHT), contentAlignment = Alignment.CenterStart) {
-        Text(label, style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(start = 8.dp))
+        Text(label, style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(start = Dimens.spaceS))
     }
 }
 

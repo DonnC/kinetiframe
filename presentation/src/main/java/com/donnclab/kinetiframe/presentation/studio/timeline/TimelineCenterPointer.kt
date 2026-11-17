@@ -15,6 +15,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 
 /** Non-interactive playhead: gestures pass through to the thumbnails beneath it. */
@@ -22,7 +23,10 @@ import com.donnclab.kinetiframe.presentation.R
 internal fun TimelineCenterPointer(modifier: Modifier = Modifier) {
     val description = stringResource(R.string.timeline_center_playhead)
     Spacer(
-        modifier.size(10.dp, 7.dp).semantics { contentDescription = description }
+        modifier.size(TimelineTokens.pointerWidth, TimelineTokens.pointerHeight).semantics {
+            contentDescription =
+                description
+        }
             .drawWithCache {
                 val arrow = Path().apply {
                     moveTo(0f, 0f)

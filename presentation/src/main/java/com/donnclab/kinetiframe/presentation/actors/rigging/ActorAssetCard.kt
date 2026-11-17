@@ -14,17 +14,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 
 /** Shared, bounded asset thumbnail for templates and mathematical presets. */
 @Composable
 fun ActorAssetCard(name: String, assetPath: String?, enabled: Boolean = true, onClick: () -> Unit) {
-    Card(onClick = onClick, enabled = enabled, modifier = Modifier.width(144.dp)) {
-        Column(Modifier.padding(8.dp)) {
+    Card(onClick = onClick, enabled = enabled, modifier = Modifier.width(ActorStudioTokens.assetCardWidth)) {
+        Column(Modifier.padding(Dimens.spaceS)) {
             AsyncImage(
                 model = assetPath?.let { "file:///android_asset/$it" },
                 contentDescription = name,
                 contentScale = ContentScale.Fit,
-                modifier = Modifier.fillMaxWidth().height(104.dp),
+                modifier = Modifier.fillMaxWidth().height(ActorStudioTokens.assetCardThumbHeight),
             )
             Text(name, style = MaterialTheme.typography.labelMedium)
         }

@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 
 /** Shared compact action with an accessible name and discoverable long-press tooltip. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,8 +39,8 @@ fun ActorToolButton(
             checked = selected,
             onCheckedChange = { onClick() },
             enabled = enabled,
-            modifier = Modifier.size(40.dp),
-        ) { Icon(icon, label, modifier = Modifier.size(18.dp)) }
+            modifier = Modifier.size(ActorStudioTokens.toolButton),
+        ) { Icon(icon, label, modifier = Modifier.size(EditorTokens.icon)) }
     }
 }
 

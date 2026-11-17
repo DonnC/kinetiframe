@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 
 /**
@@ -43,10 +44,12 @@ fun PartRail(
     modifier: Modifier = Modifier,
 ) {
     val parts = remember(graph) { graph.orderedBones() }
-    Surface(color = Color.White, shadowElevation = 6.dp, modifier = modifier) {
+    Surface(color = Color.White, shadowElevation = ActorStudioTokens.floatingElevation, modifier = modifier) {
         Row(
-            Modifier.horizontalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            Modifier.horizontalScroll(
+                rememberScrollState(),
+            ).padding(horizontal = Dimens.spaceM, vertical = Dimens.spaceSPlus),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
         ) {
             parts.forEach { part -> PartChip(part, part.id == selectedPartId, onClick = { onPartSelected(part.id) }) }
         }
@@ -57,21 +60,24 @@ fun PartRail(
 private fun PartChip(part: BoneNode, selected: Boolean, onClick: () -> Unit) {
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(ActorStudioTokens.partChipCorner),
         color = if (selected) ActorStudioTokens.accent.copy(alpha = 0.14f) else ActorStudioTokens.partRailIdle,
-        border = if (selected) BorderStroke(1.5.dp, ActorStudioTokens.accent) else null,
+        border = if (selected) BorderStroke(Dimens.borderMedium, ActorStudioTokens.accent) else null,
     ) {
-        Row(Modifier.padding(horizontal = 14.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.padding(horizontal = Dimens.spaceMPlus, vertical = Dimens.spaceS),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             // Filled = artwork already bound to this part; hollow warning color = still needs a
             // sketch -- the same signal ActorPartTree's Link2/Link2Off icon and RigSkeletonOverlay's
             // unbound-joint color give elsewhere, just small enough for a chip.
             Box(
-                Modifier.size(6.dp).background(
+                Modifier.size(ActorStudioTokens.partDot).background(
                     if (part.textureBinding != null) ActorStudioTokens.accent else MaterialTheme.colorScheme.error,
                     CircleShape,
                 ),
             )
-            Spacer(Modifier.width(6.dp))
+            Spacer(Modifier.width(Dimens.spaceXsPlus))
             Text(
                 part.name,
                 style = MaterialTheme.typography.labelMedium,

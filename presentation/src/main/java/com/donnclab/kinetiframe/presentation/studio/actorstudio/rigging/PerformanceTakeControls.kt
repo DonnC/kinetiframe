@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton
 import com.donnclab.kinetiframe.studio.ActorStudioState
@@ -65,7 +66,7 @@ fun PerformanceTakeControls(state: StudioState, onIntent: (StudioIntent) -> Unit
                     PerformanceTakePhase.IDLE -> ""
                 },
                 style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(end = 6.dp),
+                modifier = Modifier.padding(end = Dimens.spaceXsPlus),
             )
             if (phase == PerformanceTakePhase.REVIEW) {
                 ActorToolButton(

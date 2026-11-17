@@ -23,6 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.actors.rigging.RigBlueprintThumbnail
 
 /** One selectable skeleton-template row for [AddActorScreen]: a reference-art thumbnail (blank
@@ -37,23 +39,23 @@ fun TemplateOptionRow(
 ) {
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(Dimens.radiusL),
         modifier = modifier,
         color = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
         border = BorderStroke(
-            1.5.dp,
+            Dimens.borderMedium,
             if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
         ),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(14.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(Dimens.spaceMPlus)) {
             Box(
                 Modifier.size(
-                    52.dp,
-                ).clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.surfaceVariant),
+                    ActorStudioTokens.templateThumb,
+                ).clip(RoundedCornerShape(Dimens.radiusM)).background(MaterialTheme.colorScheme.surfaceVariant),
             ) {
-                RigBlueprintThumbnail(template, Modifier.fillMaxSize().padding(5.dp))
+                RigBlueprintThumbnail(template, Modifier.fillMaxSize().padding(ActorStudioTokens.templateThumbInset))
             }
-            Column(Modifier.weight(1f).padding(horizontal = 14.dp)) {
+            Column(Modifier.weight(1f).padding(horizontal = Dimens.spaceMPlus)) {
                 Text(stringResource(template.labelRes()), style = MaterialTheme.typography.titleSmall)
                 Text(
                     description,

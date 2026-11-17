@@ -42,6 +42,8 @@ import com.donnclab.kinetiframe.core.actor.artwork.ArtworkAlignment
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
@@ -108,8 +110,8 @@ fun ArtworkAlignmentDialog(
         },
         text = {
             Column(
-                Modifier.heightIn(max = 320.dp).verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
+                Modifier.heightIn(max = ActorStudioTokens.alignmentListMaxHeight).verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(Dimens.spaceXsPlus),
             ) {
                 ArtworkPlacementPreview(
                     bitmap,
@@ -119,7 +121,7 @@ fun ArtworkAlignmentDialog(
                     assets,
                     worldAngle,
                     onChange = { binding = it },
-                    modifier = Modifier.fillMaxWidth().height(200.dp),
+                    modifier = Modifier.fillMaxWidth().height(ActorStudioTokens.alignmentPreviewHeight),
                 )
                 Text(stringResource(R.string.artwork_gesture_hint), style = MaterialTheme.typography.labelSmall)
                 if (showName) {

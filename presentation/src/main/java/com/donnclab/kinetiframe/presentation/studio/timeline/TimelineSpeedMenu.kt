@@ -20,6 +20,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 
@@ -31,7 +33,7 @@ fun TimelineSpeedMenu(fps: Int, onIntent: (StudioIntent) -> Unit) {
     Box {
         TextButton(
             onClick = { open = true },
-            modifier = Modifier.size(48.dp).semantics { contentDescription = description },
+            modifier = Modifier.size(Dimens.touchTarget).semantics { contentDescription = description },
             contentPadding = PaddingValues(0.dp),
         ) {
             Text("$fps", style = MaterialTheme.typography.labelSmall)
@@ -40,9 +42,9 @@ fun TimelineSpeedMenu(fps: Int, onIntent: (StudioIntent) -> Unit) {
             Text(
                 stringResource(R.string.playback_fps),
                 style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                modifier = Modifier.padding(horizontal = Dimens.spaceL, vertical = Dimens.spaceXs),
             )
-            TimelineFpsSlider(fps, onIntent, Modifier.width(260.dp))
+            TimelineFpsSlider(fps, onIntent, Modifier.width(TimelineTokens.speedSliderWidth))
         }
     }
 }

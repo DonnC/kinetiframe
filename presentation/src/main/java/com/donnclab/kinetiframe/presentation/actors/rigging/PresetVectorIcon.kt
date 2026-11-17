@@ -14,7 +14,13 @@ object PresetVectorIcon {
     fun decode(source: String): ImageVector {
         require(source.length <= 8192 && source.contains("viewBox=\"0 0 64 64\""))
         val data = requireNotNull(Regex("<path d=\"([^\"]+)\"").find(source)?.groupValues?.get(1))
-        return ImageVector.Builder("Motion", 64.dp, 64.dp, 64f, 64f).addPath(
+        return ImageVector.Builder(
+            "Motion",
+            ActorStudioTokens.presetVectorIcon,
+            ActorStudioTokens.presetVectorIcon,
+            64f,
+            64f,
+        ).addPath(
             pathData = PathParser().parsePathString(data).toNodes(),
             fill = null,
             stroke = SolidColor(ActorStudioTokens.presetIconStroke),

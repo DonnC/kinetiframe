@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.media.audio.TimelineAudioSummary
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.studio.timeline.FRAME_CELL_WIDTH
@@ -55,7 +56,7 @@ fun ProjectAudioScrubRibbon(
     var dragFrame by remember { mutableIntStateOf(-1) }
     val description = stringResource(R.string.timeline_audio_scrubber)
     BoxWithConstraints(
-        modifier.height(20.dp).clipToBounds().semantics {
+        modifier.height(TimelineTokens.audioRibbonHeight).clipToBounds().semantics {
             contentDescription = description
         },
     ) {
@@ -100,19 +101,28 @@ fun ProjectAudioScrubRibbon(
                 val sampleWidth = cellPx / WAVE_SAMPLES_PER_FRAME
                 val x = edgePadding + i * sampleWidth + sampleWidth / 2 - pixelOffset
                 if (x >= -cellPx && x <= size.width + cellPx) {
-                    val half = (peak * (middle - 3.dp.toPx())).coerceAtLeast(.6.dp.toPx())
+                    val half = (peak * (middle - TimelineTokens.waveInset.toPx())).coerceAtLeast(
+                        TimelineTokens.waveMinHalfHeight.toPx(),
+                    )
                     drawLine(
                         blue.copy(alpha = .8f),
                         Offset(x, middle - half),
                         Offset(x, middle + half),
-                        strokeWidth = 1.5.dp.toPx(),
+                        strokeWidth = TimelineTokens.waveStroke.toPx(),
                         cap = StrokeCap.Round,
                     )
                 }
             }
             val x = edgePadding + (currentFrame + .45f - scroll) * cellPx
-            drawLine(blue, Offset(x, 0f), Offset(x, size.height), 1.dp.toPx())
-            drawCircle(blue, 2.dp.toPx(), Offset(x, size.height - 2.dp.toPx()))
+            drawLine(blue, Offset(x, 0f), Offset(x, size.height), TimelineTokens.ribbonPlayheadStroke.toPx())
+            drawCircle(
+                blue,
+                TimelineTokens.ribbonPlayheadDot.toPx(),
+                Offset(
+                    x,
+                    size.height - TimelineTokens.ribbonPlayheadDot.toPx(),
+                ),
+            )
         }
     }
 }

@@ -18,6 +18,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.document.MAX_AUDIO_TRACKS
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 
@@ -37,7 +38,7 @@ internal fun ClipPositionDialog(
     AlertDialog(onDismissRequest = onDismiss, title = {
         Text(stringResource(R.string.clip_position_title, label))
     }, text = {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
             CompactTextField(
                 frameText,
                 { frameText = it },

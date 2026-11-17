@@ -43,10 +43,17 @@ and `elevationL`), and the dock's own sizes (rail, menus, panels, colour control
 drawing and handling gestures; only its first visible frame, through `derivedStateOf`, drives
 composition. Lint's `FrequentlyChangingValue` baseline entry is gone.
 
+**Theme tokens, part 3: the timeline's and actor screens' sizes.** 327 more inline `.dp` sizes are
+tokens, with the same values: a new `TimelineTokens` for the frame strip, transport, tracks and
+audio ribbon (`FRAME_CELL_WIDTH`, `TRACK_HEIGHT` and `TRACK_GUTTER` now point at it), new entries in
+`ActorStudioTokens` for the rig overlay, sketch editor, part tree, cards and dialogs, and finer
+steps in `Dimens` (`spaceXxs`, `spaceXsPlus`, `spaceSPlus`, `spaceMPlus`, `spaceXlPlus`, `spaceXxxl`,
+`radiusXxs`, `radiusXs` and `touchTarget`).
+
 ## Next
 
-**Theme tokens, part 3: sizes.** Move the remaining 676 inline `.dp` sizes in 119 files, a feature at
-a time: the timeline next, then Actor Studio, the library and home.
+**Theme tokens, part 4: the last sizes.** 349 inline `.dp` sizes remain in 62 files: the library,
+home, common components, the editor shell, frames, colour tools, canvas overlays and dialogs.
 
 ## Later
 
@@ -55,7 +62,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Strings to resources.** The inline text check is at zero. Left: right-to-left layouts,
   per-app language and a pseudo-locale check (under Next), and `require` messages in `core`'s
   documents, such as FPS and stage limits, that only invalid files reach.
-- **Theme tokens.** Move 676 inline `.dp` sizes into `designsystem` tokens (under Next). The
+- **Theme tokens.** Move 349 inline `.dp` sizes into `designsystem` tokens (under Next). The
   last two inline colours go with UI separation.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
   code. Screens already reach storage only through their ViewModels (step 8d).
@@ -273,5 +280,5 @@ From `.architecture/` during step 9. Each count may only go down.
 | Functions over the parameter limit | 51 | — |
 | Inline text values | 0 | — |
 | Inline colours | 2 | 1 |
-| Inline `.dp` sizes | 676 | 119 |
+| Inline `.dp` sizes | 349 | 62 |
 | Files over 500 lines | 0 | — |

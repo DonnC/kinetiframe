@@ -12,13 +12,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 
 /** Compose only nearby labels, even when a recording spans thousands of frames. */
 @Composable
 internal fun TimelineFrameRuler(frames: Int, offsetFrames: Float, visibleFrames: Float, onSeekFrame: (Int) -> Unit) {
     val first = offsetFrames.toInt().coerceAtLeast(0)
     val last = (first + visibleFrames.toInt() + 2).coerceAtMost(frames - 1)
-    Box(Modifier.fillMaxWidth().height(24.dp)) {
+    Box(Modifier.fillMaxWidth().height(TimelineTokens.rulerHeight)) {
         for (frame in first..last) {
             Text(
                 "${frame + 1}",

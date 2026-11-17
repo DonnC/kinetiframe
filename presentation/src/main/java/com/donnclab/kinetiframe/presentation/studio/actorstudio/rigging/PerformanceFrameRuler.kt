@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.domain.PerformanceRulerTiming
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.studio.FrameThumbnailContent
 import com.donnclab.kinetiframe.presentation.studio.timeline.ObserveTimelineScrubbing
@@ -78,7 +80,7 @@ fun PerformanceFrameRuler(
     val scroll = rememberLazyListState()
     ObserveTimelineScrubbing(
         scroll,
-        44.dp,
+        ActorStudioTokens.performanceCell,
         selectedFrame,
         frameCount + 1,
         onFrame = { onFrameSelected(PerformanceRulerTiming.timeAt(it, safeFps, durationMicros)) },
@@ -93,7 +95,7 @@ fun PerformanceFrameRuler(
         }
     }
     BoxWithConstraints(modifier) {
-        val edge = ((maxWidth - 44.dp) / 2).coerceAtLeast(0.dp)
+        val edge = ((maxWidth - ActorStudioTokens.performanceCell) / 2).coerceAtLeast(0.dp)
         LazyRow(modifier = Modifier.fillMaxWidth(), state = scroll, contentPadding = PaddingValues(horizontal = edge)) {
             items(count = frameCount + 1) { frame ->
                 val key = frame in keyedFrames
@@ -110,7 +112,7 @@ fun PerformanceFrameRuler(
                 )
                 Box(
                     modifier = Modifier
-                        .size(width = 44.dp, height = 48.dp)
+                        .size(width = ActorStudioTokens.performanceCell, height = Dimens.touchTarget)
                         .background(
                             when {
                                 selected -> MaterialTheme.colorScheme.primaryContainer
@@ -146,7 +148,7 @@ fun PerformanceFrameRuler(
                     ) {
                         if (key) {
                             Box(
-                                Modifier.align(Alignment.BottomStart).size(5.dp)
+                                Modifier.align(Alignment.BottomStart).size(ActorStudioTokens.keyDot)
                                     .background(MaterialTheme.colorScheme.primary),
                             )
                         }

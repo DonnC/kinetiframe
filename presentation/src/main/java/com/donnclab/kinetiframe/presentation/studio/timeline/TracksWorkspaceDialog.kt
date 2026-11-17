@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 
@@ -48,7 +49,7 @@ fun TracksWorkspaceDialog(
                 Text(
                     stringResource(R.string.tracks_title),
                     style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.weight(1f).padding(start = 16.dp),
+                    modifier = Modifier.weight(1f).padding(start = Dimens.spaceL),
                 )
                 PlaybackControls(isPlaying, onIntent)
                 assetPicker?.invoke()
@@ -62,5 +63,5 @@ fun TracksWorkspaceDialog(
 @Preview(widthDp = 800, heightDp = 360)
 @Composable
 private fun TracksWorkspacePreview() {
-    TracksWorkspaceDialog(false, {}, {}) { Text("Track workspace", Modifier.padding(16.dp)) }
+    TracksWorkspaceDialog(false, {}, {}) { Text("Track workspace", Modifier.padding(Dimens.spaceL)) }
 }

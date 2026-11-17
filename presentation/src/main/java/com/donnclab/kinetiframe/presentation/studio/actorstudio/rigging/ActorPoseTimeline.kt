@@ -31,6 +31,8 @@ import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.rigging.ActorContactMenu
 import com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton
@@ -82,7 +84,7 @@ fun ActorPoseTimeline(
     val hasPreset = state.activeActor()?.motionPreset != null || state.actor.presetPreview != null
     val taking = state.actor.takePhase != PerformanceTakePhase.IDLE
     Surface(modifier, color = MaterialTheme.colorScheme.surfaceContainer, shape = MaterialTheme.shapes.small) {
-        Column(Modifier.padding(horizontal = 8.dp)) {
+        Column(Modifier.padding(horizontal = Dimens.spaceS)) {
             Row(
                 Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                 verticalAlignment = Alignment.CenterVertically,
@@ -97,7 +99,9 @@ fun ActorPoseTimeline(
                             rulerKeys.size,
                         ),
                         style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.widthIn(min = 84.dp).padding(end = 6.dp),
+                        modifier = Modifier.widthIn(
+                            min = ActorStudioTokens.poseLabelMinWidth,
+                        ).padding(end = Dimens.spaceXsPlus),
                         maxLines = 1,
                     )
                     PerformanceDurationMenu(
@@ -175,7 +179,7 @@ fun ActorPoseTimeline(
                         onIntent(StudioIntent.ActorMotion.Scrub(it))
                     }
                 },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.spaceXsPlus),
             )
         }
     }
