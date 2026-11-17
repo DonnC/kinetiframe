@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.valueText
 
 /** All audition controls stay in the dark sheet; no stacked dialog obscures the actor. */
 @Composable
@@ -81,7 +82,7 @@ private fun PresetDial(label: String, value: Float, range: ClosedFloatingPointRa
     // One clock restart on release, not a job cancel/relaunch for every slider sample.
     com.donnclab.kinetiframe.presentation.common.StandardSlider(
         draft, { draft = it }, range, label,
-        valueDisplay = { String.format(java.util.Locale.ROOT, "%.2f×", it) },
+        valueDisplay = valueText(R.string.value_multiplier) { it },
         accentColor = ActorStudioTokens.accent, labelColor = ActorStudioTokens.onPanelMuted,
         valueColor = ActorStudioTokens.onPanel, onValueChangeFinished = { onValue(draft) },
     )

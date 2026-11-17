@@ -50,6 +50,7 @@ import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
+import com.donnclab.kinetiframe.presentation.common.valueText
 import com.donnclab.kinetiframe.studio.RulerMode
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
@@ -115,7 +116,7 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
                 onIntent(StudioIntent.Draw.SetBrushOpacity(it))
             },
             range = 0.01f..1f,
-            valueDisplay = { "${(it * 100).toInt()}%" },
+            valueDisplay = valueText(R.string.value_percent) { (it * 100).toInt() },
         )
 
         if (tool != DrawingTool.COLOR_FILL && state.tool.constructionShape == null) {

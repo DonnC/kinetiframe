@@ -13,39 +13,33 @@ Keep this page current:
 
 ## Now
 
-**Typed errors, part 4, and a stricter inline text check.**
+**Typed errors, part 5, slider values and audio tags.**
 
-- **Problems a person can fix** are a typed `ActionableException` in `core` with an
-  `ActionableProblem`: a blank or taken project name, a blank actor name, an unreadable file, a
-  file that isn't a project archive, a project already on the device, no background image, an
-  empty pack and an unnamed pack frame. `presentation` words each one, so "Could not create
-  project: A project named 'Walk' already exists" becomes "A project named "Walk" already exists.
-  Choose another name."
-- **State messages outside the editor** are `UiText`: the screen colour picker, the palette
-  browser and the audio preview.
-- **The inline text check** also counts a literal in a branch of an `if` or `when`, an `Icon`'s
-  positional description, and `contentDescription` or `stateDescription` set inside
-  `semantics { }`. It found 32 more values in 18 files (play and pause buttons, part tree
-  descriptions, dock confirm and cancel buttons, the timeline clip description and others), all
-  now string resources; the clip description is a plural. A few it can't see moved too: the
-  background menu labels, the smudge and blur tool name, and the clip trim handles.
+- **Media messages:** the voice recorder reports `startFailed` instead of the platform's
+  message, and the screen says to check whether another app is using the microphone. A missing
+  or unreadable saved background image, and a video whose length or size can't be read, are
+  `ActionableProblem`s. The importers' unreadable-file errors use `FILE_UNREADABLE`, and the
+  voice effect dialog's error is `UiText`.
+- **Slider values** ("%", "sp" and the preset multiplier "×") come from string resources through
+  `valueText`, so they follow the device's number format.
+- **Library audio tags** keep "SFX", "MUSIC" and "VOICE" as filter keys; the pill names them from
+  string resources.
 
 ## Next
 
-**Typed errors, part 5: the remaining details.** Messages from lower layers that still reach the
-screen as detail: the voice recorder's errors (`VoiceRecorder.State.error` in `media`), the audio
-and video importers' messages in `presentation`, and `require` messages in `core`'s documents
-such as FPS and stage limits. Labels passed to custom components (such as `ContextIconAction`'s
-label) aren't counted by the check; review them screen by screen.
+**Strings, last part: per-app language and a pseudo-locale check.** Add a per-app language
+setting (`locales_config.xml`) and turn on the pseudo-locales for debug builds, then look at the
+main screens in `en-XA` (long text) and `ar-XB` (right to left) on a device. Labels passed to
+custom components (such as `ContextIconAction`'s label) aren't counted by the inline text check;
+the pseudo-locale pass will show any left.
 
 ## Later
 
 Tracks that run alongside the module work, a screen or feature at a time:
 
-- **Strings to resources.** The inline text check is at zero. Left: slider value labels built in
-  lambdas ("%", "sp"), and the
-  library audio tags ("MUSIC", "VOICE", "SFX"), which double as filter keys. Then right-to-left
-  layouts, per-app language and a pseudo-locale check.
+- **Strings to resources.** The inline text check is at zero. Left: right-to-left layouts,
+  per-app language and a pseudo-locale check (under Next), and `require` messages in `core`'s
+  documents, such as FPS and stage limits, that only invalid files reach.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
   code. Screens already reach storage only through their ViewModels (step 8d).
@@ -203,6 +197,7 @@ fixed after the module work, unless one blocks testing.
 | #70 | Returned typed validation failures from `core` and worded them in the UI (typed errors, part 1) |
 | #71 | Reported studio errors as typed failures (typed errors, part 2) |
 | #72 | Gave storage failures a typed reason and worded the editor's messages from resources (typed errors, part 3) |
+| #73 | Typed fixable problems and tightened the inline text check (typed errors, part 4) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.

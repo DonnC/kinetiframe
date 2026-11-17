@@ -30,6 +30,9 @@ private fun ActionableProblem.text(detail: String): UiText = when (this) {
     ActionableProblem.NOT_A_PROJECT_ARCHIVE -> UiText.Resource(R.string.problem_not_project_archive)
     ActionableProblem.PROJECT_ALREADY_ON_DEVICE -> UiText.Resource(R.string.problem_project_on_device)
     ActionableProblem.NO_BACKGROUND_IMAGE -> UiText.Resource(R.string.problem_no_background)
+    ActionableProblem.BACKGROUND_MISSING -> UiText.Resource(R.string.problem_background_missing)
+    ActionableProblem.BACKGROUND_UNREADABLE -> UiText.Resource(R.string.problem_background_unreadable)
+    ActionableProblem.VIDEO_UNREADABLE -> UiText.Resource(R.string.problem_video_unreadable)
     ActionableProblem.PACK_EMPTY -> UiText.Resource(R.string.problem_pack_empty)
     ActionableProblem.PACK_FRAME_UNNAMED -> UiText.Resource(R.string.problem_pack_frame_unnamed, listOf(detail))
 }

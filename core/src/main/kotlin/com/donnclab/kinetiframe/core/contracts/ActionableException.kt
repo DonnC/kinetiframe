@@ -19,6 +19,11 @@ enum class ActionableProblem {
     NOT_A_PROJECT_ARCHIVE,
     PROJECT_ALREADY_ON_DEVICE,
     NO_BACKGROUND_IMAGE,
+
+    /** The project's saved background image file is gone. */
+    BACKGROUND_MISSING,
+    BACKGROUND_UNREADABLE,
+    VIDEO_UNREADABLE,
     PACK_EMPTY,
 
     /** [ActionableException.detail] is the first unnamed frame's number. */

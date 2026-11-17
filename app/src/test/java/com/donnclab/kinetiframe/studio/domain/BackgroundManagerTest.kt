@@ -1,6 +1,8 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.core.document.AssetKind
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioFailure
@@ -199,12 +201,13 @@ class BackgroundManagerTest {
         manager().restore()
         testScope.advanceUntilIdle()
         assertEquals(StudioFailure.BACKGROUND_NOT_LOADED, errors.last().failure)
+        assertEquals(ActionableProblem.BACKGROUND_MISSING, (errors.last().cause as ActionableException).problem)
         assertEquals(id, state.project.backgroundAssetId)
         assertNull(assets.getAsset(id))
         file.writeText("not an image")
         manager().restore()
         testScope.advanceUntilIdle()
-        assertTrue(errors.last().cause?.message.orEmpty().contains("decoded"))
+        assertEquals(ActionableProblem.BACKGROUND_UNREADABLE, (errors.last().cause as ActionableException).problem)
         assertEquals(id, state.project.backgroundAssetId)
     }
 

@@ -21,7 +21,10 @@ import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.core.document.VoiceEffect
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.common.choiceLabel
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,9 +39,8 @@ internal fun VoiceEffectDialog(
 ) {
     var selected by remember { mutableStateOf(clip.voiceEffect) }
     var busy by remember { mutableStateOf(false) }
-    var error by remember { mutableStateOf<String?>(null) }
+    var error by remember { mutableStateOf<UiText?>(null) }
     val scope = rememberCoroutineScope()
-    val processFailed = stringResource(R.string.voice_process_failed)
     AlertDialog(onDismissRequest = onDismiss, title = { Text(stringResource(R.string.voice_title)) }, text = {
         Column(Modifier.verticalScroll(rememberScrollState())) {
             VoiceEffect.entries.forEach { effect ->
@@ -48,7 +50,7 @@ internal fun VoiceEffectDialog(
             }
             Text(stringResource(R.string.voice_note))
             if (busy) LinearProgressIndicator()
-            error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+            error?.let { Text(it.asString(), color = MaterialTheme.colorScheme.error) }
         }
     }, confirmButton = {
         TextButton({
@@ -69,7 +71,7 @@ internal fun VoiceEffectDialog(
                 } catch (
                     failure: Exception,
                 ) {
-                    error = failure.message ?: processFailed
+                    error = failure.toUiText(R.string.voice_process_failed)
                 } finally {
                     busy = false
                 }

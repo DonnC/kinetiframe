@@ -34,7 +34,8 @@ class VoiceRecorder(private val context: Context, private val scope: CoroutineSc
         val elapsedMicros: Long = 0L,
         val waveform: Waveform = Waveform.EMPTY,
         val hasTake: Boolean = false,
-        val error: String? = null,
+        /** Recording couldn't start, for example because another app holds the microphone. */
+        val startFailed: Boolean = false,
     )
 
     private val _state = MutableStateFlow(State())
@@ -63,7 +64,7 @@ class VoiceRecorder(private val context: Context, private val scope: CoroutineSc
             }
             recorder = created
         }.onFailure { throwable ->
-            _state.value = State(error = throwable.message ?: "Could not start recording")
+            _state.value = State(startFailed = true)
             return
         }
         startedAtMs = System.currentTimeMillis()

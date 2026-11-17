@@ -6,6 +6,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.media.audio.AudioDurations
 import com.donnclab.kinetiframe.media.audio.WaveformExtractor
 import com.donnclab.kinetiframe.media.image.FrameImageDecoder
@@ -47,7 +49,7 @@ internal class EditorMediaImporter(
         runCatching {
             val assetId = "audio-${UUID.randomUUID()}"
             val destination = File(audioDirectory, "$assetId.audio")
-            copy(uri, destination, "Could not read that audio file")
+            copy(uri, destination)
             ImportedAudio(assetId, destination, AudioDurations.readMicros(destination.absolutePath))
         }
     }
@@ -73,15 +75,15 @@ internal class EditorMediaImporter(
             val projectVideoDir = File(filesDir, "project-assets/video").apply { mkdirs() }
             val assetId = "video-${UUID.randomUUID()}"
             val destination = File(projectVideoDir, "$assetId.video")
-            copy(uri, destination, "Could not read that video file")
+            copy(uri, destination)
             ImportedVideo(assetId, destination, readVideoMetadata(destination))
         }
     }
 
-    private fun copy(uri: Uri, destination: File, failure: String) {
+    private fun copy(uri: Uri, destination: File) {
         context.contentResolver.openInputStream(uri)?.use { input ->
             destination.outputStream().use { output -> input.copyTo(output) }
-        } ?: throw IOException(failure)
+        } ?: throw ActionableException(ActionableProblem.FILE_UNREADABLE)
     }
 
     private fun readVideoMetadata(file: File): ImportedVideoMetadata {
@@ -94,7 +96,9 @@ internal class EditorMediaImporter(
             val height = read(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull() ?: 0
             val rotation = read(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)?.toIntOrNull() ?: 0
             val hasAudio = read(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO) == "yes"
-            require(duration > 0L && width > 0 && height > 0) { "Could not read video duration or dimensions" }
+            if (duration <= 0L || width <= 0 || height <= 0) {
+                throw ActionableException(ActionableProblem.VIDEO_UNREADABLE)
+            }
             val sideways = rotation % 180 != 0
             ImportedVideoMetadata(
                 durationMicros = duration,

@@ -53,6 +53,7 @@ import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
+import com.donnclab.kinetiframe.presentation.common.valueText
 import com.donnclab.kinetiframe.presentation.studio.dialogs.TextInsertionDialog
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
@@ -175,7 +176,7 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
                                 )
                         },
                         range = 8f..200f,
-                        valueDisplay = { "${it.toInt()}sp" },
+                        valueDisplay = valueText(R.string.value_sp) { it.toInt() },
                     )
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
