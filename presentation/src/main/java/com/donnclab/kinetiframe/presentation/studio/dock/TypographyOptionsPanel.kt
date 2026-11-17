@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Plus
 import com.donnclab.kinetiframe.core.document.TextNode
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
@@ -101,7 +102,7 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
             "main" -> {
                 Column(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(Dimens.spaceL)
                         .fillMaxWidth(),
                 ) {
                     Text(
@@ -111,20 +112,20 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
                         fontWeight = FontWeight.Bold,
                     )
 
-                    Spacer(Modifier.height(16.dp))
+                    Spacer(Modifier.height(Dimens.spaceL))
 
                     if (selectedNode == null) {
                         Button(
                             onClick = { showAddDialog = true },
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(8.dp),
+                            shape = RoundedCornerShape(Dimens.radiusS),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
                                 contentColor = MaterialTheme.colorScheme.primary,
                             ),
                         ) {
-                            Icon(Lucide.Plus, contentDescription = null, modifier = Modifier.size(18.dp))
-                            Spacer(Modifier.width(8.dp))
+                            Icon(Lucide.Plus, contentDescription = null, modifier = Modifier.size(EditorTokens.icon))
+                            Spacer(Modifier.width(Dimens.spaceS))
                             Text(stringResource(R.string.text_add))
                         }
                     } else {
@@ -136,7 +137,7 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
                         TextButton(onClick = { showEditDialog = true }) { Text(stringResource(R.string.pack_edit)) }
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = Dimens.spaceL))
 
                     // Font Selection
                     Text(
@@ -144,11 +145,11 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
                         style = MaterialTheme.typography.labelMedium,
                         color = EditorTokens.muted,
                     )
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(Dimens.spaceXs))
                     OutlinedButton(
                         onClick = { currentScreen = "fonts" },
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(8.dp),
+                        shape = RoundedCornerShape(Dimens.radiusS),
                     ) {
                         val currentFontName = selectedNode?.fontFileName ?: state.tool.textToolOptions.fontFileName
                         val currentFont = fontRegistry.availableFonts.find { it.fileName == currentFontName }
@@ -159,7 +160,7 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
                         )
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = Dimens.spaceL))
 
                     // Size
                     StandardSlider(
@@ -179,7 +180,7 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
                         valueDisplay = valueText(R.string.value_sp) { it.toInt() },
                     )
 
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = Dimens.spaceL))
 
                     // Color
                     Text(
@@ -187,7 +188,7 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
                         style = MaterialTheme.typography.labelMedium,
                         color = EditorTokens.muted,
                     )
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(Dimens.spaceS))
                     ColorPicker(
                         selectedNode?.let {
                             Color(it.style.mainColorHex)
@@ -245,9 +246,12 @@ fun FontSelectionPanel(
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .width(220.dp)
-            .background(androidx.compose.material3.MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
-            .padding(8.dp),
+            .width(EditorTokens.textPanelWidth)
+            .background(
+                androidx.compose.material3.MaterialTheme.colorScheme.surface,
+                RoundedCornerShape(Dimens.radiusM),
+            )
+            .padding(Dimens.spaceS),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -262,15 +266,15 @@ fun FontSelectionPanel(
             Text(
                 stringResource(R.string.text_select_font),
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(start = 8.dp),
+                modifier = Modifier.padding(start = Dimens.spaceS),
             )
         }
 
-        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+        HorizontalDivider(modifier = Modifier.padding(vertical = Dimens.spaceS))
 
         LazyColumn(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs),
         ) {
             items(fontRegistry.availableFonts) { font ->
                 FontItemRow(
@@ -292,7 +296,7 @@ private fun FontItemRow(font: FontItem, selected: Boolean, onClick: () -> Unit) 
         color = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent,
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(Dimens.spaceM),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -308,7 +312,7 @@ private fun FontItemRow(font: FontItem, selected: Boolean, onClick: () -> Unit) 
                     imageVector = Icons.Rounded.Check,
                     contentDescription = stringResource(R.string.state_selected),
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(20.dp),
+                    modifier = Modifier.size(Dimens.iconM),
                 )
             }
         }

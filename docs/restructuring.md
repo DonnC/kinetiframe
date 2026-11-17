@@ -31,10 +31,22 @@ canvas overlay, timeline and dock preview colours in `EditorTokens`, sketch and 
 The two left are the onion skin defaults in `studio`'s `StudioState`, which move with the UI
 separation track, since `studio` doesn't depend on `designsystem`.
 
+**Theme tokens, part 2: the dock's sizes.** The editor dock's 130 inline `.dp` sizes are tokens:
+spacing, corners and icon sizes use `Dimens` (with new `borderThin`, `borderMedium`, `elevationM`
+and `elevationL`), and the dock's own sizes (rail, menus, panels, colour controls) are named in
+`EditorTokens`. Values didn't change.
+
+**Compose deprecations, part 1.** Home's tabs use `PrimaryTabRow` and the actor details sheet's
+`SecondaryTabRow`; both tooltips use `rememberTooltipPositionProvider(TooltipAnchorPosition.Above)`.
+
+**Audio ribbon recomposition.** `ProjectAudioScrubRibbon` reads the scroll position only while
+drawing and handling gestures; only its first visible frame, through `derivedStateOf`, drives
+composition. Lint's `FrequentlyChangingValue` baseline entry is gone.
+
 ## Next
 
-**Theme tokens, part 2: sizes.** Move the 806 inline `.dp` sizes in 132 files into `Dimens` and
-the feature token objects, a feature at a time, starting with the editor's dock and timeline.
+**Theme tokens, part 3: sizes.** Move the remaining 676 inline `.dp` sizes in 119 files, a feature at
+a time: the timeline next, then Actor Studio, the library and home.
 
 ## Later
 
@@ -43,7 +55,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Strings to resources.** The inline text check is at zero. Left: right-to-left layouts,
   per-app language and a pseudo-locale check (under Next), and `require` messages in `core`'s
   documents, such as FPS and stage limits, that only invalid files reach.
-- **Theme tokens.** Move 806 inline `.dp` sizes into `designsystem` tokens (under Next). The
+- **Theme tokens.** Move 676 inline `.dp` sizes into `designsystem` tokens (under Next). The
   last two inline colours go with UI separation.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
   code. Screens already reach storage only through their ViewModels (step 8d).
@@ -63,13 +75,8 @@ Tracks that run alongside the module work, a screen or feature at a time:
   version #3 proposes.
 - **Compose deprecations.** BOM 2026.09.00 deprecates `createComposeRule` (47 device tests), in
   favour of a `v2` rule that queues coroutines instead of running them at once, so tests may need
-  explicit waits. `TabRow` (2 uses) gives way to `PrimaryTabRow` and `SecondaryTabRow`, and
-  `rememberPlainTooltipPositionProvider` (2 uses) to `rememberTooltipPositionProvider`. Migrate
-  each with its screen, and check the tabs on a device, since the new rows draw a different
-  indicator.
-- **Audio ribbon recomposition.** `ProjectAudioScrubRibbon` reads the timeline's `layoutInfo` in
-  composition, so it recomposes on every scroll frame. Lint's `FrequentlyChangingValue` finding is
-  in the baseline. Move the reads into the draw phase, and check scrubbing on a device.
+  explicit waits. The tab rows and tooltips are migrated; check the tabs on a device, since the new
+  rows draw a different indicator, and check scrubbing the audio ribbon.
 - **Device tests.** 13 device tests fail on `develop` and failed before the restructuring began.
   They check labels and controls that have since changed. Delete each one when the code it covers
   is replaced.
@@ -239,7 +246,10 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   When the IDE's Gradle process keeps `buildSrc/build` locked, run the checker tests on a copy of
   `buildSrc` (with `gradle/libs.versions.toml` beside it) instead. AAPT2 can also stop starting
   from Gradle ("Daemon startup failed") even though `aapt2 daemon` runs by hand; CI's
-  manual run covers `app` when that happens.
+  manual run covers `app` when that happens. A compile that runs while sources are broken can
+  leave a bad entry in the local build cache: `designsystem` once came back with an empty
+  `.kotlin_module`, so `presentation` couldn't see its top-level declarations (`BrandTeal`,
+  `KinetiFrameTheme`). Rebuild with `--no-build-cache` when a module's top-level names go missing.
 - **Lint version checks.** Lint's "newer version available" checks are disabled, because their
   findings change with every upstream release. Dependabot reports updates instead.
 - **Checker tests.** CI runs `./gradlew -p buildSrc test`, but only for `main` during the
@@ -263,5 +273,5 @@ From `.architecture/` during step 9. Each count may only go down.
 | Functions over the parameter limit | 51 | — |
 | Inline text values | 0 | — |
 | Inline colours | 2 | 1 |
-| Inline `.dp` sizes | 806 | 132 |
+| Inline `.dp` sizes | 676 | 119 |
 | Files over 500 lines | 0 | — |

@@ -25,6 +25,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import kotlin.math.roundToInt
 
 @Composable
@@ -68,12 +70,12 @@ fun FloatingDock(
                 .offset { IntOffset(localOffset.x.roundToInt(), localOffset.y.roundToInt()) }
                 .onSizeChanged { dockSize = it },
             color = androidx.compose.material3.MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
-            shape = RoundedCornerShape(24.dp),
-            shadowElevation = 8.dp,
-            border = BorderStroke(1.dp, Color.Gray.copy(alpha = 0.2f)),
+            shape = RoundedCornerShape(EditorTokens.dockCorner),
+            shadowElevation = Dimens.elevationM,
+            border = BorderStroke(Dimens.borderThin, Color.Gray.copy(alpha = 0.2f)),
         ) {
             Column(
-                modifier = Modifier.padding(bottom = 4.dp),
+                modifier = Modifier.padding(bottom = Dimens.spaceXs),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 DragHandle(

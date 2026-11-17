@@ -37,6 +37,7 @@ import com.composables.icons.lucide.RotateCcw
 import com.composables.icons.lucide.Scissors
 import com.composables.icons.lucide.Trash2
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
@@ -51,21 +52,25 @@ fun SelectionDock(modifier: Modifier = Modifier, state: StudioState, onIntent: (
         onOffsetChange = { onIntent(StudioIntent.Selection.SetDockPosition(it)) },
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 4.dp),
+            modifier = Modifier.padding(horizontal = Dimens.spaceXs),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs),
         ) {
             IconButton(onClick = { onIntent(StudioIntent.Selection.SetActive(false)) }) {
-                Icon(Lucide.Check, stringResource(R.string.selection_apply), modifier = Modifier.size(20.dp))
+                Icon(Lucide.Check, stringResource(R.string.selection_apply), modifier = Modifier.size(Dimens.iconM))
             }
             Box {
                 IconButton(onClick = { optionsVisible = true }) {
-                    Icon(Lucide.Ellipsis, stringResource(R.string.selection_actions), modifier = Modifier.size(20.dp))
+                    Icon(
+                        Lucide.Ellipsis,
+                        stringResource(R.string.selection_actions),
+                        modifier = Modifier.size(Dimens.iconM),
+                    )
                 }
                 SelectionActionMenu(optionsVisible, { optionsVisible = false }, state, onIntent)
             }
             IconButton(onClick = { onIntent(StudioIntent.Selection.Cancel) }) {
-                Icon(Lucide.X, stringResource(R.string.action_cancel), modifier = Modifier.size(20.dp))
+                Icon(Lucide.X, stringResource(R.string.action_cancel), modifier = Modifier.size(Dimens.iconM))
             }
         }
     }

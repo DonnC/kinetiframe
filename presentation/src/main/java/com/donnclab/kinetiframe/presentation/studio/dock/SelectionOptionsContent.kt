@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
@@ -38,7 +39,7 @@ import com.donnclab.kinetiframe.studio.StudioState
 
 @Composable
 fun SelectionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onDismiss: () -> Unit) {
-    Column(Modifier.padding(16.dp).fillMaxWidth()) {
+    Column(Modifier.padding(Dimens.spaceL).fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -50,19 +51,19 @@ fun SelectionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit
                 fontWeight = FontWeight.Bold,
                 color = EditorTokens.dark,
             )
-            IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
+            IconButton(onClick = onDismiss, modifier = Modifier.size(EditorTokens.closeButton)) {
                 Icon(
                     Lucide.X,
                     contentDescription = stringResource(R.string.action_close),
-                    modifier = Modifier.size(16.dp),
+                    modifier = Modifier.size(Dimens.iconS),
                     tint = EditorTokens.dark,
                 )
             }
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(Dimens.spaceL))
 
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
             SelectionTypeRow(
                 label = stringResource(R.string.tool_lasso),
                 selected = state.selection.toolType == SelectionToolType.LASSO,
@@ -75,14 +76,14 @@ fun SelectionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit
             )
         }
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(Dimens.spaceXl))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(Dimens.radiusS))
                 .clickable { onIntent(StudioIntent.Selection.SetPartialInclude(!state.selection.partialInclude)) }
-                .padding(vertical = 4.dp),
+                .padding(vertical = Dimens.spaceXs),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Checkbox(
@@ -93,7 +94,7 @@ fun SelectionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit
                     uncheckedColor = EditorTokens.inactive,
                 ),
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(Dimens.spaceS))
             Text(
                 stringResource(R.string.selection_partial),
                 style = MaterialTheme.typography.bodyMedium,
@@ -108,9 +109,9 @@ private fun SelectionTypeRow(label: String, selected: Boolean, onClick: () -> Un
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(Dimens.radiusS))
             .clickable(onClick = onClick)
-            .padding(vertical = 4.dp),
+            .padding(vertical = Dimens.spaceXs),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         RadioButton(
@@ -120,9 +121,9 @@ private fun SelectionTypeRow(label: String, selected: Boolean, onClick: () -> Un
                 selectedColor = EditorTokens.accent,
                 unselectedColor = EditorTokens.inactive,
             ),
-            modifier = Modifier.size(32.dp).scale(0.8f),
+            modifier = Modifier.size(EditorTokens.control).scale(0.8f),
         )
-        Spacer(Modifier.width(4.dp))
+        Spacer(Modifier.width(Dimens.spaceXs))
         Text(
             label,
             style = MaterialTheme.typography.bodyMedium,

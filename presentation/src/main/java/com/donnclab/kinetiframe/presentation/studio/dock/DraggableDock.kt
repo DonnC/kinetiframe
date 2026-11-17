@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import kotlin.math.roundToInt
 
 /**
@@ -50,7 +51,7 @@ class DraggableDockState(initialOffset: Offset, private val insetPx: Float) {
 }
 
 @Composable
-fun rememberDraggableDockState(initialOffset: Offset, insetDp: Dp = 8.dp): DraggableDockState {
+fun rememberDraggableDockState(initialOffset: Offset, insetDp: Dp = Dimens.spaceS): DraggableDockState {
     val insetPx = with(LocalDensity.current) { insetDp.toPx() }
     return remember { DraggableDockState(initialOffset, insetPx) }
 }

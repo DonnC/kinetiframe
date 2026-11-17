@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
@@ -45,7 +46,7 @@ import com.donnclab.kinetiframe.studio.StudioState
 @Composable
 fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onDismiss: () -> Unit) {
     val gridThemeColor = MaterialTheme.colorScheme.tertiary
-    Column(Modifier.padding(16.dp).fillMaxWidth()) {
+    Column(Modifier.padding(Dimens.spaceL).fillMaxWidth()) {
         // Master Switch at the top
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -53,15 +54,15 @@ fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onD
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
+                IconButton(onClick = onDismiss, modifier = Modifier.size(EditorTokens.closeButton)) {
                     Icon(
                         Lucide.X,
                         contentDescription = stringResource(R.string.action_close),
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(Dimens.iconS),
                         tint = EditorTokens.dark,
                     )
                 }
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(Dimens.spaceS))
                 Text(
                     stringResource(R.string.grid_title),
                     style = MaterialTheme.typography.titleMedium,
@@ -72,12 +73,12 @@ fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onD
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
                     onClick = { onIntent(StudioIntent.View.ResetGridSettings) },
-                    modifier = Modifier.size(28.dp),
+                    modifier = Modifier.size(EditorTokens.resetButton),
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Refresh,
                         contentDescription = stringResource(R.string.grid_reset),
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(Dimens.iconS),
                         tint = EditorTokens.muted,
                     )
                 }
@@ -95,18 +96,18 @@ fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onD
             }
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(Dimens.spaceL))
 
         // Visual Preview
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(80.dp)
-                .clip(RoundedCornerShape(12.dp))
+                .height(EditorTokens.previewHeight)
+                .clip(RoundedCornerShape(Dimens.radiusM))
                 .background(EditorTokens.previewWell),
             contentAlignment = Alignment.Center,
         ) {
-            androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+            androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize().padding(Dimens.spaceS)) {
                 if (state.canvas.gridEnabled) {
                     val gridColor = gridThemeColor.copy(alpha = state.canvas.gridOpacity.coerceIn(0.1f, 1f))
                     // Preview spacing is scaled down significantly to show the pattern
@@ -136,7 +137,7 @@ fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onD
             }
         }
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(EditorTokens.sectionGap))
 
         GridAdjusterRow(
             label = stringResource(R.string.tool_opacity),
@@ -146,7 +147,7 @@ fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onD
             onValueChange = { onIntent(StudioIntent.View.SetGridOpacity(it)) },
         )
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(Dimens.spaceXl))
 
         GridAdjusterRow(
             label = stringResource(R.string.grid_vertical_spacing),
@@ -156,7 +157,7 @@ fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onD
             onValueChange = { onIntent(StudioIntent.View.SetGridSpacingVertical(it)) },
         )
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(Dimens.spaceXl))
 
         GridAdjusterRow(
             label = stringResource(R.string.grid_horizontal_spacing),
@@ -166,7 +167,7 @@ fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onD
             onValueChange = { onIntent(StudioIntent.View.SetGridSpacingHorizontal(it)) },
         )
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(Dimens.spaceS))
     }
 }
 
@@ -192,8 +193,8 @@ private fun GridAdjusterRow(
 private fun GridOptionsPreview() {
     Surface(
         color = Color.White,
-        shape = RoundedCornerShape(16.dp),
-        shadowElevation = 8.dp,
+        shape = RoundedCornerShape(Dimens.radiusL),
+        shadowElevation = Dimens.elevationM,
     ) {
         GridOptionsContent(
             state = StudioState(

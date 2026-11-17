@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -29,7 +30,7 @@ fun SmudgeBlurOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (S
     val config = state.tool.configs[tool] ?: ToolConfig()
     val toolName = stringResource(if (tool == DrawingTool.SMUDGE) R.string.tool_smudge else R.string.tool_blur)
 
-    Column(modifier = Modifier.padding(12.dp).fillMaxWidth()) {
+    Column(modifier = Modifier.padding(Dimens.spaceM).fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -38,7 +39,7 @@ fun SmudgeBlurOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (S
             Text(toolName, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(Dimens.spaceM))
 
         StandardSlider(
             label = "Size",

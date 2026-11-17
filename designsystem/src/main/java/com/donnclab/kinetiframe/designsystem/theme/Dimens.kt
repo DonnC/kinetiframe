@@ -54,6 +54,12 @@ object Dimens {
 
     // Surface elevation.
     val elevationS = 3.dp
+    val elevationM = 8.dp
+    val elevationL = 12.dp
+
+    // Border widths.
+    val borderThin = 1.dp
+    val borderMedium = 1.5.dp
 
     // Audio recorder.
     val recorderWaveformHeight = 132.dp

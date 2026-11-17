@@ -47,6 +47,7 @@ import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.core.document.BrushCatalog
 import com.donnclab.kinetiframe.core.document.BrushId
 import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
@@ -67,7 +68,7 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
         state.tool.configs[tool] ?: ToolConfig()
     }
     var brushPickerExpanded by remember { mutableStateOf(false) }
-    Column(modifier = Modifier.padding(12.dp).fillMaxWidth()) {
+    Column(modifier = Modifier.padding(Dimens.spaceM).fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -83,7 +84,7 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
         }
 
         if (tool == DrawingTool.BRUSH) {
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(EditorTokens.previewGap))
             BrushPickerRow(
                 brush = config.brushId,
                 expanded = brushPickerExpanded,
@@ -96,7 +97,7 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(Dimens.spaceM))
 
         StandardSlider(
             label = stringResource(if (tool == DrawingTool.COLOR_FILL) R.string.tool_tolerance else R.string.tool_size),
@@ -107,7 +108,7 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
             range = 1f..100f,
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(Dimens.spaceM))
 
         StandardSlider(
             label = stringResource(R.string.tool_opacity),
@@ -120,7 +121,7 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
         )
 
         if (tool != DrawingTool.COLOR_FILL && state.tool.constructionShape == null) {
-            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = Dimens.spaceM))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 ToolIconButton(
@@ -156,7 +157,7 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
                 }
             }
         } else if (state.tool.constructionShape != null) {
-            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = Dimens.spaceM))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 ToolIconButton(
                     Lucide.Pill,
@@ -193,11 +194,11 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
 
 @Composable
 private fun ToolIconButton(icon: ImageVector, description: String, selected: Boolean, onClick: () -> Unit) {
-    IconButton(onClick = onClick, modifier = Modifier.size(32.dp)) {
+    IconButton(onClick = onClick, modifier = Modifier.size(EditorTokens.control)) {
         Icon(
             icon,
             description,
-            modifier = Modifier.size(18.dp),
+            modifier = Modifier.size(EditorTokens.icon),
             tint = if (selected) EditorTokens.accent else EditorTokens.dark,
         )
     }
@@ -217,23 +218,23 @@ private fun BrushPickerRow(
             style = MaterialTheme.typography.labelMedium,
             color = EditorTokens.dark,
         )
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(EditorTokens.labelGap))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
+                .clip(androidx.compose.foundation.shape.RoundedCornerShape(EditorTokens.previewCorner))
                 .background(EditorTokens.brushPreviewWell)
                 .clickable(onClick = onClick)
-                .padding(8.dp),
+                .padding(Dimens.spaceS),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
                 painter = painterResource(brushPreviewResource(brush)),
                 contentDescription = stringResource(R.string.brush_named, brush.displayName),
-                modifier = Modifier.size(48.dp),
+                modifier = Modifier.size(EditorTokens.brushPreview),
                 contentScale = ContentScale.Fit,
             )
-            Spacer(Modifier.size(10.dp))
+            Spacer(Modifier.size(EditorTokens.previewGap))
             Text(brush.displayName, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
         }
         DropdownMenu(expanded = expanded, onDismissRequest = onDismiss) {
@@ -244,10 +245,10 @@ private fun BrushPickerRow(
                             Image(
                                 painter = painterResource(brushPreviewResource(option)),
                                 contentDescription = null,
-                                modifier = Modifier.size(44.dp),
+                                modifier = Modifier.size(EditorTokens.brushMenuPreview),
                                 contentScale = ContentScale.Fit,
                             )
-                            Spacer(Modifier.size(8.dp))
+                            Spacer(Modifier.size(Dimens.spaceS))
                             Text(option.displayName)
                         }
                     },
