@@ -26,9 +26,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -153,7 +153,7 @@ fun HomeScreen(
                 onImportClick = { showImportSheet = true },
             )
             if (!searchActive) {
-                TabRow(selectedTabIndex = selectedTab, containerColor = MaterialTheme.colorScheme.background) {
+                PrimaryTabRow(selectedTabIndex = selectedTab, containerColor = MaterialTheme.colorScheme.background) {
                     tabTitles.forEachIndexed { index, title ->
                         Tab(
                             selected = selectedTab == index,

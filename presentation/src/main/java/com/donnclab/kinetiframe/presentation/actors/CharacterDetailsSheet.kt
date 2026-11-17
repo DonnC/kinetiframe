@@ -19,9 +19,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -91,7 +91,7 @@ fun CharacterDetailsSheet(
                     )
                 }
             }
-            TabRow(tab) {
+            SecondaryTabRow(tab) {
                 Tab(tab == 0, { tab = 0 }, text = { Text(stringResource(R.string.actor_tab_views, viewCount)) })
                 Tab(tab == 1, {
                     tab = 1
