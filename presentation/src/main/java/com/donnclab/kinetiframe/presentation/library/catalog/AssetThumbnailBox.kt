@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
+import com.donnclab.kinetiframe.designsystem.theme.PreviewSwatches
 import com.donnclab.kinetiframe.presentation.common.CardThumbnail
 
 /**
@@ -78,9 +80,14 @@ private fun BoxScope.CollageGrid(collage: CardThumbnail.Collage) {
 }
 
 private fun thumbnailBrush(thumbnail: CardThumbnail): Brush = when (thumbnail) {
-    is CardThumbnail.LocalImage -> Brush.linearGradient(listOf(Color(0xFFF3F0F4), Color(0xFFE5E0E8)))
+    is CardThumbnail.LocalImage -> Brush.linearGradient(
+        listOf(LibraryTokens.thumbnailLoadingStart, LibraryTokens.thumbnailLoadingEnd),
+    )
+
     is CardThumbnail.IconOnGradient -> Brush.linearGradient(listOf(thumbnail.start, thumbnail.end))
+
     is CardThumbnail.Collage -> Brush.linearGradient(listOf(thumbnail.start, thumbnail.end))
+
     is CardThumbnail.SolidGradient -> Brush.linearGradient(listOf(thumbnail.start, thumbnail.end))
 }
 
@@ -89,7 +96,7 @@ private fun thumbnailBrush(thumbnail: CardThumbnail): Brush = when (thumbnail) {
 private fun AssetThumbnailBoxPreview() {
     KinetiFrameTheme {
         AssetThumbnailBox(
-            thumbnail = CardThumbnail.IconOnGradient(Color(0xFFFFD9CC), Color(0xFFFF6A45), Icons.Filled.Star),
+            thumbnail = CardThumbnail.IconOnGradient(PreviewSwatches.peach, PreviewSwatches.coral, Icons.Filled.Star),
             modifier = Modifier.aspectRatio(1.3f),
         )
     }

@@ -12,6 +12,14 @@ object ActorStudioTokens {
 
     // This panel is always dark, even in the light app theme.
     val accent = BrandMint
+
+    /** Content on [accent], such as an enabled apply icon. */
+    val onAccent = Color(0xFF0B1416)
+
+    /** The sketch editor's binding region and its outline. */
+    val sketchBind = Color(0xFF32B6AC)
+    val partRailIdle = Color(0xFFF1EBF3)
+    val presetIconStroke = Color(0xFF172B36)
     val panelWidth = 320.dp
     val panelMinMargin = 24.dp
 }

@@ -62,7 +62,7 @@ import java.io.File
  *  translucent chip (or two) overlaid top-corner for the item's key stats, a bottom scrim carrying
  *  the title (and, for a project, its duration), and a corner overflow menu for the same
  *  rename/share/delete actions each tab already had on its own standalone screen. */
-private val ScrimBrush = Brush.verticalGradient(listOf(Color.Transparent, Color(0xB8141210)))
+private val ScrimBrush = Brush.verticalGradient(listOf(Color.Transparent, HomeTokens.cardScrim))
 
 @Composable
 private fun HomeChip(text: String, modifier: Modifier = Modifier, icon: ImageVector? = null) {
@@ -213,14 +213,7 @@ private fun PackPreviewCell(file: File?, modifier: Modifier = Modifier) {
     }
 }
 
-private val PackTints = listOf(
-    Color(0xFFFFB199),
-    Color(0xFF9FCBEF),
-    Color(0xFF8FCB8A),
-    Color(0xFFB77FE0),
-    Color(0xFFE8C24C),
-    Color(0xFFF2879F),
-)
+private val PackTints = HomeTokens.placeholderTints
 
 private fun pastelFor(seed: String): Color {
     val index = (seed.hashCode().let { if (it == Int.MIN_VALUE) 0 else kotlin.math.abs(it) }) % PackTints.size

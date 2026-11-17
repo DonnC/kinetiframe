@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.library.domain.LibraryCatalog
 import com.donnclab.kinetiframe.library.model.LibraryOrganization
 import com.donnclab.kinetiframe.presentation.R
@@ -138,8 +139,8 @@ class LocalLibraryCatalog(val source: LibraryCatalog) {
     private fun card(id: String, name: String, kind: AssetKind, info: UiText, image: String? = null): AssetSummary {
         val thumbnail = image?.let { CardThumbnail.LocalImage(it) }
             ?: CardThumbnail.IconOnGradient(
-                Color(0xFF677D9A),
-                Color(0xFF374C67),
+                LibraryTokens.itemCardStart,
+                LibraryTokens.itemCardEnd,
                 when (kind) {
                     AssetKind.PROJECT -> Icons.Filled.Movie
                     AssetKind.ACTOR_RIG -> Icons.Filled.Person

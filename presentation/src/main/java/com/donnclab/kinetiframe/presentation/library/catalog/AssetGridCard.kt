@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.PreviewSwatches
 import com.donnclab.kinetiframe.presentation.common.AssetDetails
 import com.donnclab.kinetiframe.presentation.common.AssetKind
 import com.donnclab.kinetiframe.presentation.common.AssetSummary
@@ -46,7 +47,7 @@ private fun previewSample() = AssetSummary(
     id = "preview",
     title = "Walk Cycle Take 3",
     scrimSubtitle = UiText.Verbatim("Performance  ·  0:04"),
-    thumbnail = CardThumbnail.SolidGradient(Color(0xFFFFD9CC), Color(0xFFFF6A45)),
+    thumbnail = CardThumbnail.SolidGradient(PreviewSwatches.peach, PreviewSwatches.coral),
     chips = CardChips(topEnd = "Performance"),
     details = AssetDetails(
         id = "preview",
@@ -54,7 +55,7 @@ private fun previewSample() = AssetSummary(
         previewKind = PreviewKind.LIVE_MOTION,
         title = "Walk Cycle Take 3",
         specsLine = UiText.Verbatim("Humanoid  ·  12 FPS"),
-        thumbnail = CardThumbnail.SolidGradient(Color(0xFFFFD9CC), Color(0xFFFF6A45)),
+        thumbnail = CardThumbnail.SolidGradient(PreviewSwatches.peach, PreviewSwatches.coral),
     ),
 )
 

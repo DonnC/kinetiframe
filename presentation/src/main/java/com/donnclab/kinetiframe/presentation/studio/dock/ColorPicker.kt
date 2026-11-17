@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
 import com.donnclab.kinetiframe.presentation.studio.color.LocalScreenColorRequest
@@ -55,7 +56,7 @@ fun ColorPicker(color: Color, onColorChanged: (Color) -> Unit) {
             .size(24.dp)
             .clip(CircleShape)
             .background(color)
-            .border(1.5.dp, Color(0xFFE0E0E0), CircleShape)
+            .border(1.5.dp, EditorTokens.hairline, CircleShape)
             .clickable { showPopup = true },
     )
 
@@ -69,7 +70,7 @@ fun ColorPicker(color: Color, onColorChanged: (Color) -> Unit) {
                 shape = RoundedCornerShape(12.dp),
                 shadowElevation = 12.dp,
                 color = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE0E0E0)),
+                border = androidx.compose.foundation.BorderStroke(1.dp, EditorTokens.hairline),
             ) {
                 ColorPickerPanel(
                     color = color,

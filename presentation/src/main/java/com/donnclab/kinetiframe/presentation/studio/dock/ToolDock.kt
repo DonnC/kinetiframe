@@ -121,7 +121,7 @@ fun ToolDock(
             color = androidx.compose.material3.MaterialTheme.colorScheme.surface,
             shape = RoundedCornerShape(28.dp),
             shadowElevation = 12.dp,
-            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE0E0E0).copy(alpha = 0.5f)),
+            border = androidx.compose.foundation.BorderStroke(1.dp, EditorTokens.hairline.copy(alpha = 0.5f)),
         ) {
             Column(
                 modifier = Modifier.padding(bottom = 8.dp),
@@ -399,7 +399,7 @@ fun ToolDock(
                     color = androidx.compose.material3.MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(16.dp),
                     shadowElevation = 12.dp,
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE0E0E0)),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, EditorTokens.hairline),
                 ) {
                     when (menuTool) {
                         DrawingTool.BRUSH, DrawingTool.COLOR_FILL -> BrushOptionsContent(state, menuTool!!, onIntent)

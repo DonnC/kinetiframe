@@ -14,6 +14,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 
 /** Non-interactive playhead: gestures pass through to the thumbnails beneath it. */
@@ -29,7 +30,7 @@ internal fun TimelineCenterPointer(modifier: Modifier = Modifier) {
                     lineTo(size.width / 2, size.height)
                     close()
                 }
-                onDrawBehind { drawPath(arrow, Color(0xFF5796F5)) }
+                onDrawBehind { drawPath(arrow, EditorTokens.playhead) }
             },
     )
 }

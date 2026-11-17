@@ -57,6 +57,7 @@ import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.core.document.TouchPoint
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.studio.EraserType
 import com.donnclab.kinetiframe.studio.SelectedContent
 import com.donnclab.kinetiframe.studio.SelectionToolType
@@ -107,8 +108,8 @@ fun BufferedDrawingCanvas(
     onionSkinEnabled: Boolean = false,
     onionSkinFramesBefore: Int = 1,
     onionSkinFramesAfter: Int = 1,
-    onionSkinColorBefore: Color = Color(0xFF92003B),
-    onionSkinColorAfter: Color = Color(0xFF00C853),
+    onionSkinColorBefore: Color = EditorTokens.onionBefore,
+    onionSkinColorAfter: Color = EditorTokens.onionAfter,
     onionSkinOpacity: Float = 0.5f,
     cacheManager: FrameCacheManager? = null,
     activeLayerId: String = "main",

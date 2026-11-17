@@ -222,7 +222,7 @@ private fun BrushPickerRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
-                .background(Color(0xFFF7F5F8))
+                .background(EditorTokens.brushPreviewWell)
                 .clickable(onClick = onClick)
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,

@@ -28,6 +28,7 @@ import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingPoint
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.document.TouchPoint
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import kotlin.math.hypot
 
 /** One-finger drawing/stylus input; two fingers pan/zoom without leaving ink. No heavy objects
@@ -213,7 +214,7 @@ fun ActorSketchCanvas(
                 joints.forEach { (id, start, end) ->
                     val a = if (jointDrag == (id to true)) jointTarget ?: start else start
                     val b = if (jointDrag == (id to false)) jointTarget ?: end else end
-                    val tint = Color(0xff32b6ac)
+                    val tint = ActorStudioTokens.sketchBind
                     drawLine(tint, a, b, 2f / scale)
                     val bone = graph.bones.getValue(id)
                     (if (bone.parentId != null && bone.length <= 2f) listOf(a) else listOf(a, b)).forEach { p ->
@@ -227,14 +228,14 @@ fun ActorSketchCanvas(
             }
             if (state.tool == SketchTool.BIND_REGION) {
                 regionPaths.forEach {
-                    drawPath(it, Color(0xff32b6ac).copy(alpha = .12f))
-                    drawPath(it, Color(0xff32b6ac), style = Stroke(1.5f / scale))
+                    drawPath(it, ActorStudioTokens.sketchBind.copy(alpha = .12f))
+                    drawPath(it, ActorStudioTokens.sketchBind, style = Stroke(1.5f / scale))
                 }
             }
             if (state.tool != SketchTool.FILL) {
                 val previewColour = when (state.tool) {
                     SketchTool.ERASER -> Color.Gray.copy(alpha = .5f)
-                    SketchTool.BIND_REGION -> Color(0xff32b6ac)
+                    SketchTool.BIND_REGION -> ActorStudioTokens.sketchBind
                     else -> Color(state.paintColour)
                 }
                 points.zipWithNext().forEach { (a, b) ->

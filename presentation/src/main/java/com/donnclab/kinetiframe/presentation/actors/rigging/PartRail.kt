@@ -58,7 +58,7 @@ private fun PartChip(part: BoneNode, selected: Boolean, onClick: () -> Unit) {
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(18.dp),
-        color = if (selected) ActorStudioTokens.accent.copy(alpha = 0.14f) else Color(0xFFF1EBF3),
+        color = if (selected) ActorStudioTokens.accent.copy(alpha = 0.14f) else ActorStudioTokens.partRailIdle,
         border = if (selected) BorderStroke(1.5.dp, ActorStudioTokens.accent) else null,
     ) {
         Row(Modifier.padding(horizontal = 14.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {

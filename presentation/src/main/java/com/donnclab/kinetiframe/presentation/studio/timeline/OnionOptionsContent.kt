@@ -109,7 +109,7 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
                 .fillMaxWidth()
                 .height(60.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color(0xFFF8F8F8)),
+                .background(EditorTokens.previewWell),
             contentAlignment = Alignment.Center,
         ) {
             Canvas(modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp)) {

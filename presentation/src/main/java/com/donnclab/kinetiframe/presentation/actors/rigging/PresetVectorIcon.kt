@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 
 /** Decoder for our bundled single-path 64px icons, not a general external SVG importer. */
 object PresetVectorIcon {
@@ -16,7 +17,7 @@ object PresetVectorIcon {
         return ImageVector.Builder("Motion", 64.dp, 64.dp, 64f, 64f).addPath(
             pathData = PathParser().parsePathString(data).toNodes(),
             fill = null,
-            stroke = SolidColor(Color(0xFF172B36)),
+            stroke = SolidColor(ActorStudioTokens.presetIconStroke),
             strokeLineWidth = 2.8f,
             strokeLineCap = StrokeCap.Round,
             strokeLineJoin = StrokeJoin.Round,

@@ -17,4 +17,16 @@ object EditorTokens {
     val inactive = Color(0xFFB7B9C2)
     val border = Color(0xFF6B6D74)
     val accent: Color @Composable get() = MaterialTheme.colorScheme.primary
+
+    // Canvas overlays and timeline markers, drawn over artwork, so they don't follow the theme.
+    val selection = Color(0xFF4285F4)
+    val playhead = Color(0xFF5796F5)
+    val onionBefore = Color(0xFF92003B)
+    val onionAfter = Color(0xFF00C853)
+
+    // Light wells behind the dock's previews (grid, onion skin and brush stroke), which show
+    // dark marks on paper whatever the theme.
+    val previewWell = Color(0xFFF8F8F8)
+    val brushPreviewWell = Color(0xFFF7F5F8)
+    val hairline = Color(0xFFE0E0E0)
 }

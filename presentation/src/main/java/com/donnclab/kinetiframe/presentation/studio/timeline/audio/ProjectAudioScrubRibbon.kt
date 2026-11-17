@@ -29,6 +29,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.media.audio.TimelineAudioSummary
 import com.donnclab.kinetiframe.presentation.R
@@ -46,7 +47,7 @@ fun ProjectAudioScrubRibbon(
     onSeek: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val blue = Color(0xFF5796F5)
+    val blue = EditorTokens.playhead
     val cellPx = with(LocalDensity.current) { FRAME_CELL_WIDTH.toPx() }
     val seek by rememberUpdatedState(onSeek)
     var dragFrame by remember { mutableIntStateOf(-1) }

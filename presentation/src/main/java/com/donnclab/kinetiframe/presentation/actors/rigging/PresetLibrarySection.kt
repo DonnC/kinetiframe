@@ -101,7 +101,13 @@ fun PresetLibrarySection(
                 Icon(
                     Lucide.Check,
                     stringResource(R.string.preset_library_apply),
-                    tint = if (canApply && inPerformanceMode) Color(0xFF0B1416) else ActorStudioTokens.onPanelMuted,
+                    tint = if (canApply &&
+                        inPerformanceMode
+                    ) {
+                        ActorStudioTokens.onAccent
+                    } else {
+                        ActorStudioTokens.onPanelMuted
+                    },
                 )
             }
         }

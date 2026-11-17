@@ -24,10 +24,17 @@ arrive. Debug builds include the pseudo-locales. Still to do: look at the main s
 English. Labels passed to custom components (such as `ContextIconAction`'s label) aren't counted
 by the inline text check; this pass will show any left.
 
+**Theme tokens, part 1: colours.** 62 of the 64 inline colours are `designsystem` tokens:
+canvas overlay, timeline and dock preview colours in `EditorTokens`, sketch and panel colours in
+`ActorStudioTokens`, the card scrim and placeholder tints in `HomeTokens`, and a new
+`LibraryTokens` for stamp wells and item cards. Preview fixtures use a new `PreviewSwatches`.
+The two left are the onion skin defaults in `studio`'s `StudioState`, which move with the UI
+separation track, since `studio` doesn't depend on `designsystem`.
+
 ## Next
 
-**Theme tokens, part 1: colours.** Move the 64 inline colours in 24 files into `designsystem`
-tokens, a feature at a time, then start on the 806 inline `.dp` sizes.
+**Theme tokens, part 2: sizes.** Move the 806 inline `.dp` sizes in 132 files into `Dimens` and
+the feature token objects, a feature at a time, starting with the editor's dock and timeline.
 
 ## Later
 
@@ -36,7 +43,8 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Strings to resources.** The inline text check is at zero. Left: right-to-left layouts,
   per-app language and a pseudo-locale check (under Next), and `require` messages in `core`'s
   documents, such as FPS and stage limits, that only invalid files reach.
-- **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
+- **Theme tokens.** Move 806 inline `.dp` sizes into `designsystem` tokens (under Next). The
+  last two inline colours go with UI separation.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
   code. Screens already reach storage only through their ViewModels (step 8d).
 - **Parameter limits.** 51 functions still take more than the allowed number of parameters.
@@ -254,6 +262,6 @@ From `.architecture/` during step 9. Each count may only go down.
 | UI imports of `data` packages | 0 | — |
 | Functions over the parameter limit | 51 | — |
 | Inline text values | 0 | — |
-| Inline colours | 64 | 24 |
+| Inline colours | 2 | 1 |
 | Inline `.dp` sizes | 806 | 132 |
 | Files over 500 lines | 0 | — |

@@ -49,6 +49,7 @@ import com.composables.icons.lucide.ChevronRight
 import com.composables.icons.lucide.GripHorizontal
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.library.model.PackTrayItem
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.studio.dock.dockContainer
@@ -204,7 +205,7 @@ private fun PackTrayItemCell(item: PackTrayItem, onDrag: (PackDragEvent) -> Unit
             modifier = Modifier
                 .size(40.dp)
                 .clip(RoundedCornerShape(6.dp))
-                .background(Color(0x11000000)),
+                .background(LibraryTokens.trayWell),
         )
         Text(
             item.name,

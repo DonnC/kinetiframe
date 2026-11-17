@@ -103,7 +103,7 @@ fun GridOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onD
                 .fillMaxWidth()
                 .height(80.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color(0xFFF8F8F8)),
+                .background(EditorTokens.previewWell),
             contentAlignment = Alignment.Center,
         ) {
             androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize().padding(8.dp)) {

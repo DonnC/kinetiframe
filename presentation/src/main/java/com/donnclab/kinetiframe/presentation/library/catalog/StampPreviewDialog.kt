@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StampAsset
 import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
@@ -49,7 +50,7 @@ fun StampPreviewDialog(stamp: StampAsset, onDismiss: () -> Unit) {
                         contentScale = ContentScale.Fit,
                         modifier = Modifier.fillMaxWidth().heightIn(
                             max = 360.dp,
-                        ).aspectRatio(1f).background(Color(0xFFF1F1F1)),
+                        ).aspectRatio(1f).background(LibraryTokens.stampWell),
                     )
                 } else {
                     Icon(stamp.icon, stamp.name, Modifier.fillMaxWidth().height(200.dp), tint = stamp.tint)
