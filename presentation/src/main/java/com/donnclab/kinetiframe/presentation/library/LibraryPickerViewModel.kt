@@ -7,6 +7,8 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.library.data.LibraryRepository
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
@@ -19,14 +21,14 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 /** An audio item being previewed before it is inserted. [path] is null until its file is found. */
-data class AudioItemPreview(val item: LibraryItemManifest, val path: String? = null, val error: String? = null)
+data class AudioItemPreview(val item: LibraryItemManifest, val path: String? = null, val error: UiText? = null)
 
 data class LibraryPickerState(
     val scope: LibraryScope = LibraryScope.PERSONAL,
     val kindFilter: LibraryItemKind? = null,
     val items: List<LibraryItemManifest> = emptyList(),
     val loading: Boolean = true,
-    val error: String? = null,
+    val error: UiText? = null,
     val preview: AudioItemPreview? = null,
 ) : ViewState
 
@@ -87,7 +89,7 @@ class LibraryPickerViewModel(
         listJob = viewModelScope.launch {
             when (val result = withContext(ioDispatcher) { library.list(scope, projectId) }) {
                 is StoreResult.Value -> updateState { it.copy(items = result.value, loading = false) }
-                is StoreResult.Failure -> updateState { it.copy(error = result.message, loading = false) }
+                is StoreResult.Failure -> updateState { it.copy(error = result.toUiText(), loading = false) }
             }
         }
     }
@@ -97,7 +99,7 @@ class LibraryPickerViewModel(
         viewModelScope.launch {
             val found = when (val result = withContext(ioDispatcher) { library.assetFile(item) }) {
                 is StoreResult.Value -> AudioItemPreview(item, path = result.value.absolutePath)
-                is StoreResult.Failure -> AudioItemPreview(item, error = result.message)
+                is StoreResult.Failure -> AudioItemPreview(item, error = result.toUiText())
             }
             updateState { state -> if (state.preview?.item == item) state.copy(preview = found) else state }
         }

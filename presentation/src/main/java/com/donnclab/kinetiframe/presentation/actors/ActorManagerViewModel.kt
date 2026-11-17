@@ -8,6 +8,7 @@ import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.ActorRevision
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.presentation.common.toUiText
@@ -161,7 +162,7 @@ class ActorManagerViewModel(
                     }
                 }
 
-                is StoreResult.Failure -> updateState { it.copy(loading = false, error = result.message) }
+                is StoreResult.Failure -> updateState { it.copy(loading = false, error = result.toUiText()) }
             }
         }
     }
@@ -179,7 +180,7 @@ class ActorManagerViewModel(
                     } catch (
                         error: Exception,
                     ) {
-                        StoreResult.Failure(error.message ?: "Actor operation failed", error)
+                        StoreResult.Failure(StoreFailure.ACTOR_OPERATION, error)
                     }
                 }
             ) {

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.data.project
 
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.core.document.ProjectSaveDocument
@@ -152,7 +153,7 @@ class ProjectRepository(
 
     private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
     private fun failure(error: Throwable): StoreResult.Failure =
-        StoreResult.Failure(error.message ?: "Project storage failed", error)
+        StoreResult.Failure(StoreFailure.PROJECT_STORAGE, error)
     private companion object {
         const val MANIFEST = "manifest.json"
         const val DOCUMENT = "document.json"

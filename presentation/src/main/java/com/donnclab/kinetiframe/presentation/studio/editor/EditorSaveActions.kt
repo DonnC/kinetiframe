@@ -104,7 +104,7 @@ internal class EditorSaveActions(
 
                 is StoreResult.Failure -> {
                     if (leaveWhenSaved) exit.returnHomeAfterSave = false
-                    UiText.Verbatim(result.message)
+                    result.toUiText()
                 }
             }
         }

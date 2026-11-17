@@ -6,9 +6,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.presentation.common.UiText
 
 /** An "Add to Library" request waiting for the animator to choose where the item is saved. */
-internal data class LibraryExportRequest(val itemLabel: String, val export: (LibraryScope) -> Unit)
+internal data class LibraryExportRequest(val itemLabel: UiText, val export: (LibraryScope) -> Unit)
 
 /** Which of the editor's panels, sheets, menus and dialogs are open. */
 @Stable

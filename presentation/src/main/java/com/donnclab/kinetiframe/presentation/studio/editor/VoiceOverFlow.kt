@@ -6,6 +6,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.presentation.media.audio.PendingAudioTake
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -51,7 +53,7 @@ internal fun VoiceOverFlow(
                                 ),
                             )
                         },
-                        onFailure = { ui.messages.audioError = it.message ?: "Could not save the recording." },
+                        onFailure = { ui.messages.audioError = it.toUiText(R.string.editor_recording_not_saved) },
                     )
                 }
             },

@@ -11,6 +11,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import com.donnclab.kinetiframe.studio.StudioIntent
 import kotlinx.coroutines.CoroutineScope
@@ -61,7 +64,7 @@ internal fun rememberEditorMediaPickers(
             if (bitmap != null) {
                 viewModel.handleIntent(StudioIntent.Background.SetImage(bitmap))
             } else {
-                messages.backgroundImageError = "Could not read that image. Try picking a different one."
+                messages.backgroundImageError = UiText.Resource(R.string.editor_image_unreadable_pick)
             }
         }
     }
@@ -70,7 +73,7 @@ internal fun rememberEditorMediaPickers(
             scope.launch {
                 val bitmap = media.decodeFrameImage(uri)
                 if (bitmap == null) {
-                    messages.backgroundImageError = "Could not read that image. Try another file."
+                    messages.backgroundImageError = UiText.Resource(R.string.editor_image_unreadable_file)
                 } else {
                     viewModel.handleIntent(StudioIntent.Selection.StampBitmap(bitmap))
                 }
@@ -96,7 +99,7 @@ internal fun rememberEditorMediaPickers(
                         )
                     }
                 },
-                onFailure = { messages.audioError = it.message ?: "Could not import that audio file." },
+                onFailure = { messages.audioError = it.toUiText(R.string.editor_audio_import_failed) },
             )
         }
     }
@@ -108,12 +111,11 @@ internal fun rememberEditorMediaPickers(
                     val add = viewModel.state.value.addVideoClip(imported)
                     viewModel.handleIntent(add)
                     if (imported.metadata.hasAudio && add.sourceAudio == null) {
-                        messages.videoError = "Video added without sound because all audio lanes are locked. " +
-                            "Unlock a lane and import again to include sound."
+                        messages.videoError = UiText.Resource(R.string.editor_video_without_sound)
                     }
                     viewModel.handleIntent(StudioIntent.Video.Select(add.placement.clipId))
                 },
-                onFailure = { messages.videoError = it.message ?: "Could not import that video file." },
+                onFailure = { messages.videoError = it.toUiText(R.string.editor_video_import_failed) },
             )
         }
     }
@@ -121,7 +123,7 @@ internal fun rememberEditorMediaPickers(
         if (granted) {
             ui.panels.showRecordAudioDialog = true
         } else {
-            messages.audioError = "Microphone permission is needed to record audio."
+            messages.audioError = UiText.Resource(R.string.editor_mic_permission)
         }
     }
     return EditorMediaPickers(LocalContext.current, background, frameImage, audio, video, recordPermission) {

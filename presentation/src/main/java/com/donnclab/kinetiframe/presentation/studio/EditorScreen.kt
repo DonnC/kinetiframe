@@ -23,6 +23,9 @@ import com.donnclab.kinetiframe.core.document.ProjectSaveDocument
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.presentation.library.packs.PackCreatorConfig
 import com.donnclab.kinetiframe.presentation.project.ProjectDraftSession
 import com.donnclab.kinetiframe.presentation.project.ProjectDraftSessionIntent
@@ -131,7 +134,7 @@ fun EditorScreen(
     }
 
     var projectLoading by remember(projectId) { mutableStateOf(projectId != null && initialEditorState == null) }
-    var projectLoadError by remember(projectId) { mutableStateOf<String?>(null) }
+    var projectLoadError by remember(projectId) { mutableStateOf<UiText?>(null) }
     var loadedProjectDocument by remember(projectId) { mutableStateOf<ProjectSaveDocument?>(null) }
 
     LaunchedEffect(projectId) {
@@ -145,7 +148,7 @@ fun EditorScreen(
                 projectDraft?.handleIntent(ProjectDraftSessionIntent.Prepared)
             }
 
-            is StoreResult.Failure -> projectLoadError = result.message
+            is StoreResult.Failure -> projectLoadError = result.toUiText()
         }
         projectLoading = false
     }
@@ -156,7 +159,7 @@ fun EditorScreen(
     }
     if (projectLoadError != null) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(stringResource(R.string.editor_project_open_failed, projectLoadError.orEmpty()))
+            Text(stringResource(R.string.editor_project_open_failed, projectLoadError?.asString().orEmpty()))
         }
         return
     }

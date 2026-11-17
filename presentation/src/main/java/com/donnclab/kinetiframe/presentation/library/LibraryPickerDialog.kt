@@ -57,6 +57,7 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -166,7 +167,7 @@ fun LibraryPickerDialog(
                         state.loading -> CircularProgressIndicator()
 
                         state.error != null -> Text(
-                            state.error.orEmpty(),
+                            state.error?.asString().orEmpty(),
                             color = MaterialTheme.colorScheme.error,
                             modifier = Modifier.padding(24.dp),
                         )

@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.actors.data
 import com.donnclab.kinetiframe.core.actor.document.ActorDocumentValidation
 import com.donnclab.kinetiframe.core.actor.document.ActorPlacement
 import com.donnclab.kinetiframe.core.actor.document.validate
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import kotlinx.serialization.encodeToString
@@ -45,5 +46,5 @@ class ActorPlacementRepository(
 
     private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
     private fun failure(error: Throwable): StoreResult.Failure =
-        StoreResult.Failure(error.message ?: "Placement storage failed", error)
+        StoreResult.Failure(StoreFailure.PLACEMENT_STORAGE, error)
 }

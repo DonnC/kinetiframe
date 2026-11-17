@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
@@ -80,7 +81,7 @@ class PackDrafts(
                 frames.persistAllToDisk(listOf(MAIN_LAYER), totalFrames)
             }
             EditDraft(id, manifest, tags, pack.canvasDimension)
-        }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(it.message ?: "Could not open this pack", it) })
+        }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(StoreFailure.PACK_NOT_OPENED, it) })
 
     /**
      * Saves the first [totalFrames] frames of [draftId] as a pack named [name], then deletes the
@@ -144,7 +145,7 @@ class PackDrafts(
         } finally {
             staging.deleteRecursively()
         }
-    }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(it.message ?: "Could not save this pack", it) })
+    }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(StoreFailure.PACK_NOT_SAVED, it) })
 
     /** Deletes [draftId]. Synchronous, so it is safe to call while a screen or ViewModel ends. */
     fun discard(draftId: String) {

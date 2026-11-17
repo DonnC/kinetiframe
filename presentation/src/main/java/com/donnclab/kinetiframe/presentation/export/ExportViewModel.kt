@@ -7,6 +7,7 @@ import com.donnclab.kinetiframe.export.domain.VideoExporter
 import com.donnclab.kinetiframe.export.model.ExportPreset
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
@@ -21,7 +22,7 @@ sealed interface ExportPhase {
     data object ChoosingPreset : ExportPhase
     data object Rendering : ExportPhase
     data class Done(val file: File) : ExportPhase
-    data class Failed(val message: String) : ExportPhase
+    data class Failed(val message: UiText) : ExportPhase
 }
 
 /** [displayName] names the saved and shared video; it is the project ID until the name loads. */
@@ -95,7 +96,7 @@ class ExportViewModel(
             }
             val phase = when (result) {
                 is StoreResult.Value -> ExportPhase.Done(result.value)
-                is StoreResult.Failure -> ExportPhase.Failed(result.message)
+                is StoreResult.Failure -> ExportPhase.Failed(result.toUiText())
             }
             updateState { it.copy(phase = phase) }
         }
@@ -107,7 +108,7 @@ class ExportViewModel(
             val result = withContext(ioDispatcher) { exporter.saveToGallery(done.file, state.value.displayName) }
             val message = when (result) {
                 is StoreResult.Value -> UiText.Resource(R.string.export_saved_to_gallery)
-                is StoreResult.Failure -> UiText.Verbatim(result.message)
+                is StoreResult.Failure -> result.toUiText()
             }
             sendEffect(ExportEffect.ShowMessage(message))
         }

@@ -16,6 +16,7 @@ import android.provider.MediaStore
 import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.MAX_AUDIO_TRACKS
 import com.donnclab.kinetiframe.core.document.StageDimensions
@@ -275,7 +276,7 @@ class ProjectExporter(
             ),
         )
         outputFile
-    }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(it.message ?: "Export failed", it) })
+    }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(StoreFailure.EXPORT_FAILED, it) })
 
     /** Copies an already-exported MP4 into the user's public gallery via MediaStore, so it
      *  survives an app uninstall and shows up in their normal camera-roll/gallery apps -- Android's
@@ -306,5 +307,5 @@ class ProjectExporter(
             resolver.delete(uri, null, null)
             throw error
         }
-    }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(it.message ?: "Could not save to gallery", it) })
+    }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(StoreFailure.GALLERY_NOT_SAVED, it) })
 }

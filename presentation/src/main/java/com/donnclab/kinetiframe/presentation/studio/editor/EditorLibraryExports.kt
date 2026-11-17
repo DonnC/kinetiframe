@@ -4,6 +4,9 @@ package com.donnclab.kinetiframe.presentation.studio.editor
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -21,35 +24,40 @@ internal class EditorLibraryExports(
     private val messages get() = ui.messages
 
     fun exportBackground() {
-        ui.panels.pendingLibraryExport = LibraryExportRequest("this background image") { libraryScope ->
-            scope.launch {
-                messages.libraryMessage = storage.exportBackground(viewModel.state.value.project, libraryScope)
-                    .message("Added background image to your library")
+        ui.panels.pendingLibraryExport =
+            LibraryExportRequest(UiText.Resource(R.string.editor_subject_background)) { libraryScope ->
+                scope.launch {
+                    messages.libraryMessage = storage.exportBackground(viewModel.state.value.project, libraryScope)
+                        .message(UiText.Resource(R.string.editor_added_background))
+                }
             }
-        }
     }
 
     fun exportCurrentFrame() {
         val frame = viewModel.state.value.currentBitmap
         if (frame == null) {
-            messages.libraryError = "Nothing to save -- this frame is empty"
+            messages.libraryError = UiText.Resource(R.string.editor_frame_empty)
             return
         }
-        ui.panels.pendingLibraryExport = LibraryExportRequest("this frame") { libraryScope ->
+        ui.panels.pendingLibraryExport = LibraryExportRequest(
+            UiText.Resource(R.string.editor_subject_frame),
+        ) { libraryScope ->
             scope.launch {
                 val state = viewModel.state.value
+                // The saved item's name, kept as written like other library item names.
                 val name = "Frame ${state.animation.currentFrame + 1}"
                 messages.libraryMessage = storage.exportFrame(frame, name, libraryScope, state.project.id)
-                    .message("Added frame to your library")
+                    .message(UiText.Resource(R.string.editor_added_frame))
             }
         }
     }
 
     fun exportAudioClip(clip: AudioClipPlacement) {
-        ui.panels.pendingLibraryExport = LibraryExportRequest("\"${clip.label}\"") { libraryScope ->
+        val subject = UiText.Resource(R.string.editor_subject_named, listOf(clip.label))
+        ui.panels.pendingLibraryExport = LibraryExportRequest(subject) { libraryScope ->
             scope.launch {
                 messages.libraryMessage = storage.exportAudioClip(clip, viewModel.state.value.project, libraryScope)
-                    .message("Added \"${clip.label}\" to your library")
+                    .message(UiText.Resource(R.string.editor_added_audio, listOf(clip.label)))
             }
         }
     }
@@ -57,12 +65,12 @@ internal class EditorLibraryExports(
     fun exportPerformance(placement: ActorPlacementReference) {
         scope.launch {
             messages.actorLibraryMessage = storage.exportPerformance(viewModel.state.value.project.id, placement)
-                .message("Added ${placement.label} to your library")
+                .message(UiText.Resource(R.string.editor_added_performance, listOf(placement.label)))
         }
     }
 }
 
-private fun StoreResult<*>.message(success: String): String = when (this) {
+private fun StoreResult<*>.message(success: UiText): UiText = when (this) {
     is StoreResult.Value -> success
-    is StoreResult.Failure -> message
+    is StoreResult.Failure -> toUiText()
 }

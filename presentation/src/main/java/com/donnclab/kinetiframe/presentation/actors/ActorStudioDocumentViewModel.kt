@@ -20,6 +20,7 @@ import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.UiText
@@ -124,7 +125,7 @@ class ActorStudioDocumentViewModel(
                             performanceId?.let { id -> projectId?.let { project -> performances?.load(project, id) } }
                         }
                     if (performanceResult is StoreResult.Failure) {
-                        updateState { it.copy(loading = false, error = performanceResult.message) }
+                        updateState { it.copy(loading = false, error = performanceResult.toUiText()) }
                         return@launch
                     }
                     val performance = (performanceResult as? StoreResult.Value)?.value
@@ -142,7 +143,7 @@ class ActorStudioDocumentViewModel(
                             is StoreResult.Value -> pinned.value
 
                             is StoreResult.Failure -> {
-                                updateState { it.copy(loading = false, error = pinned.message) }
+                                updateState { it.copy(loading = false, error = pinned.toUiText()) }
                                 return@launch
                             }
                         }
@@ -152,8 +153,7 @@ class ActorStudioDocumentViewModel(
                             updateState { state ->
                                 state.copy(
                                     loading = false,
-                                    error =
-                                    it.message ?: "Incompatible performance",
+                                    error = it.toUiText(R.string.actor_performance_incompatible),
                                 )
                             }
                             return@launch
@@ -168,7 +168,7 @@ class ActorStudioDocumentViewModel(
                     }
                 }
 
-                is StoreResult.Failure -> updateState { it.copy(loading = false, error = result.message) }
+                is StoreResult.Failure -> updateState { it.copy(loading = false, error = result.toUiText()) }
             }
         }
     }
@@ -384,6 +384,6 @@ class ActorStudioDocumentViewModel(
     } catch (cancelled: CancellationException) {
         throw cancelled
     } catch (error: Exception) {
-        StoreResult.Failure(error.message ?: "Could not save performance", error)
+        StoreResult.Failure(StoreFailure.PERFORMANCE_NOT_SAVED, error)
     }
 }

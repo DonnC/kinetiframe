@@ -10,7 +10,7 @@ import com.donnclab.kinetiframe.ui.ViewState
 data class ProjectManagerState(
     val loading: Boolean = true,
     val projects: List<ProjectManifest> = emptyList(),
-    val error: String? = null,
+    val error: UiText? = null,
 ) : ViewState
 
 sealed interface ProjectManagerIntent : ViewIntent {

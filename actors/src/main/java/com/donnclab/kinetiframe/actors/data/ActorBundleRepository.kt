@@ -7,6 +7,7 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.document.validate
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.storage.ContainedPaths
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
@@ -294,5 +295,5 @@ class ActorBundleRepository(
 
     private fun <T> value(value: T): StoreResult<T> = StoreResult.Value(value)
     private fun failure(error: Throwable): StoreResult.Failure =
-        StoreResult.Failure(error.message ?: "Library operation failed", error)
+        StoreResult.Failure(StoreFailure.LIBRARY_STORAGE, error)
 }

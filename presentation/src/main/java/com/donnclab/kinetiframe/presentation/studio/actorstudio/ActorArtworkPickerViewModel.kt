@@ -9,6 +9,7 @@ import com.donnclab.kinetiframe.library.model.PackArtworkRegistration
 import com.donnclab.kinetiframe.library.model.PackItemEntry
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
@@ -77,7 +78,7 @@ class ActorArtworkPickerViewModel(
         viewModelScope.launch {
             when (val loaded = withContext(ioDispatcher) { artwork.packItems(pack) }) {
                 is StoreResult.Value -> updateState { if (it.pack == pack) it.copy(items = loaded.value) else it }
-                is StoreResult.Failure -> updateState { it.copy(error = UiText.Verbatim(loaded.message)) }
+                is StoreResult.Failure -> updateState { it.copy(error = loaded.toUiText()) }
             }
         }
     }

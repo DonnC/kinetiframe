@@ -15,10 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.library.model.PackTrayItem
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.presentation.library.packs.PackDragEvent
 import com.donnclab.kinetiframe.presentation.library.packs.PackTray
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -35,7 +40,7 @@ internal class PackTrayState {
     var manifest by mutableStateOf<LibraryItemManifest?>(null)
     var items by mutableStateOf<List<PackTrayItem>>(emptyList())
     var loading by mutableStateOf(false)
-    var error by mutableStateOf<String?>(null)
+    var error by mutableStateOf<UiText?>(null)
     var dragItem by mutableStateOf<PackTrayItem?>(null)
     var dragPosition by mutableStateOf<Offset?>(null)
     var canvasRootPositionInWindow by mutableStateOf(Offset.Zero)
@@ -46,7 +51,7 @@ internal class PackTrayState {
         items = emptyList()
         val result = storage.loadPackTray(manifest, projectId)
         loading = false
-        result.fold(onSuccess = { items = it }, onFailure = { error = it.message ?: "Could not open this pack" })
+        result.fold(onSuccess = { items = it }, onFailure = { error = it.toUiText(R.string.store_pack_not_opened) })
     }
 
     fun close() {
@@ -137,7 +142,7 @@ internal fun PackTrayOverlay(
 @Composable
 internal fun PackTrayErrorDialog(tray: PackTrayState) {
     tray.error?.let { message ->
-        MessageDialog("Pack", message) {
+        MessageDialog(stringResource(R.string.editor_pack_title), message.asString()) {
             tray.error = null
             tray.manifest = null
         }

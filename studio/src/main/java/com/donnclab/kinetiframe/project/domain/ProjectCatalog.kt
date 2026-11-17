@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.project.domain
 
+import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
@@ -63,12 +64,12 @@ class ProjectCatalog(
             totalFrames = document.totalFrames,
         )
         value(repository.save(manifest, document)).also { index(it) }
-    }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(it.message ?: "Could not create project", it) })
+    }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(StoreFailure.PROJECT_NOT_CREATED, it) })
 
     suspend fun rename(projectId: String, name: String): StoreResult<ProjectManifest> = runCatching {
         requireNameAvailable(name, projectId)
         value(repository.rename(projectId, name, now())).also { index(it) }
-    }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(it.message ?: "Could not rename project", it) })
+    }.fold({ StoreResult.Value(it) }, { StoreResult.Failure(StoreFailure.PROJECT_NOT_RENAMED, it) })
 
     suspend fun delete(projectId: String): StoreResult<Unit> = repository.delete(projectId).also {
         if (it is StoreResult.Value) runCatching { projectDao?.deleteById(projectId) }

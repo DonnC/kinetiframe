@@ -71,7 +71,7 @@ class ProjectManagerViewModel(
                     withContext(ioDispatcher) { catalog.reconcileIndex(result.value) }
                 }
 
-                is StoreResult.Failure -> updateState { it.copy(loading = false, error = result.message) }
+                is StoreResult.Failure -> updateState { it.copy(loading = false, error = result.toUiText()) }
             }
         }
     }

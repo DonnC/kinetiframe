@@ -160,7 +160,7 @@ class PacksTabViewModel(
                     }
 
                     is StoreResult.Failure -> updateState {
-                        it.copy(loading = false, error = UiText.Verbatim(result.message))
+                        it.copy(loading = false, error = result.toUiText())
                     }
                 }
             } catch (
@@ -187,7 +187,7 @@ class PacksTabViewModel(
                 }
             ) {
                 is StoreResult.Value -> reload()
-                is StoreResult.Failure -> sendEffect(PacksTabEffect.ShowError(UiText.Verbatim(result.message)))
+                is StoreResult.Failure -> sendEffect(PacksTabEffect.ShowError(result.toUiText()))
             }
         }
     }
@@ -236,7 +236,7 @@ class PacksTabViewModel(
                             it
                         }
                     }
-                    sendEffect(PacksTabEffect.ShowError(UiText.Verbatim(loaded.message)))
+                    sendEffect(PacksTabEffect.ShowError(loaded.toUiText()))
                 }
             }
         }

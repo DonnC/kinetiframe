@@ -8,6 +8,7 @@ import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.domain.PackDrafts
 import com.donnclab.kinetiframe.library.model.PackFrameTag
+import com.donnclab.kinetiframe.presentation.common.UiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -82,7 +83,7 @@ class PackCreatorViewModelTest {
         model.handleIntent(PackCreatorIntent.SetTag(0, PackFrameTag("")))
         model.handleIntent(PackCreatorIntent.Save(totalFrames = 1))
         advanceUntilIdle()
-        assertTrue(model.state.value.saveError.orEmpty().contains("untagged"))
+        assertTrue((model.state.value.saveError as UiText.Resource).args.last().toString().contains("untagged"))
 
         store.clear()
 

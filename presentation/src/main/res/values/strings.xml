@@ -488,6 +488,7 @@
     <string name="actor_save_artwork_failed">Could not save actor artwork</string>
     <string name="actor_save_before_view_change">Save your edits before changing views.</string>
     <string name="actor_views_in_rig_setup">Edit actor views in rig setup. Existing performances keep their authored view.</string>
+    <string name="actor_performance_incompatible">Incompatible performance</string>
     <string name="actor_performance_needs_project">Open Actor Studio from a project to save a performance.</string>
     <string name="actor_restore_artwork_failed">Could not restore actor artwork</string>
     <!-- %1$s lists the artwork files that could not be found. -->
@@ -746,6 +747,32 @@
     <!-- %1$s is the reason the project could not be opened. -->
     <string name="editor_project_open_failed">Could not open this project: %1$s</string>
     <string name="editor_item_limit">Maximum item limit reached</string>
+    <string name="editor_performance_placement">Performance placement</string>
+    <string name="editor_pack_title">Pack</string>
+    <string name="editor_placement_failed">Could not place performance</string>
+    <string name="editor_item_not_added">Could not add that item</string>
+    <!-- %1$s is the actor's name. -->
+    <string name="editor_added_actor">Added \"%1$s\" to your actors</string>
+    <string name="editor_image_unreadable_pick">Could not read that image. Try picking a different one.</string>
+    <string name="editor_image_unreadable_file">Could not read that image. Try another file.</string>
+    <string name="editor_audio_import_failed">Could not import that audio file.</string>
+    <string name="editor_video_import_failed">Could not import that video file.</string>
+    <string name="editor_video_without_sound">Video added without sound because all audio lanes are locked. Unlock a lane and import again to include sound.</string>
+    <string name="editor_mic_permission">Microphone permission is needed to record audio.</string>
+    <string name="editor_recording_not_saved">Could not save the recording.</string>
+    <string name="editor_frame_empty">Nothing to save: this frame is empty</string>
+    <string name="editor_added_background">Added background image to your library</string>
+    <string name="editor_added_frame">Added frame to your library</string>
+    <!-- %1$s is the audio clip's name. -->
+    <string name="editor_added_audio">Added \"%1$s\" to your library</string>
+    <!-- %1$s is the performance's name. -->
+    <string name="editor_added_performance">Added %1$s to your library</string>
+    <!-- What is saved, inserted into library_save_message. -->
+    <string name="editor_subject_background">this background image</string>
+    <!-- What is saved, inserted into library_save_message. -->
+    <string name="editor_subject_frame">this frame</string>
+    <!-- What is saved, inserted into library_save_message: an audio clip's name in quotes. -->
+    <string name="editor_subject_named">\"%1$s\"</string>
     <string name="editor_exit_title">Save before leaving?</string>
     <string name="editor_exit_message">Save your work, discard unsaved changes, or keep editing.</string>
     <string name="editor_exit_message_no_discard">Save your work before leaving, or cancel to keep editing.</string>
@@ -872,6 +899,32 @@
     <!-- %1$s is the reason, as the failing component reports it. -->
     <string name="studio_error_sample_artwork">Sample artwork could not be created: %1$s</string>
     <string name="studio_error_cutout">Unable to prepare cutout</string>
+
+    <!-- Storage failures -->
+    <string name="store_project_storage">Project storage failed</string>
+    <string name="store_project_not_created">Could not create project</string>
+    <string name="store_project_not_renamed">Could not rename project</string>
+    <string name="store_project_not_imported">Could not import this project</string>
+    <string name="store_project_not_added">Could not save this project to your library</string>
+    <string name="store_project_archive">Project archive operation failed</string>
+    <string name="store_frame_pixels">Could not save frame pixels</string>
+    <string name="store_frame_draft">Could not open frame draft</string>
+    <string name="store_actor_storage">Actor storage failed</string>
+    <string name="store_actor_operation">Actor operation failed</string>
+    <string name="store_performance_storage">Performance storage failed</string>
+    <string name="store_performance_not_saved">Could not save performance</string>
+    <string name="store_placement_storage">Placement storage failed</string>
+    <string name="store_placement_inactive">This actor isn\'t on stage at this frame</string>
+    <string name="store_library_storage">Library operation failed</string>
+    <string name="store_library_not_added">Could not add that to your library</string>
+    <string name="store_library_cleanup">Library cleanup failed</string>
+    <string name="store_pack_not_opened">Could not open this pack</string>
+    <string name="store_pack_not_saved">Could not save this pack</string>
+    <string name="store_pack_archive">Pack archive operation failed</string>
+    <string name="store_export_failed">Export failed</string>
+    <string name="store_gallery_not_saved">Could not save to gallery</string>
+    <!-- A storage failure, then the reason the failing component gives, such as "Could not create project: A project named 'Walk' already exists". -->
+    <string name="store_failure_detail">%1$s: %2$s</string>
 
     <!-- Validation failures -->
     <string name="actor_invalid_part_count">An actor needs between 1 and 512 parts.</string>

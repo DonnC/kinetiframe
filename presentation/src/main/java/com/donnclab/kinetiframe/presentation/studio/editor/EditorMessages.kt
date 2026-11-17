@@ -18,28 +18,31 @@ import com.donnclab.kinetiframe.presentation.studio.dialogs.EditorErrorDialog
 /** Messages the editor reports to the animator. Each one shows as a dialog until it is dismissed. */
 @Stable
 internal class EditorMessages {
-    var placementError by mutableStateOf<String?>(null)
-    var actorLibraryMessage by mutableStateOf<String?>(null)
-    var backgroundImageError by mutableStateOf<String?>(null)
+    var placementError by mutableStateOf<UiText?>(null)
+    var actorLibraryMessage by mutableStateOf<UiText?>(null)
+    var backgroundImageError by mutableStateOf<UiText?>(null)
     var timelineError by mutableStateOf<UiText?>(null)
     var projectSaveMessage by mutableStateOf<UiText?>(null)
-    var audioError by mutableStateOf<String?>(null)
-    var videoError by mutableStateOf<String?>(null)
-    var libraryError by mutableStateOf<String?>(null)
-    var libraryMessage by mutableStateOf<String?>(null)
+    var audioError by mutableStateOf<UiText?>(null)
+    var videoError by mutableStateOf<UiText?>(null)
+    var libraryError by mutableStateOf<UiText?>(null)
+    var libraryMessage by mutableStateOf<UiText?>(null)
 }
 
 /** Shows every pending message except [EditorMessages.placementError], which the editor shows first. */
 @Composable
 internal fun EditorMessageDialogs(messages: EditorMessages) {
     messages.actorLibraryMessage?.let {
-        MessageDialog(stringResource(R.string.editor_actor_library), it) {
+        MessageDialog(stringResource(R.string.editor_actor_library), it.asString()) {
             messages.actorLibraryMessage =
                 null
         }
     }
     messages.backgroundImageError?.let {
-        MessageDialog(stringResource(R.string.editor_background_image), it) { messages.backgroundImageError = null }
+        MessageDialog(stringResource(R.string.editor_background_image), it.asString()) {
+            messages.backgroundImageError =
+                null
+        }
     }
     TimelineErrorDialog(messages)
     messages.projectSaveMessage?.let {
@@ -49,20 +52,25 @@ internal fun EditorMessageDialogs(messages: EditorMessages) {
         }
     }
     messages.audioError?.let {
-        MessageDialog(stringResource(R.string.library_kind_audio), it) {
+        MessageDialog(stringResource(R.string.library_kind_audio), it.asString()) {
             messages.audioError =
                 null
         }
     }
-    messages.videoError?.let { MessageDialog(stringResource(R.string.tracks_video), it) { messages.videoError = null } }
+    messages.videoError?.let {
+        MessageDialog(stringResource(R.string.tracks_video), it.asString()) {
+            messages.videoError =
+                null
+        }
+    }
     messages.libraryError?.let {
-        MessageDialog(stringResource(R.string.library_title), it) {
+        MessageDialog(stringResource(R.string.library_title), it.asString()) {
             messages.libraryError =
                 null
         }
     }
     messages.libraryMessage?.let {
-        MessageDialog(stringResource(R.string.library_title), it) {
+        MessageDialog(stringResource(R.string.library_title), it.asString()) {
             messages.libraryMessage =
                 null
         }

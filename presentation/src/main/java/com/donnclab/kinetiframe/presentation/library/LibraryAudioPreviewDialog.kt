@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.media.audio.AudioPreview
 
 /** Inspect the actual sound before inserting it. Preview does not copy or mutate the asset. */
@@ -35,7 +36,7 @@ fun LibraryAudioPreviewDialog(preview: AudioItemPreview, onDismiss: () -> Unit, 
                 } else if (error == null) {
                     LinearProgressIndicator(Modifier.fillMaxWidth())
                 }
-                error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                error?.let { Text(it.asString(), color = MaterialTheme.colorScheme.error) }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_close)) }
                     TextButton(onClick = onInsert, enabled = path != null) {
