@@ -13,35 +13,37 @@ Keep this page current:
 
 ## Now
 
-**Typed errors, part 3: storage failures and the editor's messages.**
+**Typed errors, part 4, and a stricter inline text check.**
 
-- `StoreResult.Failure` carries a typed `StoreFailure` reason instead of an English message. The
-  24 places that build one give the operation that failed, and the cause's message stays
-  available as `message` for logs and rethrows.
-- `presentation` words each reason from string resources (`StoreFailureText.kt`): a typed
-  cause's wording first, else the operation followed by the cause's message as detail.
-- Every screen that showed a failure's message uses that wording: export, the editor, Actor
-  Studio, the library picker, the pack creator and pack tray, home, the projects and actors
-  lists, and the timeline's actor menus. Their error fields are `UiText`.
-- The editor's messages (`EditorMessages`) are all `UiText`. The media pickers, voice-over,
-  placement and library export messages, including "Added … to your library" and the subject of
-  the save-to-library question, are string resources.
+- **Problems a person can fix** are a typed `ActionableException` in `core` with an
+  `ActionableProblem`: a blank or taken project name, a blank actor name, an unreadable file, a
+  file that isn't a project archive, a project already on the device, no background image, an
+  empty pack and an unnamed pack frame. `presentation` words each one, so "Could not create
+  project: A project named 'Walk' already exists" becomes "A project named "Walk" already exists.
+  Choose another name."
+- **State messages outside the editor** are `UiText`: the screen colour picker, the palette
+  browser and the audio preview.
+- **The inline text check** also counts a literal in a branch of an `if` or `when`, an `Icon`'s
+  positional description, and `contentDescription` or `stateDescription` set inside
+  `semantics { }`. It found 32 more values in 18 files (play and pause buttons, part tree
+  descriptions, dock confirm and cancel buttons, the timeline clip description and others), all
+  now string resources; the clip description is a plural. A few it can't see moved too: the
+  background menu labels, the smudge and blur tool name, and the clip trim handles.
 
 ## Next
 
-**Typed errors, part 4: the reasons below.** The detail after a storage failure still comes from
-English messages in lower layers: `require` checks in `core`'s documents and in `data`, and
-exceptions in `actors` and `studio` such as "A project with this ID already exists locally" or
-"No background image is set". Give the ones a person can act on typed causes, starting with
-project names and imports. Audio and video importers' messages in `presentation` move with them.
+**Typed errors, part 5: the remaining details.** Messages from lower layers that still reach the
+screen as detail: the voice recorder's errors (`VoiceRecorder.State.error` in `media`), the audio
+and video importers' messages in `presentation`, and `require` messages in `core`'s documents
+such as FPS and stage limits. Labels passed to custom components (such as `ContextIconAction`'s
+label) aren't counted by the check; review them screen by screen.
 
 ## Later
 
 Tracks that run alongside the module work, a screen or feature at a time:
 
-- **Strings to resources.** The inline text check is at zero. Left: messages assigned to state
-  outside the editor that the check doesn't count (the colour picker, palette and audio preview
-  view models), slider value labels built in lambdas ("%", "sp"), and the
+- **Strings to resources.** The inline text check is at zero. Left: slider value labels built in
+  lambdas ("%", "sp"), and the
   library audio tags ("MUSIC", "VOICE", "SFX"), which double as filter keys. Then right-to-left
   layouts, per-app language and a pseudo-locale check.
 - **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
@@ -200,6 +202,7 @@ fixed after the module work, unless one blocks testing.
 | #69 | Named model values and built-in camera presets from string resources |
 | #70 | Returned typed validation failures from `core` and worded them in the UI (typed errors, part 1) |
 | #71 | Reported studio errors as typed failures (typed errors, part 2) |
+| #72 | Gave storage failures a typed reason and worded the editor's messages from resources (typed errors, part 3) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -233,6 +236,10 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   `buildSrc/build` open and break local builds of the checker. CI on Linux is the reliable check.
   Locally, `./gradlew -p buildSrc test` right after a full build can fail to resolve the Android
   plugin's accessors (`Unresolved reference 'android'`). Stop the daemons and run it on its own.
+  When the IDE's Gradle process keeps `buildSrc/build` locked, run the checker tests on a copy of
+  `buildSrc` (with `gradle/libs.versions.toml` beside it) instead. AAPT2 can also stop starting
+  from Gradle ("Daemon startup failed") even though `aapt2 daemon` runs by hand; CI's
+  manual run covers `app` when that happens.
 - **Lint version checks.** Lint's "newer version available" checks are disabled, because their
   findings change with every upstream release. Dependabot reports updates instead.
 - **Checker tests.** CI runs `./gradlew -p buildSrc test`, but only for `main` during the

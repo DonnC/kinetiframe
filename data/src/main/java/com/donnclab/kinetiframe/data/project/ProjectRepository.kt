@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.data.project
 
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ProjectManifest
@@ -52,7 +54,7 @@ class ProjectRepository(
     fun isDisplayNameAvailable(displayName: String, excludingProjectId: String? = null): StoreResult<Boolean> =
         runCatching {
             val normalized = displayName.trim().lowercase()
-            require(normalized.isNotBlank()) { "Project name cannot be blank" }
+            if (normalized.isBlank()) throw ActionableException(ActionableProblem.PROJECT_NAME_BLANK)
             when (val result = list()) {
                 is StoreResult.Value -> result.value.none {
                     it.projectId != excludingProjectId &&

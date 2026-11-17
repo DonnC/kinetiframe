@@ -1,6 +1,8 @@
 package com.donnclab.kinetiframe.presentation.studio.color
 
 import androidx.lifecycle.viewModelScope
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
@@ -14,7 +16,7 @@ data class ScreenColorState(
     val capturing: Boolean = false,
     val active: Boolean = false,
     val color: Int? = null,
-    val error: String? = null,
+    val error: UiText? = null,
 ) : ViewState
 sealed interface ScreenColorIntent : ViewIntent {
     data class Begin(val source: ScreenColorSource) : ScreenColorIntent
@@ -46,11 +48,11 @@ class ScreenColorPickerViewModel :
                     } catch (
                         _: OutOfMemoryError,
                     ) {
-                        fail("Not enough memory to capture the screen.")
+                        fail(UiText.Resource(R.string.color_capture_memory))
                     } catch (
                         _: Exception,
                     ) {
-                        fail("Could not sample this screen. Close the picker and try again.")
+                        fail(UiText.Resource(R.string.color_capture_failed))
                     }
                 }
             }
@@ -73,7 +75,7 @@ class ScreenColorPickerViewModel :
             ScreenColorIntent.Cancel -> stop()
         }
     }
-    private fun fail(message: String) {
+    private fun fail(message: UiText) {
         snapshot?.close()
         snapshot = null
         updateState { ScreenColorState(error = message) }

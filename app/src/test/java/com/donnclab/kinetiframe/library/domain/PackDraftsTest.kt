@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
@@ -93,7 +95,9 @@ class PackDraftsTest {
 
         val result = drafts.save(draftId, 8, "Moods", 2, mapOf(0 to PackFrameTag("Happy")), null)
 
-        assertTrue((result as StoreResult.Failure).message.contains("frame 2 is untagged"))
+        val unnamed = ((result as StoreResult.Failure).cause as ActionableException)
+        assertEquals(ActionableProblem.PACK_FRAME_UNNAMED, unnamed.problem)
+        assertEquals("2", unnamed.detail)
         assertTrue(files.projectDirectory(draftId).exists())
     }
 

@@ -8,6 +8,8 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
@@ -108,7 +110,7 @@ class LibraryTransfers(
         exportAsset(LibraryItemKind.BACKGROUND_IMAGE, "Background", scope, project.id) {
             val sourcePath = project.backgroundAssetId
                 ?.let { project.assets[it]?.sourcePath }
-                ?: throw IllegalStateException("No background image is set")
+                ?: throw ActionableException(ActionableProblem.NO_BACKGROUND_IMAGE)
             File(sourcePath)
         }
 

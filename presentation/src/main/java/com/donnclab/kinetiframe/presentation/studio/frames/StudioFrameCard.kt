@@ -16,11 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Eye
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.studio.FrameThumbnailContent
 
 @Composable
@@ -49,7 +51,7 @@ fun StudioFrameCard(
                     color = MaterialTheme.colorScheme.surface.copy(alpha = .92f),
                 ) {
                     IconButton(onClick = onOpen, modifier = Modifier.size(40.dp)) {
-                        Icon(Lucide.Eye, "Open frame", Modifier.size(20.dp))
+                        Icon(Lucide.Eye, stringResource(R.string.frames_open), Modifier.size(20.dp))
                     }
                 }
             }

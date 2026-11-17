@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.project.data
 
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ProjectManifest
@@ -155,10 +157,10 @@ object KframeArchiver {
                 }
             }
             val manifestFile = File(stagingDir, "manifest.json")
-            require(manifestFile.isFile) { "This file is not a valid KinetiFrame project (.kframe) archive" }
+            if (!manifestFile.isFile) throw ActionableException(ActionableProblem.NOT_A_PROJECT_ARCHIVE)
             var manifest = json.decodeFromString<ProjectManifest>(manifestFile.readText()).validate()
             val finalDir = files.projectDirectory(manifest.projectId)
-            require(!finalDir.exists()) { "A project with this ID already exists locally" }
+            if (finalDir.exists()) throw ActionableException(ActionableProblem.PROJECT_ALREADY_ON_DEVICE)
             val paths = File(stagingDir, "archive-paths.json").takeIf(File::isFile)?.let {
                 json.decodeFromString<ProjectArchivePaths>(it.readText())
             }

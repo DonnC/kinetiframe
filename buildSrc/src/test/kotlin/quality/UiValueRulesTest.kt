@@ -34,6 +34,28 @@ class UiValueRulesTest {
         assertEquals(3, findings["text|app/src/main/kotlin/Screen.kt"])
     }
 
+    @Test fun `text in branches, positional icon descriptions and semantics is counted`() {
+        fixture(
+            "app",
+            "main",
+            """
+            fun Screen(playing: Boolean, mode: Int, label: String) {
+                Text(if (playing) "Pause" else "Play")
+                Icon(icon, if (playing) "Pause audio" else "Play audio")
+                Icon(icon, label)
+                Icon(icon, null)
+                Text(when (mode) { 0 -> "Off"; else -> label })
+                Modifier.semantics { contentDescription = "Audio position" }
+                Modifier.semantics { stateDescription = if (playing) "On" else "Off" }
+                Modifier.semantics { contentDescription = label }
+                Text(if (playing) label else name)
+            }
+            """.trimIndent(),
+        )
+        val findings = KotlinBoundaryScanner.scan(root, listOf("app"))
+        assertEquals(5, findings["text|app/src/main/kotlin/Screen.kt"])
+    }
+
     @Test fun `design system, tests and previews may use literal values`() {
         val source = """
             fun Swatch() { Color(0xFF000000); Text("Sample"); Modifier.padding(4.dp) }

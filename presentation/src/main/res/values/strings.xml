@@ -31,6 +31,14 @@
     <string name="action_discard">Discard</string>
     <!-- Describes a selected item, such as the chosen font. -->
     <string name="state_selected">Selected</string>
+    <!-- A switch's spoken state. -->
+    <string name="switch_state_on">On</string>
+    <!-- A switch's spoken state. -->
+    <string name="switch_state_off">Off</string>
+    <string name="action_play">Play</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_select_all">Select All</string>
+    <string name="action_deselect_all">Deselect All</string>
     <string name="value_pixels">%1$dpx</string>
     <string name="value_degrees">%1$d°</string>
     <!-- Label for a name field. -->
@@ -833,6 +841,56 @@
     <string name="pivot_cancel">Cancel pivot</string>
     <string name="palette_retry">Retry palettes</string>
     <string name="palette_empty">No palettes</string>
+    <string name="palette_load_failed">Could not load palettes</string>
+    <string name="color_capture_memory">Not enough memory to capture the screen.</string>
+    <string name="color_capture_failed">Could not sample this screen. Close the picker and try again.</string>
+    <string name="audio_preview_play">Play audio</string>
+    <string name="audio_preview_pause">Pause audio</string>
+    <string name="audio_preview_position">Audio position</string>
+    <string name="audio_preview_failed">Audio could not be played. Check that the file is available.</string>
+    <string name="editor_background_add">Add background</string>
+    <string name="editor_background_replace">Replace background</string>
+    <string name="editor_background_show">Show background</string>
+    <string name="editor_background_hide">Hide background</string>
+    <!-- %1$s is the part's name. -->
+    <string name="actor_part_expand">Expand %1$s</string>
+    <!-- %1$s is the part's name. -->
+    <string name="actor_part_collapse">Collapse %1$s</string>
+    <!-- %1$s is the part's name. -->
+    <string name="actor_part_show">Show %1$s</string>
+    <!-- %1$s is the part's name. -->
+    <string name="actor_part_hide">Hide %1$s</string>
+    <string name="actor_part_artwork_bound">Artwork bound</string>
+    <string name="actor_part_artwork_unbound">Artwork not bound</string>
+    <string name="actor_contact_pin">Pin joint from this key</string>
+    <string name="actor_contact_release">Release joint from this key</string>
+    <string name="actor_artwork_placement_preview">Artwork placement preview</string>
+    <string name="timeline_linked_drawing">Linked drawing</string>
+    <string name="timeline_restore_controls">Restore studio controls</string>
+    <string name="timeline_previous_frame">Previous frame</string>
+    <string name="timeline_next_frame">Next frame</string>
+    <string name="timeline_center_playhead">Center frame playhead</string>
+    <string name="timeline_audio_scrubber">Project audio scrubber</string>
+    <!-- A timeline clip: its name, first frame and length. -->
+    <plurals name="timeline_clip_description">
+        <item quantity="one">%1$s, frame %2$d, %3$d frame</item>
+        <item quantity="other">%1$s, frame %2$d, %3$d frames</item>
+    </plurals>
+    <!-- A locked timeline clip: its name, first frame and length. -->
+    <plurals name="timeline_clip_description_locked">
+        <item quantity="one">%1$s, frame %2$d, %3$d frame, locked</item>
+        <item quantity="other">%1$s, frame %2$d, %3$d frames, locked</item>
+    </plurals>
+    <!-- %1$s is the clip's name. -->
+    <string name="timeline_trim_start">Trim start of %1$s</string>
+    <!-- %1$s is the clip's name. -->
+    <string name="timeline_trim_end">Trim end of %1$s</string>
+    <string name="selection_apply">Apply selection</string>
+    <string name="selection_actions">Selection actions</string>
+    <string name="shape_confirm">Confirm shape</string>
+    <string name="shape_cancel">Cancel shape</string>
+    <string name="fill_confirm">Confirm fill</string>
+    <string name="frames_open">Open frame</string>
     <!-- Labels before a selection's position, scale and angle; each ends with a space. -->
     <string name="transform_position_label">Pos: </string>
     <string name="transform_scale_label">Scale: </string>
@@ -925,6 +983,19 @@
     <string name="store_gallery_not_saved">Could not save to gallery</string>
     <!-- A storage failure, then the reason the failing component gives, such as "Could not create project: A project named 'Walk' already exists". -->
     <string name="store_failure_detail">%1$s: %2$s</string>
+
+    <!-- Problems a person can fix -->
+    <string name="problem_project_name_blank">Give the project a name.</string>
+    <!-- %1$s is the name the person typed. -->
+    <string name="problem_project_name_taken">A project named \"%1$s\" already exists. Choose another name.</string>
+    <string name="problem_actor_name_blank">Give the actor a name.</string>
+    <string name="problem_file_unreadable">Could not read the selected file.</string>
+    <string name="problem_not_project_archive">This file isn\'t a KinetiFrame project (.kframe).</string>
+    <string name="problem_project_on_device">This project is already on this device.</string>
+    <string name="problem_no_background">Add a background image first.</string>
+    <string name="problem_pack_empty">A pack needs at least one frame.</string>
+    <!-- %1$s is the number of the first frame without a name. -->
+    <string name="problem_pack_frame_unnamed">Name every frame before saving this pack. Frame %1$s has no name.</string>
 
     <!-- Validation failures -->
     <string name="actor_invalid_part_count">An actor needs between 1 and 512 parts.</string>

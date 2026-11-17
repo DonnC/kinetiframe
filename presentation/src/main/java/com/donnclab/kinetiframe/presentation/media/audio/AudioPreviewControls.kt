@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +30,8 @@ import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.asString
 
 @Composable
 fun AudioPreview(path: String) {
@@ -52,16 +55,17 @@ fun AudioPreview(path: String) {
 @Composable
 fun AudioPreviewControls(state: AudioPreviewState, onIntent: (AudioPreviewIntent) -> Unit) {
     var drag by remember { mutableStateOf<Float?>(null) }
+    val positionLabel = stringResource(R.string.audio_preview_position)
     Column(Modifier.fillMaxWidth().padding(8.dp)) {
         if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
         state.error?.let {
-            Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+            Text(it.asString(), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { onIntent(AudioPreviewIntent.Toggle) }, enabled = state.ready) {
                 Icon(
                     if (state.playing) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                    if (state.playing) "Pause audio" else "Play audio",
+                    stringResource(if (state.playing) R.string.audio_preview_pause else R.string.audio_preview_play),
                 )
             }
             Slider(
@@ -73,7 +77,7 @@ fun AudioPreviewControls(state: AudioPreviewState, onIntent: (AudioPreviewIntent
                 },
                 valueRange = 0f..state.durationMs.coerceAtLeast(1).toFloat(),
                 enabled = state.ready,
-                modifier = Modifier.weight(1f).semantics { contentDescription = "Audio position" },
+                modifier = Modifier.weight(1f).semantics { contentDescription = positionLabel },
             )
         }
         Text(

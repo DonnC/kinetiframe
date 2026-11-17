@@ -3,6 +3,9 @@ package com.donnclab.kinetiframe.presentation.studio.color
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.library.data.PaletteRepository
 import com.donnclab.kinetiframe.library.model.PaletteDocument
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
@@ -16,7 +19,7 @@ data class PaletteState(
     val loading: Boolean = true,
     val palettes: List<PaletteDocument> = emptyList(),
     val selectedId: String? = null,
-    val error: String? = null,
+    val error: UiText? = null,
 ) : ViewState
 sealed interface PaletteIntent : ViewIntent {
     data object Load : PaletteIntent
@@ -59,8 +62,7 @@ class PaletteViewModel(
                     updateState {
                         it.copy(
                             loading = false,
-                            error =
-                            error.message ?: "Could not load palettes",
+                            error = error.toUiText(R.string.palette_load_failed),
                         )
                     }
                 }

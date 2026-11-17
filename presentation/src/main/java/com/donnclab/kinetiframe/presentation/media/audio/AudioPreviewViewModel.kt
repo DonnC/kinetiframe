@@ -1,6 +1,8 @@
 package com.donnclab.kinetiframe.presentation.media.audio
 
 import androidx.lifecycle.viewModelScope
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import com.donnclab.kinetiframe.ui.ViewEffect
 import com.donnclab.kinetiframe.ui.ViewIntent
@@ -28,7 +30,7 @@ data class AudioPreviewState(
     val playing: Boolean = false,
     val durationMs: Int = 0,
     val positionMs: Int = 0,
-    val error: String? = null,
+    val error: UiText? = null,
 ) : ViewState
 sealed interface AudioPreviewIntent : ViewIntent {
     data class Load(val path: String) : AudioPreviewIntent
@@ -106,7 +108,7 @@ class AudioPreviewViewModel(private val player: PreviewAudioPlayer) :
     }
     private fun fail() {
         stop()
-        updateState { AudioPreviewState(error = "Audio could not be played. Check that the file is available.") }
+        updateState { AudioPreviewState(error = UiText.Resource(R.string.audio_preview_failed)) }
     }
     private fun stop() {
         loadJob?.cancel()

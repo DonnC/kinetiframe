@@ -7,6 +7,8 @@ import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeIssue
 import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeValidationException
 import com.donnclab.kinetiframe.core.actor.validation.GraphValidationException
 import com.donnclab.kinetiframe.core.actor.validation.GraphValidationIssue
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.presentation.R
 
 /** The wording for a typed failure in this throwable or its causes, or null when there is none. */
@@ -15,8 +17,21 @@ fun Throwable.typedFailureText(): UiText? = generateSequence(this) { it.cause }.
         is GraphValidationException -> failure.issue.text()
         is PresetRecipeValidationException -> failure.issue.text()
         is PresetChannelValidationException -> failure.issue.text()
+        is ActionableException -> failure.problem.text(failure.detail.orEmpty())
         else -> null
     }
+}
+
+private fun ActionableProblem.text(detail: String): UiText = when (this) {
+    ActionableProblem.PROJECT_NAME_BLANK -> UiText.Resource(R.string.problem_project_name_blank)
+    ActionableProblem.PROJECT_NAME_TAKEN -> UiText.Resource(R.string.problem_project_name_taken, listOf(detail))
+    ActionableProblem.ACTOR_NAME_BLANK -> UiText.Resource(R.string.problem_actor_name_blank)
+    ActionableProblem.FILE_UNREADABLE -> UiText.Resource(R.string.problem_file_unreadable)
+    ActionableProblem.NOT_A_PROJECT_ARCHIVE -> UiText.Resource(R.string.problem_not_project_archive)
+    ActionableProblem.PROJECT_ALREADY_ON_DEVICE -> UiText.Resource(R.string.problem_project_on_device)
+    ActionableProblem.NO_BACKGROUND_IMAGE -> UiText.Resource(R.string.problem_no_background)
+    ActionableProblem.PACK_EMPTY -> UiText.Resource(R.string.problem_pack_empty)
+    ActionableProblem.PACK_FRAME_UNNAMED -> UiText.Resource(R.string.problem_pack_frame_unnamed, listOf(detail))
 }
 
 private fun GraphValidationIssue.text(): UiText = when (this) {

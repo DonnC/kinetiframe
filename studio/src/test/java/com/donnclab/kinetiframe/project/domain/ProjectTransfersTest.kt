@@ -1,5 +1,7 @@
 package com.donnclab.kinetiframe.project.domain
 
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
@@ -64,7 +66,10 @@ class ProjectTransfersTest {
     @Test fun `an unreadable pick fails with a message and leaves no working copy`() {
         val result = transfers(DocumentFileStore(root)).importArchive { null }
 
-        assertEquals("Could not read the selected file", (result as StoreResult.Failure).message)
+        assertEquals(
+            ActionableProblem.FILE_UNREADABLE,
+            ((result as StoreResult.Failure).cause as ActionableException).problem,
+        )
         assertTrue(cacheDir.listFiles().orEmpty().isEmpty())
     }
 

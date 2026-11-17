@@ -1,17 +1,22 @@
 // SPDX-License-Identifier: Apache-2.0
 package quality
 
+import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtConstantExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.KtIfExpression
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtParenthesizedExpression
 import org.jetbrains.kotlin.psi.KtPrefixExpression
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 import org.jetbrains.kotlin.psi.KtValueArgument
+import org.jetbrains.kotlin.psi.KtWhenExpression
 
 /**
  * Counts values that belong in the theme, design tokens or string resources rather than inline:
@@ -19,7 +24,9 @@ import org.jetbrains.kotlin.psi.KtValueArgument
  * - `colors`: `Color(...)` built from literals, such as `Color(0xFF6750A4)`. Theme colors and
  *   `copy(alpha = ...)` variants of them are fine.
  * - `dp`: numeric `.dp` literals other than zero.
- * - `text`: string literals passed to `Text(...)` or as a `contentDescription`.
+ * - `text`: string literals passed to `Text(...)`, as an `Icon`'s description or as a
+ *   `contentDescription`, or assigned to a semantics content or state description. A literal in
+ *   a branch of an `if` or `when` counts too.
  *
  * The designsystem module defines the tokens, so it is not scanned. Tests and `@Preview`
  * functions are skipped too: their sample values never reach the animator.
@@ -56,6 +63,12 @@ internal object UiValueRules {
                             ?: arguments.firstOrNull()?.takeIf { it.getArgumentName() == null }
                         if (text.isWords()) add(TEXT)
                     }
+
+                    // Icon(imageVector, contentDescription, ...): the description may be positional.
+                    "Icon" -> {
+                        val description = arguments.getOrNull(1)?.takeIf { it.getArgumentName() == null }
+                        if (description.isWords()) add(TEXT)
+                    }
                 }
                 super.visitCallExpression(expression)
             }
@@ -65,6 +78,17 @@ internal object UiValueRules {
                     add(TEXT)
                 }
                 super.visitArgument(argument)
+            }
+
+            // `semantics { contentDescription = "..." }` and its state description.
+            override fun visitBinaryExpression(expression: KtBinaryExpression) {
+                if (expression.operationToken == KtTokens.EQ &&
+                    expression.left?.text in DESCRIPTION_PROPERTIES &&
+                    expression.right.isWords()
+                ) {
+                    add(TEXT)
+                }
+                super.visitBinaryExpression(expression)
             }
 
             override fun visitDotQualifiedExpression(expression: KtDotQualifiedExpression) {
@@ -86,8 +110,21 @@ internal object UiValueRules {
 
     private fun KtElement.isZero(): Boolean = text.trimEnd('f', 'F').toDoubleOrNull() == 0.0
 
-    private fun KtValueArgument?.isWords(): Boolean {
-        val literal = this?.getArgumentExpression() as? KtStringTemplateExpression ?: return false
-        return literal.entries.any { entry -> entry.text.any(Char::isLetter) && entry.expression == null }
+    private val DESCRIPTION_PROPERTIES = setOf("contentDescription", "stateDescription")
+
+    private fun KtValueArgument?.isWords(): Boolean = this?.getArgumentExpression().isWords()
+
+    /** A string literal with words, or an `if` or `when` with such a literal in one of its branches. */
+    private fun KtExpression?.isWords(): Boolean = when (this) {
+        is KtStringTemplateExpression ->
+            entries.any { entry -> entry.text.any(Char::isLetter) && entry.expression == null }
+
+        is KtIfExpression -> then.isWords() || `else`.isWords()
+
+        is KtWhenExpression -> entries.any { it.expression.isWords() }
+
+        is KtParenthesizedExpression -> expression.isWords()
+
+        else -> false
     }
 }

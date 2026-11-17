@@ -1,5 +1,7 @@
 package com.donnclab.kinetiframe.presentation.studio.color
 
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -123,7 +125,7 @@ class ScreenColorPickerTest {
         assertFalse(model.state.value.active)
         model.handleIntent(ScreenColorIntent.Begin(ScreenColorSource { throw OutOfMemoryError() }))
         runCurrent()
-        assertTrue(model.state.value.error!!.contains("memory"))
+        assertEquals(UiText.Resource(R.string.color_capture_memory), model.state.value.error)
         model.handleIntent(ScreenColorIntent.Cancel)
         assertEquals(ScreenColorState(), model.state.value)
     }

@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.Layer
@@ -98,10 +100,10 @@ class PackDrafts(
         tags: Map<Int, PackFrameTag>,
         editing: LibraryItemManifest?,
     ): StoreResult<Unit> = runCatching {
-        require(totalFrames > 0) { "A pack must contain at least one frame" }
+        if (totalFrames <= 0) throw ActionableException(ActionableProblem.PACK_EMPTY)
         val untagged = (0 until totalFrames).filter { tags[it]?.name.isNullOrBlank() }
-        require(untagged.isEmpty()) {
-            "Every frame needs a name before you can save this pack (frame ${untagged.first() + 1} is untagged)"
+        untagged.firstOrNull()?.let {
+            throw ActionableException(ActionableProblem.PACK_FRAME_UNNAMED, (it + 1).toString())
         }
         val staging = File(cacheDir, "pack-bundle-${UUID.randomUUID()}").apply { mkdirs() }
         try {

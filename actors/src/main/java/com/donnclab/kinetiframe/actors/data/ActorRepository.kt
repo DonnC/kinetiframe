@@ -11,6 +11,8 @@ import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.StageDimensions
@@ -77,7 +79,7 @@ class ActorRepository(
     fun isDisplayNameAvailable(displayName: String, excludingActorId: String? = null): StoreResult<Boolean> =
         runCatching {
             val normalized = displayName.trim().lowercase()
-            require(normalized.isNotBlank()) { "Actor name cannot be blank" }
+            if (normalized.isBlank()) throw ActionableException(ActionableProblem.ACTOR_NAME_BLANK)
             when (val result = list()) {
                 is StoreResult.Value -> result.value.none {
                     it.actorId != excludingActorId &&

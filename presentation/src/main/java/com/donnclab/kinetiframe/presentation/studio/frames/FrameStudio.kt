@@ -44,6 +44,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -60,6 +61,7 @@ import com.composables.icons.lucide.Trash2
 import com.composables.icons.lucide.Undo
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
@@ -108,7 +110,7 @@ fun FrameStudio(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    IconButton(onClick = onDismiss) { Icon(Lucide.X, "Close") }
+                    IconButton(onClick = onDismiss) { Icon(Lucide.X, stringResource(R.string.action_close)) }
                     Text(
                         text = if (selected.isEmpty()) {
                             "Frames · ${state.animation.totalFrames}"
@@ -118,8 +120,12 @@ fun FrameStudio(
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.weight(1f),
                     )
-                    IconButton(onClick = { onIntent(StudioIntent.Draw.Undo) }) { Icon(Lucide.Undo, "Undo") }
-                    IconButton(onClick = { onIntent(StudioIntent.Draw.Redo) }) { Icon(Lucide.Redo, "Redo") }
+                    IconButton(onClick = {
+                        onIntent(StudioIntent.Draw.Undo)
+                    }) { Icon(Lucide.Undo, stringResource(R.string.editor_undo)) }
+                    IconButton(onClick = {
+                        onIntent(StudioIntent.Draw.Redo)
+                    }) { Icon(Lucide.Redo, stringResource(R.string.editor_redo)) }
 
                     val allSelected = selected.size == state.animation.totalFrames && state.animation.totalFrames > 0
                     IconButton(
@@ -134,7 +140,9 @@ fun FrameStudio(
                     ) {
                         Icon(
                             if (allSelected) Lucide.Square else Lucide.CheckCheck,
-                            if (allSelected) "Deselect All" else "Select All",
+                            stringResource(
+                                if (allSelected) R.string.action_deselect_all else R.string.action_select_all,
+                            ),
                         )
                     }
                 }

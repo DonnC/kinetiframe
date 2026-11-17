@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
@@ -28,6 +29,7 @@ import androidx.compose.ui.semantics.toggleableState
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.R
 
 /** Whether context menus show a label under each icon. The app provides the user's setting. */
 val LocalShowMenuLabels = staticCompositionLocalOf { true }
@@ -58,6 +60,8 @@ fun IconContextMenu(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContextIconButton(action: ContextIconAction, modifier: Modifier = Modifier) {
+    val on = stringResource(R.string.switch_state_on)
+    val off = stringResource(R.string.switch_state_off)
     TooltipBox(
         positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
         tooltip = { PlainTooltip { Text(action.label) } },
@@ -68,7 +72,7 @@ fun ContextIconButton(action: ContextIconAction, modifier: Modifier = Modifier) 
             enabled = action.enabled,
             modifier = modifier.semantics {
                 action.selected?.let {
-                    stateDescription = if (it) "On" else "Off"
+                    stateDescription = if (it) on else off
                     toggleableState = if (it) ToggleableState.On else ToggleableState.Off
                     role = Role.Switch
                 }

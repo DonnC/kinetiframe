@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -36,6 +37,7 @@ import com.composables.icons.lucide.RotateCcw
 import com.composables.icons.lucide.Scissors
 import com.composables.icons.lucide.Trash2
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import kotlin.math.roundToInt
@@ -54,16 +56,16 @@ fun SelectionDock(modifier: Modifier = Modifier, state: StudioState, onIntent: (
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             IconButton(onClick = { onIntent(StudioIntent.Selection.SetActive(false)) }) {
-                Icon(Lucide.Check, "Apply selection", modifier = Modifier.size(20.dp))
+                Icon(Lucide.Check, stringResource(R.string.selection_apply), modifier = Modifier.size(20.dp))
             }
             Box {
                 IconButton(onClick = { optionsVisible = true }) {
-                    Icon(Lucide.Ellipsis, "Selection actions", modifier = Modifier.size(20.dp))
+                    Icon(Lucide.Ellipsis, stringResource(R.string.selection_actions), modifier = Modifier.size(20.dp))
                 }
                 SelectionActionMenu(optionsVisible, { optionsVisible = false }, state, onIntent)
             }
             IconButton(onClick = { onIntent(StudioIntent.Selection.Cancel) }) {
-                Icon(Lucide.X, "Cancel", modifier = Modifier.size(20.dp))
+                Icon(Lucide.X, stringResource(R.string.action_cancel), modifier = Modifier.size(20.dp))
             }
         }
     }
