@@ -13,10 +13,18 @@ android {
         versionName = "1.0"
     }
 
+    androidResources {
+        // Lists the app's languages for Android's per-app language setting, from the values-*
+        // folders. resources.properties names the default folder's language.
+        generateLocaleConfig = true
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
+            // en-XA (long, accented text) and ar-XB (right to left) for checking layouts.
+            isPseudoLocalesEnabled = true
         }
         release {
             optimization {
