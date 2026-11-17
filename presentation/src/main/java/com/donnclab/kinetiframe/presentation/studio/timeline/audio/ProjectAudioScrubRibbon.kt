@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +36,7 @@ import com.donnclab.kinetiframe.media.audio.TimelineAudioSummary
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.studio.timeline.FRAME_CELL_WIDTH
 import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineScrubPosition
+import com.donnclab.kinetiframe.presentation.studio.timeline.timelineViewportOffsetFrames
 
 /** Bounded waveform viewport sharing the filmstrip's coordinates, not a project-sized canvas. */
 @Composable
@@ -57,23 +59,24 @@ fun ProjectAudioScrubRibbon(
             contentDescription = description
         },
     ) {
-        val offsetFrames = com.donnclab.kinetiframe.presentation.studio.timeline.timelineViewportOffsetFrames(
-            listState,
-            cellPx,
-        )
-        // Center padding exposes earlier frames to the left of the logical scroll anchor.
-        val first = listState.layoutInfo.visibleItemsInfo.firstOrNull()?.index
-            ?: kotlin.math.floor(offsetFrames).toInt().coerceAtLeast(0)
-        val pixelOffset = (offsetFrames - first) * cellPx
-        val edgePadding = listState.layoutInfo.beforeContentPadding
-        val latestPadding by rememberUpdatedState(edgePadding)
+        // Scroll position is read where it's used (drawing and gestures), never in composition,
+        // so scrolling redraws the ribbon instead of recomposing it. Only the first visible
+        // frame, which changes once per frame scrolled, drives composition.
+        fun offsetFrames() = timelineViewportOffsetFrames(listState, cellPx)
+        val first by remember(listState, cellPx) {
+            derivedStateOf {
+                // Center padding exposes earlier frames to the left of the logical scroll anchor.
+                listState.layoutInfo.visibleItemsInfo.firstOrNull()?.index
+                    ?: kotlin.math.floor(offsetFrames()).toInt().coerceAtLeast(0)
+            }
+        }
         val count = minOf((maxWidth / FRAME_CELL_WIDTH).toInt() + 2, totalFrames - first).coerceAtLeast(0)
         val peaks = remember(clips, mutedTracks, first, count) {
             TimelineAudioSummary.window(clips, first, count, mutedTracks, samplesPerFrame = WAVE_SAMPLES_PER_FRAME)
         }
-        val latestOffset by rememberUpdatedState(offsetFrames)
         fun select(x: Float, force: Boolean = false) {
-            val frame = TimelineScrubPosition.frame(latestOffset, (x - latestPadding) / cellPx, totalFrames)
+            val padding = listState.layoutInfo.beforeContentPadding
+            val frame = TimelineScrubPosition.frame(offsetFrames(), (x - padding) / cellPx, totalFrames)
             if (force || frame != dragFrame) {
                 dragFrame = frame
                 seek(frame)
@@ -89,6 +92,9 @@ fun ProjectAudioScrubRibbon(
                     }
                 },
         ) {
+            val scroll = offsetFrames()
+            val edgePadding = listState.layoutInfo.beforeContentPadding
+            val pixelOffset = (scroll - first) * cellPx
             val middle = size.height / 2
             peaks.forEachIndexed { i, peak ->
                 val sampleWidth = cellPx / WAVE_SAMPLES_PER_FRAME
@@ -104,7 +110,7 @@ fun ProjectAudioScrubRibbon(
                     )
                 }
             }
-            val x = edgePadding + (currentFrame + .45f - offsetFrames) * cellPx
+            val x = edgePadding + (currentFrame + .45f - scroll) * cellPx
             drawLine(blue, Offset(x, 0f), Offset(x, size.height), 1.dp.toPx())
             drawCircle(blue, 2.dp.toPx(), Offset(x, size.height - 2.dp.toPx()))
         }
