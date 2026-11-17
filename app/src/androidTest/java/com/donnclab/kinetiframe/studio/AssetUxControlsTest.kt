@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.presentation.media.audio.AudioPreviewControls
 import com.donnclab.kinetiframe.presentation.media.audio.AudioPreviewIntent
 import com.donnclab.kinetiframe.presentation.media.audio.AudioPreviewState
@@ -33,7 +34,9 @@ class AssetUxControlsTest {
     }
 
     @Test fun failedAudioDoesNotOfferEnabledPlayback() {
-        compose.setContent { KinetiFrameTheme { AudioPreviewControls(AudioPreviewState(error = "Missing file"), {}) } }
+        compose.setContent {
+            KinetiFrameTheme { AudioPreviewControls(AudioPreviewState(error = UiText.Verbatim("Missing file")), {}) }
+        }
         compose.onNodeWithContentDescription("Play audio").assertIsNotEnabled()
         compose.onNodeWithText("Missing file").assertExists()
     }
