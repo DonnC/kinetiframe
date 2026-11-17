@@ -9,16 +9,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.presentation.R
 
 /** Non-interactive playhead: gestures pass through to the thumbnails beneath it. */
 @Composable
 internal fun TimelineCenterPointer(modifier: Modifier = Modifier) {
+    val description = stringResource(R.string.timeline_center_playhead)
     Spacer(
-        modifier.size(10.dp, 7.dp).semantics { contentDescription = "Center frame playhead" }
+        modifier.size(10.dp, 7.dp).semantics { contentDescription = description }
             .drawWithCache {
                 val arrow = Path().apply {
                     moveTo(0f, 0f)

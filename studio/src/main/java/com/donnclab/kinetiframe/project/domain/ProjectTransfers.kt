@@ -3,6 +3,8 @@ package com.donnclab.kinetiframe.project.domain
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ProjectManifest
@@ -36,7 +38,7 @@ class ProjectTransfers(
         val tempFile = File(cacheDir, "import-${now()}.kframe")
         return runCatching {
             open()?.use { input -> tempFile.outputStream().use { output -> input.copyTo(output) } }
-                ?: throw IllegalStateException("Could not read the selected file")
+                ?: throw ActionableException(ActionableProblem.FILE_UNREADABLE)
             KframeArchiver.import(files, tempFile)
         }.getOrElse { StoreResult.Failure(StoreFailure.PROJECT_NOT_IMPORTED, it) }
             .also { tempFile.delete() }

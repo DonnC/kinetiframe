@@ -27,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.model.BundledPalettes
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.ui.appViewModel
 
 /** Same palette surface in the Library and every brush/fill colour popup. */
@@ -49,7 +50,7 @@ fun PaletteBrowserContent(
             state.loading -> CircularProgressIndicator(Modifier.size(24.dp))
 
             state.error != null -> {
-                Text(state.error, style = MaterialTheme.typography.bodySmall)
+                Text(state.error.asString(), style = MaterialTheme.typography.bodySmall)
                 IconButton(onClick = {
                     onIntent(PaletteIntent.Load)
                 }) { Icon(Icons.Default.Refresh, stringResource(R.string.palette_retry)) }

@@ -1,5 +1,7 @@
 package com.donnclab.kinetiframe.project.domain
 
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.Layer
@@ -76,8 +78,8 @@ class ProjectCatalog(
     }
 
     private fun requireNameAvailable(name: String, excludingProjectId: String?) {
-        require(value(repository.isDisplayNameAvailable(name, excludingProjectId))) {
-            "A project named '${name.trim()}' already exists"
+        if (!value(repository.isDisplayNameAvailable(name, excludingProjectId))) {
+            throw ActionableException(ActionableProblem.PROJECT_NAME_TAKEN, name.trim())
         }
     }
 

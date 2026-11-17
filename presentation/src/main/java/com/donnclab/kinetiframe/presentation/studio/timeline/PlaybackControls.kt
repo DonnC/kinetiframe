@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
@@ -17,6 +18,7 @@ import com.composables.icons.lucide.Play
 import com.composables.icons.lucide.SkipBack
 import com.composables.icons.lucide.SkipForward
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 
 @Composable
@@ -35,7 +37,12 @@ fun PlaybackControls(
                 IconButton(onClick = {
                     onIntent(StudioIntent.Playback.PreviousFrame)
                 }, modifier = Modifier.size(40.dp, 48.dp)) {
-                    Icon(Lucide.SkipBack, "Prev", tint = EditorTokens.dark, modifier = Modifier.size(18.dp))
+                    Icon(
+                        Lucide.SkipBack,
+                        stringResource(R.string.timeline_previous_frame),
+                        tint = EditorTokens.dark,
+                        modifier = Modifier.size(18.dp),
+                    )
                 }
             }
             IconButton(
@@ -46,7 +53,7 @@ fun PlaybackControls(
             ) {
                 Icon(
                     if (isPlaying) Lucide.Pause else Lucide.Play,
-                    if (isPlaying) "Pause" else "Play",
+                    stringResource(if (isPlaying) R.string.action_pause else R.string.action_play),
                     tint = EditorTokens.accent,
                     modifier = Modifier.size(24.dp),
                 )
@@ -55,7 +62,12 @@ fun PlaybackControls(
                 IconButton(onClick = {
                     onIntent(StudioIntent.Playback.NextFrame)
                 }, modifier = Modifier.size(40.dp, 48.dp)) {
-                    Icon(Lucide.SkipForward, "Next", tint = EditorTokens.dark, modifier = Modifier.size(18.dp))
+                    Icon(
+                        Lucide.SkipForward,
+                        stringResource(R.string.timeline_next_frame),
+                        tint = EditorTokens.dark,
+                        modifier = Modifier.size(18.dp),
+                    )
                 }
             }
         }

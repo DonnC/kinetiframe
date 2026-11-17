@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.asString
 
 fun interface ScreenColorRequest {
     fun begin(onSelected: (Color) -> Unit)
@@ -137,7 +138,7 @@ fun ScreenColorPickerHost(content: @Composable () -> Unit) {
             }
             AlertDialog(
                 onDismissRequest = cancel,
-                text = { Text(message) },
+                text = { Text(message.asString()) },
                 confirmButton = { TextButton(onClick = cancel) { Text(stringResource(R.string.action_close)) } },
             )
         }

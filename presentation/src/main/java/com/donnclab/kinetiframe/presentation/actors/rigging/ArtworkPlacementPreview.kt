@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +39,7 @@ import com.donnclab.kinetiframe.designsystem.theme.BrandTeal
 import com.donnclab.kinetiframe.engine.rigging.math.ArtworkGestureBasis
 import com.donnclab.kinetiframe.engine.rigging.math.ArtworkGestureDelta
 import com.donnclab.kinetiframe.engine.rigging.math.ArtworkPlacementGesture
+import com.donnclab.kinetiframe.presentation.R
 
 /** Fixed actor framing: dragging artwork must not make the viewport chase it. Pixels are borrowed. */
 @Composable
@@ -106,9 +108,10 @@ fun ArtworkPlacementPreview(
     }
     val imagePaint = remember { Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG) }
     val ghostPaint = remember { Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG).apply { alpha = 95 } }
+    val description = stringResource(R.string.actor_artwork_placement_preview)
     Canvas(
         modifier.semantics {
-            contentDescription = "Artwork placement preview"
+            contentDescription = description
         }.onSizeChanged { size = it }.pointerInput(framing, worldAngle) {
             detectTransformGestures { _, pan, zoom, rotation ->
                 changed(

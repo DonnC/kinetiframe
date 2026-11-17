@@ -28,12 +28,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.media.audio.Waveform
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.media.audio.AudioClipWaveform
 import kotlin.math.roundToInt
 
@@ -103,6 +106,13 @@ internal fun TimelineAssetClip(
         dragTarget(null)
     }
     if (visibleEnd <= visibleStart && !dragging) return
+    val clipDescription = pluralStringResource(
+        if (locked) R.plurals.timeline_clip_description_locked else R.plurals.timeline_clip_description,
+        previewDuration,
+        label,
+        previewStart + 1,
+        previewDuration,
+    )
 
     Box(
         Modifier.offset(x = FRAME_CELL_WIDTH * (visibleStart - offsetFrames))
@@ -122,8 +132,7 @@ internal fun TimelineAssetClip(
         Box(
             Modifier.fillMaxSize()
                 .semantics {
-                    contentDescription =
-                        "$label, frame ${previewStart + 1}, $previewDuration frames${if (locked) ", locked" else ""}"
+                    contentDescription = clipDescription
                 }
                 .clickable { select() }
                 .pointerInput(id, start, duration, track, trackCount, locked, cellPx) {
@@ -180,7 +189,7 @@ internal fun TimelineAssetClip(
             ) {
                 AssetTrimHandle(
                     Modifier.align(Alignment.CenterStart),
-                    "Trim start of $label",
+                    stringResource(R.string.timeline_trim_start, label),
                     cellPx,
                     onDelta = { frames ->
                         trimming = true
@@ -201,7 +210,7 @@ internal fun TimelineAssetClip(
             ) {
                 AssetTrimHandle(
                     Modifier.align(Alignment.CenterEnd),
-                    "Trim end of $label",
+                    stringResource(R.string.timeline_trim_end, label),
                     cellPx,
                     onDelta = { frames ->
                         trimming = true

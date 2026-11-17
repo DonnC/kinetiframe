@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.core.document
 
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import kotlinx.serialization.Serializable
 
 /** Lightweight, gallery-listing-only metadata -- mirrors ActorManifest's manifest/document split
@@ -33,7 +35,7 @@ data class ProjectManifest(
 ) {
     fun validate(): ProjectManifest {
         require(projectId.isNotBlank()) { "Project ID cannot be blank" }
-        require(displayName.isNotBlank()) { "Project name cannot be blank" }
+        if (displayName.isBlank()) throw ActionableException(ActionableProblem.PROJECT_NAME_BLANK)
         require(fps in 1..30) { "Project FPS must be between 1 and 30" }
         return this
     }

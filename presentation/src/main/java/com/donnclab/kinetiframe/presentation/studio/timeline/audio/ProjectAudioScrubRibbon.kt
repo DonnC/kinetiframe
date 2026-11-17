@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.media.audio.TimelineAudioSummary
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.studio.timeline.FRAME_CELL_WIDTH
 import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineScrubPosition
 
@@ -48,9 +50,10 @@ fun ProjectAudioScrubRibbon(
     val cellPx = with(LocalDensity.current) { FRAME_CELL_WIDTH.toPx() }
     val seek by rememberUpdatedState(onSeek)
     var dragFrame by remember { mutableIntStateOf(-1) }
+    val description = stringResource(R.string.timeline_audio_scrubber)
     BoxWithConstraints(
         modifier.height(20.dp).clipToBounds().semantics {
-            contentDescription = "Project audio scrubber"
+            contentDescription = description
         },
     ) {
         val offsetFrames = com.donnclab.kinetiframe.presentation.studio.timeline.timelineViewportOffsetFrames(

@@ -7,11 +7,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.Eye
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Pause
 import com.composables.icons.lucide.Play
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 
 /** Recovery stays reachable even when every drawing toolbar is hidden. */
@@ -30,8 +32,13 @@ fun StudioFocusControls(
         Row {
             IconButton(onClick = {
                 onIntent(if (isPlaying) StudioIntent.Playback.Pause else StudioIntent.Playback.Play)
-            }) { Icon(if (isPlaying) Lucide.Pause else Lucide.Play, if (isPlaying) "Pause" else "Play") }
-            IconButton(onClick = onRestore) { Icon(Lucide.Eye, "Restore studio controls") }
+            }) {
+                Icon(
+                    if (isPlaying) Lucide.Pause else Lucide.Play,
+                    stringResource(if (isPlaying) R.string.action_pause else R.string.action_play),
+                )
+            }
+            IconButton(onClick = onRestore) { Icon(Lucide.Eye, stringResource(R.string.timeline_restore_controls)) }
         }
     }
 }

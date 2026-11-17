@@ -1,5 +1,7 @@
 package com.donnclab.kinetiframe.project.domain
 
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.data.db.ProjectDao
@@ -52,8 +54,14 @@ class ProjectCatalogTest {
         val duplicate = catalog.create("cartoon", StageDimensions.LandscapeHd, 12)
         val renamed = catalog.rename(other.projectId, " Cartoon")
 
-        assertTrue((duplicate as StoreResult.Failure).message.contains("already exists"))
-        assertTrue((renamed as StoreResult.Failure).message.contains("already exists"))
+        assertEquals(
+            ActionableProblem.PROJECT_NAME_TAKEN,
+            ((duplicate as StoreResult.Failure).cause as ActionableException).problem,
+        )
+        assertEquals(
+            ActionableProblem.PROJECT_NAME_TAKEN,
+            ((renamed as StoreResult.Failure).cause as ActionableException).problem,
+        )
         assertEquals("Other", dao.rows.getValue(other.projectId).title)
     }
 

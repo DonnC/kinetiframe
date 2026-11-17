@@ -9,11 +9,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Check
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 
@@ -30,10 +32,15 @@ fun ConstructionShapeDock(state: StudioState, onIntent: (StudioIntent) -> Unit) 
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             IconButton(onClick = { onIntent(StudioIntent.Construction.Confirm) }) {
-                Icon(Lucide.Check, "Confirm shape", modifier = Modifier.size(22.dp), tint = EditorTokens.accent)
+                Icon(
+                    Lucide.Check,
+                    stringResource(R.string.shape_confirm),
+                    modifier = Modifier.size(22.dp),
+                    tint = EditorTokens.accent,
+                )
             }
             IconButton(onClick = { onIntent(StudioIntent.Construction.Cancel) }) {
-                Icon(Lucide.X, "Cancel shape", modifier = Modifier.size(20.dp))
+                Icon(Lucide.X, stringResource(R.string.shape_cancel), modifier = Modifier.size(20.dp))
             }
         }
     }

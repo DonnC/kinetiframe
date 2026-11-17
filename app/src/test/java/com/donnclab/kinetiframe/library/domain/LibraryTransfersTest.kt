@@ -7,6 +7,8 @@ import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
@@ -99,6 +101,9 @@ class LibraryTransfersTest {
         assertEquals("Frame 3", added.displayName)
         assertEquals(LibraryItemKind.FRAME, added.kind)
         val missing = transfers.exportBackground(ProjectDocument(id = "project-a"), LibraryScope.PERSONAL)
-        assertEquals("No background image is set", (missing as StoreResult.Failure).message)
+        assertEquals(
+            ActionableProblem.NO_BACKGROUND_IMAGE,
+            ((missing as StoreResult.Failure).cause as ActionableException).problem,
+        )
     }
 }

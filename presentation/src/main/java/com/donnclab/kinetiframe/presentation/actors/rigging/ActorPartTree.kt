@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +39,7 @@ import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.R
 
 /**
  * A stable-part hierarchy for Actor Studio, styled as a layer browser: expand/collapse groups,
@@ -86,7 +88,10 @@ private fun ActorPartTreeNode(
             if (isGroup) {
                 Icon(
                     if (expanded) Lucide.ChevronDown else Lucide.ChevronRight,
-                    contentDescription = if (expanded) "Collapse ${part.name}" else "Expand ${part.name}",
+                    contentDescription = stringResource(
+                        if (expanded) R.string.actor_part_collapse else R.string.actor_part_expand,
+                        part.name,
+                    ),
                     tint = ActorStudioTokens.onPanelMuted,
                     modifier = Modifier.size(16.dp).clickable { expanded = !expanded },
                 )
@@ -114,13 +119,24 @@ private fun ActorPartTreeNode(
             )
             Icon(
                 if (part.textureBinding == null) Lucide.Link2Off else Lucide.Link2,
-                contentDescription = if (part.textureBinding == null) "Artwork not bound" else "Artwork bound",
+                contentDescription = stringResource(
+                    if (part.textureBinding ==
+                        null
+                    ) {
+                        R.string.actor_part_artwork_unbound
+                    } else {
+                        R.string.actor_part_artwork_bound
+                    },
+                ),
                 modifier = Modifier.size(14.dp).padding(end = 6.dp),
                 tint = if (part.textureBinding == null) ActorStudioTokens.onPanelMuted else ActorStudioTokens.accent,
             )
             Icon(
                 if (part.visible) Lucide.Eye else Lucide.EyeOff,
-                contentDescription = if (part.visible) "Hide ${part.name}" else "Show ${part.name}",
+                contentDescription = stringResource(
+                    if (part.visible) R.string.actor_part_hide else R.string.actor_part_show,
+                    part.name,
+                ),
                 tint = if (part.visible) ActorStudioTokens.onPanelMuted else ActorStudioTokens.accent,
                 modifier = Modifier.size(15.dp).clickable { onVisibilityToggle(part.id, !part.visible) },
             )

@@ -1,5 +1,7 @@
 package com.donnclab.kinetiframe.project.data
 
+import com.donnclab.kinetiframe.core.contracts.ActionableException
+import com.donnclab.kinetiframe.core.contracts.ActionableProblem
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
@@ -83,7 +85,10 @@ class KframeArchiverTest {
         // Import into the very same store that already has this project id.
         val result = KframeArchiver.import(files, archive)
         assertTrue(result is StoreResult.Failure)
-        assertEquals("A project with this ID already exists locally", (result as StoreResult.Failure).message)
+        assertEquals(
+            ActionableProblem.PROJECT_ALREADY_ON_DEVICE,
+            ((result as StoreResult.Failure).cause as ActionableException).problem,
+        )
     }
 
     @Test fun `importing a file that is not a kframe archive fails cleanly`() {

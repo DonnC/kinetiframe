@@ -11,7 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.donnclab.kinetiframe.presentation.R
 
 /** Contact is explicit intent, never guessed from a name or a frame's apparent ground height. */
 @Composable
@@ -24,7 +26,9 @@ fun ActorContactMenu(available: Boolean, pinned: Boolean, onToggle: () -> Unit) 
         }
         DropdownMenu(expanded, onDismissRequest = { expanded = false }) {
             DropdownMenuItem(
-                text = { Text(if (pinned) "Release joint from this key" else "Pin joint from this key") },
+                text = {
+                    Text(stringResource(if (pinned) R.string.actor_contact_release else R.string.actor_contact_pin))
+                },
                 onClick = {
                     expanded = false
                     onToggle()

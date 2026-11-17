@@ -62,6 +62,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -88,6 +89,7 @@ import com.composables.icons.lucide.SquarePlus
 import com.composables.icons.lucide.Trash2
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.AnimationState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
@@ -263,7 +265,7 @@ fun TimelineControls(
                     )
                 }
                 IconButton(onClick = onLayerPanelToggle, modifier = Modifier.size(48.dp)) {
-                    Icon(Lucide.Layers, "Layers", modifier = Modifier.size(20.dp))
+                    Icon(Lucide.Layers, stringResource(R.string.layers_title), modifier = Modifier.size(20.dp))
                 }
             }
         }
