@@ -50,6 +50,10 @@
     <!-- A menu row that goes back up one level, naming the level, such as "‹ Add". -->
     <string name="menu_back_to">‹ %1$s</string>
     <string name="value_percent">%1$d%%</string>
+    <!-- A text size in scale-independent pixels. -->
+    <string name="value_sp">%1$dsp</string>
+    <!-- A speed or intensity multiplier, such as "1.25×". -->
+    <string name="value_multiplier">%1$.2f×</string>
     <string name="action_retry">Retry</string>
     <string name="action_delete">Delete</string>
     <string name="action_rename">Rename</string>
@@ -993,6 +997,16 @@
     <string name="problem_not_project_archive">This file isn\'t a KinetiFrame project (.kframe).</string>
     <string name="problem_project_on_device">This project is already on this device.</string>
     <string name="problem_no_background">Add a background image first.</string>
+    <string name="problem_background_missing">The saved background image is missing. Replace it from the image menu.</string>
+    <string name="problem_background_unreadable">The saved background image could not be read. Replace it from the image menu.</string>
+    <string name="problem_video_unreadable">Could not read this video\'s length or size. Try another file.</string>
+    <!-- A short pill on a sound-effect row in the library. -->
+    <string name="audio_tag_sfx">SFX</string>
+    <!-- A short pill on a music row in the library. -->
+    <string name="audio_tag_music">MUSIC</string>
+    <!-- A short pill on a voice row in the library. -->
+    <string name="audio_tag_voice">VOICE</string>
+    <string name="audio_record_start_failed">Could not start recording. Check that no other app is using the microphone.</string>
     <string name="problem_pack_empty">A pack needs at least one frame.</string>
     <!-- %1$s is the number of the first frame without a name. -->
     <string name="problem_pack_frame_unnamed">Name every frame before saving this pack. Frame %1$s has no name.</string>

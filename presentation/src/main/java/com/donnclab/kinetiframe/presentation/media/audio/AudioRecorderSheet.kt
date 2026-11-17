@@ -99,14 +99,14 @@ fun AudioRecorderSheet(
                 textAlign = TextAlign.Center,
             )
             Text(
-                text = state.error
-                    ?: when {
-                        state.isRecording -> stringResource(R.string.audio_recording)
-                        state.hasTake -> stringResource(R.string.audio_take_ready)
-                        else -> stringResource(R.string.audio_start_hint)
-                    },
+                text = when {
+                    state.startFailed -> stringResource(R.string.audio_record_start_failed)
+                    state.isRecording -> stringResource(R.string.audio_recording)
+                    state.hasTake -> stringResource(R.string.audio_take_ready)
+                    else -> stringResource(R.string.audio_start_hint)
+                },
                 style = MaterialTheme.typography.bodySmall,
-                color = if (state.error != null) {
+                color = if (state.startFailed) {
                     MaterialTheme.colorScheme.error
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant

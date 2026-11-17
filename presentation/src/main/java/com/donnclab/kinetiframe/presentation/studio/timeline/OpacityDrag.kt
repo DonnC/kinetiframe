@@ -19,9 +19,11 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 
 @Composable
 fun OpacityDrag(
@@ -70,7 +72,7 @@ fun OpacityDrag(
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = "${(opacity * 100).toInt()}%",
+            text = stringResource(R.string.value_percent, (opacity * 100).toInt()),
             style = MaterialTheme.typography.labelSmall,
             color = if (isVisible) EditorTokens.accent else EditorTokens.muted,
             fontWeight = FontWeight.ExtraBold,

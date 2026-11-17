@@ -8,14 +8,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.R
 
-/** Small "SFX" / "MUSIC" / "VOICE" pill shown next to an audio row's duration. */
+/**
+ * Small pill shown next to an audio row's duration. [tag] is the filter key ("SFX", "MUSIC" or
+ * "VOICE"); the pill names it from string resources.
+ */
 @Composable
-fun AudioTag(label: String, modifier: Modifier = Modifier) {
+fun AudioTag(tag: String, modifier: Modifier = Modifier) {
+    val label = when (tag) {
+        "SFX" -> stringResource(R.string.audio_tag_sfx)
+        "MUSIC" -> stringResource(R.string.audio_tag_music)
+        "VOICE" -> stringResource(R.string.audio_tag_voice)
+        else -> tag
+    }
     Text(
         label,
         style = MaterialTheme.typography.labelSmall,
