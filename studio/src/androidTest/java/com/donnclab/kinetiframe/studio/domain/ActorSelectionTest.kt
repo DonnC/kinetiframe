@@ -30,9 +30,12 @@ class ActorSelectionTest {
             )
         val history = mutableListOf<HistoryItem>()
         val manager =
-            SelectionManager(this, Dispatchers.Unconfined, Mutex(), {
-                state
-            }, { state = it(state) }, {}, { null }, {}, history)
+            SelectionManager(
+                StudioRuntime(this, Dispatchers.Unconfined, { state }, { state = it(state) }),
+                Mutex(),
+                SelectionHooks({}, { null }, {}),
+                UndoStacks(history),
+            )
         manager.selectArea(
             null,
             Rect(0f, 0f, 40f, 40f),
@@ -65,9 +68,12 @@ class ActorSelectionTest {
                 project = ProjectDocument(id = "project", actorPlacements = mapOf(actor.placementId to actor)),
             )
         val manager =
-            SelectionManager(this, Dispatchers.Unconfined, Mutex(), {
-                state
-            }, { state = it(state) }, {}, { null }, {}, mutableListOf())
+            SelectionManager(
+                StudioRuntime(this, Dispatchers.Unconfined, { state }, { state = it(state) }),
+                Mutex(),
+                SelectionHooks({}, { null }, {}),
+                UndoStacks(mutableListOf()),
+            )
         manager.selectArea(
             null,
             Rect(0f, 0f, 40f, 40f),
@@ -90,9 +96,12 @@ class ActorSelectionTest {
                 project = ProjectDocument(id = "project", actorPlacements = mapOf(actor.placementId to actor)),
             )
         val manager =
-            SelectionManager(this, Dispatchers.Unconfined, Mutex(), {
-                state
-            }, { state = it(state) }, {}, { null }, {}, mutableListOf())
+            SelectionManager(
+                StudioRuntime(this, Dispatchers.Unconfined, { state }, { state = it(state) }),
+                Mutex(),
+                SelectionHooks({}, { null }, {}),
+                UndoStacks(mutableListOf()),
+            )
         manager.selectArea(
             null,
             Rect(0f, 0f, 40f, 40f),
@@ -115,8 +124,11 @@ class ActorSelectionTest {
             eraseColor(android.graphics.Color.RED)
         }
         val manager = SelectionManager(
-            this, Dispatchers.Unconfined, Mutex(), { state }, { state = it(state) }, {},
-            { source.copy(Bitmap.Config.ARGB_8888, true) }, { fail("Selection must not rewrite the base") }, history,
+            StudioRuntime(this, Dispatchers.Unconfined, { state }, { state = it(state) }),
+            Mutex(),
+            SelectionHooks({
+            }, { source.copy(Bitmap.Config.ARGB_8888, true) }, { fail("Selection must not rewrite the base") }),
+            UndoStacks(history),
         )
         manager.selectArea(null, Rect(1f, 1f, 8f, 8f), 1f).join()
         manager.cancelSelection().join()

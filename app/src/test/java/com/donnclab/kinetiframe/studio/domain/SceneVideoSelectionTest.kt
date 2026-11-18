@@ -68,8 +68,10 @@ class SceneVideoSelectionTest {
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)
         Dispatchers.setMain(UnconfinedTestDispatcher())
         val manager = SelectionManager(
-            scope, Dispatchers.Unconfined, Mutex(), { state }, { state = it(state) },
-            {}, { throw AssertionError("Video selection must not clear raster pixels") }, {}, history,
+            StudioRuntime(scope, Dispatchers.Unconfined, { state }, { state = it(state) }),
+            Mutex(),
+            SelectionHooks({}, { throw AssertionError("Video selection must not clear raster pixels") }, {}),
+            UndoStacks(history),
         )
         try {
             manager.selectArea(null, Rect(0f, 0f, 120f, 80f), 1f).join()
@@ -99,15 +101,22 @@ class SceneVideoSelectionTest {
             assertTrue("a" in state.project.assets)
             val pending = PendingOperations()
             val drawing = DrawingManager(
-                scope, Dispatchers.Unconfined,
+                StudioRuntime(scope, Dispatchers.Unconfined, { state }, { state = it(state) }, pending),
                 com.donnclab.kinetiframe.studio.render.FrameCacheManager(
                     temporary.newFolder(),
                     scope,
                 ),
-                Mutex(), Mutex(),
-                { state }, { state = it(state) }, { null }, {}, { "main" }, { _, _, bitmap -> bitmap }, history,
-                mutableListOf(), { width, height -> Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888) }, {},
-                pendingOperations = pending,
+                Mutex(),
+                Mutex(),
+                DrawingLayers(
+                    { null },
+                    {},
+                    { "main" },
+                    { _, _, bitmap -> bitmap },
+                    { width, height -> Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888) },
+                    {},
+                ),
+                UndoStacks(history),
             )
             drawing.undo()
             pending.awaitIdle()

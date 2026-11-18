@@ -4,9 +4,12 @@ import android.graphics.Bitmap
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Matrix
 import com.donnclab.kinetiframe.studio.StudioState
+import com.donnclab.kinetiframe.studio.domain.DrawingLayers
 import com.donnclab.kinetiframe.studio.domain.DrawingManager
 import com.donnclab.kinetiframe.studio.domain.HistoryItem
 import com.donnclab.kinetiframe.studio.domain.SelectionEditType
+import com.donnclab.kinetiframe.studio.domain.StudioRuntime
+import com.donnclab.kinetiframe.studio.domain.UndoStacks
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,21 +38,19 @@ class SelectionHistoryTest {
         val cacheManager = FrameCacheManager(tempDir, this)
 
         val drawingManager = DrawingManager(
-            scope = this,
-            dispatcher = dispatcher,
+            runtime = StudioRuntime(this, dispatcher, { StudioState() }, { }),
             cacheManager = cacheManager,
             bakeMutex = bakeMutex,
             frameOperationMutex = frameMutex,
-            getState = { StudioState() },
-            updateState = { },
-            getBaseBitmap = { baseBitmap },
-            setBaseBitmap = { baseBitmap = it },
-            activeLayerId = { "main" },
-            composeFrame = { _, _, b -> b },
-            history = history,
-            redoHistory = redoHistory,
-            acquireBitmap = { w, h -> Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888) },
-            releaseBitmap = { },
+            layers = DrawingLayers(
+                getBaseBitmap = { baseBitmap },
+                setBaseBitmap = { baseBitmap = it },
+                activeLayerId = { "main" },
+                composeFrame = { _, _, b -> b },
+                acquireBitmap = { w, h -> Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888) },
+                releaseBitmap = { },
+            ),
+            undo = UndoStacks(history, redoHistory),
         )
 
         // 1. Simulate a selection commit

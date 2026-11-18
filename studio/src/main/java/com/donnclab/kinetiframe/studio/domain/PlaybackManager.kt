@@ -20,17 +20,19 @@ class PlaybackManager(
     private val engine: AnimationEngine,
     private val cacheManager: FrameCacheManager,
     private val updateState: ((StudioState) -> StudioState) -> Unit,
-    private val loadFrame: (Int) -> Unit,
-    private val composeFrame: suspend (Int, Bitmap?) -> Bitmap?,
-    private val activeLayerId: () -> String,
-    /** Lets audio playback (see [AudioPlaybackManager]) stay in lockstep with frame playback
-     *  without this class knowing MediaPlayer exists -- defaulted to a no-op so every existing
-     *  test call site that constructs a PlaybackManager positionally keeps compiling unchanged. */
-    private val onFrameChanged: (Int) -> Unit = {},
-    private val onPlaybackStateChanged: (Boolean) -> Unit = {},
-    private val onPlaybackError: (Exception) -> Unit = {},
+    hooks: PlaybackHooks,
     private val clock: PlaybackClock = PlaybackClock(),
 ) {
+    private val loadFrame: (Int) -> Unit = hooks.loadFrame
+    private val composeFrame: suspend (Int, Bitmap?) -> Bitmap? = hooks.composeFrame
+    private val activeLayerId: () -> String = hooks.activeLayerId
+
+    /** Lets audio playback (see [AudioPlaybackManager]) stay in lockstep with frame playback
+     *  without this class knowing MediaPlayer exists. */
+    private val onFrameChanged: (Int) -> Unit = hooks.onFrameChanged
+    private val onPlaybackStateChanged: (Boolean) -> Unit = hooks.onPlaybackStateChanged
+    private val onPlaybackError: (Exception) -> Unit = hooks.onPlaybackError
+
     private var renderJob: Job? = null
     private var playbackGeneration = 0L
 
