@@ -7,6 +7,7 @@ import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
+import com.donnclab.kinetiframe.studio.StudioDirectories
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.domain.ViewManager
@@ -63,7 +64,7 @@ class CanvasTransformTests {
         val tempDir = File.createTempFile("kinetiframe_transform_test", "")
         tempDir.delete()
         tempDir.mkdir()
-        viewModel = StudioViewModel(tempDir, testDispatcher, shouldInitialize = false)
+        viewModel = StudioViewModel(StudioDirectories(tempDir), testDispatcher, shouldInitialize = false)
     }
 
     @After

@@ -28,7 +28,7 @@ class SelectionInteractionModeTest {
                 ),
             )
             val editor = StudioViewModel(
-                directory.toFile(),
+                StudioDirectories(directory.toFile()),
                 engineDispatcher = dispatcher,
                 shouldInitialize = false,
                 initialEditorState = initial,

@@ -178,8 +178,7 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
         state.actorDefinition()?.let { definition ->
             ActorSketchEditor(
                 definition,
-                state.project.stage.width,
-                state.project.stage.height,
+                state.project.stage,
                 viewModel.rigAssetManager,
                 definition.sceneGraph.drawing?.inkAssetId,
                 viewModel::handleIntent,

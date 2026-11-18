@@ -51,7 +51,8 @@ class EditorRestartPersistenceTest {
                     animation = AnimationState(totalFrames = 3),
                     layers = LayerState(layers = listOf(main), frameLayers = (0..2).associateWith { listOf(main) }),
                 )
-            val editor = StudioViewModel(directory, engineDispatcher = dispatcher, initialEditorState = state)
+            val editor =
+                StudioViewModel(StudioDirectories(directory), engineDispatcher = dispatcher, initialEditorState = state)
             store.put("editor", editor)
             editor.prepareProjectSave()
             editor.handleIntent(StudioIntent.Frame.HoldDrawing(0, 2))
@@ -110,7 +111,8 @@ class EditorRestartPersistenceTest {
                         frameLayers = mapOf(0 to listOf(main), 1 to listOf(main)),
                     ),
                 )
-            val editor = StudioViewModel(directory, engineDispatcher = dispatcher, initialEditorState = state)
+            val editor =
+                StudioViewModel(StudioDirectories(directory), engineDispatcher = dispatcher, initialEditorState = state)
             store.put("editor", editor)
             editor.prepareProjectSave()
             assertEquals(Color.RED, editor.state.value.currentBitmap!!.getPixel(0, 0))
@@ -135,7 +137,8 @@ class EditorRestartPersistenceTest {
                 animation = AnimationState(totalFrames = 500),
                 layers = LayerState(layers = listOf(main), frameLayers = mapOf(0 to listOf(main))),
             )
-            val editor = StudioViewModel(directory, engineDispatcher = dispatcher, initialEditorState = state)
+            val editor =
+                StudioViewModel(StudioDirectories(directory), engineDispatcher = dispatcher, initialEditorState = state)
             store.put("editor", editor)
             editor.handleIntent(StudioIntent.Layer.AddLayer())
             val document = editor.prepareProjectSave()

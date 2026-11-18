@@ -25,18 +25,24 @@ import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.valueText
 
+/**
+ * The preset being auditioned and what its controls do. [replacesKeys] warns that applying it
+ * replaces the performance's keys; a null [onRemove] hides the remove button.
+ */
+data class PresetAudition(
+    val preview: AppliedActorPreset?,
+    val playing: Boolean,
+    val replacesKeys: Boolean,
+    val onPlay: () -> Unit,
+    val onIntensity: (Float) -> Unit,
+    val onSpeed: (Float) -> Unit,
+    val onRemove: (() -> Unit)?,
+)
+
 /** All audition controls stay in the dark sheet; no stacked dialog obscures the actor. */
 @Composable
-fun PresetAuditionControls(
-    preview: AppliedActorPreset?,
-    playing: Boolean,
-    replacesKeys: Boolean,
-    onPlay: () -> Unit,
-    onIntensity: (Float) -> Unit,
-    onSpeed: (Float) -> Unit,
-    onRemove: (() -> Unit)?,
-    modifier: Modifier = Modifier,
-) {
+fun PresetAuditionControls(audition: PresetAudition, modifier: Modifier = Modifier) {
+    val (preview, playing, replacesKeys, onPlay, onIntensity, onSpeed, onRemove) = audition
     Column(modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onPlay, enabled = preview != null) {
@@ -90,4 +96,4 @@ private fun PresetDial(label: String, value: Float, range: ClosedFloatingPointRa
 
 @Preview
 @Composable
-private fun AuditionControlsPreview() = PresetAuditionControls(null, false, false, {}, {}, {}, null)
+private fun AuditionControlsPreview() = PresetAuditionControls(PresetAudition(null, false, false, {}, {}, {}, null))

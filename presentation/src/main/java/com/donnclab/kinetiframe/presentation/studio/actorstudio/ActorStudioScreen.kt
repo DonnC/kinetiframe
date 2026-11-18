@@ -110,7 +110,6 @@ fun ActorStudioScreen(
         }
 
         manifest != null && revision != null -> RestoredActorEditor(
-            actorId = actorId,
             document = ActorStudioDocumentSnapshot(manifest, revision, state.performance),
             documents = model,
             performanceAuthoring = projectId != null,
@@ -276,7 +275,6 @@ fun ActorStudioScreen(
 /** Decodes artwork before the canvas starts, retaining the texture IDs encoded in the revision. */
 @Composable
 private fun RestoredActorEditor(
-    actorId: String,
     document: ActorStudioDocumentSnapshot,
     documents: ActorStudioDocumentViewModel,
     performanceAuthoring: Boolean,
@@ -339,7 +337,7 @@ private fun RestoredActorEditor(
             // returning to the same actor keeps its own sketch cache while a different actor
             // (or even the same actor's next revision) never reads back another session's
             // leftover frame bitmaps -- see EditorScreen's cacheNamespace doc.
-            cacheNamespace = "actor-$actorId-${revision.revisionId}",
+            cacheNamespace = "actor-${manifest.actorId}-${revision.revisionId}",
             actorReference = if (performanceAuthoring) null else reference,
             onSaveActorRevision = callbacks.onSaveActorRevision,
             onSavePerformance = callbacks.onSavePerformance,

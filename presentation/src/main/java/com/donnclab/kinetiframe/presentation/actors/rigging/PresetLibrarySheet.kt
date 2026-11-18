@@ -11,6 +11,15 @@ import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 
+/** The presets on offer, the one being previewed, and what picking or applying one does. */
+data class PresetPicker(
+    val presets: List<ActorMotionPreset>,
+    val previewingId: String?,
+    val canApply: Boolean,
+    val onPreview: (String) -> Unit,
+    val onApply: () -> Unit,
+)
+
 /**
  * Performance Stage's Preset Library, reached on demand from the top bar rather than sitting
  * permanently in the canvas -- the design's whole point is that Rig Fabricator's sketch/rig
@@ -20,21 +29,8 @@ import com.donnclab.kinetiframe.designsystem.theme.Dimens
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PresetLibrarySheet(
-    presets: List<ActorMotionPreset>,
-    previewingId: String?,
-    onPreview: (String) -> Unit,
-    onApply: () -> Unit,
-    canApply: Boolean,
-    preview: com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset?,
-    playing: Boolean,
-    replacesKeys: Boolean,
-    onPlay: () -> Unit,
-    onIntensity: (Float) -> Unit,
-    onSpeed: (Float) -> Unit,
-    onRemove: (() -> Unit)?,
-    onDismiss: () -> Unit,
-) {
+fun PresetLibrarySheet(picker: PresetPicker, audition: PresetAudition, onDismiss: () -> Unit) {
+    val (presets, previewingId, canApply, onPreview, onApply) = picker
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         containerColor = ActorStudioTokens.panelSurface,
@@ -51,13 +47,7 @@ fun PresetLibrarySheet(
                 modifier = Modifier.padding(horizontal = Dimens.spaceXl, vertical = Dimens.spaceXs),
             )
             PresetAuditionControls(
-                preview,
-                playing,
-                replacesKeys,
-                onPlay,
-                onIntensity,
-                onSpeed,
-                onRemove,
+                audition,
                 Modifier.padding(horizontal = Dimens.spaceXl, vertical = Dimens.spaceXs),
             )
         }

@@ -8,6 +8,7 @@ import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
+import com.donnclab.kinetiframe.presentation.actors.rigging.PresetAudition
 import com.donnclab.kinetiframe.presentation.actors.rigging.PresetAuditionControls
 import com.donnclab.kinetiframe.presentation.actors.rigging.PresetLibrarySection
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.ActorMotionTimingMenu
@@ -45,7 +46,11 @@ class PresetAuditionTest {
     @Test fun auditionHasPlaybackAndExplicitReplacementNotice() {
         var played = false
         compose.setContent {
-            PresetAuditionControls(AppliedActorPreset(recipe), false, true, { played = true }, {}, {}, null)
+            PresetAuditionControls(
+                PresetAudition(AppliedActorPreset(recipe), false, true, {
+                    played = true
+                }, {}, {}, null),
+            )
         }
         compose.onNodeWithContentDescription("Preview motion").performClick()
         compose.onNodeWithText("Apply replaces this performance's keys · undo available").assertExists()
