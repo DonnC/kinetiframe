@@ -21,7 +21,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.library.model.PackFrameTag
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
@@ -46,10 +47,10 @@ fun PackSaveTagsDialog(
     val tag = draft.getValue(selected)
     AlertDialog(onDismissRequest = onDismiss, title = { Text(stringResource(R.string.pack_save)) }, text = {
         Column(
-            Modifier.heightIn(max = 240.dp).verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            Modifier.heightIn(max = LibraryTokens.tagListMaxHeight).verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spaceS),
         ) {
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
                 items(totalFrames) { index ->
                     FilterChip(selected == index, { selected = index }, label = { Text("${index + 1}") })
                 }

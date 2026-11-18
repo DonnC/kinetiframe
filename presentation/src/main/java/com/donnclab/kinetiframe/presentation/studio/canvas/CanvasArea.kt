@@ -20,11 +20,12 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.ActorWorkflowHint
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.ProjectActorRenderLayer
@@ -370,7 +371,11 @@ private fun CanvasAreaContents(
                 ActorWorkflowHint(
                     state,
                     Modifier.align(Alignment.TopCenter)
-                        .padding(start = 64.dp, end = 8.dp, top = 4.dp).zIndex(4f),
+                        .padding(
+                            start = EditorTokens.canvasHintStartInset,
+                            end = Dimens.spaceS,
+                            top = Dimens.spaceXs,
+                        ).zIndex(4f),
                 )
             }
         } else {

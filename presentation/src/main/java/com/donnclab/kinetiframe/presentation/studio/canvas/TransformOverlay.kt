@@ -17,7 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 
 @Composable
@@ -35,12 +36,17 @@ fun TransformationOverlay(
             exit = fadeOut(),
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 72.dp, end = 16.dp, bottom = 16.dp, start = 16.dp)
+                .padding(
+                    top = EditorTokens.transformPanelTop,
+                    end = Dimens.spaceL,
+                    bottom = Dimens.spaceL,
+                    start = Dimens.spaceL,
+                )
                 .statusBarsPadding(),
         ) {
             Surface(
                 color = Color.Black.copy(alpha = 0.85f),
-                shape = RoundedCornerShape(8.dp),
+                shape = RoundedCornerShape(Dimens.radiusS),
             ) {
                 Text(
                     text = stringResource(
@@ -51,7 +57,7 @@ fun TransformationOverlay(
                         rotation.toInt(),
                     ),
                     color = Color.White,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    modifier = Modifier.padding(horizontal = Dimens.spaceM, vertical = Dimens.spaceS),
                     style = MaterialTheme.typography.labelMedium,
                 )
             }

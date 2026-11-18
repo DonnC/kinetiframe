@@ -35,7 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.preferences.model.AppTheme
 import com.donnclab.kinetiframe.preferences.model.StudioOrientation
@@ -72,8 +72,8 @@ fun SettingsScreen(
     }) { padding ->
         Column(
             Modifier.padding(padding).consumeWindowInsets(padding).fillMaxSize()
-                .verticalScroll(rememberScrollState()).padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+                .verticalScroll(rememberScrollState()).padding(Dimens.spaceXl),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
         ) {
             if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
             state.error?.let { Text(it.asString(), color = MaterialTheme.colorScheme.error) }

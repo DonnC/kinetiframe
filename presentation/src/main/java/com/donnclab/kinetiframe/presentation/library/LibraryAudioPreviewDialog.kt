@@ -15,8 +15,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.media.audio.AudioPreview
@@ -29,7 +29,7 @@ fun LibraryAudioPreviewDialog(preview: AudioItemPreview, onDismiss: () -> Unit, 
     val error = preview.error
     Dialog(onDismissRequest = onDismiss) {
         Surface(shape = MaterialTheme.shapes.large) {
-            Column(Modifier.fillMaxWidth().padding(16.dp)) {
+            Column(Modifier.fillMaxWidth().padding(Dimens.spaceL)) {
                 Text(item.displayName, style = MaterialTheme.typography.titleMedium)
                 if (path != null) {
                     AudioPreview(path)

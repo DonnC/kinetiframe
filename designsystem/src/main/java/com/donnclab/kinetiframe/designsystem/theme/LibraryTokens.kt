@@ -2,6 +2,7 @@
 package com.donnclab.kinetiframe.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
 object LibraryTokens {
     /** Behind a pack's stamp drawings, which are dark marks on transparent paper. */
@@ -18,4 +19,22 @@ object LibraryTokens {
 
     /** Start of an audio row's play button gradient, which ends in the primary color. */
     val playGradientStart = Color(0xFFFFD9CC)
+
+    // Browser controls and grids.
+    val controlHeight = 40.dp
+    val filterMenuMaxHeight = 320.dp
+    val pickerCell = 140.dp
+    val packItemCell = 100.dp
+    val tagListMaxHeight = 240.dp
+
+    // A stamp's preview dialog.
+    val stampPreviewMaxHeight = 360.dp
+    val stampPreviewHeight = 200.dp
+
+    // The pack tray over the editor.
+    val trayMaxWidth = 220.dp
+    val trayMinHeight = 56.dp
+    val trayMaxHeight = 260.dp
+    val trayItem = 64.dp
+    val trayItemThumb = 40.dp
 }

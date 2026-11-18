@@ -31,10 +31,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 
@@ -53,12 +53,12 @@ fun TextInsertionDialog(initialText: String = "", onDismiss: () -> Unit, onConfi
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .wrapContentHeight()
-                .padding(16.dp),
-            shape = RoundedCornerShape(8.dp),
+                .padding(Dimens.spaceL),
+            shape = RoundedCornerShape(Dimens.radiusS),
             color = EditorTokens.dark,
         ) {
             Column(
-                modifier = Modifier.padding(24.dp),
+                modifier = Modifier.padding(Dimens.spaceXlPlus),
             ) {
                 Text(
                     text = stringResource(if (initialText.isEmpty()) R.string.text_add else R.string.text_edit),
@@ -66,7 +66,7 @@ fun TextInsertionDialog(initialText: String = "", onDismiss: () -> Unit, onConfi
                     color = Color.White,
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(Dimens.spaceXxxl))
 
                 // Custom input with primary underline
                 Box(
@@ -89,9 +89,9 @@ fun TextInsertionDialog(initialText: String = "", onDismiss: () -> Unit, onConfi
                         decorationBox = { innerTextField ->
                             Column {
                                 innerTextField()
-                                Spacer(modifier = Modifier.height(4.dp))
+                                Spacer(modifier = Modifier.height(Dimens.spaceXs))
                                 HorizontalDivider(
-                                    thickness = 2.dp,
+                                    thickness = Dimens.borderThick,
                                     color = MaterialTheme.colorScheme.primary,
                                 )
                             }
@@ -99,7 +99,7 @@ fun TextInsertionDialog(initialText: String = "", onDismiss: () -> Unit, onConfi
                     )
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(Dimens.spaceXxxl))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -112,7 +112,7 @@ fun TextInsertionDialog(initialText: String = "", onDismiss: () -> Unit, onConfi
                             style = MaterialTheme.typography.labelLarge,
                         )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(Dimens.spaceS))
                     TextButton(
                         onClick = { if (text.isNotBlank()) onConfirm(text) },
                         enabled = text.isNotBlank(),

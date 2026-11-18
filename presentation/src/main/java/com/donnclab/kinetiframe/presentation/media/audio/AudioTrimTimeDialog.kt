@@ -14,7 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.media.audio.AudioTrimSelection
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
@@ -36,7 +36,7 @@ internal fun AudioTrimTimeDialog(
     AlertDialog(onDismissRequest = onDismiss, title = {
         Text(stringResource(R.string.audio_exact_trim_title))
     }, text = {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
             CompactTextField(
                 start,
                 { start = it },

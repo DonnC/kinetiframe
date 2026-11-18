@@ -43,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.lucide.Clapperboard
@@ -56,6 +55,8 @@ import com.composables.icons.lucide.Square
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.ui.appViewModel
@@ -121,13 +122,13 @@ fun LibraryPickerDialog(
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = MaterialTheme.shapes.large,
-            tonalElevation = 4.dp,
+            tonalElevation = Dimens.elevationRaised,
             modifier = Modifier.fillMaxWidth(0.95f).fillMaxHeight(0.85f),
         ) {
-            Column(Modifier.fillMaxSize().padding(16.dp)) {
+            Column(Modifier.fillMaxSize().padding(Dimens.spaceL)) {
                 Text(stringResource(R.string.library_picker_title), style = MaterialTheme.typography.titleMedium)
                 if (projectId != null) {
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(Dimens.spaceS))
                     SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
                         SegmentedButton(
                             selected = scope == LibraryScope.PERSONAL,
@@ -141,9 +142,9 @@ fun LibraryPickerDialog(
                         ) { Text(stringResource(R.string.library_scope_project)) }
                     }
                 }
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(Dimens.spaceS))
                 if (filterableKinds.size > 1) {
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXsPlus)) {
                         item {
                             FilterChip(selected = kindFilter == null, onClick = {
                                 model.handleIntent(LibraryPickerIntent.Filter(null))
@@ -155,7 +156,7 @@ fun LibraryPickerDialog(
                             }, label = { Text(stringResource(kind.labelRes())) })
                         }
                     }
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(Dimens.spaceS))
                 }
                 Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                     when {
@@ -169,7 +170,7 @@ fun LibraryPickerDialog(
                         state.error != null -> Text(
                             state.error?.asString().orEmpty(),
                             color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.padding(24.dp),
+                            modifier = Modifier.padding(Dimens.spaceXlPlus),
                         )
 
                         visibleItems.isEmpty() -> Text(
@@ -179,10 +180,10 @@ fun LibraryPickerDialog(
                         )
 
                         else -> LazyVerticalGrid(
-                            GridCells.Adaptive(140.dp),
+                            GridCells.Adaptive(LibraryTokens.pickerCell),
                             Modifier.fillMaxSize(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
+                            verticalArrangement = Arrangement.spacedBy(Dimens.spaceS),
                         ) {
                             items(visibleItems, key = { it.libraryItemId }) { libraryItem ->
                                 LibraryItemCard(
@@ -205,7 +206,7 @@ fun LibraryPickerDialog(
                         }
                     }
                 }
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(Dimens.spaceS))
                 TextButton(onClick = onDismiss, modifier = Modifier.align(Alignment.End)) {
                     Text(stringResource(R.string.action_cancel))
                 }
@@ -233,10 +234,10 @@ internal fun LibraryItemCard(
         value = loadThumbnail?.let { load -> withContext(Dispatchers.IO) { load(item) } }
     }
     Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(10.dp)) {
+        Column(Modifier.padding(Dimens.spaceSPlus)) {
             thumbnail?.let { LibraryImageThumbnail(it, item.displayName) }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Icon(iconFor(item.kind), null, modifier = Modifier.size(20.dp))
+                Icon(iconFor(item.kind), null, modifier = Modifier.size(Dimens.iconM))
                 Spacer(Modifier.weight(1f))
                 onPreview?.let { preview ->
                     IconButton(onClick = preview) {
@@ -247,7 +248,7 @@ internal fun LibraryItemCard(
                     }
                 }
             }
-            Spacer(Modifier.height(6.dp))
+            Spacer(Modifier.height(Dimens.spaceXsPlus))
             Text(
                 item.displayName,
                 style = MaterialTheme.typography.labelMedium,

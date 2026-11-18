@@ -9,7 +9,9 @@ import androidx.compose.ui.unit.sp
  */
 object Dimens {
     // Spacing scale -- use the closest step rather than inventing a one-off value.
+    val spaceXxxs = 1.dp
     val spaceXxs = 2.dp
+    val spaceXxsPlus = 3.dp
     val spaceXs = 4.dp
     val spaceXsPlus = 6.dp
     val spaceS = 8.dp
@@ -26,14 +28,18 @@ object Dimens {
     val radiusXxs = 4.dp
     val radiusXs = 6.dp
     val radiusS = 8.dp
+    val radiusSPlus = 10.dp
     val radiusM = 12.dp
+    val radiusMPlus = 14.dp
     val radiusL = 16.dp
     val radiusPill = 20.dp
 
     // Icon sizes.
     val iconXs = 11.dp
     val iconS = 16.dp
+    val iconSPlus = 18.dp
     val iconM = 20.dp
+    val iconMPlus = 22.dp
     val iconL = 24.dp
 
     // Type sizes for the compact card/chip text this feature uses (body copy still comes from
@@ -50,6 +56,8 @@ object Dimens {
     /** Material's minimum touch target. */
     val touchTarget = 48.dp
     val topBarIconButton = 38.dp
+    val iconButtonS = 28.dp
+    val iconButton = 40.dp
     val avatarSize = 24.dp
     val chipHeight = 22.dp
     val gridCardThumbHeight = 150.dp
@@ -62,15 +70,31 @@ object Dimens {
     val waveformBarWidth = 2.5.dp
     val waveformHeight = 16.dp
     val actionButtonHeight = 52.dp
+    val bottomNavHeight = 78.dp
+    val compactFieldHeight = 36.dp
+    val menuTileWidth = 64.dp
+    val sliderPopupWidth = 192.dp
+    val sliderHeight = 24.dp
+    val sliderThumb = 16.dp
+    val sliderTrackHeight = 2.dp
+
+    // The brand bar's badge and wordmark.
+    val brandBadge = 40.dp
+    val brandWordmarkWidth = 160.dp
+    val brandWordmarkHeight = 28.dp
 
     // Surface elevation.
+    val elevationFlat = 2.dp
     val elevationS = 3.dp
+    val elevationRaised = 4.dp
+    val elevationFloating = 6.dp
     val elevationM = 8.dp
     val elevationL = 12.dp
 
     // Border widths.
     val borderThin = 1.dp
     val borderMedium = 1.5.dp
+    val borderThick = 2.dp
 
     // Audio recorder.
     val recorderWaveformHeight = 132.dp

@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 
 /** A secondary inspector only when requested. Commit once on release, not on every sample. */
 @Composable
@@ -46,7 +46,7 @@ fun ContextSliderButton(
                 enabled = enabled,
                 valueRange = valueRange,
                 onValueChangeFinished = { onCommit(draft) },
-                modifier = Modifier.width(192.dp).padding(horizontal = 12.dp)
+                modifier = Modifier.width(Dimens.sliderPopupWidth).padding(horizontal = Dimens.spaceM)
                     .semantics { contentDescription = label },
             )
         }

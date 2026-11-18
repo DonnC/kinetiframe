@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
@@ -52,11 +52,11 @@ fun StandardSlider(
             onValueChangeFinished = onValueChangeFinished,
             valueRange = range,
             steps = steps,
-            modifier = Modifier.height(24.dp),
+            modifier = Modifier.height(Dimens.sliderHeight),
             thumb = {
                 Box(
                     modifier = Modifier
-                        .size(16.dp)
+                        .size(Dimens.sliderThumb)
                         .clip(CircleShape)
                         .background(accentColor),
                 )
@@ -64,7 +64,7 @@ fun StandardSlider(
             track = { sliderState ->
                 SliderDefaults.Track(
                     sliderState = sliderState,
-                    modifier = Modifier.height(2.dp),
+                    modifier = Modifier.height(Dimens.sliderTrackHeight),
                     colors = SliderDefaults.colors(
                         activeTrackColor = accentColor,
                         inactiveTrackColor = accentColor.copy(alpha = 0.2f),

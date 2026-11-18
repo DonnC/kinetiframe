@@ -13,6 +13,7 @@ object TimelineTokens {
     val frameThumbCorner = 4.dp
     val currentFrameBorder = 2.dp
     val frameBadge = 12.dp
+    val thumbDot = 2.dp
     val rulerHeight = 24.dp
 
     // Frame actions under the strip.

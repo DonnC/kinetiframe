@@ -34,11 +34,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.ClipboardPlus
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StampAsset
 import com.donnclab.kinetiframe.presentation.common.UiText
@@ -111,7 +111,7 @@ fun PackContentsGrid(
                         Text(
                             data.error.asString(),
                             color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.padding(20.dp),
+                            modifier = Modifier.padding(Dimens.spaceXl),
                         )
                         TextButton(onClick = onRetry) { Text(stringResource(R.string.action_retry)) }
                     }
@@ -122,7 +122,7 @@ fun PackContentsGrid(
                     )
 
                     else -> LazyVerticalGrid(
-                        columns = GridCells.Adaptive(100.dp),
+                        columns = GridCells.Adaptive(LibraryTokens.packItemCell),
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(horizontal = Dimens.spaceXl, vertical = Dimens.spaceM),
                         horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
@@ -135,7 +135,7 @@ fun PackContentsGrid(
                 }
             }
             if (showAddAction) {
-                Surface(tonalElevation = 3.dp, modifier = Modifier.fillMaxWidth()) {
+                Surface(tonalElevation = Dimens.elevationS, modifier = Modifier.fillMaxWidth()) {
                     PrimaryActionButton(
                         content = ActionButtonContent(
                             stringResource(R.string.pack_add_to_library),

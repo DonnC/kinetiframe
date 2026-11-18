@@ -20,7 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.library.model.AssetCategory
 import com.donnclab.kinetiframe.library.model.BrowseMode
 import com.donnclab.kinetiframe.library.model.BrowserPosition
@@ -37,10 +38,10 @@ fun CollectionBrowserControls(
     val allCollections = stringResource(R.string.library_all_collections)
     val allCategories = stringResource(R.string.library_all_categories)
     Column(
-        Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        Modifier.fillMaxWidth().padding(horizontal = Dimens.spaceM, vertical = Dimens.spaceXs),
+        verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs),
     ) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXxs)) {
             BrowseMode.entries.forEach { mode ->
                 val active = position.mode == mode
                 Surface(
@@ -52,8 +53,8 @@ fun CollectionBrowserControls(
                             ),
                         )
                     },
-                    modifier = Modifier.weight(1f).height(40.dp).semantics { selected = active },
-                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier.weight(1f).height(LibraryTokens.controlHeight).semantics { selected = active },
+                    shape = RoundedCornerShape(Dimens.radiusS),
                     color = if (active) {
                         MaterialTheme.colorScheme.secondaryContainer
                     } else {
@@ -67,7 +68,7 @@ fun CollectionBrowserControls(
             }
         }
         if (position.mode == BrowseMode.COLLECTIONS || showCategories) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
                 if (position.mode == BrowseMode.COLLECTIONS) {
                     BrowserFilterMenu(
                         label = position.collection ?: allCollections,

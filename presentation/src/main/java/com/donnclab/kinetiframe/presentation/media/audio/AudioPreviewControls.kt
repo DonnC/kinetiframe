@@ -25,10 +25,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.asString
@@ -56,7 +56,7 @@ fun AudioPreview(path: String) {
 fun AudioPreviewControls(state: AudioPreviewState, onIntent: (AudioPreviewIntent) -> Unit) {
     var drag by remember { mutableStateOf<Float?>(null) }
     val positionLabel = stringResource(R.string.audio_preview_position)
-    Column(Modifier.fillMaxWidth().padding(8.dp)) {
+    Column(Modifier.fillMaxWidth().padding(Dimens.spaceS)) {
         if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
         state.error?.let {
             Text(it.asString(), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)

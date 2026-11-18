@@ -50,10 +50,17 @@ audio ribbon (`FRAME_CELL_WIDTH`, `TRACK_HEIGHT` and `TRACK_GUTTER` now point at
 steps in `Dimens` (`spaceXxs`, `spaceXsPlus`, `spaceSPlus`, `spaceMPlus`, `spaceXlPlus`, `spaceXxxl`,
 `radiusXxs`, `radiusXs` and `touchTarget`).
 
+**Theme tokens, part 4: the last sizes.** The last 349 inline `.dp` sizes are tokens, with the same
+values, and the size check is at zero. Shared steps went into `Dimens` (finer spacing, corners,
+icons and elevations, `borderThick`, icon buttons, the slider, brand bar and bottom bar), and
+screen sizes into `HomeTokens` (card overlays, the list's bottom reserve), `LibraryTokens`
+(browser grids, the stamp preview, the pack tray) and `EditorTokens` (popups, hint insets, canvas
+overlays, the colour loupe, the frame studio). Previews keep inline sizes; the check skips them.
+
 ## Next
 
-**Theme tokens, part 4: the last sizes.** 349 inline `.dp` sizes remain in 62 files: the library,
-home, common components, the editor shell, frames, colour tools, canvas overlays and dialogs.
+Open the milestone pull request into `develop`, then check the pseudo-locales, the new tab rows
+and the audio ribbon on a device.
 
 ## Later
 
@@ -62,8 +69,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Strings to resources.** The inline text check is at zero. Left: right-to-left layouts,
   per-app language and a pseudo-locale check (under Next), and `require` messages in `core`'s
   documents, such as FPS and stage limits, that only invalid files reach.
-- **Theme tokens.** Move 349 inline `.dp` sizes into `designsystem` tokens (under Next). The
-  last two inline colours go with UI separation.
+- **Theme tokens.** Sizes are done. The last two inline colours go with UI separation.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
   code. Screens already reach storage only through their ViewModels (step 8d).
 - **Parameter limits.** 51 functions still take more than the allowed number of parameters.
@@ -280,5 +286,5 @@ From `.architecture/` during step 9. Each count may only go down.
 | Functions over the parameter limit | 51 | — |
 | Inline text values | 0 | — |
 | Inline colours | 2 | 1 |
-| Inline `.dp` sizes | 349 | 62 |
+| Inline `.dp` sizes | 0 | — |
 | Files over 500 lines | 0 | — |

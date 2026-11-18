@@ -31,7 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
@@ -63,22 +64,42 @@ fun ScreenColorOverlay(state: ScreenColorState, origin: Offset, onIntent: (Scree
     ) {
         Canvas(Modifier.fillMaxSize()) {
             pointer?.let { point ->
-                drawCircle(Color.White, 24.dp.toPx(), point, style = Stroke(4.dp.toPx()))
-                drawCircle(Color.Black, 24.dp.toPx(), point, style = Stroke(1.dp.toPx()))
-                drawLine(Color.Black, point - Offset(8.dp.toPx(), 0f), point + Offset(8.dp.toPx(), 0f), 2.dp.toPx())
-                drawLine(Color.Black, point - Offset(0f, 8.dp.toPx()), point + Offset(0f, 8.dp.toPx()), 2.dp.toPx())
+                drawCircle(
+                    Color.White,
+                    EditorTokens.loupeRadius.toPx(),
+                    point,
+                    style = Stroke(EditorTokens.loupeRingStroke.toPx()),
+                )
+                drawCircle(
+                    Color.Black,
+                    EditorTokens.loupeRadius.toPx(),
+                    point,
+                    style = Stroke(EditorTokens.loupeInnerStroke.toPx()),
+                )
+                drawLine(
+                    Color.Black,
+                    point - Offset(EditorTokens.loupeCross.toPx(), 0f),
+                    point + Offset(EditorTokens.loupeCross.toPx(), 0f),
+                    EditorTokens.loupeCrossStroke.toPx(),
+                )
+                drawLine(
+                    Color.Black,
+                    point - Offset(0f, EditorTokens.loupeCross.toPx()),
+                    point + Offset(0f, EditorTokens.loupeCross.toPx()),
+                    EditorTokens.loupeCrossStroke.toPx(),
+                )
             }
         }
         Surface(
-            Modifier.align(Alignment.TopCenter).windowInsetsPadding(WindowInsets.safeDrawing).padding(8.dp),
+            Modifier.align(Alignment.TopCenter).windowInsetsPadding(WindowInsets.safeDrawing).padding(Dimens.spaceS),
             shape = MaterialTheme.shapes.large,
-            tonalElevation = 8.dp,
+            tonalElevation = Dimens.elevationM,
         ) {
-            Row(Modifier.padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.padding(horizontal = Dimens.spaceXs), verticalAlignment = Alignment.CenterVertically) {
                 state.color?.let { color ->
-                    Box(Modifier.size(32.dp).background(Color(color), MaterialTheme.shapes.small))
+                    Box(Modifier.size(EditorTokens.loupeSwatch).background(Color(color), MaterialTheme.shapes.small))
                 }
-                if (state.capturing) CircularProgressIndicator(Modifier.size(24.dp))
+                if (state.capturing) CircularProgressIndicator(Modifier.size(Dimens.iconL))
                 ContextIconButton(
                     ContextIconAction(
                         Icons.Filled.Check,

@@ -84,4 +84,6 @@ object ActorStudioTokens {
     val alignmentListMaxHeight = 320.dp
     val alignmentPreviewHeight = 200.dp
     val panelMinMargin = 24.dp
+    val sketchHintStartInset = 76.dp
+    val sketchToolRailMaxHeight = 260.dp
 }

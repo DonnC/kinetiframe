@@ -20,7 +20,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 
 /** Shared edge-to-edge policy. Crop preserves proportions; never stretches frame pixels. */
 @Composable
@@ -42,16 +44,19 @@ fun FrameThumbnailContent(
                 contentScale = ContentScale.Crop,
             )
         } else {
-            Canvas(Modifier.fillMaxSize()) { drawCircle(dot, radius = 2.dp.toPx()) }
+            Canvas(Modifier.fillMaxSize()) { drawCircle(dot, radius = TimelineTokens.thumbDot.toPx()) }
         }
         Surface(
-            Modifier.align(numberAlignment).padding(if (compact) 2.dp else 6.dp),
-            shape = RoundedCornerShape(4.dp),
+            Modifier.align(numberAlignment).padding(if (compact) Dimens.spaceXxs else Dimens.spaceXsPlus),
+            shape = RoundedCornerShape(Dimens.radiusXxs),
             color = MaterialTheme.colorScheme.surface.copy(alpha = .92f),
         ) {
             Text(
                 "${index + 1}",
-                Modifier.padding(horizontal = if (compact) 2.dp else 6.dp, vertical = 1.dp),
+                Modifier.padding(
+                    horizontal = if (compact) Dimens.spaceXxs else Dimens.spaceXsPlus,
+                    vertical = Dimens.spaceXxxs,
+                ),
                 color = if (current) EditorTokens.accent else MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelSmall.copy(fontSize = if (compact) 9.sp else 11.sp),
             )

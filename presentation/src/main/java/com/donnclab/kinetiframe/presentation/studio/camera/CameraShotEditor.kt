@@ -37,7 +37,6 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.composables.icons.lucide.BookmarkPlus
@@ -53,6 +52,7 @@ import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.core.document.camera.CameraPose
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.engine.camera.SceneCamera
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.choiceLabel
@@ -97,7 +97,7 @@ internal fun CameraShotEditor(
     val follow = shot.action == CameraAction.FOLLOW
     Dialog(onDismiss, DialogProperties(usePlatformDefaultWidth = false)) {
         Surface(Modifier.fillMaxWidth(.94f).fillMaxHeight(.94f), shape = MaterialTheme.shapes.large) {
-            Column(Modifier.padding(12.dp)) {
+            Column(Modifier.padding(Dimens.spaceM)) {
                 Row {
                     Text(shot.action.label(), Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
                     if (!procedural && !fade) {

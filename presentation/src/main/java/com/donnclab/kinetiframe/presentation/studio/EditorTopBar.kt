@@ -38,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Bone
 import com.composables.icons.lucide.Clapperboard
 import com.composables.icons.lucide.ClipboardPaste
@@ -54,6 +53,7 @@ import com.composables.icons.lucide.Redo
 import com.composables.icons.lucide.Save
 import com.composables.icons.lucide.Spline
 import com.composables.icons.lucide.Undo
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
@@ -113,16 +113,16 @@ fun EditorTopBar(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp),
+            .height(EditorTokens.topBarHeight),
         color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
         contentColor = EditorTokens.dark,
-        shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
-        tonalElevation = 2.dp,
+        shape = RoundedCornerShape(bottomStart = Dimens.radiusL, bottomEnd = Dimens.radiusL),
+        tonalElevation = Dimens.elevationFlat,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 4.dp),
+                .padding(horizontal = Dimens.spaceXs),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (isActorStudio) {
@@ -132,7 +132,7 @@ fun EditorTopBar(
                 StudioModePill(
                     current = state.scene.studioMode,
                     onSelect = { onIntent(StudioIntent.Rigging.SetStudioMode(it)) },
-                    modifier = Modifier.padding(end = 8.dp),
+                    modifier = Modifier.padding(end = Dimens.spaceS),
                 )
             }
             Row(

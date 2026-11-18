@@ -22,8 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.model.BundledPalettes
 import com.donnclab.kinetiframe.presentation.R
@@ -45,9 +46,9 @@ fun PaletteBrowserContent(
     onIntent: (PaletteIntent) -> Unit,
     onPick: (Color) -> Unit,
 ) {
-    Column(Modifier.width(220.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(Modifier.width(EditorTokens.palettePanelWidth), verticalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
         when {
-            state.loading -> CircularProgressIndicator(Modifier.size(24.dp))
+            state.loading -> CircularProgressIndicator(Modifier.size(Dimens.iconL))
 
             state.error != null -> {
                 Text(state.error.asString(), style = MaterialTheme.typography.bodySmall)
@@ -57,7 +58,7 @@ fun PaletteBrowserContent(
             }
 
             else -> {
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
                     items(state.palettes, key = { it.id }) { palette ->
                         FilterChip(
                             selected = state.selectedId == palette.id,

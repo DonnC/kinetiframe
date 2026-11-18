@@ -33,8 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.export.model.ExportPreset
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.asString
@@ -97,9 +97,9 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
         Box(Modifier.padding(padding).fillMaxSize()) {
             when (val current = state.phase) {
                 is ExportPhase.ChoosingPreset -> Column(
-                    Modifier.align(Alignment.Center).padding(24.dp).fillMaxWidth(),
+                    Modifier.align(Alignment.Center).padding(Dimens.spaceXlPlus).fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
                 ) {
                     Text(stringResource(R.string.export_choose_title), style = MaterialTheme.typography.titleMedium)
                     Text(
@@ -122,9 +122,9 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                 }
 
                 is ExportPhase.Rendering -> Column(
-                    Modifier.align(Alignment.Center).padding(24.dp),
+                    Modifier.align(Alignment.Center).padding(Dimens.spaceXlPlus),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
                 ) {
                     Text(stringResource(R.string.export_rendering), style = MaterialTheme.typography.titleMedium)
                     LinearProgressIndicator(progress = { state.progress }, modifier = Modifier.fillMaxWidth())
@@ -136,9 +136,9 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                 }
 
                 is ExportPhase.Done -> Column(
-                    Modifier.align(Alignment.Center).padding(24.dp),
+                    Modifier.align(Alignment.Center).padding(Dimens.spaceXlPlus),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
                 ) {
                     Text(stringResource(R.string.export_ready), style = MaterialTheme.typography.titleMedium)
                     Button(onClick = ::requestSaveToGallery, modifier = Modifier.fillMaxWidth()) {
@@ -153,9 +153,9 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                 }
 
                 is ExportPhase.Failed -> Column(
-                    Modifier.align(Alignment.Center).padding(24.dp),
+                    Modifier.align(Alignment.Center).padding(Dimens.spaceXlPlus),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
                 ) {
                     Text(
                         stringResource(R.string.export_failed),

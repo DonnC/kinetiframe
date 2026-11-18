@@ -16,10 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.common.UiText
@@ -64,10 +65,10 @@ internal fun PackPickerBrowser(scope: LibraryScope, projectId: String?, onOpen: 
             Text(stringResource(R.string.pack_picker_empty))
         } else {
             LazyVerticalGrid(
-                GridCells.Adaptive(140.dp),
+                GridCells.Adaptive(LibraryTokens.pickerCell),
                 Modifier.weight(1f),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXsPlus),
+                verticalArrangement = Arrangement.spacedBy(Dimens.spaceXsPlus),
             ) {
                 items(visible, key = { it.libraryItemId }) { pack ->
                     LibraryItemCard(

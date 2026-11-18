@@ -64,4 +64,40 @@ object EditorTokens {
     val colorSliderHeight = 16.dp
     val colorWheel = 160.dp
     val colorWheelLandscape = 120.dp
+    val palettePanelWidth = 220.dp
+    val paletteSwatch = 44.dp
+    val swatchBorderSelected = 3.dp
+    val selectionDot = 22.dp
+    val selectionDotIcon = 14.dp
+
+    // The screen colour picker's loupe.
+    val loupeRadius = 24.dp
+    val loupeRingStroke = 4.dp
+    val loupeInnerStroke = 1.dp
+    val loupeCross = 8.dp
+    val loupeCrossStroke = 2.dp
+    val loupeSwatch = 32.dp
+
+    // Editor shell, popups and hints.
+    val topBarHeight = 48.dp
+    val popupWidth = 340.dp
+    val popupHeight = 330.dp
+    val popupNarrowWidth = 260.dp
+    val popupMediumWidth = 280.dp
+    val canvasHintStartInset = 64.dp
+    val actorHintStartInset = 96.dp
+    val transformPanelTop = 72.dp
+    val cameraRangeHeight = 14.dp
+
+    // Canvas overlays.
+    val eraserDot = 2.dp
+    val eraserDotCore = 1.dp
+    val pivotRadius = 14.dp
+    val pivotHitRadius = 44.dp
+
+    // The frame studio grid.
+    val frameStudioCorner = 22.dp
+    val frameStudioCell = 150.dp
+    val frameStudioCardThumb = 150.dp
+    val frameStudioArrow = 10.dp
 }

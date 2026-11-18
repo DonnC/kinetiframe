@@ -8,8 +8,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 
 /**
@@ -24,7 +24,7 @@ fun LibraryScopeDialog(itemLabel: String, onDismiss: () -> Unit, onChoose: (Libr
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.library_save_title)) },
         text = {
-            Column(Modifier.padding(top = 4.dp)) {
+            Column(Modifier.padding(top = Dimens.spaceXs)) {
                 Text(
                     stringResource(R.string.library_save_message, itemLabel),
                 )

@@ -12,13 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 
 /** Captions add no toolbar chrome; accessibility and long-press tooltips remain available. */
 @Composable
 fun ContextMenuActionTile(action: ContextIconAction, showLabel: Boolean) {
-    Column(Modifier.width(if (showLabel) 64.dp else 48.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        Modifier.width(if (showLabel) Dimens.menuTileWidth else Dimens.touchTarget),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         ContextIconButton(action)
         if (showLabel) {
             Text(
@@ -28,7 +31,7 @@ fun ContextMenuActionTile(action: ContextIconAction, showLabel: Boolean) {
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(horizontal = 2.dp, vertical = 2.dp),
+                modifier = Modifier.padding(horizontal = Dimens.spaceXxs, vertical = Dimens.spaceXxs),
             )
         }
     }

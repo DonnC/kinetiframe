@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 
 @Composable
 fun EraserCursorOverlay(cursor: Offset, strokeWidth: Float, fitScale: Float, modifier: Modifier = Modifier) {
@@ -31,12 +31,12 @@ fun EraserCursorOverlay(cursor: Offset, strokeWidth: Float, fitScale: Float, mod
         // Center dot
         drawCircle(
             color = Color.White,
-            radius = 2.dp.toPx(),
+            radius = EditorTokens.eraserDot.toPx(),
             center = cursor,
         )
         drawCircle(
             color = Color.Black.copy(alpha = 0.5f),
-            radius = 1.dp.toPx(),
+            radius = EditorTokens.eraserDotCore.toPx(),
             center = cursor,
         )
     }

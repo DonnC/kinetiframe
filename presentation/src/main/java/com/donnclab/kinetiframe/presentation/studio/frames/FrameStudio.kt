@@ -45,7 +45,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.composables.icons.lucide.CheckCheck
@@ -60,6 +59,7 @@ import com.composables.icons.lucide.SquarePlus
 import com.composables.icons.lucide.Trash2
 import com.composables.icons.lucide.Undo
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -100,12 +100,12 @@ fun FrameStudio(
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Surface(
-            modifier = Modifier.fillMaxSize().padding(12.dp),
-            shape = RoundedCornerShape(22.dp),
+            modifier = Modifier.fillMaxSize().padding(Dimens.spaceM),
+            shape = RoundedCornerShape(EditorTokens.frameStudioCorner),
             color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 8.dp,
+            tonalElevation = Dimens.elevationM,
         ) {
-            Column(Modifier.fillMaxSize().padding(16.dp)) {
+            Column(Modifier.fillMaxSize().padding(Dimens.spaceL)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -150,10 +150,10 @@ fun FrameStudio(
                 Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.BottomCenter) {
                     LazyVerticalGrid(
                         state = gridState,
-                        columns = GridCells.Adaptive(150.dp),
+                        columns = GridCells.Adaptive(EditorTokens.frameStudioCell),
                         modifier = Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+                        verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
                     ) {
                         items(
                             items = (0 until state.animation.totalFrames).toList(),
@@ -177,17 +177,20 @@ fun FrameStudio(
                             visible = selected.isNotEmpty(),
                             enter = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
                             exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
-                            modifier = Modifier.padding(bottom = 16.dp),
+                            modifier = Modifier.padding(bottom = Dimens.spaceL),
                         ) {
                             Surface(
                                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
-                                shape = RoundedCornerShape(20.dp),
-                                tonalElevation = 6.dp,
-                                border = BorderStroke(1.dp, EditorTokens.border.copy(alpha = 0.25f)),
+                                shape = RoundedCornerShape(Dimens.radiusPill),
+                                tonalElevation = Dimens.elevationFloating,
+                                border = BorderStroke(Dimens.borderThin, EditorTokens.border.copy(alpha = 0.25f)),
                             ) {
                                 Row(
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                    modifier = Modifier.padding(
+                                        horizontal = Dimens.spaceM,
+                                        vertical = Dimens.spaceXsPlus,
+                                    ),
+                                    horizontalArrangement = Arrangement.spacedBy(Dimens.spaceL),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     val minIdx = selected.minOrNull() ?: state.animation.currentFrame
@@ -255,15 +258,15 @@ private fun StudioToolbarAction(
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(Dimens.radiusS))
             .clickable(onClick = onClick)
-            .padding(6.dp),
+            .padding(Dimens.spaceXsPlus),
     ) {
         Icon(
             icon,
             contentDescription = label,
             tint = EditorTokens.dark,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(Dimens.iconM),
         )
         if (arrowLeft || arrowRight) {
             Icon(
@@ -275,9 +278,9 @@ private fun StudioToolbarAction(
                 contentDescription = null,
                 tint = EditorTokens.accent,
                 modifier = Modifier
-                    .size(10.dp)
+                    .size(EditorTokens.frameStudioArrow)
                     .align(if (arrowLeft) Alignment.TopStart else Alignment.TopEnd)
-                    .offset(x = if (arrowLeft) (-4).dp else 4.dp, y = (-4).dp),
+                    .offset(x = if (arrowLeft) -Dimens.spaceXs else Dimens.spaceXs, y = -Dimens.spaceXs),
             )
         }
     }

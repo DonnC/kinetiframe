@@ -29,7 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 
 @Composable
 internal fun BrowserFilterMenu(
@@ -44,16 +45,16 @@ internal fun BrowserFilterMenu(
     Box(modifier) {
         Surface(
             onClick = { expanded = true },
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(Dimens.radiusS),
             color = MaterialTheme.colorScheme.surfaceContainerLow,
             modifier = Modifier.fillMaxWidth(),
         ) {
             Row(
-                Modifier.height(40.dp).padding(horizontal = 8.dp),
+                Modifier.height(LibraryTokens.controlHeight).padding(horizontal = Dimens.spaceS),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXsPlus),
             ) {
-                Icon(icon, null, Modifier.size(16.dp))
+                Icon(icon, null, Modifier.size(Dimens.iconS))
                 Text(
                     label,
                     Modifier.weight(1f),
@@ -61,10 +62,12 @@ internal fun BrowserFilterMenu(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Icon(Icons.Default.ExpandMore, null, Modifier.size(16.dp))
+                Icon(Icons.Default.ExpandMore, null, Modifier.size(Dimens.iconS))
             }
         }
-        DropdownMenu(expanded, { expanded = false }, modifier = Modifier.heightIn(max = 320.dp)) {
+        DropdownMenu(expanded, {
+            expanded = false
+        }, modifier = Modifier.heightIn(max = LibraryTokens.filterMenuMaxHeight)) {
             options.forEachIndexed { index, option ->
                 DropdownMenuItem(
                     text = { Text(option, style = MaterialTheme.typography.labelSmall) },
@@ -76,7 +79,7 @@ internal fun BrowserFilterMenu(
                         if (index ==
                             selectedIndex
                         ) {
-                            Icon(Icons.Default.Check, null, Modifier.size(16.dp))
+                            Icon(Icons.Default.Check, null, Modifier.size(Dimens.iconS))
                         }
                     },
                 )

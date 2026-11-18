@@ -15,7 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.library.model.PackFrameTag
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
@@ -31,7 +31,7 @@ fun PackItemDialog(initial: PackFrameTag, creating: Boolean, onDismiss: () -> Un
         onDismissRequest = onDismiss,
         title = { Text(stringResource(if (creating) R.string.pack_item_new else R.string.pack_item_edit)) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
                 CompactTextField(name, {
                     name = it.take(com.donnclab.kinetiframe.library.model.PackItemEntry.MAX_NAME_LENGTH)
                 }, label = { Text(stringResource(R.string.pack_item_name_short)) }, singleLine = true)

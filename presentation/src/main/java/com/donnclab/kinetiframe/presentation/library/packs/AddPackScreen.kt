@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AddFlowBottomBar
 import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
@@ -51,22 +51,24 @@ fun AddPackScreen(state: AddPackFormState, callbacks: AddPackCallbacks, modifier
         },
     ) { padding ->
         Column(
-            Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 20.dp),
+            Modifier.fillMaxSize().padding(
+                padding,
+            ).verticalScroll(rememberScrollState()).padding(horizontal = Dimens.spaceXl),
         ) {
             CompactTextField(
                 value = state.name,
                 onValueChange = callbacks.onNameChange,
                 label = { Text(stringResource(R.string.pack_name)) },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
+                modifier = Modifier.fillMaxWidth().padding(top = Dimens.spaceXl),
             )
             Text(
                 stringResource(R.string.pack_canvas_size),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
+                modifier = Modifier.padding(top = Dimens.spaceXlPlus, bottom = Dimens.spaceS),
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+            Row(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM), modifier = Modifier.fillMaxWidth()) {
                 PACK_SIZES.forEach { (size, tag) ->
                     PackSizeCard(
                         size = size,
@@ -77,7 +79,7 @@ fun AddPackScreen(state: AddPackFormState, callbacks: AddPackCallbacks, modifier
                     )
                 }
             }
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(Dimens.spaceXlPlus))
         }
     }
 }
@@ -98,17 +100,17 @@ private fun PackSizeCard(
 ) {
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(Dimens.radiusL),
         modifier = modifier.aspectRatio(1f),
         color = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
         border = BorderStroke(
-            1.5.dp,
+            Dimens.borderMedium,
             if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
         ),
     ) {
-        Column(Modifier.fillMaxSize().padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(Modifier.fillMaxSize().padding(Dimens.spaceM), horizontalAlignment = Alignment.CenterHorizontally) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) { SelectionDot(selected) }
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(Dimens.spaceM))
             Text(tag, style = MaterialTheme.typography.headlineSmall)
             Text(
                 stringResource(R.string.pack_size_square, size),

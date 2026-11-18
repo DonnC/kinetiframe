@@ -23,9 +23,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.camera.CameraRanges
 
@@ -53,7 +54,9 @@ internal fun CameraRangeOverview(shot: CameraShot, shots: List<CameraShot>, tota
     )
     Column {
         Canvas(
-            Modifier.fillMaxWidth().height(14.dp).semantics { contentDescription = description },
+            Modifier.fillMaxWidth().height(EditorTokens.cameraRangeHeight).semantics {
+                contentDescription = description
+            },
         ) {
             val unit = size.width / totalFrames.coerceAtLeast(1)
             occupied.forEach { range ->
@@ -74,7 +77,7 @@ internal fun CameraRangeOverview(shot: CameraShot, shots: List<CameraShot>, tota
         }
         Row(
             Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
         ) {
             Text(
                 stringResource(R.string.camera_range_selected),

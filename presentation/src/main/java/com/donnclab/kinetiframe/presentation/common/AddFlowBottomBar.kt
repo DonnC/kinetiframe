@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 
 /** Sticky bottom action for the Home "Add" flows: an optional one-line summary of the current
  *  choices above a full-width primary button, elevated so it reads above a scrolled body. */
@@ -23,15 +23,15 @@ fun AddFlowBottomBar(
     enabled: Boolean = true,
     subtitle: String? = null,
 ) {
-    Surface(shadowElevation = 4.dp, modifier = modifier) {
-        Column(Modifier.fillMaxWidth().padding(20.dp)) {
+    Surface(shadowElevation = Dimens.elevationRaised, modifier = modifier) {
+        Column(Modifier.fillMaxWidth().padding(Dimens.spaceXl)) {
             subtitle?.let {
                 Text(
                     it,
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
+                    modifier = Modifier.fillMaxWidth().padding(bottom = Dimens.spaceSPlus),
                 )
             }
             Button(onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxWidth()) { Text(buttonLabel) }

@@ -32,8 +32,8 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.SelectionInteractionMode
@@ -41,12 +41,12 @@ import com.donnclab.kinetiframe.studio.SelectionInteractionMode
 @Composable
 fun SelectionHUD(transform: SelectionTransformMath.TransformInfo, modifier: Modifier = Modifier) {
     Surface(
-        modifier = modifier.padding(8.dp),
+        modifier = modifier.padding(Dimens.spaceS),
         color = Color.Black.copy(alpha = 0.7f),
-        shape = RoundedCornerShape(8.dp),
-        shadowElevation = 4.dp,
+        shape = RoundedCornerShape(Dimens.radiusS),
+        shadowElevation = Dimens.elevationRaised,
     ) {
-        Column(Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+        Column(Modifier.padding(horizontal = Dimens.spaceM, vertical = Dimens.spaceS)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(stringResource(R.string.transform_position_label), color = Color.Gray, fontSize = 10.sp)
                 Text(
@@ -184,7 +184,7 @@ fun SelectionTransformOverlay(
             val info = SelectionTransformMath.getTransformInfo(transformState.matrix)
             SelectionHUD(
                 transform = info,
-                modifier = Modifier.align(Alignment.TopCenter).padding(top = 16.dp),
+                modifier = Modifier.align(Alignment.TopCenter).padding(top = Dimens.spaceL),
             )
         }
 

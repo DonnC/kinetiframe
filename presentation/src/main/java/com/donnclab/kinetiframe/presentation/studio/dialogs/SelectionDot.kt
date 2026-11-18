@@ -14,7 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 
 /** A filled, checked circle when [selected]; an empty outline otherwise. The one "pick exactly
  *  one of these" indicator shared by every option row across the Home "Add" flows (canvas-size
@@ -25,10 +26,10 @@ fun SelectionDot(selected: Boolean, modifier: Modifier = Modifier) {
         shape = RoundedCornerShape(50),
         color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background,
         border = BorderStroke(
-            2.dp,
+            Dimens.borderThick,
             if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
         ),
-        modifier = modifier.size(22.dp),
+        modifier = modifier.size(EditorTokens.selectionDot),
     ) {
         if (selected) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -36,7 +37,7 @@ fun SelectionDot(selected: Boolean, modifier: Modifier = Modifier) {
                     Icons.Filled.Check,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(14.dp),
+                    modifier = Modifier.size(EditorTokens.selectionDotIcon),
                 )
             }
         }

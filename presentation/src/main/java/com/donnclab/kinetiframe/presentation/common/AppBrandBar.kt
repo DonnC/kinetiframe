@@ -10,20 +10,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 
 /** Consistent browse/create branding; tools remain contextual to the destination. */
 @Composable
 fun AppBrandBar(actions: @Composable RowScope.() -> Unit = {}) {
     Row(
-        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
+        Modifier.fillMaxWidth().padding(horizontal = Dimens.spaceL, vertical = Dimens.spaceSPlus),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            BrandBadge(Modifier.size(40.dp))
-            BrandWordmark(Modifier.size(160.dp, 28.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceSPlus),
+        ) {
+            BrandBadge(Modifier.size(Dimens.brandBadge))
+            BrandWordmark(Modifier.size(Dimens.brandWordmarkWidth, Dimens.brandWordmarkHeight))
         }
         Row(content = actions)
     }

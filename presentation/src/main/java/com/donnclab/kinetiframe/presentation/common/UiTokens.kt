@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 
 @Composable
 fun DenseTextField(
@@ -19,7 +19,7 @@ fun DenseTextField(
     textStyle: TextStyle = MaterialTheme.typography.bodySmall,
     placeholder: String? = null,
     onDone: (() -> Unit)? = null,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 10.dp, vertical = 6.dp),
+    contentPadding: PaddingValues = PaddingValues(horizontal = Dimens.spaceSPlus, vertical = Dimens.spaceXsPlus),
 ) {
     CompactTextField(
         value = value, onValueChange = onValueChange, modifier = modifier,

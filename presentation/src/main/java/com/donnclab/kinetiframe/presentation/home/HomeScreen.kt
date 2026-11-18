@@ -48,6 +48,7 @@ import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.document.ProjectManifest
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.designsystem.theme.LibraryAccent
 import com.donnclab.kinetiframe.library.model.PackItemEntry
@@ -297,7 +298,7 @@ private fun HomeTopBar(
         return
     }
     Row(
-        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
+        Modifier.fillMaxWidth().padding(horizontal = Dimens.spaceL, vertical = Dimens.spaceSPlus),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -305,7 +306,7 @@ private fun HomeTopBar(
             CompactTextField(
                 value = searchQuery,
                 onValueChange = onSearchQueryChange,
-                modifier = Modifier.weight(1f).padding(end = 8.dp),
+                modifier = Modifier.weight(1f).padding(end = Dimens.spaceS),
                 placeholder = { Text(searchPlaceholder) },
                 singleLine = true,
             )
@@ -328,7 +329,7 @@ internal fun EmptySearchMessage() {
             stringResource(R.string.home_search_empty),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(24.dp),
+            modifier = Modifier.padding(Dimens.spaceXlPlus),
         )
     }
 }
@@ -339,13 +340,13 @@ private fun HomeFab(modifier: Modifier = Modifier, contentDescription: String, o
         modifier = modifier.size(HomeTokens.fabSize),
         shape = CircleShape,
         color = MaterialTheme.colorScheme.primary,
-        tonalElevation = 6.dp,
-        shadowElevation = 8.dp,
-        border = BorderStroke(4.dp, MaterialTheme.colorScheme.surface),
+        tonalElevation = Dimens.elevationFloating,
+        shadowElevation = Dimens.elevationM,
+        border = BorderStroke(HomeTokens.fabRing, MaterialTheme.colorScheme.surface),
         onClick = onClick,
     ) {
         Box(contentAlignment = Alignment.Center) {
-            Icon(Icons.Filled.Add, contentDescription, tint = Color.White, modifier = Modifier.size(24.dp))
+            Icon(Icons.Filled.Add, contentDescription, tint = Color.White, modifier = Modifier.size(Dimens.iconL))
         }
     }
 }
@@ -354,7 +355,7 @@ private fun HomeFab(modifier: Modifier = Modifier, contentDescription: String, o
  *  archive; see [HomeRoute]. */
 @Composable
 private fun ImportSheetContent(onFile: () -> Unit, onLibrary: () -> Unit) {
-    Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
+    Column(Modifier.fillMaxWidth().padding(horizontal = Dimens.spaceXl, vertical = Dimens.spaceS)) {
         Text(
             stringResource(R.string.import_title),
             style = MaterialTheme.typography.titleLarge,
@@ -364,7 +365,7 @@ private fun ImportSheetContent(onFile: () -> Unit, onLibrary: () -> Unit) {
             stringResource(R.string.import_subtitle),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 2.dp, bottom = 12.dp),
+            modifier = Modifier.padding(top = Dimens.spaceXxs, bottom = Dimens.spaceM),
         )
         ImportRow(
             Lucide.Folder,
@@ -380,20 +381,26 @@ private fun ImportSheetContent(onFile: () -> Unit, onLibrary: () -> Unit) {
             stringResource(R.string.import_from_library_subtitle),
             onLibrary,
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(Dimens.spaceM))
     }
 }
 
 @Composable
 private fun ImportRow(icon: ImageVector, tint: Color, label: String, description: String, onClick: () -> Unit) {
     Row(
-        Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 12.dp),
+        Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = Dimens.spaceM),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Surface(shape = RoundedCornerShape(14.dp), color = tint.copy(alpha = 0.14f), modifier = Modifier.size(46.dp)) {
-            Box(contentAlignment = Alignment.Center) { Icon(icon, null, tint = tint, modifier = Modifier.size(22.dp)) }
+        Surface(
+            shape = RoundedCornerShape(Dimens.radiusMPlus),
+            color = tint.copy(alpha = 0.14f),
+            modifier = Modifier.size(HomeTokens.createOptionTile),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(icon, null, tint = tint, modifier = Modifier.size(Dimens.iconMPlus))
+            }
         }
-        Column(Modifier.padding(start = 14.dp).weight(1f)) {
+        Column(Modifier.padding(start = Dimens.spaceMPlus).weight(1f)) {
             Text(label, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             Text(
                 description,
