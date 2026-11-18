@@ -94,10 +94,10 @@ fun SelectionTransformOverlay(
     transformState: SelectionTransformState,
     canvasMatrixValues: FloatArray,
     activeStroke: ActiveStroke?,
-    fitScale: Float,
     gestureScale: Float,
-    onTapInside: () -> Unit,
     onTapOutside: () -> Unit,
+    onTapInside: () -> Unit = {},
+    fitScale: Float = 1f,
     onDragEnd: () -> Unit = {},
     lockAspectRatio: Boolean = false,
     skewMode: Boolean = false,
@@ -355,9 +355,7 @@ private fun SelectionTransformOverlayPreview() {
         transformState = remember { SelectionTransformState() },
         canvasMatrixValues = floatArrayOf(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f),
         activeStroke = null,
-        fitScale = 1f,
         gestureScale = 1f,
-        onTapInside = {},
         onTapOutside = {},
     )
 }
@@ -369,7 +367,9 @@ private fun SelectionMoveOverlayPreview() {
         bounds = Rect(180f, 120f, 188f, 128f),
         transformState = remember { SelectionTransformState() },
         canvasMatrixValues = floatArrayOf(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f),
-        activeStroke = null, fitScale = 1f, gestureScale = 1f,
-        onTapInside = {}, onTapOutside = {}, interactionMode = SelectionInteractionMode.MOVE,
+        activeStroke = null,
+        gestureScale = 1f,
+        onTapOutside = {},
+        interactionMode = SelectionInteractionMode.MOVE,
     )
 }

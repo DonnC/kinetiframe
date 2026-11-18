@@ -398,13 +398,12 @@ private fun CanvasAreaContents(
             state.scene.studioMode != StudioMode.ANIMATE_IK
         ) {
             SelectionTransformBox(
-                selectedContent = null, selectionBounds = actorReference.bounds,
-                transformState = actorReference.transform, fontRegistry = fonts, displayDensity = density,
+                source = SelectionSource(null, fonts, density, state.project.stage.width, state.project.stage.height),
+                selectionBounds = actorReference.bounds,
+                transformState = actorReference.transform,
                 canvasMatrixValues = state.canvas.matrixValues,
-                docWidth = state.project.stage.width, docHeight = state.project.stage.height,
-                viewportWidth = 0, viewportHeight = 0,
                 onOutsideSelectionTap = { actorReference.editing = false },
-                onIntent = {}, activeStroke = null, lockAspectRatio = actorReference.lockAspectRatio,
+                activeStroke = null, lockAspectRatio = actorReference.lockAspectRatio,
                 skewMode = actorReference.skewMode,
                 modifier = Modifier.fillMaxSize().zIndex(6f),
             )
@@ -414,16 +413,18 @@ private fun CanvasAreaContents(
         ) {
             state.selection.bounds?.let { bounds ->
                 SelectionTransformBox(
-                    selectedContent = state.selection.selectedContent,
+                    source = SelectionSource(
+                        state.selection.selectedContent,
+                        fonts,
+                        density,
+                        state.project.stage.width,
+                        state.project.stage.height,
+                    ),
                     selectionBounds = bounds,
                     transformState = selectionTransform,
-                    fontRegistry = fonts,
-                    displayDensity = density,
                     canvasMatrixValues = state.canvas.matrixValues,
-                    docWidth = state.project.stage.width, docHeight = state.project.stage.height,
-                    viewportWidth = 0, viewportHeight = 0,
                     onOutsideSelectionTap = { onIntent(StudioIntent.Selection.SetActive(false)) },
-                    onIntent = onIntent, activeStroke = null,
+                    activeStroke = null,
                     lockAspectRatio = state.selection.lockAspectRatio,
                     skewMode = state.selection.skewMode,
                     interactionMode = state.selection.interactionMode,

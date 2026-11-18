@@ -23,8 +23,13 @@ class SelectionHandleInteractionTest {
         compose.setContent {
             Box(Modifier.fillMaxSize().testTag("handles")) {
                 SelectionTransformOverlay(
-                    bounds, transform, floatArrayOf(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f),
-                    null, 1f, 1f, {}, {}, onDragEnd = { completions++ },
+                    bounds,
+                    transform,
+                    floatArrayOf(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f),
+                    null,
+                    1f,
+                    {},
+                    onDragEnd = { completions++ },
                 )
             }
         }
@@ -52,8 +57,6 @@ class SelectionHandleInteractionTest {
                     floatArrayOf(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f),
                     null,
                     1f,
-                    1f,
-                    {},
                     {},
                 )
             }

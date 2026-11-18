@@ -17,31 +17,33 @@ import androidx.compose.ui.graphics.nativeCanvas
 import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.studio.SelectedContent
 import com.donnclab.kinetiframe.studio.SelectionInteractionMode
-import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.drawing.FontRegistry
 import com.donnclab.kinetiframe.studio.drawing.MultilineTextRenderer
 
+/** What a floating selection is drawn from: its pixels and text, the fonts for that text, and the document's size. */
+data class SelectionSource(
+    val content: SelectedContent?,
+    val fontRegistry: FontRegistry,
+    val displayDensity: Float,
+    val docWidth: Int,
+    val docHeight: Int,
+)
+
 @Composable
 fun SelectionTransformBox(
-    selectedContent: SelectedContent?,
+    source: SelectionSource,
     selectionBounds: Rect,
     transformState: SelectionTransformState,
-    fontRegistry: FontRegistry,
-    displayDensity: Float,
     canvasMatrixValues: FloatArray,
-    docWidth: Int,
-    docHeight: Int,
-    viewportWidth: Int,
-    viewportHeight: Int,
-    onOutsideSelectionTap: () -> Unit,
-    onIntent: (StudioIntent) -> Unit,
     activeStroke: ActiveStroke?,
+    onOutsideSelectionTap: () -> Unit,
     modifier: Modifier = Modifier,
     onDragEnd: () -> Unit = {},
     lockAspectRatio: Boolean = false,
     skewMode: Boolean = false,
     interactionMode: SelectionInteractionMode = SelectionInteractionMode.TRANSFORM,
 ) {
+    val (selectedContent, fontRegistry, displayDensity, docWidth, docHeight) = source
     val gestureScale = remember(canvasMatrixValues) {
         kotlin.math.sqrt(
             (canvasMatrixValues[0] * canvasMatrixValues[0] + canvasMatrixValues[3] * canvasMatrixValues[3]).toDouble(),
@@ -105,9 +107,8 @@ fun SelectionTransformBox(
             transformState = transformState,
             canvasMatrixValues = canvasMatrixValues,
             activeStroke = activeStroke,
-            fitScale = 1f,
             gestureScale = gestureScale,
-            onTapInside = { /* No-op, menu is persistent */ },
+            // The selection menu stays open, so a tap inside does nothing.
             onTapOutside = onOutsideSelectionTap,
             onDragEnd = onDragEnd,
             lockAspectRatio = lockAspectRatio,

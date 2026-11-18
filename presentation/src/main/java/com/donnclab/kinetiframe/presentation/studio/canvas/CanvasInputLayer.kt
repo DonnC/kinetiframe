@@ -29,38 +29,26 @@ import com.donnclab.kinetiframe.studio.drawing.FontRegistry
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CanvasInputLayer(
+    viewport: InputViewport,
+    tool: InputTool,
+    targets: InputTargets,
+    callbacks: InputCallbacks,
     modifier: Modifier = Modifier,
-    stage: StageDimensions,
-    canvasMatrixValues: FloatArray,
-    sourceFrame: Bitmap?,
-    /** Raw pixels of the selected layer. Manipulation must never sample the composited frame. */
-    manipulationSource: Bitmap? = null,
-    manipulationWidth: Float = 0f,
-    manipulationStrength: Float = 0f,
-    studioMode: StudioMode,
-    activeTool: DrawingTool,
-    pressureSensitive: Boolean = false,
-    rulerGuide: RulerGuide?,
-    constructionShape: ConstructionShape? = null,
-    constructionPreviewPending: Boolean = false,
-    selectionActive: Boolean,
-    nodes: Map<String, BaseNode>,
-    displayDensity: Float,
-    fontRegistry: FontRegistry?,
-    selectionTool: SelectionToolType,
-    activeStroke: ActiveStroke,
-    selectionPath: Path,
-    onSelectionRectChanged: (Rect?) -> Unit,
-    onTextNodeSelect: (String?) -> Unit,
-    onSelectionAreaComplete: (Path?, Rect?, Float, FontRegistry?) -> Unit,
-    onEraserCursorChange: (Offset?) -> Unit,
-    onIntent: (StudioIntent) -> Unit,
-    onStrokeSettled: (List<TouchPoint>) -> Unit,
-    onStrokeComplete: (List<TouchPoint>) -> Unit,
-    onConstructionPreview: (List<List<TouchPoint>>) -> Unit = {},
-    onRigJointHit: ((Offset) -> String?)? = null,
     content: @Composable () -> Unit,
 ) {
+    val (stage, canvasMatrixValues, displayDensity) = viewport
+    val (
+        studioMode, activeTool, selectionTool, rulerGuide,
+        pressureSensitive, constructionShape, constructionPreviewPending,
+    ) = tool
+    val (
+        sourceFrame, nodes, fontRegistry, selectionActive, activeStroke, selectionPath,
+        manipulationSource, manipulationWidth, manipulationStrength,
+    ) = targets
+    val (
+        onIntent, onStrokeSettled, onStrokeComplete, onSelectionRectChanged, onTextNodeSelect,
+        onSelectionAreaComplete, onEraserCursorChange, onConstructionPreview, onRigJointHit,
+    ) = callbacks
     val gesture = remember { CanvasGestureState() }
 
     val coordinateTransform = remember(stage, canvasMatrixValues) {
