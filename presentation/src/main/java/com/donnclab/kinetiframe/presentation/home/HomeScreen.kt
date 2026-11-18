@@ -80,15 +80,8 @@ import java.io.File
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun HomeScreen(
-    hierarchyState: HierarchyBrowserState = HierarchyBrowserState(),
-    onHierarchyIntent: (HierarchyBrowserIntent) -> Unit = {},
-    projectState: ProjectManagerState,
-    onProjectIntent: (ProjectManagerIntent) -> Unit,
-    packState: PacksTabState,
-    packPreviewFiles: Map<String, List<File>>,
-    onPackIntent: (PacksTabIntent) -> Unit,
-    actorState: ActorManagerState,
-    onActorIntent: (ActorManagerIntent) -> Unit,
+    states: HomeStates,
+    intents: HomeIntents,
     onShareProject: (ProjectManifest) -> Unit = {},
     onSaveToLibraryProject: (ProjectManifest) -> Unit = {},
     onExportVideoProject: (ProjectManifest) -> Unit = {},
@@ -100,6 +93,8 @@ fun HomeScreen(
     onBrowseLibrary: () -> Unit = {},
     onSettingsTapped: () -> Unit = {},
 ) {
+    val (projectState, packState, packPreviewFiles, actorState, hierarchyState) = states
+    val (onProjectIntent, onPackIntent, onActorIntent, onHierarchyIntent) = intents
     var selectedTab by remember { mutableIntStateOf(0) }
     var searchActive by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
@@ -178,12 +173,17 @@ fun HomeScreen(
             Box(Modifier.weight(1f).fillMaxWidth()) {
                 when (selectedTab) {
                     0 -> ProjectsTabContent(
-                        hierarchy = hierarchyState, onHierarchyIntent = onHierarchyIntent,
-                        state = projectState, query = searchQuery, onIntent = onProjectIntent,
-                        onShare = onShareProject,
-                        onSaveToLibrary = onSaveToLibraryProject,
-                        onExportVideo = onExportVideoProject,
-                        onRequestCreate = { showNewProjectDialog = true },
+                        hierarchy = hierarchyState,
+                        state = projectState,
+                        query = searchQuery,
+                        callbacks = ProjectsTabCallbacks(
+                            onIntent = onProjectIntent,
+                            onHierarchyIntent = onHierarchyIntent,
+                            onShare = onShareProject,
+                            onSaveToLibrary = onSaveToLibraryProject,
+                            onExportVideo = onExportVideoProject,
+                            onRequestCreate = { showNewProjectDialog = true },
+                        ),
                     )
 
                     1 -> PacksTabContent(
@@ -201,10 +201,16 @@ fun HomeScreen(
 
                     else -> ActorsTabContent(
                         projectNames = projectState.projects.associate { it.projectId to it.displayName },
-                        hierarchy = hierarchyState, onHierarchyIntent = onHierarchyIntent,
-                        onOpenPerformanceProject = { onProjectIntent(ProjectManagerIntent.Open(it)) },
-                        state = actorState, query = searchQuery, onIntent = onActorIntent,
-                        onRequestCreate = { showAddActorScreen = true }, onRequestRename = { renameActorId = it },
+                        hierarchy = hierarchyState,
+                        state = actorState,
+                        query = searchQuery,
+                        callbacks = ActorsTabCallbacks(
+                            onIntent = onActorIntent,
+                            onHierarchyIntent = onHierarchyIntent,
+                            onOpenPerformanceProject = { onProjectIntent(ProjectManagerIntent.Open(it)) },
+                            onRequestCreate = { showAddActorScreen = true },
+                            onRequestRename = { renameActorId = it },
+                        ),
                     )
                 }
             }

@@ -361,14 +361,10 @@ fun HomeActorCard(
     actor: ActorManifest,
     thumbnailPath: String?,
     onOpen: () -> Unit,
-    onRename: () -> Unit,
-    onDuplicate: () -> Unit,
-    onExport: () -> Unit,
-    onArchive: () -> Unit,
+    actions: ActorCardActions,
     favourite: Boolean = false,
-    onFavourite: () -> Unit = {},
-    onOrganise: () -> Unit = {},
 ) {
+    val (onRename, onDuplicate, onExport, onArchive, onFavourite, onOrganise) = actions
     var menuOpen by remember { mutableStateOf(false) }
     Box(
         Modifier

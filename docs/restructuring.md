@@ -13,66 +13,44 @@ Keep this page current:
 
 ## Now
 
-Work now collects on one milestone branch, `milestone/i18n-and-polish`, with a commit per chunk
-and one pull request into `develop` when the milestone is done.
+Work collects on one milestone branch, milestone/code-limits, with a commit per chunk and one
+pull request into develop when the milestone is done. #75 finished the previous milestone
+(per-app language, pseudo-locales and theme tokens).
 
-**Strings, last part: per-app language and pseudo-locales.** `app` generates its locale config
-from the resource folders (`generateLocaleConfig`, with `resources.properties` naming English as
-the default), so Android's per-app language setting lists the app's languages as translations
-arrive. Debug builds include the pseudo-locales. Still to do: look at the main screens in `en-XA`
-(long text) and `ar-XB` (right to left) on a device, and fix what clips, overlaps or stays
-English. Labels passed to custom components (such as `ContextIconAction`'s label) aren't counted
-by the inline text check; this pass will show any left.
+**Parameter limits, part 1.** 12 of the 51 functions over the limit are fixed:
 
-**Theme tokens, part 1: colours.** 62 of the 64 inline colours are `designsystem` tokens:
-canvas overlay, timeline and dock preview colours in `EditorTokens`, sketch and panel colours in
-`ActorStudioTokens`, the card scrim and placeholder tints in `HomeTokens`, and a new
-`LibraryTokens` for stamp wells and item cards. Preview fixtures use a new `PreviewSwatches`.
-The two left are the onion skin defaults in `studio`'s `StudioState`, which move with the UI
-separation track, since `studio` doesn't depend on `designsystem`.
-
-**Theme tokens, part 2: the dock's sizes.** The editor dock's 130 inline `.dp` sizes are tokens:
-spacing, corners and icon sizes use `Dimens` (with new `borderThin`, `borderMedium`, `elevationM`
-and `elevationL`), and the dock's own sizes (rail, menus, panels, colour controls) are named in
-`EditorTokens`. Values didn't change.
-
-**Compose deprecations, part 1.** Home's tabs use `PrimaryTabRow` and the actor details sheet's
-`SecondaryTabRow`; both tooltips use `rememberTooltipPositionProvider(TooltipAnchorPosition.Above)`.
-
-**Audio ribbon recomposition.** `ProjectAudioScrubRibbon` reads the scroll position only while
-drawing and handling gestures; only its first visible frame, through `derivedStateOf`, drives
-composition. Lint's `FrequentlyChangingValue` baseline entry is gone.
-
-**Theme tokens, part 3: the timeline's and actor screens' sizes.** 327 more inline `.dp` sizes are
-tokens, with the same values: a new `TimelineTokens` for the frame strip, transport, tracks and
-audio ribbon (`FRAME_CELL_WIDTH`, `TRACK_HEIGHT` and `TRACK_GUTTER` now point at it), new entries in
-`ActorStudioTokens` for the rig overlay, sketch editor, part tree, cards and dialogs, and finer
-steps in `Dimens` (`spaceXxs`, `spaceXsPlus`, `spaceSPlus`, `spaceMPlus`, `spaceXlPlus`, `spaceXxxl`,
-`radiusXxs`, `radiusXs` and `touchTarget`).
-
-**Theme tokens, part 4: the last sizes.** The last 349 inline `.dp` sizes are tokens, with the same
-values, and the size check is at zero. Shared steps went into `Dimens` (finer spacing, corners,
-icons and elevations, `borderThick`, icon buttons, the slider, brand bar and bottom bar), and
-screen sizes into `HomeTokens` (card overlays, the list's bottom reserve), `LibraryTokens`
-(browser grids, the stamp preview, the pack tray) and `EditorTokens` (popups, hint insets, canvas
-overlays, the colour loupe, the frame studio). Previews keep inline sizes; the check skips them.
+- The studio's cel hold, drawing, frame, playback and selection managers take a StudioRuntime
+  (scope, dispatcher, state access, pending operations), the shared UndoStacks, and a small
+  hooks data class for their own callbacks.
+- The library's exportAsset, exportPack and PackArchiver.import take a LibraryPlacement
+  (scope, project, tags) in place of three parameters.
+- Home takes its states and intents as HomeStates and HomeIntents, its Projects and Actors tabs
+  take ProjectsTabCallbacks and ActorsTabCallbacks, like the Packs tab's PacksTabCallbacks,
+  and an actor card takes its menu as ActorCardActions.
 
 ## Next
 
-Open the milestone pull request into `develop`, then check the pseudo-locales, the new tab rows
-and the audio ribbon on a device.
+1. **Parameter limits, part 2.** The 39 left: the canvas and selection composables (up to 23
+   parameters), the timeline's clip and menu composables, Actor Studio's preset sheet and editors,
+   and the drawing maths (CubicStrokeSampler, ManipulationPixels), where data classes would
+   allocate on every stroke point, so those need a different shape.
+2. **Device check.** Check the pseudo-locales (en-XA, r-XB), the new tab rows and the audio
+   ribbon on a device, then fix what clips, overlaps or stays English. Labels passed to custom
+   components (such as ContextIconAction's label) aren't counted by the inline text check; this
+   pass will show any left.
 
 ## Later
 
 Tracks that run alongside the module work, a screen or feature at a time:
 
-- **Strings to resources.** The inline text check is at zero. Left: right-to-left layouts,
-  per-app language and a pseudo-locale check (under Next), and `require` messages in `core`'s
+- **Strings to resources.** The inline text check is at zero. Left: a pseudo-locale and
+  right-to-left check on a device (under Next), and `require` messages in `core`'s
   documents, such as FPS and stage limits, that only invalid files reach.
 - **Theme tokens.** Sizes are done. The last two inline colours go with UI separation.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
   code. Screens already reach storage only through their ViewModels (step 8d).
-- **Parameter limits.** 51 functions still take more than the allowed number of parameters.
+- **Parameter limits.** 39 functions still take more than the allowed number of parameters (under
+  Next).
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
   still mirror `core` types, with bridges and parity tests between them, and `ActorView` duplicates
   `core`'s `PresetAuthoredView`. Merge each pair and delete the parity tests.
@@ -223,6 +201,7 @@ fixed after the module work, unless one blocks testing.
 | #72 | Gave storage failures a typed reason and worded the editor's messages from resources (typed errors, part 3) |
 | #73 | Typed fixable problems and tightened the inline text check (typed errors, part 4) |
 | #74 | Worded media failures, slider values and audio tags from resources (typed errors, part 5) |
+| #75 | Added per-app language and pseudo-locales, and moved all inline sizes and all but two inline colours into tokens |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -283,7 +262,7 @@ From `.architecture/` during step 9. Each count may only go down.
 | --- | --- | --- |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 0 | — |
-| Functions over the parameter limit | 51 | — |
+| Functions over the parameter limit | 39 | — |
 | Inline text values | 0 | — |
 | Inline colours | 2 | 1 |
 | Inline `.dp` sizes | 0 | — |
