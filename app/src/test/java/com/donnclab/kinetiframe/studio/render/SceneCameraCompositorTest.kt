@@ -91,7 +91,15 @@ class SceneCameraCompositorTest {
         val background = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888).apply { eraseColor(Color.RED) }
         val project = cameraProject(CameraPose(black = 1f))
         val scene = ProjectFrameCompositor(project, emptyMap(), cache, null, background)
-        val poster = ProjectFrameCompositor(project, emptyMap(), cache, null, background, includeFades = false)
+        val poster =
+            ProjectFrameCompositor(
+                project,
+                emptyMap(),
+                cache,
+                null,
+                background,
+                CompositorOptions(includeFades = false),
+            )
         try {
             assertEquals(Color.BLACK, scene.composite(0).getPixel(50, 50))
             assertEquals(Color.RED, poster.composite(0).getPixel(50, 50))
@@ -148,7 +156,8 @@ class SceneCameraCompositorTest {
         val cache = FrameCacheManager(temporary.newFolder(), scope)
         val background = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888).apply { eraseColor(Color.RED) }
         val project = cameraProject(CameraPose(black = 1f))
-        val compositor = ProjectFrameCompositor(project, emptyMap(), cache, null, background, outputMaxEdge = 25)
+        val compositor =
+            ProjectFrameCompositor(project, emptyMap(), cache, null, background, CompositorOptions(outputMaxEdge = 25))
         try {
             val frame = compositor.composite(0)
             assertEquals(25, frame.width)

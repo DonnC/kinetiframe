@@ -5,6 +5,7 @@ import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
 import com.donnclab.kinetiframe.media.image.FrameImageDecoder
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.layersForFrame
+import com.donnclab.kinetiframe.studio.render.CompositorOptions
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import com.donnclab.kinetiframe.studio.render.ProjectFrameCompositor
 import kotlinx.coroutines.CancellationException
@@ -38,7 +39,7 @@ suspend fun sceneFrameThumbnails(
         cache,
         actorRendererFactory?.invoke(),
         background,
-        outputMaxEdge = 256,
+        CompositorOptions(outputMaxEdge = 256),
     )
     try {
         frames.mapNotNull { frame ->

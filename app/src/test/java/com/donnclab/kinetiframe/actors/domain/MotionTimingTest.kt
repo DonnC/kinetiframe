@@ -45,11 +45,7 @@ class MotionTimingTest {
         )
         val converted = LegacyActorMigration.performance(
             instance,
-            "project",
-            "actor",
-            "revision",
-            "performance",
-            "Ease",
+            PerformanceIdentity("project", "actor", "revision", "performance", "Ease"),
             1,
         )!!
         assertEquals(curves, converted.rotationCurves)

@@ -6,6 +6,10 @@ import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 
+/** A recorded take, in microseconds: the times sampled, the span recorded over, and the
+ *  performance's duration after it. */
+data class RecordedTake(val sampleTimes: Collection<Long>, val start: Long, val end: Long, val duration: Long)
+
 /** Planted endpoints must not erase a deliberately recorded opposite knee/elbow bend.
  * Store only discrete direction changes in the existing contact track; keep anchor positions,
  * untouched limbs and post-take contact directions. No new document format is needed. */
@@ -15,11 +19,9 @@ object RecordedContactBends {
         rest: SceneGraph,
         curves: List<RotationCurve>,
         touched: Set<String>,
-        times: Collection<Long>,
-        start: Long,
-        end: Long,
-        duration: Long,
+        take: RecordedTake,
     ): List<ActorPoseKey> {
+        val (times, start, end, duration) = take
         if (keys.none { it.contacts.isNotEmpty() }) return keys
         val endpoints = rest.bones.values.filter { it.ikChainRootId in touched || it.id in touched }
             .filter { it.ikChainRootId != null }.map { it.id }.toSet()

@@ -30,6 +30,7 @@ import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.studio.drawing.BrushRenderers
 import com.donnclab.kinetiframe.studio.drawing.SketchColourFill
+import com.donnclab.kinetiframe.studio.drawing.SketchPixels
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
@@ -204,10 +205,7 @@ class ActorSketchViewModel(
                 ink.getPixels(lines, 0, sourceWidth, 0, 0, sourceWidth, sourceHeight)
                 colour.getPixels(pixels, 0, sourceWidth, 0, 0, sourceWidth, sourceHeight)
                 val filled = SketchColourFill.apply(
-                    lines,
-                    pixels,
-                    sourceWidth,
-                    sourceHeight,
+                    SketchPixels(lines, pixels, sourceWidth, sourceHeight),
                     intent.x,
                     intent.y,
                     currentState.paintColour,

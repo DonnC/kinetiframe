@@ -40,10 +40,7 @@ class RecordedContactBendsTest {
             rest,
             curves,
             setOf("left_thigh", "left_shin"),
-            listOf(100_000, 200_000),
-            100_000,
-            200_000,
-            400_000,
+            RecordedTake(listOf(100_000, 200_000), 100_000, 200_000, 400_000),
         )
         assertEquals(-1, ActorPoseTrack.contacts(keys, 0).getValue("left_shin").bendSide)
         assertEquals(1, ActorPoseTrack.contacts(keys, 200_000).getValue("left_shin").bendSide)

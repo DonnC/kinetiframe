@@ -31,6 +31,7 @@ import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerState
 import com.donnclab.kinetiframe.presentation.actors.ActorNameDialog
 import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.library.BrowserView
 import com.donnclab.kinetiframe.presentation.library.CollectionAssignmentDialog
 import com.donnclab.kinetiframe.presentation.library.CollectionBrowserControls
 import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserIndex
@@ -58,9 +59,7 @@ internal fun ProjectsTabContent(
             { "project:${it.projectId}" },
             { it.displayName },
             { it.updatedAtEpochMs },
-            organization,
-            position,
-            query,
+            BrowserView(organization, position, query),
         )
     }
     Column(Modifier.fillMaxSize()) {
@@ -183,7 +182,7 @@ internal fun ActorsTabContent(
         HierarchyBrowserIndex.filter(state.actors, { "actor:${it.actorId}" }, { actor ->
             actor.displayName + " " +
                 state.performances.filter { it.actorId == actor.actorId }.joinToString { it.displayName }
-        }, { it.updatedAtEpochMs }, organization, position, query)
+        }, { it.updatedAtEpochMs }, BrowserView(organization, position, query))
     }
     Column(Modifier.fillMaxSize()) {
         CollectionBrowserControls(

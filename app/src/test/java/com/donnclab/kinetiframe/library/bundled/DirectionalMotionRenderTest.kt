@@ -96,7 +96,7 @@ class DirectionalMotionRenderTest {
                                     ),
                                 )
                             value(performances.save(document))
-                            drawCell(canvas, renderer, document, 0, column, row, "$view $angle")
+                            drawCell(canvas, renderer, document, 0, SheetCell(column, row, "$view $angle"))
                         }
                     }
                     save(sheet, "$character-head-hands", "joined-v4")
@@ -147,7 +147,19 @@ class DirectionalMotionRenderTest {
                                 },
                             )
                         value(performances.save(document))
-                        drawCell(canvas, renderer, document, 0, column, row, "$view ${mode.ifEmpty { "rest" }}")
+                        drawCell(
+                            canvas,
+                            renderer,
+                            document,
+                            0,
+                            SheetCell(
+                                column,
+                                row,
+                                "$view ${mode.ifEmpty {
+                                    "rest"
+                                }}",
+                            ),
+                        )
                     }
                 }
                 save(sheet, "$character-hands-head-tilts")
@@ -187,9 +199,7 @@ class DirectionalMotionRenderTest {
                             renderer,
                             document,
                             phase * applied.durationMicros / 8,
-                            phase,
-                            actorIndex * 2 + index,
-                            "$character $motion $phase/8",
+                            SheetCell(phase, actorIndex * 2 + index, "$character $motion $phase/8"),
                         )
                     }
                 }
@@ -215,15 +225,17 @@ class DirectionalMotionRenderTest {
         }
     }
 
+    /** A cell on a review sheet, counted from the top left, and the caption drawn in it. */
+    private data class SheetCell(val column: Int, val row: Int, val label: String)
+
     private fun drawCell(
         canvas: Canvas,
         renderer: ActorFrameRenderer,
         document: PerformanceDocument,
         time: Long,
-        column: Int,
-        row: Int,
-        label: String,
+        cell: SheetCell,
     ) {
+        val (column, row, label) = cell
         val placement =
             ActorPlacementReference(
                 placementId = document.performanceId,

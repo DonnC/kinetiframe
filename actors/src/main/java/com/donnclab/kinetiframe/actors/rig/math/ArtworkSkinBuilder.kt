@@ -16,6 +16,9 @@ import kotlin.math.min
 /** Binds a single, continuous arm/leg image to a connected two-bone chain. Built at attachment,
  * never in a draw callback. Source cut lines are not guessed or erased. */
 object ArtworkSkinBuilder {
+    /** How far either side of the joint the two bones' weights blend, as a share of the shorter bone. */
+    private const val SOFTNESS = .25f
+
     fun bind(
         graph: SceneGraph,
         owner: String,
@@ -23,7 +26,6 @@ object ArtworkSkinBuilder {
         binding: TextureBinding,
         width: Int,
         height: Int,
-        softness: Float = .25f,
     ): ArtworkSkin {
         ActorGraphValidation.validate(graph)
         val upper = graph.bones.getValue(owner)
@@ -32,13 +34,13 @@ object ArtworkSkinBuilder {
             lower.parentId == owner && abs(lower.localTransform.x - upper.length) < .1f &&
                 abs(lower.localTransform.y) < .1f,
         ) { "Continuous artwork needs an endpoint-connected pair" }
-        require(width in 1..2048 && height in 1..2048 && softness in .05f..1f)
+        require(width in 1..2048 && height in 1..2048)
         val world = ArtworkSkinning.worldTransforms(graph)
         val local = ArtworkBindingTransform.sourceLocal(binding)
         val source = world.getValue(owner).times(local)
         val columns = (width / 12).coerceIn(4, 32)
         val rows = (height / 12).coerceIn(4, 32)
-        val radius = min(upper.length, lower.length) * softness
+        val radius = min(upper.length, lower.length) * SOFTNESS
         fun distance(x: Float, y: Float, id: String): Float {
             val matrix = world.getValue(id)
             val endX = matrix.x(graph.bones.getValue(id).length, 0f)

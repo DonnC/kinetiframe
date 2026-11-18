@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.studio.domain.actorstudio
 import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.domain.LegacyActorMigration
 import com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator
+import com.donnclab.kinetiframe.actors.domain.PerformanceIdentity
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
@@ -63,11 +64,7 @@ class ActorPerformanceRecorderTest {
         val actor = state.activeActor()!!
         val document = LegacyActorMigration.performance(
             actor,
-            "project",
-            "actor",
-            "revision",
-            "take",
-            "Travel",
+            PerformanceIdentity("project", "actor", "revision", "take", "Travel"),
             1,
         )!!
         val time = 65_000_000L

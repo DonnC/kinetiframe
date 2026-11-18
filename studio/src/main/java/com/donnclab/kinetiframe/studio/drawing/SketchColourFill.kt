@@ -1,9 +1,14 @@
 package com.donnclab.kinetiframe.studio.drawing
 
+/** A sketch's ink and colour planes, row by row, both [width] by [height] pixels. */
+data class SketchPixels(val ink: IntArray, val colours: IntArray, val width: Int, val height: Int)
+
 /** Fill colour independently of ink. Ink alpha is a barrier, not the replacement colour.
  * Every pixel enters the queue once, bounding work/memory even for an entirely open sketch. */
 object SketchColourFill {
-    fun apply(ink: IntArray, colours: IntArray, width: Int, height: Int, x: Int, y: Int, colour: Int): IntArray {
+    /** Fills from ([x], [y]) with [colour] and returns new colour pixels; [pixels] are not changed. */
+    fun apply(pixels: SketchPixels, x: Int, y: Int, colour: Int): IntArray {
+        val (ink, colours, width, height) = pixels
         require(
             width > 0 && height > 0 && width.toLong() * height <= 4_194_304 && ink.size == width * height &&
                 colours.size == ink.size,

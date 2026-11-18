@@ -4,6 +4,7 @@ import com.donnclab.kinetiframe.actors.domain.PerformanceAuthoring
 import com.donnclab.kinetiframe.actors.domain.RecordedContactBends
 import com.donnclab.kinetiframe.actors.domain.RecordedMotionCurves
 import com.donnclab.kinetiframe.actors.domain.RecordedRootMotionCurves
+import com.donnclab.kinetiframe.actors.domain.RecordedTake
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
@@ -364,10 +365,12 @@ class ActorPerformanceRecorder(
             requireNotNull(restGraph),
             result,
             samples.keys,
-            samples.values.flatMap { points -> points.map { it.timeMicros } },
-            start,
-            end,
-            maxOf(originalDuration, end),
+            RecordedTake(
+                samples.values.flatMap { points -> points.map { it.timeMicros } },
+                start,
+                end,
+                maxOf(originalDuration, end),
+            ),
         )
         require(keys.size <= RotationCurve.MAX_POINTS) { "Too many contact keys in this performance." }
         return source.copy(

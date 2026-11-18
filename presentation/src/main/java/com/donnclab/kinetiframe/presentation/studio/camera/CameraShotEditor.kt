@@ -166,8 +166,7 @@ internal fun CameraShotEditor(
                                         pan.y / scale,
                                         zoom,
                                         rotation,
-                                        state.project.stage.width,
-                                        state.project.stage.height,
+                                        state.project.stage,
                                     )
                                     shot = if (ending) shot.copy(end = next) else shot.copy(start = next)
                                 }

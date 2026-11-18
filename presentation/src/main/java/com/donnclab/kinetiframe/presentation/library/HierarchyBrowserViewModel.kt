@@ -32,6 +32,9 @@ sealed interface HierarchyBrowserIntent : ViewIntent {
 }
 sealed interface HierarchyBrowserEffect : ViewEffect
 
+/** What a browser shows: the user's favourites and collections, where they are browsing, and their search. */
+data class BrowserView(val organization: LibraryOrganization, val position: BrowserPosition, val query: String)
+
 /** Organisation never changes actor IDs, project paths, revisions or exported documents. */
 class HierarchyBrowserViewModel(
     private val store: LibraryOrganizationStore,
@@ -88,23 +91,24 @@ object HierarchyBrowserIndex {
         key: (T) -> String,
         name: (T) -> String,
         updated: (T) -> Long,
-        organization: LibraryOrganization,
-        position: BrowserPosition,
-        query: String,
-    ): List<T> = items.filter { item ->
-        val metadata = organization.items[key(item)] ?: AssetOrganization()
-        name(item).contains(query.trim(), ignoreCase = true) && when (position.mode) {
-            BrowseMode.FAVOURITES -> metadata.favourite
-            BrowseMode.COLLECTIONS -> position.collection == null || metadata.collection == position.collection
-            else -> true
-        }
-    }.let { filtered ->
-        if (position.mode == BrowseMode.RECENT) {
-            filtered.sortedByDescending {
-                maxOf(updated(it), organization.items[key(it)]?.lastUsedEpochMs ?: 0)
+        view: BrowserView,
+    ): List<T> {
+        val (organization, position, query) = view
+        return items.filter { item ->
+            val metadata = organization.items[key(item)] ?: AssetOrganization()
+            name(item).contains(query.trim(), ignoreCase = true) && when (position.mode) {
+                BrowseMode.FAVOURITES -> metadata.favourite
+                BrowseMode.COLLECTIONS -> position.collection == null || metadata.collection == position.collection
+                else -> true
             }
-        } else {
-            filtered.sortedBy { name(it).lowercase() }
+        }.let { filtered ->
+            if (position.mode == BrowseMode.RECENT) {
+                filtered.sortedByDescending {
+                    maxOf(updated(it), organization.items[key(it)]?.lastUsedEpochMs ?: 0)
+                }
+            } else {
+                filtered.sortedBy { name(it).lowercase() }
+            }
         }
     }
     fun <T> collections(items: List<T>, key: (T) -> String, organization: LibraryOrganization) =

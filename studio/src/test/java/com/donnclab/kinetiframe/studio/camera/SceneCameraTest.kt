@@ -1,6 +1,7 @@
 package com.donnclab.kinetiframe.studio.camera
 
 import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.core.document.camera.CameraPose
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
@@ -108,13 +109,13 @@ class SceneCameraTest {
     }
 
     @Test fun `touch framing moves opposite image drag and bounds zoom`() {
-        val pose = CameraFraming.drag(CameraPose(), 100f, 0f, 2f, 0f, 400, 200)
+        val pose = CameraFraming.drag(CameraPose(), 100f, 0f, 2f, 0f, StageDimensions(400, 200))
         assertEquals(.25f, pose.x)
         assertEquals(2f, pose.zoom)
         val matrix = SceneCamera.matrix(pose, 400, 200)
         assertEquals(200f, matrix.mapX(100f, 100f))
-        assertEquals(4f, CameraFraming.drag(pose, 0f, 0f, 100f, 0f, 400, 200).zoom)
-        assertEquals(-90f, CameraFraming.drag(CameraPose(), 0f, 0f, 1f, 90f, 400, 200).rotation)
+        assertEquals(4f, CameraFraming.drag(pose, 0f, 0f, 100f, 0f, StageDimensions(400, 200)).zoom)
+        assertEquals(-90f, CameraFraming.drag(CameraPose(), 0f, 0f, 1f, 90f, StageDimensions(400, 200)).rotation)
     }
 
     @Test fun `rotation follows shortest arc`() {

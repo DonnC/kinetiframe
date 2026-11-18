@@ -16,6 +16,7 @@ import com.donnclab.kinetiframe.data.project.ProjectFrameDraft
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.studio.camera.CameraPosterFrame
+import com.donnclab.kinetiframe.studio.render.CompositorOptions
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import com.donnclab.kinetiframe.studio.render.ProjectFrameCompositor
 import java.io.File
@@ -102,7 +103,7 @@ class ProjectSaver(
             frames,
             actorRenderer,
             backgroundBitmap,
-            includeFades = false,
+            CompositorOptions(includeFades = false),
         )
         try {
             val posterFrame = CameraPosterFrame.select(project.cameraShots, document.totalFrames, project.fps)
