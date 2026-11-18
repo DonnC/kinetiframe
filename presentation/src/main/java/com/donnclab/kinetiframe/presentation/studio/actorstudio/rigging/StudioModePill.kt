@@ -16,6 +16,9 @@ import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Bone
 import com.composables.icons.lucide.Drama
 import com.composables.icons.lucide.Lucide
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioMode
 
@@ -36,8 +39,12 @@ import com.donnclab.kinetiframe.studio.StudioMode
 @Composable
 fun StudioModePill(current: StudioMode, onSelect: (StudioMode) -> Unit, modifier: Modifier = Modifier) {
     val inPerformance = current == StudioMode.ANIMATE_IK
-    Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceVariant, modifier = modifier) {
-        Row(modifier = Modifier.padding(3.dp)) {
+    Surface(
+        shape = RoundedCornerShape(Dimens.radiusPill),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier,
+    ) {
+        Row(modifier = Modifier.padding(ActorStudioTokens.pillPadding)) {
             ModeSegment(Lucide.Bone, stringResource(R.string.studio_mode_rig), selected = !inPerformance, onClick = {
                 if (inPerformance) onSelect(StudioMode.RIG_SETUP)
             })
@@ -64,14 +71,17 @@ private fun ModeSegment(
 ) {
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(17.dp),
+        shape = RoundedCornerShape(ActorStudioTokens.pillCorner),
         color = if (selected) MaterialTheme.colorScheme.surface else Color.Transparent,
-        shadowElevation = if (selected) 2.dp else 0.dp,
+        shadowElevation = if (selected) ActorStudioTokens.pillSelectedElevation else 0.dp,
     ) {
         Icon(
             icon,
             contentDescription,
-            modifier = Modifier.padding(horizontal = 11.dp, vertical = 11.dp).size(18.dp),
+            modifier = Modifier.padding(
+                horizontal = ActorStudioTokens.pillIconPadding,
+                vertical = ActorStudioTokens.pillIconPadding,
+            ).size(EditorTokens.icon),
             tint = if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }

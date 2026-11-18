@@ -13,12 +13,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 
 @Composable
 fun FrameActionIcon(icon: ImageVector, label: String, onClick: () -> Unit) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(34.dp)) {
-        IconButton(onClick = onClick, modifier = Modifier.size(30.dp)) {
-            Icon(icon, contentDescription = label, modifier = Modifier.size(17.dp), tint = EditorTokens.dark)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.width(TimelineTokens.actionColumnWidth),
+    ) {
+        IconButton(onClick = onClick, modifier = Modifier.size(TimelineTokens.actionButton)) {
+            Icon(
+                icon,
+                contentDescription = label,
+                modifier = Modifier.size(TimelineTokens.actionIcon),
+                tint = EditorTokens.dark,
+            )
         }
         Text(label, style = MaterialTheme.typography.labelSmall, color = EditorTokens.muted, maxLines = 1)
     }

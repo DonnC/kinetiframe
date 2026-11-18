@@ -42,6 +42,7 @@ import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Plus
 import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.R
@@ -91,19 +92,19 @@ fun LayerPanel(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = Dimens.spaceL, vertical = Dimens.spaceM),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 Lucide.Layers,
                 contentDescription = null,
                 tint = EditorTokens.accent,
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier.size(Dimens.iconM),
             )
             Text(
                 text = stringResource(R.string.layers_title),
                 style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.padding(start = 8.dp),
+                modifier = Modifier.padding(start = Dimens.spaceS),
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
             )
@@ -111,13 +112,13 @@ fun LayerPanel(
             Box {
                 IconButton(
                     onClick = { addLayerMenuVisible = true },
-                    modifier = Modifier.size(32.dp),
+                    modifier = Modifier.size(EditorTokens.control),
                 ) {
                     Icon(
                         Lucide.Plus,
                         contentDescription = stringResource(R.string.layers_add),
                         tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(Dimens.iconM),
                     )
                 }
                 DropdownMenu(expanded = addLayerMenuVisible, onDismissRequest = { addLayerMenuVisible = false }) {
@@ -127,7 +128,7 @@ fun LayerPanel(
                             onIntent(StudioIntent.Layer.AddLayer())
                             addLayerMenuVisible = false
                         },
-                        leadingIcon = { Icon(Lucide.Layers, null, modifier = Modifier.size(18.dp)) },
+                        leadingIcon = { Icon(Lucide.Layers, null, modifier = Modifier.size(EditorTokens.icon)) },
                     )
                 }
             }
@@ -137,13 +138,13 @@ fun LayerPanel(
 
         LazyColumn(
             modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(bottom = 16.dp),
+            contentPadding = PaddingValues(bottom = Dimens.spaceL),
         ) {
             if (layers.isEmpty()) {
                 item {
                     Text(
                         text = stringResource(R.string.layers_empty),
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(Dimens.spaceL),
                         style = MaterialTheme.typography.bodyMedium,
                         color = EditorTokens.muted,
                     )

@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.PreviewSwatches
 import com.donnclab.kinetiframe.presentation.common.AssetDetails
 import com.donnclab.kinetiframe.presentation.common.AssetKind
 import com.donnclab.kinetiframe.presentation.common.AssetSummary
@@ -54,14 +55,14 @@ private fun previewSample() = AssetSummary(
     id = "preview",
     title = "Mouth Expressions",
     scrimSubtitle = UiText.Verbatim("12 Items"),
-    thumbnail = CardThumbnail.SolidGradient(Color(0xFFFFE1D6), Color(0xFFFFC9B3)),
+    thumbnail = CardThumbnail.SolidGradient(PreviewSwatches.blush, PreviewSwatches.salmon),
     details = AssetDetails(
         id = "preview",
         kind = AssetKind.PACK,
         previewKind = PreviewKind.LIVE_COLLAGE,
         title = "Mouth Expressions",
         specsLine = UiText.Verbatim("12 Items in this pack"),
-        thumbnail = CardThumbnail.SolidGradient(Color(0xFFFFE1D6), Color(0xFFFFC9B3)),
+        thumbnail = CardThumbnail.SolidGradient(PreviewSwatches.blush, PreviewSwatches.salmon),
     ),
 )
 

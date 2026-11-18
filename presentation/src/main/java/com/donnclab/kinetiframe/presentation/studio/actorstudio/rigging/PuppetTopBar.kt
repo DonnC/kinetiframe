@@ -33,6 +33,9 @@ import com.composables.icons.lucide.ListTree
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Paintbrush
 import com.composables.icons.lucide.Save
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.rigging.ActorPackAttachmentButton
 import com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton
@@ -61,10 +64,10 @@ fun PuppetTopBar(
 ) {
     Surface {
         BoxWithConstraints(Modifier.fillMaxWidth()) {
-            val compact = maxWidth < 480.dp
+            val compact = maxWidth < ActorStudioTokens.topBarCompactBreakpoint
             var more by remember { mutableStateOf(false) }
             Row(
-                Modifier.fillMaxWidth().height(48.dp).padding(horizontal = 4.dp),
+                Modifier.fillMaxWidth().height(Dimens.touchTarget).padding(horizontal = Dimens.spaceXs),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ActorToolButton(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.puppet_back)) {
@@ -78,7 +81,7 @@ fun PuppetTopBar(
                     Icon(
                         Icons.AutoMirrored.Filled.DirectionsRun,
                         stringResource(R.string.puppet_performance),
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(EditorTokens.icon),
                     )
                 }
                 Spacer(Modifier.weight(1f))

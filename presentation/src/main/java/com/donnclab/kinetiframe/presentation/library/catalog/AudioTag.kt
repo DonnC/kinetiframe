@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.R
@@ -34,7 +33,7 @@ fun AudioTag(tag: String, modifier: Modifier = Modifier) {
         modifier = modifier
             .clip(RoundedCornerShape(Dimens.radiusS))
             .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f))
-            .padding(horizontal = Dimens.spaceS, vertical = 1.dp),
+            .padding(horizontal = Dimens.spaceS, vertical = Dimens.spaceXxxs),
     )
 }
 

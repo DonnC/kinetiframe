@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.render.toMatrix
 import com.donnclab.kinetiframe.actors.rig.math.CutoutPartGuideFactory
 import com.donnclab.kinetiframe.actors.rig.math.ForwardKinematicsSolver
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.studio.ActorEditTarget
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioMode
@@ -61,11 +62,16 @@ fun RigSkeletonOverlay(state: StudioState, modifier: Modifier = Modifier) {
             if (movingCharacter) {
                 if (segment.id in definition?.sceneGraph?.rootBoneIds.orEmpty()) {
                     val p = segment.start
-                    val radius = 12.dp.toPx()
-                    drawCircle(fill, radius + 3.dp.toPx(), p)
-                    drawCircle(accent, radius + 3.dp.toPx(), p, style = Stroke(2.dp.toPx()))
-                    drawLine(accent, p - Offset(radius, 0f), p + Offset(radius, 0f), 2.dp.toPx())
-                    drawLine(accent, p - Offset(0f, radius), p + Offset(0f, radius), 2.dp.toPx())
+                    val radius = ActorStudioTokens.pivotRadius.toPx()
+                    drawCircle(fill, radius + ActorStudioTokens.pivotRing.toPx(), p)
+                    drawCircle(
+                        accent,
+                        radius + ActorStudioTokens.pivotRing.toPx(),
+                        p,
+                        style = Stroke(ActorStudioTokens.rigStroke.toPx()),
+                    )
+                    drawLine(accent, p - Offset(radius, 0f), p + Offset(radius, 0f), ActorStudioTokens.rigStroke.toPx())
+                    drawLine(accent, p - Offset(0f, radius), p + Offset(0f, radius), ActorStudioTokens.rigStroke.toPx())
                 }
                 return@forEach
             }
@@ -75,8 +81,13 @@ fun RigSkeletonOverlay(state: StudioState, modifier: Modifier = Modifier) {
             if (selected && state.scene.studioMode == StudioMode.RIG_SETUP &&
                 state.actor.editTarget == ActorEditTarget.JOINT_START
             ) {
-                drawCircle(fill, 8.dp.toPx(), segment.start)
-                drawCircle(accent, 8.dp.toPx(), segment.start, style = Stroke(2.dp.toPx()))
+                drawCircle(fill, ActorStudioTokens.jointRadius.toPx(), segment.start)
+                drawCircle(
+                    accent,
+                    ActorStudioTokens.jointRadius.toPx(),
+                    segment.start,
+                    style = Stroke(ActorStudioTokens.rigStroke.toPx()),
+                )
             }
             if (selected) {
                 // This is a cut-out boundary, not another deforming bone: it is generated from
@@ -85,20 +96,30 @@ fun RigSkeletonOverlay(state: StudioState, modifier: Modifier = Modifier) {
                 // allowance needed for a seamless elbow, knee, shoulder, or hip.
                 val guide = CutoutPartGuideFactory.create(segment.id, segment.start, segment.end)
                 drawLine(accent.copy(alpha = 0.11f), guide.start, guide.end, guide.envelopeRadius * 2f)
-                drawLine(accent.copy(alpha = 0.78f), guide.start, guide.end, 2.dp.toPx())
+                drawLine(accent.copy(alpha = 0.78f), guide.start, guide.end, ActorStudioTokens.rigStroke.toPx())
                 drawCircle(accent.copy(alpha = 0.12f), guide.overlapRadius, guide.start)
                 drawCircle(accent.copy(alpha = 0.18f), guide.overlapRadius, guide.end)
                 drawCircle(accent.copy(alpha = 0.44f), guide.overlapRadius * 0.58f, guide.start)
                 drawCircle(accent.copy(alpha = 0.56f), guide.overlapRadius * 0.58f, guide.end)
             }
-            drawLine(jointColor.copy(alpha = 0.7f), segment.start, segment.end, 2.dp.toPx())
-            drawCircle(fill, 6.dp.toPx(), segment.end)
-            drawCircle(jointColor, (if (selected) 9 else 6).dp.toPx(), segment.end, style = Stroke(2.dp.toPx()))
+            drawLine(jointColor.copy(alpha = 0.7f), segment.start, segment.end, ActorStudioTokens.rigStroke.toPx())
+            drawCircle(fill, ActorStudioTokens.jointEndRadius.toPx(), segment.end)
+            drawCircle(
+                jointColor,
+                (if (selected) ActorStudioTokens.jointSelectedRadius else ActorStudioTokens.jointEndRadius).toPx(),
+                segment.end,
+                style = Stroke(ActorStudioTokens.rigStroke.toPx()),
+            )
             if (state.scene.studioMode != StudioMode.RASTER_DRAWING &&
                 segment.id in definition?.sceneGraph?.rootBoneIds.orEmpty()
             ) {
-                drawCircle(fill, 8.dp.toPx(), segment.start)
-                drawCircle(jointColor, 8.dp.toPx(), segment.start, style = Stroke(3.dp.toPx()))
+                drawCircle(fill, ActorStudioTokens.jointRadius.toPx(), segment.start)
+                drawCircle(
+                    jointColor,
+                    ActorStudioTokens.jointRadius.toPx(),
+                    segment.start,
+                    style = Stroke(ActorStudioTokens.rootStroke.toPx()),
+                )
             }
         }
     }

@@ -87,8 +87,10 @@ import com.composables.icons.lucide.SkipForward
 import com.composables.icons.lucide.Square
 import com.composables.icons.lucide.SquarePlus
 import com.composables.icons.lucide.Trash2
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.AnimationState
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -152,7 +154,7 @@ fun TimelineControls(
             },
         )
     }
-    val contextMenuOffset = with(LocalDensity.current) { IntOffset(0, -56.dp.roundToPx()) }
+    val contextMenuOffset = with(LocalDensity.current) { IntOffset(0, -TimelineTokens.contextMenuOffset.roundToPx()) }
 
     LaunchedEffect(state.animation.currentFrame) {
         val frame = state.animation.currentFrame
@@ -186,7 +188,7 @@ fun TimelineControls(
     }
 
     BoxWithConstraints(modifier) {
-        val compactTransport = maxWidth < 600.dp
+        val compactTransport = maxWidth < TimelineTokens.compactTransportBreakpoint
         contextFrameIndex?.let { frameIndex ->
             Popup(
                 alignment = Alignment.TopCenter,
@@ -212,7 +214,7 @@ fun TimelineControls(
                         null
                     },
                     modifier = Modifier
-                        .padding(bottom = 8.dp)
+                        .padding(bottom = Dimens.spaceS)
                         .width(IntrinsicSize.Min),
                 )
             }
@@ -221,13 +223,15 @@ fun TimelineControls(
         Surface(
             modifier = Modifier.fillMaxWidth(),
             color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
-            shape = RoundedCornerShape(20.dp),
+            shape = RoundedCornerShape(Dimens.radiusPill),
             tonalElevation = 0.dp,
-            border = BorderStroke(1.dp, EditorTokens.border.copy(alpha = 0.2f)),
+            border = BorderStroke(Dimens.borderThin, EditorTokens.border.copy(alpha = 0.2f)),
         ) {
             val hasAudio = !packMode && state.project.audioClips.isNotEmpty()
             Row(
-                Modifier.fillMaxWidth().height(if (hasAudio) 76.dp else 56.dp).padding(horizontal = 4.dp),
+                Modifier.fillMaxWidth().height(
+                    if (hasAudio) TimelineTokens.controlsHeightWithAudio else TimelineTokens.controlsHeight,
+                ).padding(horizontal = Dimens.spaceXs),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (!packMode) {
@@ -250,7 +254,7 @@ fun TimelineControls(
                             totalFrames = state.animation.totalFrames,
                             listState = listState,
                             onSeek = { onIntent(StudioIntent.Playback.SetCurrentFrame(it)) },
-                            modifier = Modifier.fillMaxWidth().padding(end = 40.dp),
+                            modifier = Modifier.fillMaxWidth().padding(end = TimelineTokens.controlsEndInset),
                         )
                     }
                     TimelineFrameList(
@@ -260,12 +264,12 @@ fun TimelineControls(
                         thumbnails = thumbnails,
                         onContextRequested = { contextFrameIndex = it },
                         onContextDismissed = { contextFrameIndex = null },
-                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                        modifier = Modifier.fillMaxWidth().height(Dimens.touchTarget),
                         onAddFrame = onAddPackItem,
                     )
                 }
-                IconButton(onClick = onLayerPanelToggle, modifier = Modifier.size(48.dp)) {
-                    Icon(Lucide.Layers, stringResource(R.string.layers_title), modifier = Modifier.size(20.dp))
+                IconButton(onClick = onLayerPanelToggle, modifier = Modifier.size(Dimens.touchTarget)) {
+                    Icon(Lucide.Layers, stringResource(R.string.layers_title), modifier = Modifier.size(Dimens.iconM))
                 }
             }
         }

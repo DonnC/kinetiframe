@@ -22,6 +22,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 
 /** Non-interactive row telling the user that more skeleton templates are coming, shown after
@@ -29,16 +31,19 @@ import com.donnclab.kinetiframe.presentation.R
 @Composable
 fun ComingSoonTemplateRow(modifier: Modifier = Modifier) {
     Surface(
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(Dimens.radiusL),
         color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.outlineVariant),
+        border = BorderStroke(Dimens.borderMedium, MaterialTheme.colorScheme.outlineVariant),
         modifier = modifier.fillMaxWidth(),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(14.dp).fillMaxWidth()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(Dimens.spaceMPlus).fillMaxWidth(),
+        ) {
             Box(
                 Modifier.size(
-                    52.dp,
-                ).clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.surfaceVariant),
+                    ActorStudioTokens.templateThumb,
+                ).clip(RoundedCornerShape(Dimens.radiusM)).background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
@@ -47,7 +52,7 @@ fun ComingSoonTemplateRow(modifier: Modifier = Modifier) {
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Column(Modifier.weight(1f).padding(horizontal = 14.dp)) {
+            Column(Modifier.weight(1f).padding(horizontal = Dimens.spaceMPlus)) {
                 Text(
                     stringResource(R.string.actor_template_coming_soon_title),
                     style = MaterialTheme.typography.titleSmall,

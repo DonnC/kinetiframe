@@ -33,7 +33,9 @@ import com.composables.icons.lucide.EyeOff
 import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.SquarePlus
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 
@@ -50,7 +52,7 @@ fun TimelineActionRow(
     if (compact) {
         var open by remember { mutableStateOf(false) }
         Box(modifier) {
-            IconButton(onClick = { open = true }, modifier = Modifier.size(48.dp)) {
+            IconButton(onClick = { open = true }, modifier = Modifier.size(Dimens.touchTarget)) {
                 Icon(Lucide.Ellipsis, stringResource(R.string.timeline_frame_actions))
             }
             DropdownMenu(open, { open = false }) {
@@ -82,40 +84,40 @@ fun TimelineActionRow(
         // Add Frame
         IconButton(
             onClick = { onIntent(StudioIntent.Frame.AddFrame) },
-            modifier = Modifier.size(48.dp),
+            modifier = Modifier.size(Dimens.touchTarget),
         ) {
             Icon(
                 Lucide.SquarePlus,
                 contentDescription = stringResource(R.string.timeline_add_frame),
                 tint = EditorTokens.accent,
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(EditorTokens.icon),
             )
         }
 
         // Visibility Toggle
         IconButton(
             onClick = onToolbarToggle,
-            modifier = Modifier.size(48.dp),
+            modifier = Modifier.size(Dimens.touchTarget),
         ) {
             Icon(
                 if (toolbarVisible) Lucide.Eye else Lucide.EyeOff,
                 contentDescription = stringResource(R.string.timeline_focus_canvas),
                 tint = if (toolbarVisible) EditorTokens.accent else EditorTokens.muted,
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(EditorTokens.icon),
             )
         }
 
         // Layer Panel Toggle
         IconButton(
             onClick = onLayerPanelToggle,
-            modifier = Modifier.size(48.dp),
+            modifier = Modifier.size(Dimens.touchTarget),
         ) {
             Box {
                 Icon(
                     Lucide.Layers,
                     contentDescription = stringResource(R.string.layers_title),
                     tint = EditorTokens.accent,
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.size(EditorTokens.icon),
                 )
                 if (layerCount > 0) {
                     Surface(
@@ -123,9 +125,9 @@ fun TimelineActionRow(
                         shape = CircleShape,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .offset(x = 6.dp, y = (-6).dp)
-                            .size(14.dp),
-                        border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.surface),
+                            .offset(x = TimelineTokens.actionBadgeOffset, y = -TimelineTokens.actionBadgeOffset)
+                            .size(TimelineTokens.actionBadge),
+                        border = BorderStroke(Dimens.borderMedium, MaterialTheme.colorScheme.surface),
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Text(

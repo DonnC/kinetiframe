@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Eye
 import com.composables.icons.lucide.Lucide
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.studio.FrameThumbnailContent
@@ -36,22 +37,22 @@ fun StudioFrameCard(
 ) {
     Surface(
         modifier = modifier.clickable(onClick = onClick),
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(Dimens.radiusMPlus),
         color = if (selected) EditorTokens.accent.copy(alpha = 0.14f) else MaterialTheme.colorScheme.surfaceVariant,
         border = androidx.compose.foundation.BorderStroke(
-            2.dp,
+            Dimens.borderThick,
             if (selected) EditorTokens.accent else Color.Transparent,
         ),
     ) {
-        Box(Modifier.fillMaxWidth().height(150.dp)) {
+        Box(Modifier.fillMaxWidth().height(EditorTokens.frameStudioCardThumb)) {
             FrameThumbnailContent(bitmap, index, selected, numberAlignment = Alignment.TopStart) {
                 Surface(
-                    Modifier.align(Alignment.TopEnd).padding(6.dp),
-                    shape = RoundedCornerShape(20.dp),
+                    Modifier.align(Alignment.TopEnd).padding(Dimens.spaceXsPlus),
+                    shape = RoundedCornerShape(Dimens.radiusPill),
                     color = MaterialTheme.colorScheme.surface.copy(alpha = .92f),
                 ) {
-                    IconButton(onClick = onOpen, modifier = Modifier.size(40.dp)) {
-                        Icon(Lucide.Eye, stringResource(R.string.frames_open), Modifier.size(20.dp))
+                    IconButton(onClick = onOpen, modifier = Modifier.size(Dimens.iconButton)) {
+                        Icon(Lucide.Eye, stringResource(R.string.frames_open), Modifier.size(Dimens.iconM))
                     }
                 }
             }

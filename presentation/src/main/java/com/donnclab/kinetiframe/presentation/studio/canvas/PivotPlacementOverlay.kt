@@ -22,13 +22,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Check
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.actors.rig.model.PivotPlacement
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 
 /**
@@ -54,8 +55,8 @@ fun PivotPlacementOverlay(
     val density = LocalDensity.current
     val actionColor = MaterialTheme.colorScheme.primary
     val cancelColor = MaterialTheme.colorScheme.error
-    val pivotRadius = with(density) { 14.dp.toPx() }
-    val hitRadius = with(density) { 44.dp.toPx() }
+    val pivotRadius = with(density) { EditorTokens.pivotRadius.toPx() }
+    val hitRadius = with(density) { EditorTokens.pivotHitRadius.toPx() }
     val paint = remember { Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG) }
     val outerPivotPaint = remember { Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.White.toArgb() } }
     val innerPivotPaint = remember(actionColor) { Paint(Paint.ANTI_ALIAS_FLAG).apply { color = actionColor.toArgb() } }
@@ -117,8 +118,8 @@ fun PivotPlacementOverlay(
     }
 
     Row(
-        modifier = Modifier.padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(Dimens.spaceL),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
     ) {
         FloatingActionButton(
             onClick = onConfirmed,

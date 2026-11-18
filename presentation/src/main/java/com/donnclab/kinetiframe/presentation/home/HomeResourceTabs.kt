@@ -19,9 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.document.ProjectManifest
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.library.model.AssetOrganization
 import com.donnclab.kinetiframe.library.model.BrowserPosition
 import com.donnclab.kinetiframe.presentation.R
@@ -95,9 +96,14 @@ internal fun ProjectsTabContent(
                 else -> LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 104.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(
+                        start = Dimens.spaceL,
+                        end = Dimens.spaceL,
+                        top = Dimens.spaceXs,
+                        bottom = HomeTokens.listBottomReserve,
+                    ),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
                 ) {
                     items(filtered, key = { it.projectId }) { project ->
                         HomeProjectCard(
@@ -217,9 +223,14 @@ internal fun ActorsTabContent(
                 else -> LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 104.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(
+                        start = Dimens.spaceL,
+                        end = Dimens.spaceL,
+                        top = Dimens.spaceXs,
+                        bottom = HomeTokens.listBottomReserve,
+                    ),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
                 ) {
                     items(filtered, key = { it.actorId }) { actor ->
                         HomeActorCard(

@@ -37,7 +37,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
 import com.donnclab.kinetiframe.presentation.studio.dock.ColorPicker
@@ -49,7 +51,7 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
     val accentColor = EditorTokens.accent
     Column(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(Dimens.spaceL)
             .fillMaxWidth(),
     ) {
         // Master Switch at the top
@@ -59,15 +61,15 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
+                IconButton(onClick = onDismiss, modifier = Modifier.size(EditorTokens.closeButton)) {
                     Icon(
                         Lucide.X,
                         contentDescription = stringResource(R.string.action_close),
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(Dimens.iconS),
                         tint = EditorTokens.dark,
                     )
                 }
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(Dimens.spaceS))
                 Text(
                     stringResource(R.string.onion_title),
                     style = MaterialTheme.typography.titleMedium,
@@ -78,12 +80,12 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
                     onClick = { onIntent(StudioIntent.OnionSkin.Reset) },
-                    modifier = Modifier.size(28.dp),
+                    modifier = Modifier.size(EditorTokens.resetButton),
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Refresh,
                         contentDescription = stringResource(R.string.onion_reset),
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(Dimens.iconS),
                         tint = accentColor,
                     )
                 }
@@ -101,18 +103,18 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
             }
         }
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(Dimens.spaceM))
 
         // Visual Preview
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(Color(0xFFF8F8F8)),
+                .height(TimelineTokens.onionPreviewHeight)
+                .clip(RoundedCornerShape(Dimens.radiusM))
+                .background(EditorTokens.previewWell),
             contentAlignment = Alignment.Center,
         ) {
-            Canvas(modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp)) {
+            Canvas(modifier = Modifier.fillMaxSize().padding(horizontal = TimelineTokens.onionPreviewInset)) {
                 if (state.onionSkin.enabled) {
                     val previewWidth = size.width * 0.4f
                     val previewHeight = size.height * 0.6f
@@ -156,7 +158,7 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
             }
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(Dimens.spaceL))
 
         OnionAdjusterRow(
             label = stringResource(R.string.onion_opacity),
@@ -166,7 +168,7 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
             onValueChange = { onIntent(StudioIntent.OnionSkin.SetOpacity(it)) },
         )
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(Dimens.spaceM))
 
         OnionAdjusterRow(
             label = stringResource(R.string.onion_frames_before),
@@ -177,7 +179,7 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
             onValueChange = { onIntent(StudioIntent.OnionSkin.SetFramesBefore(it.toInt())) },
         )
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(Dimens.spaceM))
 
         OnionAdjusterRow(
             label = stringResource(R.string.onion_frames_after),
@@ -188,7 +190,7 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
             onValueChange = { onIntent(StudioIntent.OnionSkin.SetFramesAfter(it.toInt())) },
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(Dimens.spaceL))
 
         Row(
             modifier = Modifier.fillMaxWidth(),

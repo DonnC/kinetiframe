@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Check
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -27,20 +28,20 @@ fun FillDock(modifier: Modifier = Modifier, state: StudioState, onIntent: (Studi
         onOffsetChange = { onIntent(StudioIntent.Fill.SetDockPosition(it)) },
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 4.dp),
+            modifier = Modifier.padding(horizontal = Dimens.spaceXs),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs),
         ) {
             IconButton(onClick = { onIntent(StudioIntent.Fill.Confirm) }) {
                 Icon(
                     Lucide.Check,
                     stringResource(R.string.fill_confirm),
-                    modifier = Modifier.size(22.dp),
+                    modifier = Modifier.size(EditorTokens.confirmIcon),
                     tint = EditorTokens.accent,
                 )
             }
             IconButton(onClick = { onIntent(StudioIntent.Fill.Cancel) }) {
-                Icon(Lucide.X, stringResource(R.string.action_cancel), modifier = Modifier.size(20.dp))
+                Icon(Lucide.X, stringResource(R.string.action_cancel), modifier = Modifier.size(Dimens.iconM))
             }
         }
     }

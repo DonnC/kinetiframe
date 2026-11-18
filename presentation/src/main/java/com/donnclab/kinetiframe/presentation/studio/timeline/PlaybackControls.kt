@@ -17,7 +17,9 @@ import com.composables.icons.lucide.Pause
 import com.composables.icons.lucide.Play
 import com.composables.icons.lucide.SkipBack
 import com.composables.icons.lucide.SkipForward
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 
@@ -28,20 +30,26 @@ fun PlaybackControls(
     modifier: Modifier = Modifier,
     compact: Boolean = false,
 ) {
-    CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 40.dp) {
+    CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides TimelineTokens.transportButtonWidth) {
         Row(
             modifier = modifier,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (!compact) {
-                IconButton(onClick = {
-                    onIntent(StudioIntent.Playback.PreviousFrame)
-                }, modifier = Modifier.size(40.dp, 48.dp)) {
+                IconButton(
+                    onClick = {
+                        onIntent(StudioIntent.Playback.PreviousFrame)
+                    },
+                    modifier = Modifier.size(
+                        TimelineTokens.transportButtonWidth,
+                        TimelineTokens.transportButtonHeight,
+                    ),
+                ) {
                     Icon(
                         Lucide.SkipBack,
                         stringResource(R.string.timeline_previous_frame),
                         tint = EditorTokens.dark,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(EditorTokens.icon),
                     )
                 }
             }
@@ -49,24 +57,30 @@ fun PlaybackControls(
                 onClick = {
                     if (isPlaying) onIntent(StudioIntent.Playback.Pause) else onIntent(StudioIntent.Playback.Play)
                 },
-                modifier = Modifier.size(40.dp, 48.dp),
+                modifier = Modifier.size(TimelineTokens.transportButtonWidth, TimelineTokens.transportButtonHeight),
             ) {
                 Icon(
                     if (isPlaying) Lucide.Pause else Lucide.Play,
                     stringResource(if (isPlaying) R.string.action_pause else R.string.action_play),
                     tint = EditorTokens.accent,
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(Dimens.iconL),
                 )
             }
             if (!compact) {
-                IconButton(onClick = {
-                    onIntent(StudioIntent.Playback.NextFrame)
-                }, modifier = Modifier.size(40.dp, 48.dp)) {
+                IconButton(
+                    onClick = {
+                        onIntent(StudioIntent.Playback.NextFrame)
+                    },
+                    modifier = Modifier.size(
+                        TimelineTokens.transportButtonWidth,
+                        TimelineTokens.transportButtonHeight,
+                    ),
+                ) {
                     Icon(
                         Lucide.SkipForward,
                         stringResource(R.string.timeline_next_frame),
                         tint = EditorTokens.dark,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(EditorTokens.icon),
                     )
                 }
             }

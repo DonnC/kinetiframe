@@ -10,6 +10,7 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Shapes
 import com.composables.icons.lucide.Square
 import com.composables.icons.lucide.Triangle
+import com.donnclab.kinetiframe.designsystem.theme.PreviewSwatches
 import com.donnclab.kinetiframe.presentation.common.AssetDetails
 import com.donnclab.kinetiframe.presentation.common.AssetKind
 import com.donnclab.kinetiframe.presentation.common.AssetSummary
@@ -90,7 +91,13 @@ object PreviewCatalog {
             "Smile", "Frown", "Shock", "Wink", "Surprise", "Neutral",
             "Wince", "Gasp", "Sleepy", "Laugh", "Angry", "Calm",
         )
-        val tints = listOf(Color(0xFFFF6A45), Color(0xFFE14E28), Color(0xFFFF8A63), Color(0xFFD9401E))
+        val tints =
+            listOf(
+                PreviewSwatches.coral,
+                PreviewSwatches.coralDeep,
+                PreviewSwatches.coralLight,
+                PreviewSwatches.coralDark,
+            )
         return names.mapIndexed { index, name ->
             StampAsset(
                 "stamp_$index",
@@ -179,29 +186,29 @@ object PreviewCatalog {
             PreviewKind.AUDIO_PLAYER,
             title,
             UiText.Verbatim("$tag  ·  $duration"),
-            CardThumbnail.SolidGradient(Color(0xFF2A2622), Color(0xFF4A423B)),
+            CardThumbnail.SolidGradient(PreviewSwatches.espresso, PreviewSwatches.umber),
             waveformSeed = seed,
         ),
     )
 
     private fun faceCollage() = CardThumbnail.Collage(
-        Color(0xFFFFE1D6),
-        Color(0xFFFFC9B3),
+        PreviewSwatches.blush,
+        PreviewSwatches.salmon,
         listOf(Lucide.Circle, Lucide.Circle, Lucide.Circle, Lucide.Circle),
     )
     private fun fxCollage() = CardThumbnail.Collage(
-        Color(0xFFFFD9CC),
-        Color(0xFFFF6A45),
+        PreviewSwatches.peach,
+        PreviewSwatches.coral,
         listOf(Lucide.Shapes, Lucide.Shapes, Lucide.Shapes, Lucide.Shapes),
     )
     private fun shapeCollage() = CardThumbnail.Collage(
-        Color(0xFFFFE8CF),
-        Color(0xFFFFB482),
+        PreviewSwatches.cream,
+        PreviewSwatches.apricot,
         listOf(Lucide.Square, Lucide.Circle, Lucide.Triangle, Lucide.Square),
     )
     private fun bgCollage() = CardThumbnail.Collage(
-        Color(0xFFF3E8DC),
-        Color(0xFFE8C9A8),
+        PreviewSwatches.sand,
+        PreviewSwatches.tan,
         listOf(Lucide.Layers, Lucide.Layers, Lucide.Layers, Lucide.Layers),
     )
 }

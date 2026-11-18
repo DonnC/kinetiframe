@@ -11,8 +11,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.R
 import java.io.File
@@ -24,7 +24,7 @@ internal fun LibraryImageThumbnail(file: File, label: String, modifier: Modifier
         model = file,
         contentDescription = stringResource(R.string.library_item_preview, label),
         contentScale = ContentScale.Fit,
-        modifier = modifier.fillMaxWidth().aspectRatio(16f / 9f).clip(RoundedCornerShape(6.dp))
+        modifier = modifier.fillMaxWidth().aspectRatio(16f / 9f).clip(RoundedCornerShape(Dimens.radiusXs))
             .background(MaterialTheme.colorScheme.surfaceVariant),
     )
 }

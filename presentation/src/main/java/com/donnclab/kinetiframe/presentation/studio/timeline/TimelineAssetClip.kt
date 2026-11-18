@@ -35,14 +35,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.media.audio.Waveform
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.media.audio.AudioClipWaveform
 import kotlin.math.roundToInt
 
-internal val FRAME_CELL_WIDTH = 40.dp
-internal val TRACK_GUTTER = 96.dp
-internal val TRACK_HEIGHT = 48.dp
+internal val FRAME_CELL_WIDTH = TimelineTokens.frameCell
+internal val TRACK_GUTTER = TimelineTokens.trackGutter
+internal val TRACK_HEIGHT = TimelineTokens.trackHeight
 
 /** Local previews only. A cancelled gesture never writes the project; release writes once. */
 @Composable
@@ -118,15 +120,15 @@ internal fun TimelineAssetClip(
         Modifier.offset(x = FRAME_CELL_WIDTH * (visibleStart - offsetFrames))
             .width(
                 FRAME_CELL_WIDTH * (visibleEnd - visibleStart).coerceAtLeast(1f),
-            ).height(TRACK_HEIGHT).padding(vertical = 3.dp)
+            ).height(TRACK_HEIGHT).padding(vertical = TimelineTokens.clipInset)
             .border(
-                if (selected) 2.dp else 1.dp,
+                if (selected) TimelineTokens.clipBorderSelected else Dimens.borderThin,
                 MaterialTheme.colorScheme.primary.copy(alpha = if (selected) 1f else .4f),
-                RoundedCornerShape(6.dp),
+                RoundedCornerShape(TimelineTokens.clipCorner),
             )
             .background(
                 MaterialTheme.colorScheme.primary.copy(alpha = if (selected) .22f else .1f),
-                RoundedCornerShape(6.dp),
+                RoundedCornerShape(TimelineTokens.clipCorner),
             ),
     ) {
         Box(
@@ -178,7 +180,11 @@ internal fun TimelineAssetClip(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.align(Alignment.CenterStart).padding(horizontal = if (selected) 20.dp else 6.dp),
+                modifier = Modifier.align(
+                    Alignment.CenterStart,
+                ).padding(
+                    horizontal = if (selected) TimelineTokens.clipLabelInsetSelected else TimelineTokens.clipLabelInset,
+                ),
             )
         }
         // Popup menus anchor to the visible clip, not a distant panel header.
@@ -240,7 +246,7 @@ private fun AssetTrimHandle(
     val end by rememberUpdatedState(onEnd)
     val cancel by rememberUpdatedState(onCancel)
     Box(
-        modifier.width(12.dp).fillMaxHeight().semantics { contentDescription = description }
+        modifier.width(TimelineTokens.trimHandleWidth).fillMaxHeight().semantics { contentDescription = description }
             .background(MaterialTheme.colorScheme.primary.copy(alpha = .3f))
             .pointerInput(cellPx) {
                 var movement = ClipDragMath(cellPx)

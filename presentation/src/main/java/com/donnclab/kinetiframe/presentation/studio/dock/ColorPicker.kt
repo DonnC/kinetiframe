@@ -34,6 +34,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
 import com.donnclab.kinetiframe.presentation.studio.color.LocalScreenColorRequest
@@ -52,10 +54,10 @@ fun ColorPicker(color: Color, onColorChanged: (Color) -> Unit) {
 
     Box(
         modifier = Modifier
-            .size(24.dp)
+            .size(EditorTokens.colorDot)
             .clip(CircleShape)
             .background(color)
-            .border(1.5.dp, Color(0xFFE0E0E0), CircleShape)
+            .border(Dimens.borderMedium, EditorTokens.hairline, CircleShape)
             .clickable { showPopup = true },
     )
 
@@ -65,11 +67,11 @@ fun ColorPicker(color: Color, onColorChanged: (Color) -> Unit) {
             properties = PopupProperties(focusable = true),
         ) {
             Surface(
-                modifier = Modifier.padding(8.dp),
-                shape = RoundedCornerShape(12.dp),
-                shadowElevation = 12.dp,
+                modifier = Modifier.padding(Dimens.spaceS),
+                shape = RoundedCornerShape(Dimens.radiusM),
+                shadowElevation = Dimens.elevationL,
                 color = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE0E0E0)),
+                border = androidx.compose.foundation.BorderStroke(Dimens.borderThin, EditorTokens.hairline),
             ) {
                 ColorPickerPanel(
                     color = color,
@@ -88,14 +90,14 @@ fun ColorPickerPanel(color: Color, onColorChanged: (Color) -> Unit, onDismiss: (
     val controller = androidx.compose.runtime.key(palettes) { rememberColorPickerController() }
     val configuration = androidx.compose.ui.platform.LocalConfiguration.current
     val isLandscape = configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
-    val pickerSize = if (isLandscape) 120.dp else 160.dp
+    val pickerSize = if (isLandscape) EditorTokens.colorWheelLandscape else EditorTokens.colorWheel
     val screenPicker = LocalScreenColorRequest.current
     val windowHeightDp = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp().value }
 
     Column(
         modifier = Modifier.heightIn(max = (windowHeightDp - 32).coerceAtLeast(100f).dp)
-            .verticalScroll(rememberScrollState()).padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+            .verticalScroll(rememberScrollState()).padding(Dimens.spaceM),
+        verticalArrangement = Arrangement.spacedBy(Dimens.spaceS),
     ) {
         Row {
             ContextIconButton(
@@ -113,22 +115,26 @@ fun ColorPickerPanel(color: Color, onColorChanged: (Color) -> Unit, onDismiss: (
             com.donnclab.kinetiframe.presentation.studio.color.PaletteBrowser(color, onColorChanged)
         } else {
             HsvColorPicker(
-                modifier = Modifier.size(pickerSize).clip(RoundedCornerShape(8.dp)),
+                modifier = Modifier.size(pickerSize).clip(RoundedCornerShape(Dimens.radiusS)),
                 controller = controller,
                 initialColor = color,
                 onColorChanged = { envelope: ColorEnvelope -> if (envelope.fromUser) onColorChanged(envelope.color) },
             )
             AlphaSlider(
-                modifier = Modifier.width(pickerSize).height(16.dp),
+                modifier = Modifier.width(pickerSize).height(EditorTokens.colorSliderHeight),
                 controller = controller,
             )
             BrightnessSlider(
-                modifier = Modifier.width(pickerSize).height(16.dp),
+                modifier = Modifier.width(pickerSize).height(EditorTokens.colorSliderHeight),
                 controller = controller,
             )
         }
         Row {
-            Box(Modifier.size(22.dp).clip(RoundedCornerShape(5.dp)).background(color))
+            Box(
+                Modifier.size(EditorTokens.swatch)
+                    .clip(RoundedCornerShape(EditorTokens.swatchCorner))
+                    .background(color),
+            )
             screenPicker?.let { picker ->
                 ContextIconButton(
                     ContextIconAction(Icons.Filled.Colorize, "Pick color from screen", {

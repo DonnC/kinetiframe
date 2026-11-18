@@ -61,6 +61,7 @@ import com.composables.icons.lucide.Square
 import com.composables.icons.lucide.Type
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
@@ -119,12 +120,15 @@ fun ToolDock(
         Surface(
             modifier = Modifier.dockSurface(dockState),
             color = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-            shape = RoundedCornerShape(28.dp),
-            shadowElevation = 12.dp,
-            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE0E0E0).copy(alpha = 0.5f)),
+            shape = RoundedCornerShape(EditorTokens.dockRailCorner),
+            shadowElevation = Dimens.elevationL,
+            border = androidx.compose.foundation.BorderStroke(
+                Dimens.borderThin,
+                EditorTokens.hairline.copy(alpha = 0.5f),
+            ),
         ) {
             Column(
-                modifier = Modifier.padding(bottom = 8.dp),
+                modifier = Modifier.padding(bottom = Dimens.spaceS),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 DragHandle(
@@ -144,21 +148,21 @@ fun ToolDock(
 
                 LazyColumn(
                     modifier = Modifier
-                        .width(48.dp)
+                        .width(EditorTokens.dockRailWidth)
                         .height(
                             if (isPuppetStudio) {
-                                300.dp
+                                EditorTokens.dockRailHeightPuppetStudio
                             } else if (state.actorDefinition() !=
                                 null
                             ) {
-                                220.dp
+                                EditorTokens.dockRailHeightWithActor
                             } else {
-                                180.dp
+                                EditorTokens.dockRailHeight
                             },
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    contentPadding = PaddingValues(bottom = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs),
+                    contentPadding = PaddingValues(bottom = Dimens.spaceS),
                 ) {
                     // Bone sits beside Pen for any document with a rig -- creating an actor
                     // ("Puppet layer") only ever happens inside the standalone Actor Studio (see
@@ -231,7 +235,9 @@ fun ToolDock(
                                 onOpenMenu = {},
                             )
                         }
-                        item { HorizontalDivider(Modifier.width(32.dp).padding(vertical = 4.dp)) }
+                        item {
+                            HorizontalDivider(Modifier.width(EditorTokens.control).padding(vertical = Dimens.spaceXs))
+                        }
                     }
                     if (!isPuppetStudio) {
                         item {
@@ -386,7 +392,7 @@ fun ToolDock(
             Popup(
                 alignment = Alignment.TopStart,
                 offset = IntOffset(
-                    (dockState.offset.x + with(density) { 52.dp.toPx() }).roundToInt(),
+                    (dockState.offset.x + with(density) { EditorTokens.dockMenuOffset.toPx() }).roundToInt(),
                     dockState.offset.y.roundToInt(),
                 ),
                 onDismissRequest = { menuTool = null },
@@ -394,12 +400,20 @@ fun ToolDock(
             ) {
                 Surface(
                     modifier = Modifier
-                        .width(if (menuTool == DrawingTool.GRID) 240.dp else 200.dp)
-                        .padding(vertical = 8.dp),
+                        .width(
+                            if (menuTool ==
+                                DrawingTool.GRID
+                            ) {
+                                EditorTokens.dockGridMenuWidth
+                            } else {
+                                EditorTokens.dockMenuWidth
+                            },
+                        )
+                        .padding(vertical = Dimens.spaceS),
                     color = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(16.dp),
-                    shadowElevation = 12.dp,
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE0E0E0)),
+                    shape = RoundedCornerShape(Dimens.radiusL),
+                    shadowElevation = Dimens.elevationL,
+                    border = androidx.compose.foundation.BorderStroke(Dimens.borderThin, EditorTokens.hairline),
                 ) {
                     when (menuTool) {
                         DrawingTool.BRUSH, DrawingTool.COLOR_FILL -> BrushOptionsContent(state, menuTool!!, onIntent)
@@ -407,7 +421,7 @@ fun ToolDock(
                         DrawingTool.LASSO -> SelectionOptionsContent(state, onIntent) { menuTool = null }
                         DrawingTool.TEXT -> TypographyOptionsPanel(state, onIntent, onDismiss = { menuTool = null })
                         DrawingTool.SMUDGE, DrawingTool.BLUR -> SmudgeBlurOptionsContent(state, menuTool!!, onIntent)
-                        else -> Box(Modifier.padding(16.dp)) { Text(stringResource(R.string.tool_options)) }
+                        else -> Box(Modifier.padding(Dimens.spaceL)) { Text(stringResource(R.string.tool_options)) }
                     }
                 }
             }

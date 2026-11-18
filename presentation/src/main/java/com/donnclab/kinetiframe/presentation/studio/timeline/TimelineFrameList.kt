@@ -18,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 
@@ -49,12 +51,12 @@ fun TimelineFrameList(
         horizontalArrangement = Arrangement.Start,
     ) {
         BoxWithConstraints(Modifier.weight(1f)) {
-            val edge = ((maxWidth - 36.dp) / 2).coerceAtLeast(0.dp)
+            val edge = ((maxWidth - TimelineTokens.frameThumbWidth) / 2).coerceAtLeast(0.dp)
             LazyRow(
                 state = listState,
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(horizontal = edge),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 items(state.animation.totalFrames) { index ->

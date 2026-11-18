@@ -42,7 +42,9 @@ import com.composables.icons.lucide.EyeOff
 import com.composables.icons.lucide.GripVertical
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.DenseTextField
 
@@ -66,7 +68,7 @@ fun LayerItem(
             .height(EditorTokens.row)
             .background(if (isActive) EditorTokens.accent.copy(alpha = 0.08f) else Color.Transparent)
             .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = Dimens.spaceM),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         // [Drag Handle]
@@ -76,7 +78,7 @@ fun LayerItem(
             tint = EditorTokens.inactive,
             modifier = dragHandleModifier
                 .size(EditorTokens.icon)
-                .padding(end = 4.dp),
+                .padding(end = Dimens.spaceXs),
         )
 
         // [Eye Icon (only shows when hidden)]
@@ -93,13 +95,13 @@ fun LayerItem(
             }
         }
 
-        Spacer(Modifier.width(8.dp))
+        Spacer(Modifier.width(Dimens.spaceS))
 
         // [Preview]
         Box(
             modifier = Modifier
-                .size(36.dp)
-                .clip(RoundedCornerShape(4.dp))
+                .size(TimelineTokens.layerThumb)
+                .clip(RoundedCornerShape(Dimens.radiusXxs))
                 .background(Color.Transparent),
             contentAlignment = Alignment.Center,
         ) {
@@ -108,7 +110,7 @@ fun LayerItem(
             val previewLight = MaterialTheme.colorScheme.surfaceVariant
             val previewDark = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f)
             androidx.compose.foundation.Canvas(Modifier.fillMaxSize()) {
-                val cell = 8.dp.toPx()
+                val cell = TimelineTokens.checkerCell.toPx()
                 var y = 0f
                 var row = 0
                 while (y < size.height) {
@@ -137,7 +139,7 @@ fun LayerItem(
             }
         }
 
-        Spacer(Modifier.width(12.dp))
+        Spacer(Modifier.width(Dimens.spaceM))
 
         // [Layer Name]
         Box(
@@ -177,7 +179,7 @@ fun LayerItem(
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = if (isActive) FontWeight.Bold else FontWeight.Normal,
                     ),
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                    contentPadding = PaddingValues(horizontal = Dimens.spaceS, vertical = 0.dp),
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester)
@@ -199,12 +201,12 @@ fun LayerItem(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
+                        .padding(horizontal = Dimens.spaceS),
                 )
             }
         }
 
-        Spacer(Modifier.width(8.dp))
+        Spacer(Modifier.width(Dimens.spaceS))
 
         // [Opacity Value]
         OpacityDrag(

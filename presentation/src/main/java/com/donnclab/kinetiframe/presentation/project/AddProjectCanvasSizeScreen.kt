@@ -23,10 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Link2
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
@@ -49,14 +49,16 @@ fun AddProjectCanvasSizeScreen(
         AddFlowTopBar(title = stringResource(R.string.canvas_size_title), onBack = onBack)
     }) { padding ->
         Column(
-            Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 20.dp),
+            Modifier.fillMaxSize().padding(
+                padding,
+            ).verticalScroll(rememberScrollState()).padding(horizontal = Dimens.spaceXl),
         ) {
             LocalDimensionsRow(
                 dimensions = selection.dimensions,
                 editable = selection.preset.isLocal,
                 onChange = { onChange(selection.copy(localDimensions = it)) },
             )
-            HorizontalDivider(Modifier.padding(top = 8.dp, bottom = 4.dp))
+            HorizontalDivider(Modifier.padding(top = Dimens.spaceS, bottom = Dimens.spaceXs))
             CanvasPresets.all.forEach { preset ->
                 CanvasPresetRow(
                     preset = preset,
@@ -64,7 +66,7 @@ fun AddProjectCanvasSizeScreen(
                     onClick = { onChange(selection.copy(preset = preset)) },
                 )
             }
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(Dimens.spaceXlPlus))
         }
     }
 }
@@ -78,8 +80,8 @@ fun AddProjectCanvasSizeScreen(
 private fun LocalDimensionsRow(dimensions: StageDimensions, editable: Boolean, onChange: (StageDimensions) -> Unit) {
     Row(
         verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.padding(top = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+        modifier = Modifier.padding(top = Dimens.spaceL),
     ) {
         CompactTextField(
             value = dimensions.width.toString(),
@@ -95,7 +97,7 @@ private fun LocalDimensionsRow(dimensions: StageDimensions, editable: Boolean, o
             Lucide.Link2,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 14.dp),
+            modifier = Modifier.padding(bottom = Dimens.spaceMPlus),
         )
         CompactTextField(
             value = dimensions.height.toString(),
@@ -115,7 +117,7 @@ private fun LocalDimensionsRow(dimensions: StageDimensions, editable: Boolean, o
 @Composable
 private fun CanvasPresetRow(preset: CanvasPreset, selected: Boolean, onClick: () -> Unit) {
     Surface(onClick = onClick, color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxWidth()) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 14.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = Dimens.spaceMPlus)) {
             Column(Modifier.weight(1f)) {
                 Text(preset.displayName(), style = MaterialTheme.typography.titleSmall)
                 Text(

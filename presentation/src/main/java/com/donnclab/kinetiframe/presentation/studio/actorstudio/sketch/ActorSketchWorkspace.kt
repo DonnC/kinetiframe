@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Bone
 import com.composables.icons.lucide.Box
 import com.composables.icons.lucide.Eraser
@@ -36,6 +35,8 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.PaintBucket
 import com.composables.icons.lucide.Pen
 import com.composables.icons.lucide.Text
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchIntent
 import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchState
@@ -50,7 +51,9 @@ internal fun ActorSketchToolDock(state: ActorSketchState, onIntent: (ActorSketch
     var offset by remember { mutableStateOf(Offset(16f, 72f)) }
     FloatingDock(initialOffset = offset, onOffsetChange = { offset = it }) {
         Column(
-            Modifier.width(48.dp).heightIn(max = 260.dp).verticalScroll(rememberScrollState()),
+            Modifier.width(
+                Dimens.touchTarget,
+            ).heightIn(max = ActorStudioTokens.sketchToolRailMaxHeight).verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             listOf(
@@ -75,14 +78,14 @@ internal fun ActorSketchToolDock(state: ActorSketchState, onIntent: (ActorSketch
 @Composable
 internal fun ActorSketchLayerRail(state: ActorSketchState, onIntent: (ActorSketchIntent) -> Unit) {
     Surface(
-        Modifier.fillMaxWidth().padding(8.dp),
+        Modifier.fillMaxWidth().padding(Dimens.spaceS),
         shape = MaterialTheme.shapes.extraLarge,
-        tonalElevation = 2.dp,
+        tonalElevation = Dimens.elevationFlat,
     ) {
         Row(
-            Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+            Modifier.padding(horizontal = Dimens.spaceL, vertical = Dimens.spaceXs),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
         ) {
             Icon(Lucide.Layers, null)
             SketchLayer.entries.forEach { layer ->

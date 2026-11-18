@@ -18,7 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 
@@ -27,7 +29,7 @@ import com.donnclab.kinetiframe.studio.StudioIntent
 fun TimelineFpsSlider(fps: Int, onIntent: (StudioIntent) -> Unit, modifier: Modifier = Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 8.dp),
+        modifier = modifier.padding(horizontal = Dimens.spaceS),
     ) {
         Text(
             stringResource(R.string.playback_fps_short),
@@ -40,20 +42,20 @@ fun TimelineFpsSlider(fps: Int, onIntent: (StudioIntent) -> Unit, modifier: Modi
             valueRange = 1f..30f,
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 12.dp),
-            thumb = { Box(Modifier.size(12.dp).clip(CircleShape).background(EditorTokens.accent)) },
+                .padding(horizontal = Dimens.spaceM),
+            thumb = { Box(Modifier.size(TimelineTokens.fpsThumb).clip(CircleShape).background(EditorTokens.accent)) },
             track = { _ ->
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .height(2.dp)
+                        .height(TimelineTokens.fpsTrackHeight)
                         .clip(CircleShape)
                         .background(EditorTokens.accent.copy(alpha = 0.2f)),
                 ) {
                     Box(
                         Modifier
                             .fillMaxWidth(fraction = (fps - 1f) / 29f)
-                            .height(2.dp)
+                            .height(TimelineTokens.fpsTrackHeight)
                             .clip(CircleShape)
                             .background(EditorTokens.accent),
                     )
@@ -64,7 +66,7 @@ fun TimelineFpsSlider(fps: Int, onIntent: (StudioIntent) -> Unit, modifier: Modi
             "$fps",
             color = EditorTokens.dark,
             style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.width(20.dp),
+            modifier = Modifier.width(TimelineTokens.fpsLabelWidth),
         )
     }
 }

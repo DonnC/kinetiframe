@@ -43,12 +43,13 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.ChevronDown
 import com.composables.icons.lucide.ChevronRight
 import com.composables.icons.lucide.GripHorizontal
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.library.model.PackTrayItem
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.studio.dock.dockContainer
@@ -96,26 +97,26 @@ fun PackTray(
         Surface(
             modifier = Modifier
                 .dockSurface(dockState)
-                .widthIn(max = 220.dp),
-            shape = RoundedCornerShape(16.dp),
-            shadowElevation = 12.dp,
+                .widthIn(max = LibraryTokens.trayMaxWidth),
+            shape = RoundedCornerShape(Dimens.radiusL),
+            shadowElevation = Dimens.elevationL,
             color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            border = BorderStroke(Dimens.borderThin, MaterialTheme.colorScheme.outlineVariant),
         ) {
             Column {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .dockDragHandle(dockState)
-                        .padding(horizontal = 10.dp, vertical = 8.dp),
+                        .padding(horizontal = Dimens.spaceSPlus, vertical = Dimens.spaceS),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
                         Lucide.GripHorizontal,
                         contentDescription = stringResource(R.string.pack_tray_move),
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(Dimens.iconS),
                     )
-                    Spacer(Modifier.width(6.dp))
+                    Spacer(Modifier.width(Dimens.spaceXsPlus))
                     Text(
                         packName,
                         style = MaterialTheme.typography.labelLarge,
@@ -123,29 +124,33 @@ fun PackTray(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f),
                     )
-                    IconButton(onClick = { minimized = !minimized }, modifier = Modifier.size(28.dp)) {
+                    IconButton(onClick = { minimized = !minimized }, modifier = Modifier.size(Dimens.iconButtonS)) {
                         Icon(
                             if (minimized) Lucide.ChevronRight else Lucide.ChevronDown,
                             contentDescription = stringResource(
                                 if (minimized) R.string.pack_tray_expand else R.string.pack_tray_minimize,
                             ),
-                            modifier = Modifier.size(16.dp),
+                            modifier = Modifier.size(Dimens.iconS),
                         )
                     }
-                    IconButton(onClick = onDismiss, modifier = Modifier.size(28.dp)) {
+                    IconButton(onClick = onDismiss, modifier = Modifier.size(Dimens.iconButtonS)) {
                         Icon(
                             Lucide.X,
                             contentDescription = stringResource(R.string.pack_tray_close),
-                            modifier = Modifier.size(16.dp),
+                            modifier = Modifier.size(Dimens.iconS),
                         )
                     }
                 }
                 if (!minimized) {
                     HorizontalDivider()
-                    Box(Modifier.padding(8.dp).heightIn(min = 56.dp, max = 260.dp)) {
+                    Box(
+                        Modifier.padding(
+                            Dimens.spaceS,
+                        ).heightIn(min = LibraryTokens.trayMinHeight, max = LibraryTokens.trayMaxHeight),
+                    ) {
                         when {
                             loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                                CircularProgressIndicator(modifier = Modifier.size(Dimens.iconL))
                             }
 
                             error != null -> Text(
@@ -162,8 +167,8 @@ fun PackTray(
 
                             else -> LazyVerticalGrid(
                                 columns = GridCells.Fixed(3),
-                                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp),
+                                horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXsPlus),
+                                verticalArrangement = Arrangement.spacedBy(Dimens.spaceXsPlus),
                             ) {
                                 items(items, key = { it.fileName }) { item -> PackTrayItemCell(item, onDrag) }
                             }
@@ -184,7 +189,7 @@ private fun PackTrayItemCell(item: PackTrayItem, onDrag: (PackDragEvent) -> Unit
     var positionInWindow by remember { mutableStateOf(Offset.Zero) }
     Column(
         modifier = Modifier
-            .size(64.dp)
+            .size(LibraryTokens.trayItem)
             .onGloballyPositioned { coordinates -> positionInWindow = coordinates.positionInWindow() }
             .pointerInput(item.fileName) {
                 detectDragGestures(
@@ -202,9 +207,9 @@ private fun PackTrayItemCell(item: PackTrayItem, onDrag: (PackDragEvent) -> Unit
             bitmap = item.thumbnail.asImageBitmap(),
             contentDescription = item.name,
             modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(6.dp))
-                .background(Color(0x11000000)),
+                .size(LibraryTokens.trayItemThumb)
+                .clip(RoundedCornerShape(Dimens.radiusXs))
+                .background(LibraryTokens.trayWell),
         )
         Text(
             item.name,

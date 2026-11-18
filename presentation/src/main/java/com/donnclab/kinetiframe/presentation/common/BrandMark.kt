@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.BrandIvory
 import com.donnclab.kinetiframe.designsystem.theme.BrandTeal
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.R
 
@@ -34,18 +35,18 @@ fun BrandMark(modifier: Modifier = Modifier, onTeal: Boolean = false, contentDes
 @Composable
 fun BrandWordmark(modifier: Modifier = Modifier) {
     // Ivory backing preserves the approved teal lettering in both appearance modes.
-    Surface(modifier, color = BrandIvory, shape = RoundedCornerShape(4.dp)) {
+    Surface(modifier, color = BrandIvory, shape = RoundedCornerShape(Dimens.radiusXxs)) {
         Image(
             painterResource(R.drawable.brand_approved_wordmark),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize().padding(horizontal = 2.dp),
+            modifier = Modifier.fillMaxSize().padding(horizontal = Dimens.spaceXxs),
         )
     }
 }
 
 @Composable
 fun BrandBadge(modifier: Modifier = Modifier) {
-    Surface(modifier, shape = RoundedCornerShape(10.dp), color = BrandTeal) {
+    Surface(modifier, shape = RoundedCornerShape(Dimens.radiusSPlus), color = BrandTeal) {
         Box(contentAlignment = Alignment.Center) {
             BrandMark(Modifier.fillMaxSize(), onTeal = true, contentDescription = stringResource(R.string.brand_name))
         }
@@ -57,7 +58,7 @@ fun BrandBadge(modifier: Modifier = Modifier) {
 private fun BrandMarkPreview() {
     KinetiFrameTheme {
         Surface {
-            Row(Modifier.padding(16.dp)) {
+            Row(Modifier.padding(Dimens.spaceL)) {
                 BrandMark(Modifier.size(96.dp))
                 BrandBadge(Modifier.size(48.dp))
                 BrandWordmark(Modifier.size(160.dp, 28.dp))

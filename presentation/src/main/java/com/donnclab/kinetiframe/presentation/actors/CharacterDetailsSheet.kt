@@ -19,9 +19,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,6 +41,8 @@ import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,19 +59,22 @@ fun CharacterDetailsSheet(
     var tab by remember(actor.actorId) { mutableIntStateOf(0) }
     val viewCount = actor.authoredViews().size
     ModalBottomSheet(onDismissRequest = onDismiss) {
-        Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-            Row(Modifier.fillMaxWidth().padding(bottom = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = Dimens.spaceL)) {
+            Row(
+                Modifier.fillMaxWidth().padding(bottom = Dimens.spaceL),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Surface(shape = MaterialTheme.shapes.medium, color = MaterialTheme.colorScheme.surfaceContainerHigh) {
                     thumbnail?.let {
                         AsyncImage(
                             java.io.File(it),
                             actor.displayName,
-                            Modifier.size(88.dp).padding(6.dp),
+                            Modifier.size(ActorStudioTokens.detailsThumb).padding(Dimens.spaceXsPlus),
                             contentScale = ContentScale.Fit,
                         )
                     }
                 }
-                Column(Modifier.weight(1f).padding(start = 16.dp)) {
+                Column(Modifier.weight(1f).padding(start = Dimens.spaceL)) {
                     Text(
                         actor.displayName,
                         style = MaterialTheme.typography.titleMedium,
@@ -91,13 +96,16 @@ fun CharacterDetailsSheet(
                     )
                 }
             }
-            TabRow(tab) {
+            SecondaryTabRow(tab) {
                 Tab(tab == 0, { tab = 0 }, text = { Text(stringResource(R.string.actor_tab_views, viewCount)) })
                 Tab(tab == 1, {
                     tab = 1
                 }, text = { Text(stringResource(R.string.actor_tab_performances, performances.size)) })
             }
-            LazyColumn(Modifier.fillMaxWidth().heightIn(max = 360.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
+            LazyColumn(
+                Modifier.fillMaxWidth().heightIn(max = ActorStudioTokens.detailsListMaxHeight),
+                contentPadding = PaddingValues(bottom = Dimens.spaceXlPlus),
+            ) {
                 if (tab == 0) {
                     items(actor.authoredViews().keys.toList(), key = { it.name }) { view ->
                         ListItem(
@@ -125,7 +133,7 @@ fun CharacterDetailsSheet(
                             Text(
                                 stringResource(R.string.actor_no_performances),
                                 style = MaterialTheme.typography.bodySmall,
-                                modifier = Modifier.padding(16.dp),
+                                modifier = Modifier.padding(Dimens.spaceL),
                             )
                         }
                     }

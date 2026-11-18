@@ -13,25 +13,54 @@ Keep this page current:
 
 ## Now
 
-**Typed errors, part 5, slider values and audio tags.**
+Work now collects on one milestone branch, `milestone/i18n-and-polish`, with a commit per chunk
+and one pull request into `develop` when the milestone is done.
 
-- **Media messages:** the voice recorder reports `startFailed` instead of the platform's
-  message, and the screen says to check whether another app is using the microphone. A missing
-  or unreadable saved background image, and a video whose length or size can't be read, are
-  `ActionableProblem`s. The importers' unreadable-file errors use `FILE_UNREADABLE`, and the
-  voice effect dialog's error is `UiText`.
-- **Slider values** ("%", "sp" and the preset multiplier "×") come from string resources through
-  `valueText`, so they follow the device's number format.
-- **Library audio tags** keep "SFX", "MUSIC" and "VOICE" as filter keys; the pill names them from
-  string resources.
+**Strings, last part: per-app language and pseudo-locales.** `app` generates its locale config
+from the resource folders (`generateLocaleConfig`, with `resources.properties` naming English as
+the default), so Android's per-app language setting lists the app's languages as translations
+arrive. Debug builds include the pseudo-locales. Still to do: look at the main screens in `en-XA`
+(long text) and `ar-XB` (right to left) on a device, and fix what clips, overlaps or stays
+English. Labels passed to custom components (such as `ContextIconAction`'s label) aren't counted
+by the inline text check; this pass will show any left.
+
+**Theme tokens, part 1: colours.** 62 of the 64 inline colours are `designsystem` tokens:
+canvas overlay, timeline and dock preview colours in `EditorTokens`, sketch and panel colours in
+`ActorStudioTokens`, the card scrim and placeholder tints in `HomeTokens`, and a new
+`LibraryTokens` for stamp wells and item cards. Preview fixtures use a new `PreviewSwatches`.
+The two left are the onion skin defaults in `studio`'s `StudioState`, which move with the UI
+separation track, since `studio` doesn't depend on `designsystem`.
+
+**Theme tokens, part 2: the dock's sizes.** The editor dock's 130 inline `.dp` sizes are tokens:
+spacing, corners and icon sizes use `Dimens` (with new `borderThin`, `borderMedium`, `elevationM`
+and `elevationL`), and the dock's own sizes (rail, menus, panels, colour controls) are named in
+`EditorTokens`. Values didn't change.
+
+**Compose deprecations, part 1.** Home's tabs use `PrimaryTabRow` and the actor details sheet's
+`SecondaryTabRow`; both tooltips use `rememberTooltipPositionProvider(TooltipAnchorPosition.Above)`.
+
+**Audio ribbon recomposition.** `ProjectAudioScrubRibbon` reads the scroll position only while
+drawing and handling gestures; only its first visible frame, through `derivedStateOf`, drives
+composition. Lint's `FrequentlyChangingValue` baseline entry is gone.
+
+**Theme tokens, part 3: the timeline's and actor screens' sizes.** 327 more inline `.dp` sizes are
+tokens, with the same values: a new `TimelineTokens` for the frame strip, transport, tracks and
+audio ribbon (`FRAME_CELL_WIDTH`, `TRACK_HEIGHT` and `TRACK_GUTTER` now point at it), new entries in
+`ActorStudioTokens` for the rig overlay, sketch editor, part tree, cards and dialogs, and finer
+steps in `Dimens` (`spaceXxs`, `spaceXsPlus`, `spaceSPlus`, `spaceMPlus`, `spaceXlPlus`, `spaceXxxl`,
+`radiusXxs`, `radiusXs` and `touchTarget`).
+
+**Theme tokens, part 4: the last sizes.** The last 349 inline `.dp` sizes are tokens, with the same
+values, and the size check is at zero. Shared steps went into `Dimens` (finer spacing, corners,
+icons and elevations, `borderThick`, icon buttons, the slider, brand bar and bottom bar), and
+screen sizes into `HomeTokens` (card overlays, the list's bottom reserve), `LibraryTokens`
+(browser grids, the stamp preview, the pack tray) and `EditorTokens` (popups, hint insets, canvas
+overlays, the colour loupe, the frame studio). Previews keep inline sizes; the check skips them.
 
 ## Next
 
-**Strings, last part: per-app language and a pseudo-locale check.** Add a per-app language
-setting (`locales_config.xml`) and turn on the pseudo-locales for debug builds, then look at the
-main screens in `en-XA` (long text) and `ar-XB` (right to left) on a device. Labels passed to
-custom components (such as `ContextIconAction`'s label) aren't counted by the inline text check;
-the pseudo-locale pass will show any left.
+Open the milestone pull request into `develop`, then check the pseudo-locales, the new tab rows
+and the audio ribbon on a device.
 
 ## Later
 
@@ -40,7 +69,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Strings to resources.** The inline text check is at zero. Left: right-to-left layouts,
   per-app language and a pseudo-locale check (under Next), and `require` messages in `core`'s
   documents, such as FPS and stage limits, that only invalid files reach.
-- **Theme tokens.** Move 64 inline colours and 806 inline `.dp` sizes into `designsystem` tokens.
+- **Theme tokens.** Sizes are done. The last two inline colours go with UI separation.
 - **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
   code. Screens already reach storage only through their ViewModels (step 8d).
 - **Parameter limits.** 51 functions still take more than the allowed number of parameters.
@@ -59,13 +88,8 @@ Tracks that run alongside the module work, a screen or feature at a time:
   version #3 proposes.
 - **Compose deprecations.** BOM 2026.09.00 deprecates `createComposeRule` (47 device tests), in
   favour of a `v2` rule that queues coroutines instead of running them at once, so tests may need
-  explicit waits. `TabRow` (2 uses) gives way to `PrimaryTabRow` and `SecondaryTabRow`, and
-  `rememberPlainTooltipPositionProvider` (2 uses) to `rememberTooltipPositionProvider`. Migrate
-  each with its screen, and check the tabs on a device, since the new rows draw a different
-  indicator.
-- **Audio ribbon recomposition.** `ProjectAudioScrubRibbon` reads the timeline's `layoutInfo` in
-  composition, so it recomposes on every scroll frame. Lint's `FrequentlyChangingValue` finding is
-  in the baseline. Move the reads into the draw phase, and check scrubbing on a device.
+  explicit waits. The tab rows and tooltips are migrated; check the tabs on a device, since the new
+  rows draw a different indicator, and check scrubbing the audio ribbon.
 - **Device tests.** 13 device tests fail on `develop` and failed before the restructuring began.
   They check labels and controls that have since changed. Delete each one when the code it covers
   is replaced.
@@ -198,6 +222,7 @@ fixed after the module work, unless one blocks testing.
 | #71 | Reported studio errors as typed failures (typed errors, part 2) |
 | #72 | Gave storage failures a typed reason and worded the editor's messages from resources (typed errors, part 3) |
 | #73 | Typed fixable problems and tightened the inline text check (typed errors, part 4) |
+| #74 | Worded media failures, slider values and audio tags from resources (typed errors, part 5) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -234,7 +259,10 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   When the IDE's Gradle process keeps `buildSrc/build` locked, run the checker tests on a copy of
   `buildSrc` (with `gradle/libs.versions.toml` beside it) instead. AAPT2 can also stop starting
   from Gradle ("Daemon startup failed") even though `aapt2 daemon` runs by hand; CI's
-  manual run covers `app` when that happens.
+  manual run covers `app` when that happens. A compile that runs while sources are broken can
+  leave a bad entry in the local build cache: `designsystem` once came back with an empty
+  `.kotlin_module`, so `presentation` couldn't see its top-level declarations (`BrandTeal`,
+  `KinetiFrameTheme`). Rebuild with `--no-build-cache` when a module's top-level names go missing.
 - **Lint version checks.** Lint's "newer version available" checks are disabled, because their
   findings change with every upstream release. Dependabot reports updates instead.
 - **Checker tests.** CI runs `./gradlew -p buildSrc test`, but only for `main` during the
@@ -257,6 +285,6 @@ From `.architecture/` during step 9. Each count may only go down.
 | UI imports of `data` packages | 0 | — |
 | Functions over the parameter limit | 51 | — |
 | Inline text values | 0 | — |
-| Inline colours | 64 | 24 |
-| Inline `.dp` sizes | 806 | 132 |
+| Inline colours | 2 | 1 |
+| Inline `.dp` sizes | 0 | — |
 | Files over 500 lines | 0 | — |

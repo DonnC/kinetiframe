@@ -25,6 +25,7 @@ import com.composables.icons.lucide.Plus
 import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.rigging.ActorPartTree
 import com.donnclab.kinetiframe.presentation.actors.rigging.CoverageBadge
@@ -50,11 +51,11 @@ fun PartPickerSheet(
 ) {
     val layers = state.currentFrameLayers()
     ModalBottomSheet(onDismissRequest = onDismiss, containerColor = ActorStudioTokens.panelSurface) {
-        LazyColumn(Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
+        LazyColumn(Modifier.fillMaxWidth().padding(bottom = Dimens.spaceL)) {
             item {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 4.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = Dimens.spaceXl, vertical = Dimens.spaceXs),
                 ) {
                     Text(
                         stringResource(R.string.parts_title),
@@ -68,13 +69,13 @@ fun PartPickerSheet(
                             Lucide.Plus,
                             stringResource(R.string.parts_add_layer),
                             tint = ActorStudioTokens.onPanel,
-                            modifier = Modifier.size(20.dp),
+                            modifier = Modifier.size(Dimens.iconM),
                         )
                     }
                 }
             }
             item {
-                Column(Modifier.padding(horizontal = 20.dp)) {
+                Column(Modifier.padding(horizontal = Dimens.spaceXl)) {
                     ActorNameRow(definition.name, onIntent)
                     CoverageBadge(definition)
                 }
@@ -82,7 +83,7 @@ fun PartPickerSheet(
             if (onReferenceClick != null) {
                 item {
                     Row(
-                        Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                        Modifier.fillMaxWidth().padding(horizontal = Dimens.spaceXl),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
@@ -107,7 +108,7 @@ fun PartPickerSheet(
                     name = layer.name,
                     isActive = actualIndex == state.layers.activeLayerIndex,
                     isVisible = layer.isVisible,
-                    modifier = Modifier.padding(horizontal = 20.dp),
+                    modifier = Modifier.padding(horizontal = Dimens.spaceXl),
                     onClick = { onIntent(StudioIntent.Layer.SelectLayer(actualIndex)) },
                     onVisibilityClick = {
                         onIntent(StudioIntent.Layer.SetLayerVisibility(actualIndex, !layer.isVisible))
@@ -122,7 +123,7 @@ fun PartPickerSheet(
                     onVisibilityToggle = { boneId, visible ->
                         onIntent(StudioIntent.Actor.SetPartVisibility(boneId, visible))
                     },
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
+                    modifier = Modifier.padding(horizontal = Dimens.spaceXl, vertical = Dimens.spaceXs),
                 )
             }
         }

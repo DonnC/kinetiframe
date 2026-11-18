@@ -17,8 +17,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.library.model.PackTrayItem
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.UiText
@@ -131,9 +131,15 @@ internal fun PackTrayOverlay(
             contentDescription = null,
             modifier = Modifier
                 .offset {
-                    IntOffset((position.x - 32.dp.toPx()).roundToInt(), (position.y - 32.dp.toPx()).roundToInt())
+                    IntOffset(
+                        (position.x - LibraryTokens.trayItem.toPx() / 2).roundToInt(),
+                        (
+                            position.y -
+                                LibraryTokens.trayItem.toPx() / 2
+                            ).roundToInt(),
+                    )
                 }
-                .size(64.dp)
+                .size(LibraryTokens.trayItem)
                 .alpha(0.85f),
         )
     }

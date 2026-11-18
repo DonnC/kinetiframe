@@ -10,9 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.studio.dock.GridOptionsContent
 import com.donnclab.kinetiframe.presentation.studio.timeline.LayerPanel
@@ -35,11 +35,11 @@ fun LayerPanelPopup(
         properties = PopupProperties(focusable = true),
     ) {
         Surface(
-            modifier = Modifier.width(340.dp).height(330.dp),
+            modifier = Modifier.width(EditorTokens.popupWidth).height(EditorTokens.popupHeight),
             color = MaterialTheme.colorScheme.surface,
-            shape = RoundedCornerShape(12.dp),
-            tonalElevation = 4.dp,
-            border = BorderStroke(1.dp, EditorTokens.border.copy(alpha = 0.2f)),
+            shape = RoundedCornerShape(Dimens.radiusM),
+            tonalElevation = Dimens.elevationRaised,
+            border = BorderStroke(Dimens.borderThin, EditorTokens.border.copy(alpha = 0.2f)),
         ) {
             LayerPanel(
                 state = state,
@@ -60,11 +60,11 @@ fun GridOptionsPopup(state: StudioState, onIntent: (StudioIntent) -> Unit, onDis
         properties = PopupProperties(focusable = true),
     ) {
         Surface(
-            modifier = Modifier.width(260.dp),
+            modifier = Modifier.width(EditorTokens.popupNarrowWidth),
             color = MaterialTheme.colorScheme.surface,
-            shape = RoundedCornerShape(16.dp),
-            shadowElevation = 8.dp,
-            border = BorderStroke(1.dp, EditorTokens.border.copy(alpha = 0.2f)),
+            shape = RoundedCornerShape(Dimens.radiusL),
+            shadowElevation = Dimens.elevationM,
+            border = BorderStroke(Dimens.borderThin, EditorTokens.border.copy(alpha = 0.2f)),
         ) {
             GridOptionsContent(
                 state = state,
@@ -84,11 +84,11 @@ fun OnionOptionsPopup(state: StudioState, onIntent: (StudioIntent) -> Unit, onDi
         properties = PopupProperties(focusable = true),
     ) {
         Surface(
-            modifier = Modifier.width(280.dp),
+            modifier = Modifier.width(EditorTokens.popupMediumWidth),
             color = MaterialTheme.colorScheme.surface,
-            shape = RoundedCornerShape(16.dp),
-            shadowElevation = 8.dp,
-            border = BorderStroke(1.dp, EditorTokens.border.copy(alpha = 0.2f)),
+            shape = RoundedCornerShape(Dimens.radiusL),
+            shadowElevation = Dimens.elevationM,
+            border = BorderStroke(Dimens.borderThin, EditorTokens.border.copy(alpha = 0.2f)),
         ) {
             OnionOptionsContent(
                 state = state,

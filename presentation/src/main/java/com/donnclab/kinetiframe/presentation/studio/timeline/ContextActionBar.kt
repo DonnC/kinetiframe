@@ -22,7 +22,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 
 /**
  * One icon action inside a [ContextActionBar] -- tap a frame, select a clip, whatever the item.
@@ -61,13 +63,13 @@ fun ContextActionBar(
     Surface(
         modifier = modifier,
         color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
-        shape = RoundedCornerShape(16.dp),
-        tonalElevation = 6.dp,
-        border = BorderStroke(1.dp, EditorTokens.border.copy(alpha = 0.25f)),
+        shape = RoundedCornerShape(Dimens.radiusL),
+        tonalElevation = TimelineTokens.contextBarElevation,
+        border = BorderStroke(Dimens.borderThin, EditorTokens.border.copy(alpha = 0.25f)),
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.padding(horizontal = Dimens.spaceS, vertical = Dimens.spaceXs),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (label != null) {
@@ -76,30 +78,33 @@ fun ContextActionBar(
                     style = MaterialTheme.typography.labelSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(start = 4.dp, end = 4.dp).widthIn(max = 96.dp),
+                    modifier = Modifier.padding(
+                        start = Dimens.spaceXs,
+                        end = Dimens.spaceXs,
+                    ).widthIn(max = TimelineTokens.contextLabelMaxWidth),
                 )
             }
             actions.forEach { action ->
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(Dimens.radiusS))
                         .let { if (action.enabled) it.clickable(onClick = action.onClick) else it }
-                        .padding(6.dp)
+                        .padding(TimelineTokens.contextActionPadding)
                         .alpha(if (action.enabled) 1f else 0.4f),
                 ) {
                     Icon(
                         action.icon,
                         action.label,
                         tint = action.tint ?: EditorTokens.dark,
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(Dimens.iconM),
                     )
                     action.badge?.let { badge ->
                         Icon(
                             badge,
                             null,
                             tint = EditorTokens.accent,
-                            modifier = Modifier.size(10.dp).align(action.badgeAlignment),
+                            modifier = Modifier.size(TimelineTokens.contextBadge).align(action.badgeAlignment),
                         )
                     }
                 }

@@ -36,6 +36,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.library.model.PackArtworkRegistration
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.asString
@@ -69,7 +71,11 @@ fun ActorArtworkPicker(onDismiss: () -> Unit, onSelected: (String, Bitmap, PackA
     } else {
         Dialog(onDismissRequest = { if (!busy) onDismiss() }) {
             Surface(shape = MaterialTheme.shapes.medium) {
-                Column(Modifier.fillMaxWidth().heightIn(max = 420.dp).padding(12.dp)) {
+                Column(
+                    Modifier.fillMaxWidth().heightIn(
+                        max = ActorStudioTokens.artworkPickerMaxHeight,
+                    ).padding(Dimens.spaceM),
+                ) {
                     Row {
                         IconButton(
                             onClick = { model.handleIntent(ActorArtworkPickerIntent.BackToLibrary) },
@@ -87,17 +93,21 @@ fun ActorArtworkPicker(onDismiss: () -> Unit, onSelected: (String, Bitmap, PackA
                     }
                     if (busy) LinearProgressIndicator(Modifier.fillMaxWidth())
                     LazyVerticalGrid(
-                        GridCells.Adaptive(88.dp),
+                        GridCells.Adaptive(ActorStudioTokens.artworkCell),
                         Modifier.fillMaxWidth(),
-                        contentPadding = PaddingValues(4.dp),
+                        contentPadding = PaddingValues(Dimens.spaceXs),
                     ) {
                         items(state.items, key = { it.file }) { item ->
                             Column(
-                                Modifier.padding(4.dp).clickable(enabled = !busy) {
+                                Modifier.padding(Dimens.spaceXs).clickable(enabled = !busy) {
                                     model.handleIntent(ActorArtworkPickerIntent.PickPackItem(item))
                                 },
                             ) {
-                                AsyncImage(model.packItemFile(item), item.name, Modifier.fillMaxWidth().height(72.dp))
+                                AsyncImage(
+                                    model.packItemFile(item),
+                                    item.name,
+                                    Modifier.fillMaxWidth().height(ActorStudioTokens.artworkThumbHeight),
+                                )
                                 Text(item.name, style = MaterialTheme.typography.labelSmall, maxLines = 1)
                             }
                         }

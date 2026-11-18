@@ -8,6 +8,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
@@ -16,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 
 /** Shared compact action with an accessible name and discoverable long-press tooltip. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,7 +31,7 @@ fun ActorToolButton(
     onClick: () -> Unit,
 ) {
     TooltipBox(
-        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
         tooltip = { PlainTooltip { Text(label) } },
         state = rememberTooltipState(),
     ) {
@@ -36,8 +39,8 @@ fun ActorToolButton(
             checked = selected,
             onCheckedChange = { onClick() },
             enabled = enabled,
-            modifier = Modifier.size(40.dp),
-        ) { Icon(icon, label, modifier = Modifier.size(18.dp)) }
+            modifier = Modifier.size(ActorStudioTokens.toolButton),
+        ) { Icon(icon, label, modifier = Modifier.size(EditorTokens.icon)) }
     }
 }
 

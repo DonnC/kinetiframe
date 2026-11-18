@@ -32,20 +32,21 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.SelectionInteractionMode
 
 @Composable
 fun SelectionHUD(transform: SelectionTransformMath.TransformInfo, modifier: Modifier = Modifier) {
     Surface(
-        modifier = modifier.padding(8.dp),
+        modifier = modifier.padding(Dimens.spaceS),
         color = Color.Black.copy(alpha = 0.7f),
-        shape = RoundedCornerShape(8.dp),
-        shadowElevation = 4.dp,
+        shape = RoundedCornerShape(Dimens.radiusS),
+        shadowElevation = Dimens.elevationRaised,
     ) {
-        Column(Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+        Column(Modifier.padding(horizontal = Dimens.spaceM, vertical = Dimens.spaceS)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(stringResource(R.string.transform_position_label), color = Color.Gray, fontSize = 10.sp)
                 Text(
@@ -132,7 +133,7 @@ fun SelectionTransformOverlay(
                 // Draw Box
                 corners.forEachIndexed { index, point ->
                     drawLine(
-                        Color(0xFF4285F4),
+                        EditorTokens.selection,
                         point * fitScale,
                         corners[(index + 1) % 4] * fitScale,
                         strokeWidthPx,
@@ -150,14 +151,14 @@ fun SelectionTransformOverlay(
                     sides.forEach { handle(it * fitScale, outer * .8f, inner * .8f) }
 
                     // Draw Rotation Handle
-                    drawLine(Color(0xFF4285F4), sides[0] * fitScale, rotationHandle * fitScale, strokeWidthPx)
+                    drawLine(EditorTokens.selection, sides[0] * fitScale, rotationHandle * fitScale, strokeWidthPx)
                     handle(rotationHandle * fitScale, outer, inner)
 
                     // Draw Tilt Line (Dashed line from pivot to touch point when rotating)
                     if (transformState.isTransforming && transformState.activeHandle == 5) {
                         targetTouchDoc?.let { touch ->
                             drawLine(
-                                color = Color(0xFF4285F4).copy(alpha = 0.5f),
+                                color = EditorTokens.selection.copy(alpha = 0.5f),
                                 start = pivotDoc * fitScale,
                                 end = touch * fitScale,
                                 strokeWidth = strokeWidthPx,
@@ -169,12 +170,12 @@ fun SelectionTransformOverlay(
                     // Draw Pivot
                     drawCircle(Color.White, 12f / interactionScale, pivotDoc * fitScale)
                     drawCircle(
-                        Color(0xFF4285F4),
+                        EditorTokens.selection,
                         8f / interactionScale,
                         pivotDoc * fitScale,
                         style = Stroke(2f / interactionScale),
                     )
-                    drawCircle(Color(0xFF4285F4), 3f / interactionScale, pivotDoc * fitScale)
+                    drawCircle(EditorTokens.selection, 3f / interactionScale, pivotDoc * fitScale)
                 }
             }
         }
@@ -183,7 +184,7 @@ fun SelectionTransformOverlay(
             val info = SelectionTransformMath.getTransformInfo(transformState.matrix)
             SelectionHUD(
                 transform = info,
-                modifier = Modifier.align(Alignment.TopCenter).padding(top = 16.dp),
+                modifier = Modifier.align(Alignment.TopCenter).padding(top = Dimens.spaceL),
             )
         }
 
@@ -261,7 +262,7 @@ fun SelectionTransformOverlay(
 
 private fun androidx.compose.ui.graphics.drawscope.DrawScope.handle(point: Offset, outer: Float, inner: Float) {
     drawCircle(Color.White, outer, point)
-    drawCircle(Color(0xFF4285F4), inner, point)
+    drawCircle(EditorTokens.selection, inner, point)
 }
 
 private fun corners(bounds: Rect, matrix: Matrix) = listOf(
@@ -309,7 +310,7 @@ private fun nearestHandle(
 private fun androidx.compose.ui.graphics.drawscope.DrawScope.moveHandle(center: Offset, scale: Float) {
     val unit = 1f / scale.coerceAtLeast(.001f)
     drawCircle(Color.White, 15f * unit, center)
-    val color = Color(0xFF4285F4)
+    val color = EditorTokens.selection
     val directions = listOf(Offset(1f, 0f), Offset(-1f, 0f), Offset(0f, 1f), Offset(0f, -1f))
     directions.forEach { direction ->
         val end = center + direction * (11f * unit)

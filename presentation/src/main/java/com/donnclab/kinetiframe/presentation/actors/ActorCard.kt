@@ -28,6 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 
 /** One compact dashboard card; its artwork is a thumbnail, never an editable rig surface. */
@@ -43,8 +45,8 @@ fun ActorCard(
 ) {
     var menuOpen by remember { mutableStateOf(false) }
     Card(onClick = onOpen, modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(8.dp)) {
-            Box(Modifier.fillMaxWidth().height(112.dp)) {
+        Column(Modifier.padding(Dimens.spaceS)) {
+            Box(Modifier.fillMaxWidth().height(ActorStudioTokens.actorCardThumbHeight)) {
                 if (thumbnailPath == null) {
                     com.donnclab.kinetiframe.presentation.actors.rigging.RigBlueprintThumbnail(
                         com.donnclab.kinetiframe.actors.rig.model.ActorTemplate.HUMAN,

@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AudioTrackSummary
 import com.donnclab.kinetiframe.presentation.common.asString
@@ -42,7 +43,9 @@ fun AudioTrackRow(track: AudioTrackSummary, onClick: () -> Unit, modifier: Modif
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
         ) {
-            val playGradient = Brush.linearGradient(listOf(Color(0xFFFFD9CC), MaterialTheme.colorScheme.primary))
+            val playGradient = Brush.linearGradient(
+                listOf(LibraryTokens.playGradientStart, MaterialTheme.colorScheme.primary),
+            )
             Box(
                 Modifier.size(Dimens.playButtonSize).clip(CircleShape).background(playGradient),
                 contentAlignment = Alignment.Center,

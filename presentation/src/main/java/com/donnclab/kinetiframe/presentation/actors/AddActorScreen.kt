@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AddFlowBottomBar
 import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
@@ -58,20 +59,22 @@ fun AddActorScreen(
         },
     ) { padding ->
         Column(
-            Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 20.dp),
+            Modifier.fillMaxSize().padding(
+                padding,
+            ).verticalScroll(rememberScrollState()).padding(horizontal = Dimens.spaceXl),
         ) {
             CompactTextField(
                 value = name,
                 onValueChange = { name = it },
                 label = { Text(stringResource(R.string.actor_name)) },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
+                modifier = Modifier.fillMaxWidth().padding(top = Dimens.spaceXl),
             )
             Text(
                 stringResource(R.string.actor_starting_structure),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
+                modifier = Modifier.padding(top = Dimens.spaceXlPlus, bottom = Dimens.spaceS),
             )
             TemplateOptionRow(
                 template = ActorTemplate.HUMAN,
@@ -79,22 +82,22 @@ fun AddActorScreen(
                 selected = template == ActorTemplate.HUMAN,
                 onClick = { template = ActorTemplate.HUMAN },
             )
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(Dimens.spaceSPlus))
             TemplateOptionRow(
                 template = ActorTemplate.ANIMAL,
                 description = stringResource(R.string.actor_template_four_supports_description),
                 selected = template == ActorTemplate.ANIMAL,
                 onClick = { template = ActorTemplate.ANIMAL },
             )
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(Dimens.spaceSPlus))
             TemplateOptionRow(
                 template = ActorTemplate.CUSTOM,
                 description = stringResource(R.string.actor_template_empty_root_description),
                 selected = template == ActorTemplate.CUSTOM,
                 onClick = { template = ActorTemplate.CUSTOM },
             )
-            Spacer(Modifier.height(10.dp))
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(Dimens.spaceSPlus))
+            Spacer(Modifier.height(Dimens.spaceXlPlus))
         }
     }
 }

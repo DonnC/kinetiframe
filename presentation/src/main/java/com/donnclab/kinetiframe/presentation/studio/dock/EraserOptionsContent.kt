@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
@@ -44,7 +45,7 @@ import com.donnclab.kinetiframe.studio.ToolConfig
 
 @Composable
 fun EraserOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, onDismiss: () -> Unit) {
-    Column(Modifier.padding(16.dp).fillMaxWidth()) {
+    Column(Modifier.padding(Dimens.spaceL).fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -56,21 +57,21 @@ fun EraserOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, o
                 fontWeight = FontWeight.Bold,
                 color = EditorTokens.dark,
             )
-            IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
+            IconButton(onClick = onDismiss, modifier = Modifier.size(EditorTokens.closeButton)) {
                 Icon(
                     Lucide.X,
                     contentDescription = stringResource(R.string.action_close),
-                    modifier = Modifier.size(16.dp),
+                    modifier = Modifier.size(Dimens.iconS),
                     tint = EditorTokens.dark,
                 )
             }
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(Dimens.spaceL))
 
         val eraserConfig = state.tool.configs[DrawingTool.ERASER] ?: ToolConfig()
         // Radio options for "Stroke eraser" and "Area eraser"
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
             EraserTypeRow(
                 label = stringResource(R.string.eraser_stroke),
                 selected = eraserConfig.eraserType == EraserType.STROKE,
@@ -83,7 +84,7 @@ fun EraserOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, o
             )
         }
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(Dimens.spaceXl))
 
         StandardSlider(
             label = stringResource(R.string.tool_size),
@@ -92,17 +93,17 @@ fun EraserOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, o
             range = 1f..100f,
         )
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(EditorTokens.sectionGap))
 
         Button(
             onClick = { onIntent(StudioIntent.Draw.ClearAllHandwriting) },
-            modifier = Modifier.fillMaxWidth().height(40.dp),
+            modifier = Modifier.fillMaxWidth().height(EditorTokens.panelAction),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
                 contentColor = EditorTokens.accent,
             ),
-            border = BorderStroke(1.dp, EditorTokens.inactive.copy(alpha = 0.3f)),
-            shape = RoundedCornerShape(8.dp),
+            border = BorderStroke(Dimens.borderThin, EditorTokens.inactive.copy(alpha = 0.3f)),
+            shape = RoundedCornerShape(Dimens.radiusS),
             contentPadding = PaddingValues(0.dp),
         ) {
             Text(
@@ -120,9 +121,9 @@ private fun EraserTypeRow(label: String, selected: Boolean, onClick: () -> Unit)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(Dimens.radiusS))
             .combinedClickable(onClick = onClick)
-            .padding(vertical = 4.dp),
+            .padding(vertical = Dimens.spaceXs),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         RadioButton(
@@ -132,9 +133,9 @@ private fun EraserTypeRow(label: String, selected: Boolean, onClick: () -> Unit)
                 selectedColor = EditorTokens.accent,
                 unselectedColor = EditorTokens.inactive,
             ),
-            modifier = Modifier.size(32.dp).scale(0.8f),
+            modifier = Modifier.size(EditorTokens.control).scale(0.8f),
         )
-        Spacer(Modifier.width(4.dp))
+        Spacer(Modifier.width(Dimens.spaceXs))
         Text(
             label,
             style = MaterialTheme.typography.bodyMedium,

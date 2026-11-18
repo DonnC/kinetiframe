@@ -10,8 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.actors.rigging.PartRail
 import com.donnclab.kinetiframe.presentation.actors.sketch.ActorDrawingModeButton
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.ActorArtworkControls
@@ -40,7 +41,11 @@ internal fun BoxScope.ActorAuthoringOverlay(
     if (host.isActorStudioSession && mode != StudioMode.ANIMATE_IK) {
         val definition = state.actorDefinition()
         if (panels.toolbarVisible && definition != null && !state.actor.isPerformanceAuthoring) {
-            Box(Modifier.align(Alignment.TopStart).padding(start = 96.dp, top = 8.dp)) {
+            Box(
+                Modifier.align(
+                    Alignment.TopStart,
+                ).padding(start = EditorTokens.actorHintStartInset, top = Dimens.spaceS),
+            ) {
                 ActorDrawingModeButton(
                     definition.sceneGraph.drawing != null,
                     definition.sceneGraph.drawing?.enabled == true,
@@ -51,7 +56,7 @@ internal fun BoxScope.ActorAuthoringOverlay(
         }
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(bottom = Dimens.spaceL),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 SelectedPartControls(state, definition, ui.artwork, commands)
@@ -69,7 +74,7 @@ internal fun BoxScope.ActorAuthoringOverlay(
     if (panels.toolbarVisible && host.isActorStudioSession && mode == StudioMode.ANIMATE_IK) {
         state.actorDefinition()?.sceneGraph?.bones?.get(state.scene.selectedBoneId)
             ?.takeIf { it.artworkVariants.isNotEmpty() }?.let { part ->
-                Box(Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)) {
+                Box(Modifier.align(Alignment.BottomCenter).padding(bottom = Dimens.spaceS)) {
                     ActorArtworkMenu(part, commands.onIntent)
                 }
             }
@@ -128,7 +133,7 @@ private fun SelectedPartControls(
             editTarget = state.actor.editTarget,
             canCaptureSketch = state.currentBitmap != null,
             onIntent = onIntent,
-            modifier = Modifier.padding(bottom = 10.dp),
+            modifier = Modifier.padding(bottom = Dimens.spaceSPlus),
             onChooseArtwork = { artwork.choose(false, state, onIntent) },
             onEditArtwork = edit,
             onReplaceArtwork = replace,

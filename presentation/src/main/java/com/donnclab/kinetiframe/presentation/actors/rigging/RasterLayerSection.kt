@@ -22,6 +22,7 @@ import com.composables.icons.lucide.EyeOff
 import com.composables.icons.lucide.FolderOpen
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 
 /** "Raster Layers" group label above the actor's drawable layers in [PuppetInspector]. */
@@ -29,13 +30,13 @@ import com.donnclab.kinetiframe.presentation.R
 fun RasterLayerGroupHeader() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(start = 16.dp, top = 4.dp, bottom = 4.dp),
+        modifier = Modifier.padding(start = Dimens.spaceL, top = Dimens.spaceXs, bottom = Dimens.spaceXs),
     ) {
         Icon(
             Lucide.FolderOpen,
             null,
             tint = ActorStudioTokens.onPanelMuted,
-            modifier = Modifier.size(16.dp).padding(end = 4.dp),
+            modifier = Modifier.size(Dimens.iconS).padding(end = Dimens.spaceXs),
         )
         Text(
             stringResource(R.string.raster_layers_title),
@@ -59,13 +60,13 @@ fun RasterLayerRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 24.dp, top = 2.dp, bottom = 2.dp)
+            .padding(start = ActorStudioTokens.rasterIndent, top = Dimens.spaceXxs, bottom = Dimens.spaceXxs)
             .clickable(onClick = onClick)
             .background(
                 if (isActive) ActorStudioTokens.panelSurfaceVariant else Color.Transparent,
-                RoundedCornerShape(4.dp),
+                RoundedCornerShape(Dimens.radiusXxs),
             )
-            .padding(horizontal = 6.dp, vertical = 4.dp),
+            .padding(horizontal = Dimens.spaceXsPlus, vertical = Dimens.spaceXs),
     ) {
         Text(
             name,
@@ -82,7 +83,7 @@ fun RasterLayerRow(
                 name,
             ),
             tint = if (isVisible) ActorStudioTokens.onPanelMuted else ActorStudioTokens.accent,
-            modifier = Modifier.size(14.dp).clickable(onClick = onVisibilityClick),
+            modifier = Modifier.size(ActorStudioTokens.treeSmallIcon).clickable(onClick = onVisibilityClick),
         )
     }
 }

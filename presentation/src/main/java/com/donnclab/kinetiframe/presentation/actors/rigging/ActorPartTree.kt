@@ -39,6 +39,7 @@ import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 
 /**
@@ -78,13 +79,16 @@ private fun ActorPartTreeNode(
     val isGroup = children.isNotEmpty()
     Surface(
         color = if (selected) ActorStudioTokens.panelSurfaceVariant else ActorStudioTokens.panelSurface,
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(Dimens.radiusXs),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = (depth * 12).dp, top = 1.dp, bottom = 1.dp)
+            .padding(start = (depth * 12).dp, top = ActorStudioTokens.treeRowGap, bottom = ActorStudioTokens.treeRowGap)
             .clickable { onPartSelected(part.id) },
     ) {
-        Row(Modifier.padding(horizontal = 6.dp, vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.padding(horizontal = Dimens.spaceXsPlus, vertical = ActorStudioTokens.labelPaddingVertical),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             if (isGroup) {
                 Icon(
                     if (expanded) Lucide.ChevronDown else Lucide.ChevronRight,
@@ -93,10 +97,10 @@ private fun ActorPartTreeNode(
                         part.name,
                     ),
                     tint = ActorStudioTokens.onPanelMuted,
-                    modifier = Modifier.size(16.dp).clickable { expanded = !expanded },
+                    modifier = Modifier.size(Dimens.iconS).clickable { expanded = !expanded },
                 )
             } else {
-                Spacer(Modifier.width(16.dp))
+                Spacer(Modifier.width(Dimens.spaceL))
             }
             Icon(
                 if (isGroup) {
@@ -106,11 +110,11 @@ private fun ActorPartTreeNode(
                 },
                 contentDescription = null,
                 tint = if (selected) ActorStudioTokens.accent else ActorStudioTokens.onPanelMuted,
-                modifier = Modifier.size(15.dp),
+                modifier = Modifier.size(ActorStudioTokens.treeIcon),
             )
             Text(
                 part.name,
-                Modifier.weight(1f).padding(start = 6.dp),
+                Modifier.weight(1f).padding(start = Dimens.spaceXsPlus),
                 color = if (selected) ActorStudioTokens.onPanel else ActorStudioTokens.onPanelMuted,
                 style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
                 fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
@@ -128,7 +132,7 @@ private fun ActorPartTreeNode(
                         R.string.actor_part_artwork_bound
                     },
                 ),
-                modifier = Modifier.size(14.dp).padding(end = 6.dp),
+                modifier = Modifier.size(ActorStudioTokens.treeSmallIcon).padding(end = Dimens.spaceXsPlus),
                 tint = if (part.textureBinding == null) ActorStudioTokens.onPanelMuted else ActorStudioTokens.accent,
             )
             Icon(
@@ -138,7 +142,9 @@ private fun ActorPartTreeNode(
                     part.name,
                 ),
                 tint = if (part.visible) ActorStudioTokens.onPanelMuted else ActorStudioTokens.accent,
-                modifier = Modifier.size(15.dp).clickable { onVisibilityToggle(part.id, !part.visible) },
+                modifier = Modifier.size(ActorStudioTokens.treeIcon).clickable {
+                    onVisibilityToggle(part.id, !part.visible)
+                },
             )
         }
     }

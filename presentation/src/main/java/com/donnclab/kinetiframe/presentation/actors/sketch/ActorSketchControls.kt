@@ -36,6 +36,8 @@ import com.composables.icons.lucide.Redo2
 import com.composables.icons.lucide.Undo
 import com.composables.icons.lucide.Undo2
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.R
 
@@ -76,8 +78,10 @@ fun ActorSketchControls(
                             SketchPalette.forEach { colour ->
                                 Box(
                                     Modifier.padding(
-                                        6.dp,
-                                    ).size(32.dp).background(Color(colour), CircleShape).clickable {
+                                        Dimens.spaceXsPlus,
+                                    ).size(
+                                        ActorStudioTokens.sketchSwatch,
+                                    ).background(Color(colour), CircleShape).clickable {
                                         onIntent(ActorSketchIntent.Colour(colour.toInt()))
                                         palette = false
                                     },
@@ -89,7 +93,7 @@ fun ActorSketchControls(
                         ) {
                             Slider(state.size, {
                                 onIntent(ActorSketchIntent.Size(it))
-                            }, valueRange = 1f..48f, modifier = Modifier.width(160.dp))
+                            }, valueRange = 1f..48f, modifier = Modifier.width(ActorStudioTokens.sketchSliderWidth))
                         }
                     }
                 }

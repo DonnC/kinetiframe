@@ -26,10 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 
 /** One dashboard card. Shows the project's real frame-0 thumbnail once one has been generated
@@ -48,7 +48,7 @@ fun ProjectCard(
 ) {
     var menuOpen by remember { mutableStateOf(false) }
     Card(onClick = onOpen, modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(8.dp)) {
+        Column(Modifier.padding(Dimens.spaceS)) {
             Box(Modifier.fillMaxWidth().aspectRatio(project.stage.width.toFloat() / project.stage.height.toFloat())) {
                 if (project.thumbnailPath != null) {
                     AsyncImage(

@@ -19,6 +19,8 @@ import com.composables.icons.lucide.Circle
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
+import com.donnclab.kinetiframe.designsystem.theme.PreviewSwatches
 import com.donnclab.kinetiframe.presentation.common.StampAsset
 
 /** One tile in a pack's contents drill-down grid -- a tinted icon over a light surface, with the
@@ -28,7 +30,7 @@ fun StampThumbnail(stamp: StampAsset, modifier: Modifier = Modifier) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             // Neutral artboard is content, not chrome: black transparent ink must remain visible in dark mode.
-            Modifier.aspectRatio(1f).clip(RoundedCornerShape(Dimens.radiusM)).background(Color(0xFFF1F1F1)),
+            Modifier.aspectRatio(1f).clip(RoundedCornerShape(Dimens.radiusM)).background(LibraryTokens.stampWell),
             contentAlignment = Alignment.Center,
         ) {
             if (stamp.imagePath !=
@@ -61,5 +63,5 @@ fun StampThumbnail(stamp: StampAsset, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 private fun StampThumbnailPreview() {
-    KinetiFrameTheme { StampThumbnail(StampAsset("preview", "Smile", Lucide.Circle, Color(0xFFFF6A45))) }
+    KinetiFrameTheme { StampThumbnail(StampAsset("preview", "Smile", Lucide.Circle, PreviewSwatches.coral)) }
 }

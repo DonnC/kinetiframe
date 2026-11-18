@@ -22,10 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StampAsset
 import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
@@ -34,8 +35,8 @@ import java.io.File
 @Composable
 fun StampPreviewDialog(stamp: StampAsset, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
-        Surface(shape = MaterialTheme.shapes.large, tonalElevation = 6.dp) {
-            Column(Modifier.fillMaxWidth().padding(12.dp)) {
+        Surface(shape = MaterialTheme.shapes.large, tonalElevation = Dimens.elevationFloating) {
+            Column(Modifier.fillMaxWidth().padding(Dimens.spaceM)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(stamp.name, Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
                     IconButton(onClick = onDismiss) {
@@ -48,11 +49,16 @@ fun StampPreviewDialog(stamp: StampAsset, onDismiss: () -> Unit) {
                         stamp.name,
                         contentScale = ContentScale.Fit,
                         modifier = Modifier.fillMaxWidth().heightIn(
-                            max = 360.dp,
-                        ).aspectRatio(1f).background(Color(0xFFF1F1F1)),
+                            max = LibraryTokens.stampPreviewMaxHeight,
+                        ).aspectRatio(1f).background(LibraryTokens.stampWell),
                     )
                 } else {
-                    Icon(stamp.icon, stamp.name, Modifier.fillMaxWidth().height(200.dp), tint = stamp.tint)
+                    Icon(
+                        stamp.icon,
+                        stamp.name,
+                        Modifier.fillMaxWidth().height(LibraryTokens.stampPreviewHeight),
+                        tint = stamp.tint,
+                    )
                 }
             }
         }

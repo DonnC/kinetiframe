@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import com.donnclab.kinetiframe.presentation.studio.timeline.ActorPerformancePicker
 import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineControls
@@ -64,7 +64,7 @@ internal fun EditorBottomBarSlot(
             onEditPackItem = host.packCreatorConfig?.let { { index -> panels.packItemDetails = index to false } },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 4.dp, vertical = 4.dp),
+                .padding(horizontal = Dimens.spaceXs, vertical = Dimens.spaceXs),
         )
     }
 }

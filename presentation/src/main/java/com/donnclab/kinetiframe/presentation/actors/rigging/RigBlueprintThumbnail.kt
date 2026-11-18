@@ -14,6 +14,7 @@ import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 
 /** Draw the actual starter graph, not unrelated character art. Geometry is compiled off draw. */
 @Composable
@@ -33,9 +34,9 @@ fun RigBlueprintThumbnail(template: ActorTemplate, modifier: Modifier = Modifier
         segments.forEach { (a, b) ->
             val start = origin + a * scale
             val end = origin + b * scale
-            drawLine(color, start, end, strokeWidth = 2.dp.toPx(), cap = StrokeCap.Round)
-            drawCircle(color, radius = 2.dp.toPx(), center = start)
-            drawCircle(color, radius = 2.dp.toPx(), center = end)
+            drawLine(color, start, end, strokeWidth = ActorStudioTokens.blueprintStroke.toPx(), cap = StrokeCap.Round)
+            drawCircle(color, radius = ActorStudioTokens.blueprintJoint.toPx(), center = start)
+            drawCircle(color, radius = ActorStudioTokens.blueprintJoint.toPx(), center = end)
         }
     }
 }

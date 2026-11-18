@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.ChevronRight
 import com.composables.icons.lucide.Lucide
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AddFlowBottomBar
 import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
@@ -60,7 +61,9 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
         },
     ) { padding ->
         Column(
-            Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 20.dp),
+            Modifier.fillMaxSize().padding(
+                padding,
+            ).verticalScroll(rememberScrollState()).padding(horizontal = Dimens.spaceXl),
         ) {
             CompactTextField(
                 value = state.name,
@@ -69,14 +72,14 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
                 },
                 label = { Text(stringResource(R.string.add_project_name)) },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
+                modifier = Modifier.fillMaxWidth().padding(top = Dimens.spaceXl),
             )
 
             Text(
                 stringResource(R.string.add_project_canvas_size),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
+                modifier = Modifier.padding(top = Dimens.spaceXlPlus, bottom = Dimens.spaceS),
             )
             CanvasSizeRow(selection = state.canvasSelection, onClick = callbacks.onOpenCanvasSize)
 
@@ -87,9 +90,9 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
                 steps = 28,
                 label = stringResource(R.string.add_project_frame_rate),
                 valueDisplay = { resources.getString(R.string.add_project_fps_value, it.toInt()) },
-                modifier = Modifier.padding(top = 28.dp),
+                modifier = Modifier.padding(top = Dimens.spaceXxl),
             )
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(Dimens.spaceXlPlus))
         }
     }
 }
@@ -106,7 +109,7 @@ private fun CanvasSizeRow(selection: CanvasSizeSelection, onClick: () -> Unit) {
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            modifier = Modifier.padding(horizontal = Dimens.spaceL, vertical = Dimens.spaceMPlus),
         ) {
             Column(Modifier.weight(1f)) {
                 Text(selection.preset.displayName(), style = MaterialTheme.typography.titleSmall)

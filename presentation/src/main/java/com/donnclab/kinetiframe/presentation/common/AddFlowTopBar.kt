@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 
 /** Shared header for the Home "Add" flows (New Project, New Pack, New Actor): a back button and
@@ -25,7 +25,7 @@ import com.donnclab.kinetiframe.presentation.R
 fun AddFlowTopBar(title: String, onBack: () -> Unit, modifier: Modifier = Modifier) {
     Column(modifier.fillMaxWidth()) {
         AppBrandBar()
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier.fillMaxWidth().padding(8.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier.fillMaxWidth().padding(Dimens.spaceS)) {
             IconButton(onClick = onBack) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
             }

@@ -30,7 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 
 /** One compact field for forms, names, search and timeline values; font scaling can grow its height. */
@@ -52,12 +52,12 @@ fun CompactTextField(
     textStyle: TextStyle = MaterialTheme.typography.bodySmall,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 10.dp, vertical = 6.dp),
+    contentPadding: PaddingValues = PaddingValues(horizontal = Dimens.spaceSPlus, vertical = Dimens.spaceXsPlus),
 ) {
     val interaction = remember { MutableInteractionSource() }
     val focused by interaction.collectIsFocusedAsState()
     val colors = MaterialTheme.colorScheme
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(Dimens.spaceXxsPlus)) {
         if (label != null) ProvideTextStyle(MaterialTheme.typography.labelSmall) { label() }
         BasicTextField(
             value, onValueChange, enabled = enabled, singleLine = singleLine,
@@ -72,7 +72,7 @@ fun CompactTextField(
                     shape = MaterialTheme.shapes.small,
                     color = colors.surface,
                     border = BorderStroke(
-                        1.dp,
+                        Dimens.borderThin,
                         when {
                             isError -> colors.error
                             focused -> colors.primary
@@ -81,14 +81,14 @@ fun CompactTextField(
                     ),
                 ) {
                     Row(
-                        Modifier.heightIn(min = 36.dp).padding(contentPadding),
+                        Modifier.heightIn(min = Dimens.compactFieldHeight).padding(contentPadding),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
                     ) {
                         if (leadingIcon !=
                             null
                         ) {
-                            Box(Modifier.size(18.dp), contentAlignment = Alignment.Center) { leadingIcon() }
+                            Box(Modifier.size(Dimens.iconSPlus), contentAlignment = Alignment.Center) { leadingIcon() }
                         }
                         Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
                             if (value.isEmpty() &&

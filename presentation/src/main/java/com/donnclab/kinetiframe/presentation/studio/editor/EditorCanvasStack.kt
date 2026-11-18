@@ -20,9 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.LocalAppPreferences
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
@@ -82,7 +82,7 @@ internal fun BoxScope.EditorCanvasStack(
             state.animation.isPlaying,
             commands.onIntent,
             onRestore = { panels.toolbarVisible = true },
-            modifier = Modifier.align(Alignment.BottomEnd).padding(8.dp),
+            modifier = Modifier.align(Alignment.BottomEnd).padding(Dimens.spaceS),
         )
     }
     if (host.isPackCreator) PackAlignmentCrosshair()
@@ -94,7 +94,7 @@ internal fun BoxScope.EditorCanvasStack(
                 reference,
                 stage.width,
                 stage.height,
-                Modifier.align(Alignment.TopEnd).padding(8.dp),
+                Modifier.align(Alignment.TopEnd).padding(Dimens.spaceS),
                 description = stringResource(R.string.reference_frame_description, state.animation.currentFrame + 1),
                 onReplace = { image -> viewModel.frameReferences.replace(reference, image, stage.width, stage.height) },
             )
@@ -106,7 +106,7 @@ internal fun BoxScope.EditorCanvasStack(
             host.actorReference,
             stage.width,
             stage.height,
-            Modifier.align(Alignment.TopEnd).padding(8.dp),
+            Modifier.align(Alignment.TopEnd).padding(Dimens.spaceS),
         )
     }
     ActorAuthoringOverlay(state, host, ui, commands)
@@ -149,7 +149,7 @@ private fun BoxScope.CameraOverlay(
         preview,
         { preview = it },
         onIntent,
-        Modifier.align(Alignment.TopEnd).padding(8.dp),
+        Modifier.align(Alignment.TopEnd).padding(Dimens.spaceS),
     ) { pose, shot, frame ->
         val previewState = if (shot == null || frame == null) {
             state

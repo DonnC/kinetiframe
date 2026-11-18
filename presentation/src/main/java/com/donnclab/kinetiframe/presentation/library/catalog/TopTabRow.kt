@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Drama
 import com.composables.icons.lucide.Folder
 import com.composables.icons.lucide.Grid2x2
@@ -80,7 +79,7 @@ private fun TopTabItem(tab: TopTabDef, active: Boolean, onClick: () -> Unit, mod
         val label = stringResource(tab.label)
         Icon(tab.icon, label, tint = tint, modifier = Modifier.size(Dimens.iconM))
         Text(label, style = MaterialTheme.typography.labelSmall, color = tint)
-        Box(Modifier.fillMaxWidth().height(2.dp).background(underlineColor))
+        Box(Modifier.fillMaxWidth().height(Dimens.borderThick).background(underlineColor))
     }
 }
 

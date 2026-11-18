@@ -45,13 +45,13 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.document.ProjectManifest
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
@@ -62,18 +62,18 @@ import java.io.File
  *  translucent chip (or two) overlaid top-corner for the item's key stats, a bottom scrim carrying
  *  the title (and, for a project, its duration), and a corner overflow menu for the same
  *  rename/share/delete actions each tab already had on its own standalone screen. */
-private val ScrimBrush = Brush.verticalGradient(listOf(Color.Transparent, Color(0xB8141210)))
+private val ScrimBrush = Brush.verticalGradient(listOf(Color.Transparent, HomeTokens.cardScrim))
 
 @Composable
 private fun HomeChip(text: String, modifier: Modifier = Modifier, icon: ImageVector? = null) {
     Surface(modifier = modifier, shape = RoundedCornerShape(HomeTokens.chipCorner), color = HomeTokens.chipBg) {
         Row(
-            Modifier.padding(horizontal = 7.dp, vertical = 4.dp),
+            Modifier.padding(horizontal = HomeTokens.badgePaddingHorizontal, vertical = Dimens.spaceXs),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             icon?.let {
-                Icon(it, null, tint = Color.White, modifier = Modifier.size(11.dp))
-                androidx.compose.foundation.layout.Spacer(Modifier.size(3.dp))
+                Icon(it, null, tint = Color.White, modifier = Modifier.size(Dimens.iconXs))
+                androidx.compose.foundation.layout.Spacer(Modifier.size(Dimens.spaceXxsPlus))
             }
             Text(
                 text,
@@ -130,18 +130,23 @@ fun HomeProjectCard(
         HomeChip(
             stringResource(R.string.home_chip_fps, project.fps),
             icon = Icons.Filled.PlayArrow,
-            modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
+            modifier = Modifier.align(Alignment.TopStart).padding(Dimens.spaceS),
         )
         HomeChip(
             stringResource(R.string.size_dimensions, project.stage.width, project.stage.height),
-            modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
+            modifier = Modifier.align(Alignment.TopEnd).padding(Dimens.spaceS),
         )
         Column(
             Modifier
                 .align(Alignment.BottomStart)
                 .fillMaxWidth()
                 .background(ScrimBrush)
-                .padding(top = 26.dp, start = 10.dp, end = 40.dp, bottom = 8.dp),
+                .padding(
+                    top = HomeTokens.cardTitleTop,
+                    start = Dimens.spaceSPlus,
+                    end = HomeTokens.cardMenuReserve,
+                    bottom = Dimens.spaceS,
+                ),
         ) {
             Text(
                 project.displayName,
@@ -157,7 +162,7 @@ fun HomeProjectCard(
                 style = MaterialTheme.typography.labelSmall,
             )
         }
-        Box(Modifier.align(Alignment.BottomEnd).padding(2.dp)) {
+        Box(Modifier.align(Alignment.BottomEnd).padding(Dimens.spaceXxs)) {
             IconButton(onClick = {
                 menuOpen = true
             }) { Icon(Icons.Default.MoreVert, stringResource(R.string.project_actions), tint = Color.White) }
@@ -213,14 +218,7 @@ private fun PackPreviewCell(file: File?, modifier: Modifier = Modifier) {
     }
 }
 
-private val PackTints = listOf(
-    Color(0xFFFFB199),
-    Color(0xFF9FCBEF),
-    Color(0xFF8FCB8A),
-    Color(0xFFB77FE0),
-    Color(0xFFE8C24C),
-    Color(0xFFF2879F),
-)
+private val PackTints = HomeTokens.placeholderTints
 
 private fun pastelFor(seed: String): Color {
     val index = (seed.hashCode().let { if (it == Int.MIN_VALUE) 0 else kotlin.math.abs(it) }) % PackTints.size
@@ -255,7 +253,12 @@ fun HomePackCard(pack: LibraryItemManifest, itemCount: Int, previewFiles: List<F
     ) {
         if (previewFiles.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Icon(Lucide.Layers, null, tint = Color.White.copy(alpha = .85f), modifier = Modifier.size(40.dp))
+                Icon(
+                    Lucide.Layers,
+                    null,
+                    tint = Color.White.copy(alpha = .85f),
+                    modifier = Modifier.size(HomeTokens.placeholderIcon),
+                )
             }
         } else {
             Column(Modifier.fillMaxSize()) {
@@ -272,14 +275,19 @@ fun HomePackCard(pack: LibraryItemManifest, itemCount: Int, previewFiles: List<F
         HomeChip(
             pluralStringResource(R.plurals.home_chip_items, itemCount, itemCount),
             icon = Lucide.Layers,
-            modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
+            modifier = Modifier.align(Alignment.TopEnd).padding(Dimens.spaceS),
         )
         Box(
             Modifier
                 .align(Alignment.BottomStart)
                 .fillMaxWidth()
                 .background(ScrimBrush)
-                .padding(top = 26.dp, start = 10.dp, end = 40.dp, bottom = 8.dp),
+                .padding(
+                    top = HomeTokens.cardTitleTop,
+                    start = Dimens.spaceSPlus,
+                    end = HomeTokens.cardMenuReserve,
+                    bottom = Dimens.spaceS,
+                ),
         ) {
             Text(
                 pack.displayName,
@@ -290,7 +298,7 @@ fun HomePackCard(pack: LibraryItemManifest, itemCount: Int, previewFiles: List<F
                 overflow = TextOverflow.Ellipsis,
             )
         }
-        Box(Modifier.align(Alignment.BottomEnd).padding(2.dp)) {
+        Box(Modifier.align(Alignment.BottomEnd).padding(Dimens.spaceXxs)) {
             IconButton(onClick = {
                 menuOpen = true
             }) { Icon(Icons.Default.MoreVert, stringResource(R.string.pack_actions), tint = Color.White) }
@@ -372,26 +380,36 @@ fun HomeActorCard(
         if (thumbnailPath == null) {
             com.donnclab.kinetiframe.presentation.actors.rigging.RigBlueprintThumbnail(
                 com.donnclab.kinetiframe.actors.rig.model.ActorTemplate.HUMAN,
-                Modifier.fillMaxSize().padding(24.dp),
+                Modifier.fillMaxSize().padding(Dimens.spaceXlPlus),
             )
         } else {
             AsyncImage(
                 model = "file://$thumbnailPath",
                 contentDescription = stringResource(R.string.actor_preview_description, actor.displayName),
                 contentScale = ContentScale.Fit,
-                modifier = Modifier.fillMaxSize().padding(top = 28.dp, bottom = 40.dp, start = 12.dp, end = 12.dp),
+                modifier = Modifier.fillMaxSize().padding(
+                    top = Dimens.spaceXxl,
+                    bottom = HomeTokens.cardFooterReserve,
+                    start = Dimens.spaceM,
+                    end = Dimens.spaceM,
+                ),
             )
         }
         HomeChip(
             actor.authoredViews().size.let { pluralStringResource(R.plurals.home_chip_views, it, it) },
-            modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
+            modifier = Modifier.align(Alignment.TopEnd).padding(Dimens.spaceS),
         )
         Box(
             Modifier
                 .align(Alignment.BottomStart)
                 .fillMaxWidth()
                 .background(ScrimBrush)
-                .padding(top = 26.dp, start = 10.dp, end = 40.dp, bottom = 8.dp),
+                .padding(
+                    top = HomeTokens.cardTitleTop,
+                    start = Dimens.spaceSPlus,
+                    end = HomeTokens.cardMenuReserve,
+                    bottom = Dimens.spaceS,
+                ),
         ) {
             Text(
                 actor.displayName,
@@ -402,7 +420,7 @@ fun HomeActorCard(
                 overflow = TextOverflow.Ellipsis,
             )
         }
-        Box(Modifier.align(Alignment.BottomEnd).padding(2.dp)) {
+        Box(Modifier.align(Alignment.BottomEnd).padding(Dimens.spaceXxs)) {
             IconButton(onClick = {
                 menuOpen = true
             }) { Icon(Icons.Default.MoreVert, stringResource(R.string.actor_actions), tint = Color.White) }

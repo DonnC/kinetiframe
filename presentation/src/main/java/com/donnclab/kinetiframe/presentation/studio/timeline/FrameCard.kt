@@ -20,8 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.studio.FrameThumbnailContent
 
@@ -32,16 +34,16 @@ fun FrameCard(index: Int, isCurrent: Boolean, thumbnail: Bitmap? = null, linked:
         isCurrent -> EditorTokens.accent.copy(alpha = 0.6f)
         else -> EditorTokens.border
     }
-    val borderWidth = if (isCurrent) 2.dp else 1.dp
+    val borderWidth = if (isCurrent) TimelineTokens.currentFrameBorder else Dimens.borderThin
 
     Box(
         modifier = Modifier
-            .width(36.dp)
+            .width(TimelineTokens.frameThumbWidth)
             .combinedClickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Card(
-            modifier = Modifier.size(36.dp, 40.dp),
+            modifier = Modifier.size(TimelineTokens.frameThumbWidth, TimelineTokens.frameThumbHeight),
             colors = CardDefaults.cardColors(
                 containerColor = when {
                     isCurrent -> EditorTokens.accent.copy(alpha = 0.15f)
@@ -49,7 +51,7 @@ fun FrameCard(index: Int, isCurrent: Boolean, thumbnail: Bitmap? = null, linked:
                 },
                 contentColor = if (isCurrent) EditorTokens.accent else MaterialTheme.colorScheme.onSurfaceVariant,
             ),
-            shape = RoundedCornerShape(4.dp),
+            shape = RoundedCornerShape(TimelineTokens.frameThumbCorner),
             border = BorderStroke(
                 width = borderWidth,
                 color = borderColor,
@@ -60,7 +62,7 @@ fun FrameCard(index: Int, isCurrent: Boolean, thumbnail: Bitmap? = null, linked:
                     Icon(
                         Icons.Default.Link,
                         stringResource(R.string.timeline_linked_drawing),
-                        modifier = Modifier.align(Alignment.BottomStart).size(12.dp),
+                        modifier = Modifier.align(Alignment.BottomStart).size(TimelineTokens.frameBadge),
                         tint = EditorTokens.accent,
                     )
                 }
@@ -73,7 +75,7 @@ fun FrameCard(index: Int, isCurrent: Boolean, thumbnail: Bitmap? = null, linked:
 @Composable
 fun FrameCardPreview() {
     KinetiFrameTheme {
-        Box(Modifier.padding(16.dp)) {
+        Box(Modifier.padding(Dimens.spaceL)) {
             FrameCard(
                 index = 0,
                 isCurrent = true,

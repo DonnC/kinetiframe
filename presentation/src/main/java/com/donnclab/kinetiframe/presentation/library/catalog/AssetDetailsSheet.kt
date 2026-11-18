@@ -24,6 +24,7 @@ import com.composables.icons.lucide.Square
 import com.composables.icons.lucide.SquarePlus
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.PreviewSwatches
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AssetDetails
 import com.donnclab.kinetiframe.presentation.common.AssetKind
@@ -119,7 +120,7 @@ private fun AssetDetailsSheetPreview() {
         previewKind = PreviewKind.LIVE_MOTION,
         title = "Walk Cycle Take 3",
         specsLine = UiText.Verbatim("Humanoid  ·  12 FPS  ·  1080×1920"),
-        thumbnail = CardThumbnail.SolidGradient(Color(0xFFFFD9CC), Color(0xFFFF6A45)),
+        thumbnail = CardThumbnail.SolidGradient(PreviewSwatches.peach, PreviewSwatches.coral),
     )
     KinetiFrameTheme { AssetDetailsSheet(sample, AssetDetailsContext(), onAction = {}) }
 }

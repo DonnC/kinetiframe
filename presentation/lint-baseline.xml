@@ -13,17 +13,6 @@
     </issue>
 
     <issue
-        id="FrequentlyChangingValue"
-        message="Reading a value annotated with @FrequentlyChangingValue inside composition"
-        errorLine1="        val edgePadding = listState.layoutInfo.beforeContentPadding"
-        errorLine2="                                    ~~~~~~~~~~">
-        <location
-            file="src/main/java/com/donnclab/kinetiframe/presentation/studio/timeline/audio/ProjectAudioScrubRibbon.kt"
-            line="64"
-            column="37"/>
-    </issue>
-
-    <issue
         id="UseKtx"
         message="Use the KTX function `createBitmap` instead?"
         errorLine1="            Bitmap.createBitmap(32, 32, Bitmap.Config.ARGB_8888).apply { eraseColor(Color.CYAN) }"

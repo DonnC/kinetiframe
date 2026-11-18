@@ -35,6 +35,7 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.MessageCircle
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.actors.labelRes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -107,7 +108,7 @@ fun ActorPresetCard(
     Card(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier.size(96.dp),
+        modifier = modifier.size(ActorStudioTokens.presetCard),
         colors = CardDefaults.cardColors(
             containerColor = if (selected) {
                 ActorStudioTokens.accent.copy(
@@ -118,14 +119,14 @@ fun ActorPresetCard(
             },
         ),
         border = androidx.compose.foundation.BorderStroke(
-            1.dp,
+            Dimens.borderThin,
             if (selected) ActorStudioTokens.accent else ActorStudioTokens.panelDivider,
         ),
     ) {
-        Column(Modifier.fillMaxSize().padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(Modifier.fillMaxSize().padding(Dimens.spaceS), horizontalAlignment = Alignment.CenterHorizontally) {
             Column(
                 Modifier.weight(1f).fillMaxWidth()
-                    .background(ActorStudioTokens.panelSurface, RoundedCornerShape(4.dp)),
+                    .background(ActorStudioTokens.panelSurface, RoundedCornerShape(Dimens.radiusXxs)),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 androidx.compose.foundation.layout.Box(
@@ -137,21 +138,21 @@ fun ActorPresetCard(
                             vector!!,
                             preset.name,
                             tint = ActorStudioTokens.onPanel,
-                            modifier = Modifier.fillMaxSize().padding(4.dp),
+                            modifier = Modifier.fillMaxSize().padding(Dimens.spaceXs),
                         )
                     } else if (thumbnail != null) {
                         Image(
                             bitmap = thumbnail.asImageBitmap(),
                             contentDescription = preset.name,
                             contentScale = ContentScale.Fit,
-                            modifier = Modifier.fillMaxSize().padding(4.dp),
+                            modifier = Modifier.fillMaxSize().padding(Dimens.spaceXs),
                         )
                     } else {
                         Icon(
                             category.icon(),
                             null,
                             tint = if (selected) ActorStudioTokens.accent else ActorStudioTokens.onPanelMuted,
-                            modifier = Modifier.size(28.dp),
+                            modifier = Modifier.size(ActorStudioTokens.presetIconButton),
                         )
                     }
                 }

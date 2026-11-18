@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 
 @Composable
@@ -37,9 +38,9 @@ fun OpacityDrag(
 
     Box(
         modifier = modifier
-            .width(44.dp)
-            .height(28.dp)
-            .clip(RoundedCornerShape(6.dp))
+            .width(TimelineTokens.opacityChipWidth)
+            .height(TimelineTokens.opacityChipHeight)
+            .clip(RoundedCornerShape(TimelineTokens.chipCorner))
             .background(
                 if (isVisible) {
                     EditorTokens.accent.copy(alpha = 0.15f)

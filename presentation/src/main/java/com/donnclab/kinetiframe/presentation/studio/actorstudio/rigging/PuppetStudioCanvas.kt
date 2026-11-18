@@ -28,6 +28,8 @@ import com.donnclab.kinetiframe.actors.rig.math.RigJointTarget
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.document.BrushSnapshot
 import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.studio.canvas.ActiveStroke
 import com.donnclab.kinetiframe.presentation.studio.canvas.CanvasInputLayer
@@ -402,7 +404,9 @@ fun PuppetStudioCanvas(
             ) {
                 ActorWorkflowHint(
                     state,
-                    Modifier.align(Alignment.TopCenter).padding(start = 144.dp, end = 8.dp, top = 4.dp),
+                    Modifier.align(
+                        Alignment.TopCenter,
+                    ).padding(start = ActorStudioTokens.hintStartInset, end = Dimens.spaceS, top = Dimens.spaceXs),
                 )
             }
         }

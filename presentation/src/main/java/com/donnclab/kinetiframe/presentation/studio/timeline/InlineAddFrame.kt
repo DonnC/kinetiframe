@@ -15,20 +15,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 
 /** A pinned blank frame cell, not another standalone toolbar action. */
 @Composable
 fun InlineAddFrame(onClick: () -> Unit) {
-    Box(Modifier.size(40.dp, 48.dp), contentAlignment = Alignment.Center) {
+    Box(Modifier.size(TimelineTokens.frameCell, TimelineTokens.frameCellHeight), contentAlignment = Alignment.Center) {
         Surface(
             onClick = onClick,
-            modifier = Modifier.size(36.dp, 40.dp),
-            shape = RoundedCornerShape(4.dp),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            modifier = Modifier.size(TimelineTokens.frameThumbWidth, TimelineTokens.frameThumbHeight),
+            shape = RoundedCornerShape(TimelineTokens.frameThumbCorner),
+            border = BorderStroke(Dimens.borderThin, MaterialTheme.colorScheme.outlineVariant),
         ) {
             Box(contentAlignment = Alignment.Center) {
-                Icon(Icons.Default.Add, stringResource(R.string.timeline_add_frame), Modifier.size(18.dp))
+                Icon(Icons.Default.Add, stringResource(R.string.timeline_add_frame), Modifier.size(EditorTokens.icon))
             }
         }
     }

@@ -44,6 +44,7 @@ import com.composables.icons.lucide.Move
 import com.composables.icons.lucide.Spline
 import com.composables.icons.lucide.Text
 import com.composables.icons.lucide.Trash2
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ReferenceImageSize
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
@@ -116,7 +117,7 @@ fun ActorReferenceControls(
         Row {
             FilledTonalIconButton(onClick = { expanded = true }, enabled = !loading) {
                 if (loading) {
-                    CircularProgressIndicator(Modifier.size(20.dp))
+                    CircularProgressIndicator(Modifier.size(Dimens.iconM))
                 } else {
                     Icon(Lucide.Image, description)
                 }

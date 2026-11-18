@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 
 /**
  * Performance Stage's Preset Library, reached on demand from the top bar rather than sitting
@@ -47,7 +48,7 @@ fun PresetLibrarySheet(
                 onPreview = onPreview,
                 onApply = onApply,
                 canApply = canApply,
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
+                modifier = Modifier.padding(horizontal = Dimens.spaceXl, vertical = Dimens.spaceXs),
             )
             PresetAuditionControls(
                 preview,
@@ -57,7 +58,7 @@ fun PresetLibrarySheet(
                 onIntensity,
                 onSpeed,
                 onRemove,
-                Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
+                Modifier.padding(horizontal = Dimens.spaceXl, vertical = Dimens.spaceXs),
             )
         }
     }

@@ -20,8 +20,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
 import com.donnclab.kinetiframe.presentation.common.asString
@@ -87,9 +88,14 @@ internal fun PacksTabContent(
                 else -> LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 104.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(
+                        start = Dimens.spaceL,
+                        end = Dimens.spaceL,
+                        top = Dimens.spaceXs,
+                        bottom = HomeTokens.listBottomReserve,
+                    ),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
                 ) {
                     items(filtered, key = { it.libraryItemId }) { pack ->
                         HomePackCard(
