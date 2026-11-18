@@ -38,23 +38,35 @@ import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 
+/** The clip a [TrackClipContextMenu] acts on: an actor, sound or video clip. */
+internal data class TrackClipTarget(
+    val actor: ActorPlacementReference? = null,
+    val sound: AudioClipPlacement? = null,
+    val video: VideoClipPlacement? = null,
+)
+
+/** Where [TrackClipContextMenu] sends its intents and the actions the studio state can't do. */
+internal data class TrackClipActions(
+    val onDismiss: () -> Unit,
+    val onIntent: (StudioIntent) -> Unit,
+    val onPosition: () -> Unit,
+    val onEdit: (ActorPlacementReference) -> Unit,
+    val onSaveActor: (ActorPlacementReference) -> Unit,
+    val onSaveAudio: (AudioClipPlacement) -> Unit,
+    val onCreatePerformance: ((String, String) -> Unit)?,
+)
+
 /** The clip owns its anchor; the project remains the sole source of committed editing state. */
 @Composable
 internal fun TrackClipContextMenu(
     expanded: Boolean,
-    onDismiss: () -> Unit,
     state: StudioState,
-    actor: ActorPlacementReference?,
-    sound: AudioClipPlacement?,
-    video: VideoClipPlacement?,
-    onIntent: (StudioIntent) -> Unit,
-    onPosition: () -> Unit,
+    target: TrackClipTarget,
     timeline: TimelineServices,
-    onEdit: (ActorPlacementReference) -> Unit,
-    onSaveActor: (ActorPlacementReference) -> Unit,
-    onSaveAudio: (AudioClipPlacement) -> Unit,
-    onCreatePerformance: ((String, String) -> Unit)?,
+    actions: TrackClipActions,
 ) {
+    val (actor, sound, video) = target
+    val (onDismiss, onIntent, onPosition, onEdit, onSaveActor, onSaveAudio, onCreatePerformance) = actions
     var showFades by remember(sound?.clipId) { mutableStateOf(false) }
     var showCrossfade by remember(sound?.clipId) { mutableStateOf(false) }
     var showFraming by remember(video?.clipId) { mutableStateOf(false) }
@@ -77,7 +89,7 @@ internal fun TrackClipContextMenu(
         onDismiss()
         onIntent(intent)
     }
-    val actions = buildList {
+    val menuItems = buildList {
         add(
             ContextIconAction(
                 Lucide.MoveHorizontal,
@@ -235,7 +247,7 @@ internal fun TrackClipContextMenu(
             add(ContextIconAction(Lucide.Redo2, "Redo effect edit", { dispatch(StudioIntent.Camera.Redo) }))
         }
     }
-    IconContextMenu(expanded, onDismiss, actions) {
+    IconContextMenu(expanded, onDismiss, menuItems) {
         Row {
             actor?.let { clip ->
                 SwitchPerformanceButton(clip, state.project.id, timeline.performances, { placement, performance ->

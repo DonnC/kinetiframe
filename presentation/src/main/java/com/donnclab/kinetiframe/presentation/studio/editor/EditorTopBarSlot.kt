@@ -4,6 +4,7 @@ package com.donnclab.kinetiframe.presentation.studio.editor
 import androidx.compose.runtime.Composable
 import com.donnclab.kinetiframe.presentation.common.LocalAppPreferences
 import com.donnclab.kinetiframe.presentation.studio.EditorTopBar
+import com.donnclab.kinetiframe.presentation.studio.EditorTopBarActions
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.PuppetTopBar
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioMode
@@ -56,10 +57,12 @@ internal fun EditorTopBarSlot(state: StudioState, host: EditorHost, ui: EditorUi
         onIntent = onIntent,
         actorViews = host.actorViews,
         onAttachActorArtwork = chooseArtwork.takeIf { isActorStudio && !state.actor.isPerformanceAuthoring },
-        onHomeClick = (host.onHomeClick ?: host.onExitActorStudio)?.let { home -> { commands.requestExit(home) } },
-        onStudioClick = { panels.frameStudioVisible = true },
-        onGridSettingsClick = { panels.showGridMenu = true },
-        onOnionSettingsClick = { panels.showOnionMenu = true },
+        actions = EditorTopBarActions(
+            onHomeClick = (host.onHomeClick ?: host.onExitActorStudio)?.let { home -> { commands.requestExit(home) } },
+            onStudioClick = { panels.frameStudioVisible = true },
+            onGridSettingsClick = { panels.showGridMenu = true },
+            onOnionSettingsClick = { panels.showOnionMenu = true },
+        ),
         // In a project's editor this only toggles Rig Setup in place. Actor Studio is its own
         // destination, so a project never navigates there from here.
         isActorStudio = isActorStudio,

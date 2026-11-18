@@ -64,14 +64,19 @@ import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.actorDefinition
 
+/** The editor top bar's fixed buttons. A null [onHomeClick] hides Home. */
+data class EditorTopBarActions(
+    val onHomeClick: (() -> Unit)?,
+    val onStudioClick: () -> Unit,
+    val onGridSettingsClick: () -> Unit,
+    val onOnionSettingsClick: () -> Unit,
+)
+
 @Composable
 fun EditorTopBar(
     state: StudioState,
     onIntent: (StudioIntent) -> Unit,
-    onHomeClick: (() -> Unit)?,
-    onStudioClick: () -> Unit,
-    onGridSettingsClick: () -> Unit,
-    onOnionSettingsClick: () -> Unit,
+    actions: EditorTopBarActions,
     modifier: Modifier = Modifier,
     /** True only for the standalone Actor Studio's own EditorScreen instance (see
      *  EditorScreen's `initialEditorState`) -- a plain FxF project never shows the Rig Setup
@@ -107,6 +112,7 @@ fun EditorTopBar(
     actorViews: (@Composable () -> Unit)? = null,
     onAttachActorArtwork: ((Boolean) -> Unit)? = null,
 ) {
+    val (onHomeClick, onStudioClick, onGridSettingsClick, onOnionSettingsClick) = actions
     val context = androidx.compose.ui.platform.LocalContext.current
     var assetsExpanded by remember { mutableStateOf(false) }
     var speedOpen by remember { mutableStateOf(false) }
@@ -326,10 +332,17 @@ fun EditorTopBar(
                     },
                 )
                 EditorAssetMenu(
-                    assetsExpanded, { assetsExpanded = false }, state.project.backgroundAssetId != null,
-                    onSetBackgroundClick, { onIntent(StudioIntent.Background.Remove) },
-                    onAddBackgroundToLibraryClick, onAddCurrentFrameToLibraryClick,
-                    state.canvas.backgroundVisible, { onIntent(StudioIntent.Background.ToggleVisibility) },
+                    assetsExpanded,
+                    { assetsExpanded = false },
+                    state.project.backgroundAssetId != null,
+                    BackgroundMenuActions(
+                        onChoose = onSetBackgroundClick,
+                        onRemove = { onIntent(StudioIntent.Background.Remove) },
+                        onSaveBackground = onAddBackgroundToLibraryClick,
+                        onSaveFrame = onAddCurrentFrameToLibraryClick,
+                        onToggleBackground = { onIntent(StudioIntent.Background.ToggleVisibility) },
+                    ),
+                    state.canvas.backgroundVisible,
                 )
             }
         }
@@ -357,7 +370,11 @@ fun EditorTopBar(
 @Composable
 private fun EditorTopBarPreview() {
     EditorTopBar(
-        StudioState(), {}, {}, {}, {}, {},
-        showOverflowMenu = false, onOverflowMenuToggle = {}, onFocusCanvas = {},
+        StudioState(),
+        {},
+        EditorTopBarActions({}, {}, {}, {}),
+        showOverflowMenu = false,
+        onOverflowMenuToggle = {},
+        onFocusCanvas = {},
     )
 }

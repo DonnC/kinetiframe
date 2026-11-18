@@ -28,6 +28,8 @@ import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.model.PackFrameTag
 import com.donnclab.kinetiframe.presentation.library.packs.PackSaveTagsDialog
 import com.donnclab.kinetiframe.presentation.studio.EditorTopBar
+import com.donnclab.kinetiframe.presentation.studio.EditorTopBarActions
+import com.donnclab.kinetiframe.presentation.studio.timeline.AssetSourceActions
 import com.donnclab.kinetiframe.presentation.studio.timeline.FrameCard
 import com.donnclab.kinetiframe.presentation.studio.timeline.StudioFocusControls
 import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineAssetSourceMenu
@@ -45,9 +47,11 @@ class CanvasFirstStudioTest {
     private fun TestAppBar(onTracksOpen: () -> Unit = {}) {
         var overflow by remember { mutableStateOf(false) }
         EditorTopBar(
-            state = StudioState(), onIntent = {}, onHomeClick = {},
-            onStudioClick = {}, onGridSettingsClick = {}, onOnionSettingsClick = {},
-            showOverflowMenu = overflow, onOverflowMenuToggle = { overflow = it },
+            state = StudioState(),
+            onIntent = {},
+            actions = EditorTopBarActions({}, {}, {}, {}),
+            showOverflowMenu = overflow,
+            onOverflowMenuToggle = { overflow = it },
             onTracksOpen = onTracksOpen,
         )
     }
@@ -143,7 +147,7 @@ class CanvasFirstStudioTest {
         var imported = false
         compose.setContent {
             KinetiFrameTheme {
-                TimelineAssetSourceMenu(true, {}, {}, { imported = true }, {}, {}, {})
+                TimelineAssetSourceMenu(true, {}, AssetSourceActions({}, { imported = true }, {}, {}, {}))
             }
         }
         compose.onNodeWithContentDescription("Record audio").assertDoesNotExist()

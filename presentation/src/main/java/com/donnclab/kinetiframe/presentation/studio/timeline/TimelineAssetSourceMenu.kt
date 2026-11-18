@@ -17,17 +17,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 
+/** What each source in [TimelineAssetSourceMenu] adds. */
+data class AssetSourceActions(
+    val onActor: () -> Unit,
+    val onImportAudio: () -> Unit,
+    val onRecordAudio: () -> Unit,
+    val onVideo: () -> Unit,
+    val onLibrary: () -> Unit,
+)
+
 /** Choose a media kind first; importing and recording are sources of Audio, not kinds. */
 @Composable
-fun TimelineAssetSourceMenu(
-    expanded: Boolean,
-    onDismiss: () -> Unit,
-    onActor: () -> Unit,
-    onImportAudio: () -> Unit,
-    onRecordAudio: () -> Unit,
-    onVideo: () -> Unit,
-    onLibrary: () -> Unit,
-) {
+fun TimelineAssetSourceMenu(expanded: Boolean, onDismiss: () -> Unit, actions: AssetSourceActions) {
+    val (onActor, onImportAudio, onRecordAudio, onVideo, onLibrary) = actions
     var audio by remember(expanded) { mutableStateOf(false) }
     IconContextMenu(
         expanded && !audio,
@@ -53,5 +55,5 @@ fun TimelineAssetSourceMenu(
 @Preview
 @Composable
 private fun TimelineAssetSourceMenuPreview() {
-    TimelineAssetSourceMenu(true, {}, {}, {}, {}, {}, {})
+    TimelineAssetSourceMenu(true, {}, AssetSourceActions({}, {}, {}, {}, {}))
 }

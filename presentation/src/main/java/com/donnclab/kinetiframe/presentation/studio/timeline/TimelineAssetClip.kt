@@ -46,6 +46,14 @@ internal val FRAME_CELL_WIDTH = TimelineTokens.frameCell
 internal val TRACK_GUTTER = TimelineTokens.trackGutter
 internal val TRACK_HEIGHT = TimelineTokens.trackHeight
 
+/** What a [TimelineAssetClip] does when tapped, moved (to a start frame and track) or trimmed
+ *  (to a start frame and duration). */
+internal data class ClipGestures(
+    val onSelect: () -> Unit,
+    val onMove: (Int, Int) -> Unit,
+    val onTrim: (Int, Int) -> Unit,
+)
+
 /** Local previews only. A cancelled gesture never writes the project; release writes once. */
 @Composable
 internal fun TimelineAssetClip(
@@ -54,14 +62,12 @@ internal fun TimelineAssetClip(
     start: Int,
     duration: Int,
     selected: Boolean,
+    gestures: ClipGestures,
     locked: Boolean = false,
     peaks: List<Float> = emptyList(),
     muted: Boolean = false,
     track: Int = 0,
     trackCount: Int = 1,
-    onSelect: () -> Unit,
-    onMove: (Int, Int) -> Unit,
-    onTrim: (Int, Int) -> Unit,
     allowLeftTrim: Boolean = true,
     allowTrim: Boolean = true,
     minStart: Int = start,
@@ -73,6 +79,7 @@ internal fun TimelineAssetClip(
     waveformDuration: Int = duration,
     contextMenu: (@Composable () -> Unit)? = null,
 ) {
+    val (onSelect, onMove, onTrim) = gestures
     val cellPx = with(LocalDensity.current) { FRAME_CELL_WIDTH.toPx() }
     val rowPx = with(LocalDensity.current) { TRACK_HEIGHT.toPx() }
     var previewStart by remember(id, start, duration) { mutableIntStateOf(start) }
@@ -269,6 +276,6 @@ private fun AssetTrimHandle(
 @Composable
 private fun AssetClipPreview() {
     MaterialTheme {
-        TimelineAssetClip("preview", "Dialogue", 0, 8, true, onSelect = {}, onMove = { _, _ -> }, onTrim = { _, _ -> })
+        TimelineAssetClip("preview", "Dialogue", 0, 8, true, ClipGestures({}, { _, _ -> }, { _, _ -> }))
     }
 }

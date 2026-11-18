@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
+import com.donnclab.kinetiframe.presentation.studio.BackgroundMenuActions
 import com.donnclab.kinetiframe.presentation.studio.EditorAssetMenu
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -22,8 +23,11 @@ class BackgroundVisibilityMenuTest {
         compose.setContent {
             MaterialTheme {
                 EditorAssetMenu(
-                    true, {}, true, {}, { removes++ }, null, null,
-                    visible, { visible = !visible },
+                    true,
+                    {},
+                    true,
+                    BackgroundMenuActions({}, { removes++ }, onToggleBackground = { visible = !visible }),
+                    visible,
                 )
             }
         }
@@ -36,7 +40,7 @@ class BackgroundVisibilityMenuTest {
     }
 
     @Test fun visibilityActionIsAbsentWhenNoBackgroundIsAdded() {
-        compose.setContent { MaterialTheme { EditorAssetMenu(true, {}, false, {}, {}, null, null) } }
+        compose.setContent { MaterialTheme { EditorAssetMenu(true, {}, false, BackgroundMenuActions({}, {})) } }
         compose.onNodeWithContentDescription("Hide background").assertDoesNotExist()
         compose.onNodeWithContentDescription("Show background").assertDoesNotExist()
     }
