@@ -107,7 +107,7 @@ class LibraryRepositoryTest {
                 "lib-a",
                 "Punchy Reel Sting",
                 source,
-                tags = setOf("trending", "sfx"),
+                placement = LibraryPlacement(tags = setOf("trending", "sfx")),
                 nowEpochMs = 1L,
             ),
         )
@@ -193,8 +193,7 @@ class LibraryRepositoryTest {
                 "lib-project",
                 "Episode-Only Sting",
                 source,
-                scope = LibraryScope.PROJECT,
-                projectId = "project-1",
+                placement = LibraryPlacement(LibraryScope.PROJECT, "project-1"),
                 nowEpochMs = 2L,
             ),
         )

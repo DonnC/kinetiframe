@@ -113,9 +113,7 @@ class LibraryRepository(
         itemId: String,
         displayName: String,
         sourceFile: File,
-        scope: LibraryScope = LibraryScope.PERSONAL,
-        projectId: String? = null,
-        tags: Set<String> = emptySet(),
+        placement: LibraryPlacement = LibraryPlacement(),
         nowEpochMs: Long,
     ): StoreResult<LibraryItemManifest> = runCatching {
         require(kind in LibraryItemManifest.RAW_ASSET_KINDS) { "$kind is not a raw-asset library kind" }
@@ -125,13 +123,13 @@ class LibraryRepository(
             libraryItemId = itemId,
             kind = kind,
             displayName = displayName,
-            sourceProjectId = projectId,
-            scope = scope,
+            sourceProjectId = placement.projectId,
+            scope = placement.scope,
             payloadFileName = payloadFileName,
-            tags = tags,
+            tags = placement.tags,
             createdAtEpochMs = nowEpochMs,
         ).validate()
-        val directory = itemDirectory(scope, projectId, itemId)
+        val directory = itemDirectory(placement.scope, placement.projectId, itemId)
         val payloadFile = File(directory, "payload/$payloadFileName")
         require(!File(directory, MANIFEST).exists()) { "Library item ID already exists" }
         com.donnclab.kinetiframe.data.storage.DurableFile.copy(sourceFile, payloadFile)
@@ -206,9 +204,7 @@ class LibraryRepository(
         displayName: String,
         packManifest: PackManifest,
         frameFiles: Map<String, File>,
-        scope: LibraryScope = LibraryScope.PERSONAL,
-        projectId: String? = null,
-        tags: Set<String> = emptySet(),
+        placement: LibraryPlacement = LibraryPlacement(),
         nowEpochMs: Long,
     ): StoreResult<LibraryItemManifest> = runCatching {
         val validPack = packManifest.validate()
@@ -219,12 +215,12 @@ class LibraryRepository(
             libraryItemId = itemId,
             kind = LibraryItemKind.PACK,
             displayName = displayName,
-            sourceProjectId = projectId,
-            scope = scope,
-            tags = tags,
+            sourceProjectId = placement.projectId,
+            scope = placement.scope,
+            tags = placement.tags,
             createdAtEpochMs = nowEpochMs,
         ).validate()
-        val directory = itemDirectory(scope, projectId, itemId)
+        val directory = itemDirectory(placement.scope, placement.projectId, itemId)
         val previous = files.readOrNull(File(directory, MANIFEST))?.let {
             json.decodeFromString<LibraryItemManifest>(it).validate()
         }

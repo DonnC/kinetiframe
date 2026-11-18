@@ -5,6 +5,7 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.library.data.LibraryPlacement
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,7 +49,7 @@ class LibraryPickerViewModelTest {
     ): LibraryItemManifest {
         val source = File(sources, "$id.$extension").apply { writeBytes(byteArrayOf(1, 2, 3)) }
         val projectId = "project-a".takeIf { scope == LibraryScope.PROJECT }
-        val result = library.exportAsset(kind, id, id, source, scope, projectId, nowEpochMs = 1L)
+        val result = library.exportAsset(kind, id, id, source, LibraryPlacement(scope, projectId), nowEpochMs = 1L)
         return (result as StoreResult.Value).value
     }
 

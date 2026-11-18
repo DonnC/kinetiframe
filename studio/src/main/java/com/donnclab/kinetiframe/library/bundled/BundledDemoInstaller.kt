@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.library.bundled
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.DurableFile
+import com.donnclab.kinetiframe.library.data.LibraryPlacement
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArchiver
 import com.donnclab.kinetiframe.project.data.KframeArchiver
@@ -45,22 +46,24 @@ class BundledDemoInstaller(
                                 library,
                                 temporary,
                                 demo.id,
-                                tags = if (demo.id in curatedPackIds) {
-                                    setOf("loose-signal", "starter") +
-                                        (
-                                            if (demo.id.contains("cutouts")) {
-                                                setOf("characters", demo.id.split('-')[1])
-                                            } else if (demo.id.contains("studio")) {
-                                                setOf("props", "studio")
-                                            } else {
-                                                setOf("expressions")
-                                            }
-                                            )
-                                } else if (demo.id.startsWith("ls-")) {
-                                    setOf("loose-signal", "starter", "tavi")
-                                } else {
-                                    setOf("demo", "starter")
-                                },
+                                placement = LibraryPlacement(
+                                    tags = if (demo.id in curatedPackIds) {
+                                        setOf("loose-signal", "starter") +
+                                            (
+                                                if (demo.id.contains("cutouts")) {
+                                                    setOf("characters", demo.id.split('-')[1])
+                                                } else if (demo.id.contains("studio")) {
+                                                    setOf("props", "studio")
+                                                } else {
+                                                    setOf("expressions")
+                                                }
+                                                )
+                                    } else if (demo.id.startsWith("ls-")) {
+                                        setOf("loose-signal", "starter", "tavi")
+                                    } else {
+                                        setOf("demo", "starter")
+                                    },
+                                ),
                                 nowEpochMs = CREATED_AT,
                             )
                         } else {
