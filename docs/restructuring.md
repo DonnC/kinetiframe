@@ -13,31 +13,44 @@ Keep this page current:
 
 ## Now
 
-Work collects on one milestone branch, milestone/code-limits, with a commit per chunk and one
-pull request into develop when the milestone is done. #75 finished the previous milestone
+Work collects on one milestone branch, `milestone/code-limits`, with a commit per chunk and one
+pull request into `develop` when the milestone is done. #75 finished the previous milestone
 (per-app language, pseudo-locales and theme tokens).
 
-**Parameter limits, part 1.** 12 of the 51 functions over the limit are fixed:
+**Parameter limits.** 50 of the 51 functions over the limit are fixed, mostly by grouping
+parameters that travel together into small data classes. Each function unpacks them under the
+old names, so behaviour is unchanged:
 
-- The studio's cel hold, drawing, frame, playback and selection managers take a StudioRuntime
-  (scope, dispatcher, state access, pending operations), the shared UndoStacks, and a small
-  hooks data class for their own callbacks.
-- The library's exportAsset, exportPack and PackArchiver.import take a LibraryPlacement
-  (scope, project, tags) in place of three parameters.
-- Home takes its states and intents as HomeStates and HomeIntents, its Projects and Actors tabs
-  take ProjectsTabCallbacks and ActorsTabCallbacks, like the Packs tab's PacksTabCallbacks,
-  and an actor card takes its menu as ActorCardActions.
+- The studio's managers take a `StudioRuntime`, the shared `UndoStacks` and a hooks class each.
+  The library's exports take a `LibraryPlacement`.
+- Home takes `HomeStates` and `HomeIntents`; its tabs take callback classes like the Packs tab's
+  `PacksTabCallbacks`.
+- The timeline clip takes `ClipGestures`; the clip, asset and background menus and the editor top
+  bar take action classes.
+- Actor Studio's preset sheet takes a `PresetPicker` and `PresetAudition`, and `StudioViewModel`
+  takes the session's `StudioDirectories`.
+- The canvas drawing layer takes a `CanvasSheet`, `OnionSkinLayers`, `CanvasContent`,
+  `StrokePreview` and `SelectionOutline`, and the input layer an `InputViewport`, `InputTool`,
+  `InputTargets` and `InputCallbacks`.
+- Blur and smudge pass a reused, mutable `ManipulationDab`, so applying a dab still allocates
+  nothing; particle stamps take the `TouchPoint` they already built.
+
+Some parameters turned out to be unused and are gone: three in the selection box, the stroke
+drawing's source bitmap and strength, the selection maths' gesture scale and the artwork skin's
+softness. The one function left is `CubicStrokeSampler`'s recursive `subdivide`. It passes the
+curve as twelve plain values on purpose, so subdividing allocates nothing, and it stays in the
+baseline.
 
 ## Next
 
-1. **Parameter limits, part 2.** The 39 left: the canvas and selection composables (up to 23
-   parameters), the timeline's clip and menu composables, Actor Studio's preset sheet and editors,
-   and the drawing maths (CubicStrokeSampler, ManipulationPixels), where data classes would
-   allocate on every stroke point, so those need a different shape.
-2. **Device check.** Check the pseudo-locales (en-XA, r-XB), the new tab rows and the audio
+1. **Device check.** Check the pseudo-locales (`en-XA`, `ar-XB`), the new tab rows and the audio
    ribbon on a device, then fix what clips, overlaps or stays English. Labels passed to custom
-   components (such as ContextIconAction's label) aren't counted by the inline text check; this
-   pass will show any left.
+   components aren't counted by the inline text check, and some are still English: the clip,
+   asset-source and background menus in the timeline and editor pass English `ContextIconAction`
+   labels, and the library's default collection is "General Essentials". Move those to resources
+   and extend the check to `ContextIconAction` labels.
+2. **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
+   code, and move `StudioState`'s two onion skin colours to the theme.
 
 ## Later
 
@@ -47,10 +60,9 @@ Tracks that run alongside the module work, a screen or feature at a time:
   right-to-left check on a device (under Next), and `require` messages in `core`'s
   documents, such as FPS and stage limits, that only invalid files reach.
 - **Theme tokens.** Sizes are done. The last two inline colours go with UI separation.
-- **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
-  code. Screens already reach storage only through their ViewModels (step 8d).
-- **Parameter limits.** 39 functions still take more than the allowed number of parameters (under
-  Next).
+- **UI separation.** Under Next. Screens already reach storage only through their ViewModels
+  (step 8d).
+- **Parameter limits.** Done, except `CubicStrokeSampler.subdivide`, kept on purpose (see Now).
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
   still mirror `core` types, with bridges and parity tests between them, and `ActorView` duplicates
   `core`'s `PresetAuthoredView`. Merge each pair and delete the parity tests.
@@ -251,6 +263,8 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   other modules compiled against, so `presentation`'s lint skipped four Compose checks. A
   transitive dependency can do this again: compare `./gradlew :app:dependencies` with
   `:presentation:dependencies` when bumping a library that depends on Compose.
+- **Unused legacy migration.** `LegacyActorMigration.performance` has no production callers; only
+  tests use it. Delete it with its tests once old actor files no longer need converting.
 - **Library build defaults.** Library modules relied on default SDK levels until the convention
   plugins set them (#17).
 
@@ -262,7 +276,7 @@ From `.architecture/` during step 9. Each count may only go down.
 | --- | --- | --- |
 | Compose imports outside UI code | 38 | 25 |
 | UI imports of `data` packages | 0 | — |
-| Functions over the parameter limit | 39 | — |
+| Functions over the parameter limit | 1 | — |
 | Inline text values | 0 | — |
 | Inline colours | 2 | 1 |
 | Inline `.dp` sizes | 0 | — |

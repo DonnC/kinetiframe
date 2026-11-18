@@ -26,11 +26,8 @@ internal class DrawCommandRenderer {
                 canvas = canvas,
                 bitmap = bitmap,
                 points = points,
-                tool = command.tool,
-                baseWidth = command.width,
-                strength = command.strength,
-                blurTool = blurTool,
-                smudgeTool = smudgeTool,
+                brush = ManipulationBrush(command.tool, command.width, command.strength),
+                options = ManipulationRenderOptions(blurTool = blurTool, smudgeTool = smudgeTool),
             )
             return
         }

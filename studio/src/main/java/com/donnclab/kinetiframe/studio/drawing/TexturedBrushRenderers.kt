@@ -46,19 +46,11 @@ internal class ParticleBrushRenderer(private val tip: ParticleTip) : BaseBrushRe
         }
         var distanceAlongStroke = 0f
 
-        fun stamp(
-            x: Float,
-            y: Float,
-            pressure: Float,
-            velocity: Float,
-            index: Int,
-            tangentX: Float,
-            tangentY: Float,
-            distanceAlong: Float,
-        ) {
-            val normalizedPressure = pressure.coerceIn(0f, 1f)
-            val dynamicWidth =
-                calculatePointWidth(index, points.size, TouchPoint(x, y, pressure, velocity = velocity), width)
+        fun stamp(point: TouchPoint, index: Int, tangentX: Float, tangentY: Float, distanceAlong: Float) {
+            val x = point.x
+            val y = point.y
+            val normalizedPressure = point.pressure.coerceIn(0f, 1f)
+            val dynamicWidth = calculatePointWidth(index, points.size, point, width)
 
             val isClustered = tip.distribution == ParticleDistribution.CLUSTERED
             if (isClustered) {
@@ -132,7 +124,7 @@ internal class ParticleBrushRenderer(private val tip: ParticleTip) : BaseBrushRe
         }
 
         val first = points.first()
-        stamp(first.x, first.y, first.pressure, first.velocity, 0, 1f, 0f, 0f)
+        stamp(TouchPoint(first.x, first.y, first.pressure, velocity = first.velocity), 0, 1f, 0f, 0f)
         StrokeGeometry.forEachSegment(points) { idx, prev, curr ->
             val deltaX = curr.x - prev.x
             val deltaY = curr.y - prev.y
@@ -146,10 +138,12 @@ internal class ParticleBrushRenderer(private val tip: ParticleTip) : BaseBrushRe
             repeat(stamps) { step ->
                 val t = (step + 1).toFloat() / stamps
                 stamp(
-                    prev.x + deltaX * t,
-                    prev.y + deltaY * t,
-                    prev.pressure + (curr.pressure - prev.pressure) * t,
-                    prev.velocity + (curr.velocity - prev.velocity) * t,
+                    TouchPoint(
+                        prev.x + deltaX * t,
+                        prev.y + deltaY * t,
+                        prev.pressure + (curr.pressure - prev.pressure) * t,
+                        velocity = prev.velocity + (curr.velocity - prev.velocity) * t,
+                    ),
                     idx + 1,
                     tx,
                     ty,
@@ -385,11 +379,12 @@ internal class PhaseParticleRenderer(private val profile: PhaseParticleProfile) 
             paint.style = Paint.Style.FILL
             val originalAlpha = paint.alpha
             var stampIndex = 0
-            fun stamp(x: Float, y: Float, pressure: Float, velocity: Float, index: Int, tx: Float, ty: Float) {
+            fun stamp(point: TouchPoint, index: Int, tx: Float, ty: Float) {
+                val x = point.x
+                val y = point.y
                 val nx = -ty
                 val ny = tx
-                val dynamicWidth =
-                    calculatePointWidth(index, points.size, TouchPoint(x, y, pressure, velocity = velocity), width)
+                val dynamicWidth = calculatePointWidth(index, points.size, point, width)
                 repeat(profile.particles) { pIdx ->
                     val pIndex = stampIndex * profile.particles + pIdx
                     if (profile.skipProbability > 0f &&
@@ -418,7 +413,7 @@ internal class PhaseParticleRenderer(private val profile: PhaseParticleProfile) 
                 stampIndex++
             }
             val first = points.first()
-            stamp(first.x, first.y, first.pressure, first.velocity, 0, 1f, 0f)
+            stamp(TouchPoint(first.x, first.y, first.pressure, velocity = first.velocity), 0, 1f, 0f)
             StrokeGeometry.forEachSegment(points) { idx, prev, curr ->
                 val dx = curr.x - prev.x
                 val dy = curr.y - prev.y
@@ -431,10 +426,12 @@ internal class PhaseParticleRenderer(private val profile: PhaseParticleProfile) 
                 repeat(count) { step ->
                     val t = (step + 1).toFloat() / count
                     stamp(
-                        prev.x + dx * t,
-                        prev.y + dy * t,
-                        prev.pressure + (curr.pressure - prev.pressure) * t,
-                        prev.velocity + (curr.velocity - prev.velocity) * t,
+                        TouchPoint(
+                            prev.x + dx * t,
+                            prev.y + dy * t,
+                            prev.pressure + (curr.pressure - prev.pressure) * t,
+                            velocity = prev.velocity + (curr.velocity - prev.velocity) * t,
+                        ),
                         idx + 1,
                         tx,
                         ty,

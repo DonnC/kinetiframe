@@ -20,7 +20,12 @@ class ManipulationStrokeSessionTest {
         val source = sourceBitmap()
         val points = stroke()
         val committed = source.copy(Bitmap.Config.ARGB_8888, true)
-        ManipulationStrokeRenderer.render(Canvas(committed), committed, points, DrawingTool.BLUR, 20f, 0.72f)
+        ManipulationStrokeRenderer.render(
+            Canvas(committed),
+            committed,
+            points,
+            ManipulationBrush(DrawingTool.BLUR, 20f, 0.72f),
+        )
         val session = ManipulationStrokeSession(source, DrawingTool.BLUR, 20f, 0.72f)
         points.indices.forEach { session.append(points.subList(0, it + 1)) }
         session.finish(points)
@@ -46,9 +51,7 @@ class ManipulationStrokeSessionTest {
             Canvas(committed),
             committed,
             points,
-            DrawingTool.SMUDGE,
-            baseWidth = 20f,
-            strength = 0.7f,
+            ManipulationBrush(DrawingTool.SMUDGE, baseWidth = 20f, strength = 0.7f),
         )
 
         val session = ManipulationStrokeSession(source, DrawingTool.SMUDGE, baseWidth = 20f, strength = 0.7f)
@@ -73,9 +76,7 @@ class ManipulationStrokeSessionTest {
             Canvas(activeLayer),
             activeLayer,
             stroke(),
-            DrawingTool.BLUR,
-            baseWidth = 20f,
-            strength = 0.35f,
+            ManipulationBrush(DrawingTool.BLUR, baseWidth = 20f, strength = 0.35f),
         )
 
         assertArrayEquals(before, pixels(otherLayer))
@@ -89,9 +90,7 @@ class ManipulationStrokeSessionTest {
             Canvas(bitmap),
             bitmap,
             stroke(),
-            DrawingTool.BLUR,
-            baseWidth = 20f,
-            strength = 0f,
+            ManipulationBrush(DrawingTool.BLUR, baseWidth = 20f, strength = 0f),
         )
         assertArrayEquals(before, pixels(bitmap))
     }
@@ -104,9 +103,7 @@ class ManipulationStrokeSessionTest {
             Canvas(bitmap),
             bitmap,
             listOf(TouchPoint(24f, 48f), TouchPoint(64f, 48f)),
-            DrawingTool.SMUDGE,
-            baseWidth = 20f,
-            strength = 0.8f,
+            ManipulationBrush(DrawingTool.SMUDGE, baseWidth = 20f, strength = 0.8f),
         )
         assertTrue(Color.red(bitmap.getPixel(60, 48)) > 0)
         assertEquals(0, Color.alpha(bitmap.getPixel(100, 48)))

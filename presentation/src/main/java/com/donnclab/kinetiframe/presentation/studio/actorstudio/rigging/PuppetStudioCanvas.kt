@@ -39,6 +39,7 @@ import com.donnclab.kinetiframe.presentation.studio.canvas.InputTool
 import com.donnclab.kinetiframe.presentation.studio.canvas.InputViewport
 import com.donnclab.kinetiframe.presentation.studio.canvas.PivotPlacementActions
 import com.donnclab.kinetiframe.presentation.studio.canvas.PivotPlacementOverlay
+import com.donnclab.kinetiframe.presentation.studio.canvas.StrokeSettings
 import com.donnclab.kinetiframe.presentation.studio.canvas.workspaceGestures
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
@@ -252,14 +253,16 @@ fun PuppetStudioCanvas(
                     onIntent = onIntent,
                     onStrokeSettled = { points ->
                         activeStroke.settle(
-                            points = points,
-                            tool = state.tool.activeTool,
-                            eraserType = config.eraserType,
-                            width = config.size,
-                            strength = config.strength,
-                            paint = if (state.tool.activeTool == DrawingTool.ERASER) eraserPaint else pressurePaint,
-                            sourceBitmap = state.currentBitmap,
-                            brush = BrushSnapshot(config.brushId, seed = points.firstOrNull()?.timestamp ?: 0L),
+                            points,
+                            StrokeSettings(
+                                tool = state.tool.activeTool,
+                                eraserType = config.eraserType,
+                                width = config.size,
+                                strength = config.strength,
+                                paint = if (state.tool.activeTool == DrawingTool.ERASER) eraserPaint else pressurePaint,
+                                sourceBitmap = state.currentBitmap,
+                                brush = BrushSnapshot(config.brushId, seed = points.firstOrNull()?.timestamp ?: 0L),
+                            ),
                         )
                     },
                     onStrokeComplete = { points ->

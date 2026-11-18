@@ -42,8 +42,11 @@ class ManipulationStrokeSession(
         ensureRegion(points, rendered, end)
         val bitmap = working ?: return
         ManipulationStrokeRenderer.render(
-            requireNotNull(canvas), bitmap, points, tool, baseWidth, strength,
-            rendered, end, blur, smudge, sampler, left, top,
+            requireNotNull(canvas),
+            bitmap,
+            points,
+            ManipulationBrush(tool, baseWidth, strength),
+            ManipulationRenderOptions(rendered, end, blur, smudge, sampler, left, top),
         )
         rendered = end
         initialized = true

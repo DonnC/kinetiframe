@@ -22,7 +22,7 @@ class SelectionTransformMathTest {
                 handle,
                 touch,
                 touch + delta,
-                lockAspectRatio = false,
+                options = TransformOptions(lockAspectRatio = false),
             )
             assertEquals((touch + delta).x, result.map(touch).x, .001f)
             assertEquals((touch + delta).y, result.map(touch).y, .001f)
@@ -39,7 +39,7 @@ class SelectionTransformMathTest {
             0,
             touch,
             touch + Offset(-10f, -15f),
-            lockAspectRatio = false,
+            options = TransformOptions(lockAspectRatio = false),
         )
         assertEquals(-10f, (result.map(touch) - touch).x, .001f)
         assertEquals(-15f, (result.map(touch) - touch).y, .001f)
@@ -55,7 +55,7 @@ class SelectionTransformMathTest {
             5,
             touch,
             pivot + Offset(-relative.y, relative.x),
-            customPivotDoc = pivot,
+            options = TransformOptions(customPivotDoc = pivot),
         )
         assertEquals(pivot.x, result.map(pivot).x, .001f)
         assertEquals(pivot.y, result.map(pivot).y, .001f)
@@ -71,7 +71,14 @@ class SelectionTransformMathTest {
             }
             val pivot = bounds.center * 2f - touch
             val delta = if (handle == 6 || handle == 8) Offset(25f, 0f) else Offset(0f, 25f)
-            val result = SelectionTransformMath.compute(Matrix(), bounds, handle, touch, touch + delta, skewMode = true)
+            val result = SelectionTransformMath.compute(
+                Matrix(),
+                bounds,
+                handle,
+                touch,
+                touch + delta,
+                TransformOptions(skewMode = true),
+            )
             assertEquals((touch + delta).x, result.map(touch).x, .001f)
             assertEquals((touch + delta).y, result.map(touch).y, .001f)
             assertEquals(pivot.x, result.map(pivot).x, .001f)
@@ -86,7 +93,7 @@ class SelectionTransformMathTest {
             0,
             Offset.Zero,
             Offset(100f, 100f),
-            lockAspectRatio = false,
+            options = TransformOptions(lockAspectRatio = false),
         )
         assertEquals(.01f, result.values[0], .0001f)
         assertEquals(.01f, result.values[5], .0001f)
@@ -105,7 +112,7 @@ class SelectionTransformMathTest {
             handle = 0,
             startTouchDoc = startTouch,
             currentTouchDoc = currentTouch,
-            lockAspectRatio = true,
+            options = TransformOptions(lockAspectRatio = true),
         )
 
         // With uniform scaling, it should take the max delta.
@@ -127,7 +134,7 @@ class SelectionTransformMathTest {
             handle = 0,
             startTouchDoc = startTouch,
             currentTouchDoc = currentTouch,
-            lockAspectRatio = false,
+            options = TransformOptions(lockAspectRatio = false),
         )
 
         val transformedTL = result.map(Offset(0f, 0f))

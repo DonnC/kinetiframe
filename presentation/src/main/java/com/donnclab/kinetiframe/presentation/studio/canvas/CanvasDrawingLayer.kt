@@ -26,6 +26,7 @@ import com.donnclab.kinetiframe.core.document.BrushSnapshot
 import com.donnclab.kinetiframe.core.document.DrawCommand
 import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.studio.EraserType
@@ -166,8 +167,7 @@ fun CanvasDrawingLayer(
                             manipulationLayers,
                             activeLayerId,
                             activeStroke,
-                            docWidth,
-                            docHeight,
+                            StageDimensions(docWidth, docHeight),
                             bakedStrokeSeeds,
                         )
                     ) {
@@ -216,8 +216,6 @@ fun CanvasDrawingLayer(
                                 pressurePaint,
                                 activeTool,
                                 brush,
-                                currentFrameBitmap,
-                                strength,
                             )
                             canvas.restore()
                         }
@@ -236,8 +234,6 @@ fun CanvasDrawingLayer(
                                     paint = settled.paint,
                                     activeTool = settled.tool,
                                     brush = settled.brush,
-                                    sourceBitmap = settled.sourceBitmap,
-                                    strength = settled.strength,
                                 )
                                 canvas.restore()
                             }
@@ -273,8 +269,6 @@ fun CanvasDrawingLayer(
                                 paint = settled.paint,
                                 activeTool = settled.tool,
                                 brush = settled.brush,
-                                sourceBitmap = settled.sourceBitmap,
-                                strength = settled.strength,
                             )
                         }
                     }
@@ -303,8 +297,6 @@ fun CanvasDrawingLayer(
                                     paint = pressurePaint,
                                     activeTool = activeTool,
                                     brush = brush,
-                                    sourceBitmap = currentFrameBitmap,
-                                    strength = strength,
                                 )
                             }
                         }
@@ -314,14 +306,11 @@ fun CanvasDrawingLayer(
                 if (activeStroke.mirroredPoints.isNotEmpty()) {
                     drawVariableWidthStroke(
                         canvas = canvas.nativeCanvas,
-                        points = activeStroke.mirroredPoints,
-                        predictedPoint = activeStroke.predictedMirroredTouchPoint,
+                        points = withPrediction(activeStroke.mirroredPoints, activeStroke.predictedMirroredTouchPoint),
                         baseWidth = strokeWidth,
                         paint = pressurePaint,
                         activeTool = activeTool,
                         brush = brush,
-                        sourceBitmap = currentFrameBitmap,
-                        strength = strength,
                     )
                 }
 

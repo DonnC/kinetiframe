@@ -315,14 +315,16 @@ fun BufferedDrawingCanvas(
                 onIntent = onIntent,
                 onStrokeSettled = { points ->
                     activeStroke.settle(
-                        points = points,
-                        tool = activeTool,
-                        eraserType = eraserType,
-                        width = strokeWidth,
-                        strength = strength,
-                        paint = pressurePaint,
-                        sourceBitmap = currentFrameBitmap,
-                        brush = BrushSnapshot(brushId, seed = points.firstOrNull()?.timestamp ?: 0L),
+                        points,
+                        StrokeSettings(
+                            tool = activeTool,
+                            eraserType = eraserType,
+                            width = strokeWidth,
+                            strength = strength,
+                            paint = pressurePaint,
+                            sourceBitmap = currentFrameBitmap,
+                            brush = BrushSnapshot(brushId, seed = points.firstOrNull()?.timestamp ?: 0L),
+                        ),
                     )
                 },
                 onStrokeComplete = { points ->

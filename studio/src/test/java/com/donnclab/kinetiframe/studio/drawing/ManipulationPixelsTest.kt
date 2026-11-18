@@ -10,7 +10,9 @@ class ManipulationPixelsTest {
     private val red = 0xffff0000.toInt()
     private fun apply(input: IntArray, blur: Boolean, amount: Float = 1f, dx: Float = 2f): IntArray {
         val result = IntArray(input.size)
-        ManipulationPixels().apply(input, result, size, size, 12.5f, 12.5f, 10f, dx, 0f, amount, blur, 2)
+        ManipulationPixels(
+            blur,
+        ).apply(input, result, size, size, ManipulationDab().set(12.5f, 12.5f, dx, 0f, 10f, amount))
         return result
     }
 

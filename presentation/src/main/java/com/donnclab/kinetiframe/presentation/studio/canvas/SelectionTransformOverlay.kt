@@ -226,8 +226,16 @@ fun SelectionTransformOverlay(
                                             (inverseSelection.map(touchDoc) - inverseSelection.map(startTouchDoc))
                                     } else {
                                         transformState.matrix = SelectionTransformMath.compute(
-                                            startMatrix, bounds, handle, startTouchDoc, touchDoc,
-                                            gestureScale, startMatrix.map(bounds.center + startPivot), aspectLock, skew,
+                                            startMatrix,
+                                            bounds,
+                                            handle,
+                                            startTouchDoc,
+                                            touchDoc,
+                                            TransformOptions(
+                                                startMatrix.map(bounds.center + startPivot),
+                                                aspectLock,
+                                                skew,
+                                            ),
                                         )
                                     }
                                     activeStroke?.invalidate()

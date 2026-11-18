@@ -7,6 +7,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
 import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.StageDimensions
 
 /** Replaces pixels inside an isolated active layer, preserving lower/upper layers and opacity. */
 internal class ManipulationLayerPreview {
@@ -19,8 +20,7 @@ internal class ManipulationLayerPreview {
         layers: List<Pair<Layer, Bitmap>>,
         activeId: String,
         stroke: ActiveStroke,
-        width: Int,
-        height: Int,
+        documentSize: StageDimensions,
         bakedStrokeSeeds: Set<Long> = emptySet(),
     ): Boolean {
         val current = stroke.manipulationPreview()
@@ -32,7 +32,7 @@ internal class ManipulationLayerPreview {
         ) {
             return false
         }
-        bounds.set(0f, 0f, width.toFloat(), height.toFloat())
+        bounds.set(0f, 0f, documentSize.width.toFloat(), documentSize.height.toFloat())
         for ((layer, bitmap) in layers) {
             if (!layer.isVisible || layer.opacity <= 0 || bitmap.isRecycled) continue
             paint.alpha = (layer.opacity.coerceIn(0f, 1f) * 255).toInt()
