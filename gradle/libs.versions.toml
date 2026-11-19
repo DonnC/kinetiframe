@@ -31,7 +31,7 @@ kotlinxCoroutinesCore = "1.10.2"
 material = "1.4.0"
 colorpicker = "1.0.9"
 lucideIcons = "1.1.0"
-spotless = "8.10.3"
+spotless = "8.10.4"
 ktlint = "1.8.0"
 
 [libraries]
