@@ -40,7 +40,7 @@ jobs:
         shell: bash
         run: |
           chmod +x gradlew
-          ./gradlew verify :app:assembleDebug :app:compileDebugUnitTestKotlin :app:compileDebugAndroidTestKotlin :designsystem:compileDebugAndroidTestKotlin --no-daemon
+          ./gradlew verify :app:assembleDebug :app:compileDebugUnitTestKotlin :app:compileDebugAndroidTestKotlin :designsystem:compileDebugAndroidTestKotlin :presentation:compileDebugAndroidTestKotlin --no-daemon
       - name: Collect development APK
         if: success()
         shell: bash
