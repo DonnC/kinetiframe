@@ -284,6 +284,10 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   Essentials" as the default collection, and the store and browser compare against that text. It
   is saved data, so translating it needs a migration. Keep it as the saved key and show a
   translated label wherever a collection name is displayed.
+- **CI's development APKs can't update each other.** CI signs each run's debug APK with a new
+  debug key, so installing one over another (or over a local build) fails with a signature
+  mismatch, and the only way through is uninstalling, which wipes the app's data. Sign debug
+  builds with a shared development keystore, kept as a CI secret, so `adb install -r` works.
 - **Unused legacy migration.** `LegacyActorMigration.performance` has no production callers; only
   tests use it. Delete it with its tests once old actor files no longer need converting.
 - **Library build defaults.** Library modules relied on default SDK levels until the convention
