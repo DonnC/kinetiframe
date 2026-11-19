@@ -17,7 +17,8 @@ Work collects on one milestone branch per milestone, with a commit per chunk and
 into `develop` when the milestone is done. #75 finished per-app language, pseudo-locales and
 theme tokens, and #76 the code limits milestone (parameter limits, component labels and the
 pseudo-locale pass), #77 UI separation and #78 the actor preset types. The dependency updates
-milestone is on `milestone/dependency-updates`.
+milestone is in review as #79, and the screen tests milestone, `milestone/screen-tests`, starts
+from it.
 
 **Dependency updates.** All five Dependabot pull requests, one commit per group:
 
@@ -30,12 +31,23 @@ milestone is on `milestone/dependency-updates`.
   compiler API (see Discoveries).
 - AGP 9.5.0, Room 2.8.5, core-ktx 1.19.1 and Material Components 1.14.0 (#57).
 
+**Screen tests out of `app`.** `presentation`'s tests can now use Robolectric, JUnit 4 and, in
+tests only, `data`. Tests of `presentation` code moved there, beside the code they cover:
+
+- Nine host test files (39 tests) that drive `StudioViewModel`, Actor Studio's ViewModels and the
+  timeline. They now run locally too, which `app`'s tests can't.
+- 25 device tests of screens. The two `SaveBeforeExitDialogTest` classes merged.
+
+CI now compiles `presentation`'s device tests, which it never did before. Tests that check the
+app's shipped assets stay in `app`, since that is what they test. `ExitConfirmationTest` covers
+`app`'s own navigation and moved to its `navigation` package.
+
 ## Next
 
-1. **Screen tests left in `app`.** Let `presentation` run Robolectric tests and read the app's
-   fixtures, then move the screen tests that still live in `app` (see Later).
-2. **The checker's compiler API.** Move the architecture checker off `KotlinCoreEnvironment` before
+1. **The checker's compiler API.** Move the architecture checker off `KotlinCoreEnvironment` before
    Kotlin reworks it (see Discoveries).
+2. **Logic tests left in `app`.** Move the `app` tests of `studio`, `actors`, `data` and `library`
+   code that don't read the app's assets into those modules (see Later).
 
 ## Later
 
@@ -50,11 +62,14 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Parameter limits.** Done, except `CubicStrokeSampler.subdivide`, kept on purpose: its recursion
   passes the curve as twelve plain floats so that subdividing allocates nothing.
 - **Actor preset types.** Done (#78).
-- **Screen tests left in `app`.** Some tests of `presentation` code still live in `app` and use
-  its public API: host tests that need Robolectric or the app's assets, the `studio` package's
-  tests that drive `StudioViewModel`, and most device tests in the `studio` and
-  `actors.ui.rigging` packages. Move them once `presentation` can run Robolectric tests and read
-  the fixtures.
+- **Screen tests left in `app`.** Done (see Now). Three remain in `app` on purpose:
+  `ViewPresetCollectionTest`, `NaturalActorMotionTest` and `BundledDemoLibraryInstallerTest` check
+  the app's shipped assets.
+- **Logic tests left in `app`.** About 30 `app` host tests cover `studio`, `actors`, `data` and
+  `library` code without reading the app's assets: the compositor and frame persistence tests,
+  `ProjectSaverTest`, the project model tests, `LibraryTransfersTest`, `PackDraftsTest` and others.
+  Move each into the module it tests, adding Robolectric there where a test needs it, so they run
+  locally and next to their code.
 - **Preview fixtures.** The shared fixtures moved to `presentation.preview`. Split them by feature
   as the screens that use them settle.
 - **Dependency updates.** Done (see Now). Dependabot keeps proposing updates; take them a group at
