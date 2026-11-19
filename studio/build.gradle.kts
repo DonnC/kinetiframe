@@ -15,9 +15,6 @@ dependencies {
     api(project(":data"))
     api(project(":media"))
     api(project(":actors"))
-    // Strokes and selections still use Compose's Offset, Path and Color; the compose check counts each use.
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)

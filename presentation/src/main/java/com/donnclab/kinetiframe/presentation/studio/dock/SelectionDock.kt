@@ -39,6 +39,8 @@ import com.composables.icons.lucide.Trash2
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.toOffset
+import com.donnclab.kinetiframe.presentation.common.toPoint2
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import kotlin.math.roundToInt
@@ -48,8 +50,8 @@ fun SelectionDock(modifier: Modifier = Modifier, state: StudioState, onIntent: (
     var optionsVisible by remember { mutableStateOf(false) }
     FloatingDock(
         modifier = modifier,
-        initialOffset = state.canvas.selectionDockOffset,
-        onOffsetChange = { onIntent(StudioIntent.Selection.SetDockPosition(it)) },
+        initialOffset = state.canvas.selectionDockOffset.toOffset(),
+        onOffsetChange = { onIntent(StudioIntent.Selection.SetDockPosition(it.toPoint2())) },
     ) {
         Column(
             modifier = Modifier.padding(horizontal = Dimens.spaceXs),

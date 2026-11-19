@@ -238,7 +238,7 @@ class NaturalActorMotionTest {
         manager.handle(
             com.donnclab.kinetiframe.studio.StudioIntent.Actor.Drag(
                 "origin:torso",
-                androidx.compose.ui.geometry.Offset(
+                com.donnclab.kinetiframe.core.geometry.Point2(
                     origin.x + 12f,
                     origin.y + 6f,
                 ),

@@ -111,7 +111,9 @@ class ActorDrawingTransactionTest {
             assertFalse(runtime.getAsset("ink")!!.isRecycled)
             studio.handle(StudioIntent.Actor.Redo)
             assertEquals(drawing, state.actorDefinition()!!.sceneGraph.drawing)
-            studio.handle(StudioIntent.Actor.Drag("origin:root", androidx.compose.ui.geometry.Offset(100f, 200f)))
+            studio.handle(
+                StudioIntent.Actor.Drag("origin:root", com.donnclab.kinetiframe.core.geometry.Point2(100f, 200f)),
+            )
             val preview = state.actor.previewGraph!!
             val points = com.donnclab.kinetiframe.actors.rig.math.ArtworkSkinning.deform(
                 preview.drawing!!.skin,

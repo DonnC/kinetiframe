@@ -1,10 +1,10 @@
 package com.donnclab.kinetiframe.studio.domain.actorstudio
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.document.TextureSlot
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.ActorEditTarget
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -73,12 +73,12 @@ class ActorStudioManagerTest {
         )
         val original = state.actorDefinition()!!
         manager.handle(StudioIntent.Actor.SetEditTarget(ActorEditTarget.ARTWORK))
-        manager.handle(StudioIntent.Actor.Drag("artwork:root", Offset.Zero))
-        manager.handle(StudioIntent.Actor.Drag("artwork:root", Offset(10f, 20f)))
+        manager.handle(StudioIntent.Actor.Drag("artwork:root", Point2.Zero))
+        manager.handle(StudioIntent.Actor.Drag("artwork:root", Point2(10f, 20f)))
         manager.handle(StudioIntent.Actor.CancelDrag)
         assertEquals(original, state.actorDefinition())
-        manager.handle(StudioIntent.Actor.Drag("artwork:root", Offset.Zero))
-        manager.handle(StudioIntent.Actor.Drag("artwork:root", Offset(10f, 20f)))
+        manager.handle(StudioIntent.Actor.Drag("artwork:root", Point2.Zero))
+        manager.handle(StudioIntent.Actor.Drag("artwork:root", Point2(10f, 20f)))
         manager.handle(StudioIntent.Actor.CommitDrag)
         assertNotEquals(original, state.actorDefinition())
         assertEquals(root.localTransform, state.actorDefinition()!!.sceneGraph.bones.getValue("root").localTransform)
@@ -94,7 +94,7 @@ class ActorStudioManagerTest {
         val rest = state.actorDefinition()!!
         state = state.copy(scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK))
         val endpoint = RigGeometry.resolve(rest.sceneGraph).getValue("left_forearm").end
-        manager.handle(StudioIntent.Actor.Drag("left_forearm", Offset(endpoint.x + 30f, endpoint.y - 40f)))
+        manager.handle(StudioIntent.Actor.Drag("left_forearm", Point2(endpoint.x + 30f, endpoint.y - 40f)))
         assertEquals(rest, state.actorDefinition())
         manager.handle(StudioIntent.Actor.CommitDrag)
         val pose = state.activeActor()!!.pose
@@ -111,7 +111,7 @@ class ActorStudioManagerTest {
     @Test fun `cancelled drag has no document change or history entry`() {
         manager.handle(StudioIntent.Actor.Create(ActorTemplate.ANIMAL))
         val project = state.project
-        manager.handle(StudioIntent.Actor.Drag("head", Offset(1000f, 300f)))
+        manager.handle(StudioIntent.Actor.Drag("head", Point2(1000f, 300f)))
         manager.handle(StudioIntent.Actor.CancelDrag)
         assertEquals(project, state.project)
         assertNull(state.actor.previewGraph)

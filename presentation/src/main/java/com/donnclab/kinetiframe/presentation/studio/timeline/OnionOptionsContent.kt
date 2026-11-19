@@ -32,6 +32,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -126,7 +127,7 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
                         val offset = i * 20f
                         val alpha = (state.onionSkin.opacity / i).coerceIn(0.1f, 1f)
                         drawRect(
-                            color = state.onionSkin.colorBefore.copy(alpha = alpha),
+                            color = Color(state.onionSkin.colorBefore).copy(alpha = alpha),
                             topLeft = Offset(centerX - previewWidth / 2f - offset, centerY - previewHeight / 2f),
                             size = Size(previewWidth, previewHeight),
                             style = Stroke(width = 2f),
@@ -138,7 +139,7 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
                         val offset = i * 20f
                         val alpha = (state.onionSkin.opacity / i).coerceIn(0.1f, 1f)
                         drawRect(
-                            color = state.onionSkin.colorAfter.copy(alpha = alpha),
+                            color = Color(state.onionSkin.colorAfter).copy(alpha = alpha),
                             topLeft = Offset(centerX - previewWidth / 2f + offset, centerY - previewHeight / 2f),
                             size = Size(previewWidth, previewHeight),
                             style = Stroke(width = 2f),
@@ -204,7 +205,9 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
                     color = EditorTokens.muted,
                     fontWeight = FontWeight.SemiBold,
                 )
-                ColorPicker(state.onionSkin.colorBefore) { onIntent(StudioIntent.OnionSkin.SetColorBefore(it)) }
+                ColorPicker(Color(state.onionSkin.colorBefore)) {
+                    onIntent(StudioIntent.OnionSkin.SetColorBefore(it.toArgb()))
+                }
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
@@ -213,7 +216,9 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
                     color = EditorTokens.muted,
                     fontWeight = FontWeight.SemiBold,
                 )
-                ColorPicker(state.onionSkin.colorAfter) { onIntent(StudioIntent.OnionSkin.SetColorAfter(it)) }
+                ColorPicker(Color(state.onionSkin.colorAfter)) {
+                    onIntent(StudioIntent.OnionSkin.SetColorAfter(it.toArgb()))
+                }
             }
         }
     }

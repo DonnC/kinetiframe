@@ -1,13 +1,13 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.render.PuppetRenderPlan
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -69,7 +69,7 @@ class ActorBindingIntegrationTest {
             // The attachment survives a pose transaction, which remains instance-local.
             state = state.copy(scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK))
             val endpoint = RigGeometry.resolve(bound.sceneGraph).getValue("left_forearm").end
-            authoring.handle(StudioIntent.Actor.Drag("left_forearm", Offset(endpoint.x + 20f, endpoint.y - 25f)))
+            authoring.handle(StudioIntent.Actor.Drag("left_forearm", Point2(endpoint.x + 20f, endpoint.y - 25f)))
             authoring.handle(StudioIntent.Actor.CommitDrag)
             assertTrue(state.activeActor()!!.pose.isNotEmpty())
             authoring.handle(StudioIntent.Actor.Undo)

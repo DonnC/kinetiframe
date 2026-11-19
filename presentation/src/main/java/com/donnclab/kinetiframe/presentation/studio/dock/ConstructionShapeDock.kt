@@ -17,6 +17,8 @@ import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.toOffset
+import com.donnclab.kinetiframe.presentation.common.toPoint2
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 
@@ -24,8 +26,8 @@ import com.donnclab.kinetiframe.studio.StudioState
 @Composable
 fun ConstructionShapeDock(state: StudioState, onIntent: (StudioIntent) -> Unit) {
     FloatingDock(
-        initialOffset = state.constructionShape.dockOffset,
-        onOffsetChange = { onIntent(StudioIntent.Construction.SetDockPosition(it)) },
+        initialOffset = state.constructionShape.dockOffset.toOffset(),
+        onOffsetChange = { onIntent(StudioIntent.Construction.SetDockPosition(it.toPoint2())) },
     ) {
         Column(
             modifier = Modifier.padding(horizontal = Dimens.spaceXs),

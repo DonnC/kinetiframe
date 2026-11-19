@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
@@ -12,6 +13,8 @@ import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.common.toAffine2D
 import com.donnclab.kinetiframe.presentation.common.toMatrix
+import com.donnclab.kinetiframe.presentation.common.toOffset
+import com.donnclab.kinetiframe.presentation.common.toPoint2
 import com.donnclab.kinetiframe.presentation.common.toRect
 import com.donnclab.kinetiframe.presentation.common.toRect2
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -54,7 +57,7 @@ fun RasterWorkspaceCanvas(
             videoOpacity = videoOpacity,
             onStrokeComplete = { points, brush -> onIntent(StudioIntent.Draw.BakeStroke(points, brush)) },
             modifier = Modifier.fillMaxSize(),
-            strokeColor = config.color.toArgb(),
+            strokeColor = config.color,
             strokeWidth = config.size,
             strokeAlpha = config.opacity,
             strength = config.strength,
@@ -63,7 +66,7 @@ fun RasterWorkspaceCanvas(
             constructionShape = state.tool.constructionShape,
             constructionPreviewPending = state.constructionShape.previewActive,
             eraserType = config.eraserType,
-            eraserCursor = state.tool.eraserCursor,
+            eraserCursor = state.tool.eraserCursor?.toOffset(),
             selectionTool = state.selection.toolType,
             selectionActive = state.selection.active,
             selectionBounds = selectionBounds,
@@ -83,12 +86,12 @@ fun RasterWorkspaceCanvas(
                 )
             },
             onSelectionTransformChanged = { onIntent(StudioIntent.Selection.UpdateTransform(it.toAffine2D())) },
-            onEraserCursorChange = { offset -> onIntent(StudioIntent.Draw.SetEraserCursor(offset)) },
+            onEraserCursorChange = { offset -> onIntent(StudioIntent.Draw.SetEraserCursor(offset?.toPoint2())) },
             onionSkinEnabled = state.onionSkin.enabled && !state.animation.isPlaying,
             onionSkinFramesBefore = state.onionSkin.depthBefore,
             onionSkinFramesAfter = state.onionSkin.depthAfter,
-            onionSkinColorBefore = state.onionSkin.colorBefore,
-            onionSkinColorAfter = state.onionSkin.colorAfter,
+            onionSkinColorBefore = Color(state.onionSkin.colorBefore),
+            onionSkinColorAfter = Color(state.onionSkin.colorAfter),
             onionSkinOpacity = state.onionSkin.opacity,
             cacheManager = cacheManager,
             activeLayerId = state.currentFrameLayers().getOrNull(state.layers.activeLayerIndex)?.id ?: "main",
@@ -103,7 +106,7 @@ fun RasterWorkspaceCanvas(
             ConstructionShapePreviewOverlay(
                 strokes = state.constructionShape.previewStrokes,
                 canvasMatrix = android.graphics.Matrix().apply { setValues(state.canvas.matrixValues) },
-                color = config.color,
+                color = Color(config.color),
                 width = config.size,
                 alpha = config.opacity,
                 brushId = config.brushId,

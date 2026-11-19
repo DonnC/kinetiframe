@@ -64,7 +64,7 @@ fun PuppetSourceLayer(
     // the finished artwork skin at 100% with only the pose handles overlaid on top.
     val sourcePaint = remember { android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG) }
 
-    val strokeColor = state.tool.activeConfig.color.toArgb()
+    val strokeColor = state.tool.activeConfig.color
     val strokeAlpha = state.tool.activeConfig.opacity
 
     SideEffect {

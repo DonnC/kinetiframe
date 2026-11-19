@@ -26,6 +26,15 @@ own Compose-based state meets the rig (the selection maths and the lasso, which 
 `Point2` gains `getDistanceSquared()`, unary minus and `Zero`. CI now also compiles `app`'s unit
 tests, which call these APIs and which no check compiled before.
 
+**UI separation, part 2: `studio` and `media` without Compose.** Studio state, intents, history
+and managers use `core` geometry: a new immutable `Rect2`, `Affine2D` for the selection
+transform, `Point2` for pivots, pan, dock positions, ruler guides, the eraser cursor and the fill
+tap, `android.graphics.Path` for lassos, and ARGB `Int` colours. The onion skin defaults are named
+`OnionSkinColors` constants. `media`'s video geometry moves too. Neither module depends on Compose
+now; only `presentation`, `designsystem` and `app` do. `presentation` converts at its edges
+(`toPoint2()`, `toOffset()`, `toRect2()`, `toAffine2D()`, `Color(int)`), and remembers the
+converted selection matrix per transform, since a Compose `Matrix` compares by identity.
+
 **Parameter limits.** 50 of the 51 functions over the limit are fixed, mostly by grouping
 parameters that travel together into small data classes. Each function unpacks them under the
 old names, so behaviour is unchanged:
@@ -72,10 +81,9 @@ pass:
 
 ## Next
 
-1. **UI separation, part 2: `studio` without Compose.** The 22 Compose imports left are all in
-   `studio`: strokes, selections, history and text use `Offset`, `Path`, `Rect` and `Matrix`, and
-   `StudioState` holds some of them, along with its two onion skin colours. Move them to `core`
-   geometry and `android.graphics`, then drop Compose from `studio`.
+1. **Device check of the separation.** Selection, transform handles, the lasso, pivot placement,
+   ruler guides, docks, colours and Actor Studio dragging all changed type. Check them on a phone,
+   then open the UI separation milestone's pull request.
 2. **Right-to-left editor controls.** In `ar-XB` the editor's playback buttons and frame strip
    mirror, so "next frame" sits on the left and time runs right to left. Material keeps media
    controls left to right. Decide whether the timeline should too, and flip the undo and redo
@@ -88,9 +96,9 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Strings to resources.** The inline text check is at zero and the pseudo-locale pass is done.
   Left: the default collection's label (see Discoveries) and `require` messages in `core`'s
   documents, such as FPS and stage limits, that only invalid files reach.
-- **Theme tokens.** Sizes are done. The last two inline colours go with UI separation.
-- **UI separation.** Under Next. Screens already reach storage only through their ViewModels
-  (step 8d).
+- **Theme tokens.** Done.
+- **UI separation.** Done: only `presentation`, `designsystem` and `app` use Compose, and screens
+  reach storage only through their ViewModels (step 8d). A device check is under Next.
 - **Parameter limits.** Done, except `CubicStrokeSampler.subdivide`, kept on purpose (see Now).
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
   still mirror `core` types, with bridges and parity tests between them, and `ActorView` duplicates
@@ -310,10 +318,10 @@ From `.architecture/` during step 9. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| Compose imports outside UI code | 22 | 10 |
+| Compose imports outside UI code | 0 | — |
 | UI imports of `data` packages | 0 | — |
 | Functions over the parameter limit | 1 | — |
 | Inline text values | 0 | — |
-| Inline colours | 2 | 1 |
+| Inline colours | 0 | — |
 | Inline `.dp` sizes | 0 | — |
 | Files over 500 lines | 0 | — |

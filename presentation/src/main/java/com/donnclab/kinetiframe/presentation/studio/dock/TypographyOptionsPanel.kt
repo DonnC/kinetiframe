@@ -192,7 +192,7 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
                     ColorPicker(
                         selectedNode?.let {
                             Color(it.style.mainColorHex)
-                        } ?: state.tool.textToolOptions.textColor,
+                        } ?: Color(state.tool.textToolOptions.textColor),
                     ) {
                         selectedNode?.let { node ->
                             onIntent(
@@ -202,7 +202,9 @@ fun TypographyOptionsPanel(state: StudioState, onIntent: (StudioIntent) -> Unit,
                             )
                         }
                             ?: onIntent(
-                                StudioIntent.Text.SetTextToolOptions(state.tool.textToolOptions.copy(textColor = it)),
+                                StudioIntent.Text.SetTextToolOptions(
+                                    state.tool.textToolOptions.copy(textColor = it.toArgb()),
+                                ),
                             )
                     }
                 }

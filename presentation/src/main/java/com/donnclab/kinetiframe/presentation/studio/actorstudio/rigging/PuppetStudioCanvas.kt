@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.toArgb
@@ -83,7 +84,7 @@ fun PuppetStudioCanvas(
         }
     }
     SideEffect {
-        pressurePaint.color = state.tool.activeConfig.color.toArgb()
+        pressurePaint.color = state.tool.activeConfig.color
         pressurePaint.alpha = (state.tool.activeConfig.opacity * 255).toInt().coerceIn(0, 255)
     }
 
@@ -183,7 +184,9 @@ fun PuppetStudioCanvas(
                             currentIntent.value(StudioIntent.Actor.CancelDrag)
                         },
                         onTransform = { pan, zoom, rotation, centre ->
-                            currentIntent.value(StudioIntent.View.UpdateTransform(pan, zoom, rotation, centre))
+                            currentIntent.value(
+                                StudioIntent.View.UpdateTransform(pan.toPoint2(), zoom, rotation, centre.toPoint2()),
+                            )
                         },
                     )
                 },
@@ -386,7 +389,7 @@ fun PuppetStudioCanvas(
                     com.donnclab.kinetiframe.presentation.studio.canvas.ConstructionShapePreviewOverlay(
                         strokes = state.constructionShape.previewStrokes,
                         canvasMatrix = android.graphics.Matrix().apply { setValues(state.canvas.matrixValues) },
-                        color = config.color,
+                        color = Color(config.color),
                         width = config.size,
                         alpha = config.opacity,
                         brushId = config.brushId,

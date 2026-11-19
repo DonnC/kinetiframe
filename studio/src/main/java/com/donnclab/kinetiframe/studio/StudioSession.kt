@@ -1,7 +1,6 @@
 package com.donnclab.kinetiframe.studio
 
 import android.graphics.Bitmap
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.studio.domain.AnimationEngine
@@ -386,7 +385,7 @@ class StudioSession(
         }
     }
 
-    fun generateFillPreview(offset: androidx.compose.ui.geometry.Offset) {
+    fun generateFillPreview(offset: com.donnclab.kinetiframe.core.geometry.Point2) {
         pendingOperations.launch(store.scope, engineDispatcher) {
             val preview = drawingManager.generateFillPreview(offset)
             withContext(Dispatchers.Main) {

@@ -145,7 +145,7 @@ class ActorStudioManager(
                 val transform = state.activeActor()?.transform ?: return@updateState state
                 if (transform.scaleX == 0f || transform.scaleY == 0f) return@updateState state
                 val rotated = RigGeometry.rotate(
-                    Point2(intent.target.x, intent.target.y) - Point2(transform.x, transform.y),
+                    intent.target - Point2(transform.x, transform.y),
                     -transform.rotationDegrees,
                 )
                 val target = Point2(rotated.x / transform.scaleX, rotated.y / transform.scaleY)

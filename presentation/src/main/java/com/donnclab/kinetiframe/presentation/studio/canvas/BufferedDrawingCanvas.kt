@@ -285,7 +285,7 @@ fun BufferedDrawingCanvas(
                     onNavigation = { activeStroke.reset() },
                     onTransform = { pan, zoom, rotation, centre ->
                         transformHudVersion++
-                        onIntent(StudioIntent.View.UpdateTransform(pan, zoom, rotation, centre))
+                        onIntent(StudioIntent.View.UpdateTransform(pan.toPoint2(), zoom, rotation, centre.toPoint2()))
                     },
                 )
             },
@@ -432,7 +432,7 @@ fun BufferedDrawingCanvas(
 
         TransformationOverlay(
             zoom = studioState.canvas.zoom,
-            offset = studioState.canvas.pan,
+            offset = studioState.canvas.pan.toOffset(),
             rotation = studioState.canvas.rotation,
             visible = overlayVisible,
         )
