@@ -24,7 +24,7 @@ import org.jetbrains.kotlin.psi.KtWhenExpression
  * - `colors`: `Color(...)` built from literals, such as `Color(0xFF6750A4)`. Theme colors and
  *   `copy(alpha = ...)` variants of them are fine.
  * - `dp`: numeric `.dp` literals other than zero.
- * - `text`: string literals passed to `Text(...)`, as an `Icon`'s description, as the label of the
+ * - `text`: string literals passed to `Text(...)`, as an `Icon`'s or `Image`'s description, as the label of the
  *   app's `ContextIconAction` and `ContextSliderButton`, as a `contentDescription`, `label`,
  *   `title`, `subtitle`, `placeholder` or `supportingText` argument, or assigned to a semantics
  *   content or state description. A literal in a branch of an `if` or `when` counts too.
@@ -68,9 +68,10 @@ internal object UiValueRules {
                         if (text.isWords()) add(TEXT)
                     }
 
-                    // Icon(imageVector, contentDescription, ...) and the app's icon menu items and
-                    // sliders, ContextIconAction(icon, label, ...): the text may be positional.
-                    "Icon", in ICON_LABEL_CALLS -> {
+                    // Icon(imageVector, contentDescription, ...), Image(bitmap, contentDescription,
+                    // ...) and the app's icon menu items and sliders, ContextIconAction(icon,
+                    // label, ...): the text may be positional.
+                    in ICON_LABEL_CALLS -> {
                         val description = arguments.getOrNull(1)?.takeIf { it.getArgumentName() == null }
                         if (description.isWords()) add(TEXT)
                     }
@@ -121,8 +122,8 @@ internal object UiValueRules {
     private val TEXT_ARGUMENTS =
         setOf("contentDescription", "label", "title", "subtitle", "placeholder", "supportingText")
 
-    /** The app's components whose second argument is the visible or spoken label. */
-    private val ICON_LABEL_CALLS = setOf("ContextIconAction", "ContextSliderButton")
+    /** Components whose second argument is the visible or spoken label. */
+    private val ICON_LABEL_CALLS = setOf("Icon", "Image", "ContextIconAction", "ContextSliderButton")
 
     private fun KtValueArgument?.isWords(): Boolean = this?.getArgumentExpression().isWords()
 

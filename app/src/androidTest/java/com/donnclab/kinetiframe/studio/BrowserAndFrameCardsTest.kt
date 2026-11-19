@@ -70,7 +70,7 @@ class BrowserAndFrameCardsTest {
                     StudioFrameCard(0, bitmap, false, Modifier.size(190.dp, 150.dp), { selections++ }, { opens++ })
                 }
             }
-            val pixels = compose.onNodeWithContentDescription("Frame 1 preview").captureToImage().toPixelMap()
+            val pixels = compose.onNodeWithContentDescription("Preview of frame 1").captureToImage().toPixelMap()
             assertTrue(pixels[pixels.width / 2, pixels.height * 9 / 10].red > .95f)
             assertTrue(pixels[pixels.width / 2, pixels.height * 9 / 10].green < .05f)
             compose.onNodeWithText("1").assertExists()
@@ -86,7 +86,7 @@ class BrowserAndFrameCardsTest {
         val bitmap = landscapeBitmap()
         try {
             compose.setContent { KinetiFrameTheme { FrameCard(0, false, bitmap, onClick = {}) } }
-            val pixels = compose.onNodeWithContentDescription("Frame 1 preview").captureToImage().toPixelMap()
+            val pixels = compose.onNodeWithContentDescription("Preview of frame 1").captureToImage().toPixelMap()
             val bottom = pixels[pixels.width / 2, pixels.height * 4 / 5]
             assertTrue(bottom.red > .95f && bottom.green < .05f)
             compose.onNodeWithText("1").assertExists()

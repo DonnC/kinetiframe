@@ -49,20 +49,33 @@ menus, the background menu, the colour controls, the frame studio's toolbar and 
 slider. New clips are named from resources too ("Voice-over", "Imported video", "Video sound").
 The English text is unchanged, so device tests that find these labels by text still match.
 
+**Pseudo-locale check.** Home, Library, Settings and the editor were checked on a Galaxy A56 in
+`en-XA` (long text) and `ar-XB` (right to left). Right to left mirrors cleanly. Fixed from the
+pass:
+
+- The bottom bar's labels and the frame thumbnails' descriptions were English; frames saved to
+  the library were named "Frame N" in English. All three come from resources, and the check now
+  counts an `Image`'s positional description.
+- A project card's two badges overlapped with long text; they share one row now.
+- Home's browse chips cut long words mid-letter; they end in an ellipsis now.
+- Menu tiles cut labels to one line ("Actor perfor…"); they take two lines now.
+- A long settings title ran into its switch; the row has a gap now.
+
 ## Next
 
-1. **Device check.** Look at the main screens in `en-XA` (long text) and `ar-XB` (right to left)
-   on a device, check the new tab rows and scrubbing the audio ribbon, and fix what clips,
-   overlaps or stays English.
-2. **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
+1. **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
    code, and move `StudioState`'s two onion skin colours to the theme.
+2. **Right-to-left editor controls.** In `ar-XB` the editor's playback buttons and frame strip
+   mirror, so "next frame" sits on the left and time runs right to left. Material keeps media
+   controls left to right. Decide whether the timeline should too, and flip the undo and redo
+   icons, which swap places but don't mirror.
 
 ## Later
 
 Tracks that run alongside the module work, a screen or feature at a time:
 
-- **Strings to resources.** The inline text check is at zero. Left: a pseudo-locale and
-  right-to-left check on a device (under Next), and `require` messages in `core`'s
+- **Strings to resources.** The inline text check is at zero and the pseudo-locale pass is done.
+  Left: the default collection's label (see Discoveries) and `require` messages in `core`'s
   documents, such as FPS and stage limits, that only invalid files reach.
 - **Theme tokens.** Sizes are done. The last two inline colours go with UI separation.
 - **UI separation.** Under Next. Screens already reach storage only through their ViewModels
@@ -111,7 +124,6 @@ fixed after the module work, unless one blocks testing.
 
 **Editor**
 
-- The asset menu cuts off "Actor perfor…" and "Import audio …".
 - In the brush panel, the brush name ("Pen") is white text on the white preview card.
 - The export screen has no back button.
 - In portrait, Actor Studio's hint banner runs into the gold asset button.

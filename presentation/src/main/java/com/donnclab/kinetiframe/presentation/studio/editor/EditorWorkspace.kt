@@ -63,6 +63,7 @@ internal data class EditorFolders(
 @Composable
 internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folders: EditorFolders) {
     val context = LocalContext.current
+    val resources = androidx.compose.ui.platform.LocalResources.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     val ui = rememberEditorUiState()
     val messages = ui.messages
@@ -251,7 +252,9 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
         placeActor = ::placeActor,
         openSketch = openSketch,
         pickers = pickers,
-        exports = EditorLibraryExports(storage, viewModel, ui, scope),
+        exports = EditorLibraryExports(storage, viewModel, ui, scope) { number ->
+            resources.getString(R.string.library_frame_name, number)
+        },
     )
     EditorDialogs(viewModel, state, ui, storage.actorRendering, ::applyLibraryPick)
     VoiceOverFlow(viewModel, media, ui, scope)

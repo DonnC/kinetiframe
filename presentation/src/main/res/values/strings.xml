@@ -1074,6 +1074,16 @@
     <string name="eyedropper_use">Use sampled color</string>
     <string name="eyedropper_cancel">Cancel eyedropper</string>
 
+    <!-- The bottom navigation bar. -->
+    <string name="nav_home">Home</string>
+    <string name="nav_library">Library</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- %1$d is the frame's number, counting from 1. -->
+    <string name="frame_thumbnail_description">Preview of frame %1$d</string>
+    <!-- The name a frame saved to the library gets. %1$d is its number, counting from 1. -->
+    <string name="library_frame_name">Frame %1$d</string>
+
     <!-- The frame studio's toolbar. -->
     <string name="frame_studio_paste">PASTE</string>
     <string name="frame_studio_add">ADD</string>

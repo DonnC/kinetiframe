@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.presentation.common
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,16 +24,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.R
 
 /** Top-level bottom-nav destinations. Each screen that shows the bar passes the active one. */
-enum class BottomNavDestination(val icon: ImageVector, val label: String) {
-    HOME(Icons.Filled.Home, "Home"),
-    LIBRARY(Icons.AutoMirrored.Filled.LibraryBooks, "Library"),
-    SETTINGS(Icons.Filled.Settings, "Settings"),
+enum class BottomNavDestination(val icon: ImageVector, @StringRes val label: Int) {
+    HOME(Icons.Filled.Home, R.string.nav_home),
+    LIBRARY(Icons.AutoMirrored.Filled.LibraryBooks, R.string.nav_library),
+    SETTINGS(Icons.Filled.Settings, R.string.nav_settings),
 }
 
 /**
@@ -84,9 +87,10 @@ private fun AppBottomNavItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Icon(destination.icon, destination.label, tint = tint, modifier = Modifier.size(Dimens.iconM))
+        // The label below names the destination, so the icon has no description of its own.
+        Icon(destination.icon, null, tint = tint, modifier = Modifier.size(Dimens.iconM))
         Spacer(Modifier.height(Dimens.spaceXs))
-        Text(destination.label, style = MaterialTheme.typography.labelSmall, color = tint)
+        Text(stringResource(destination.label), style = MaterialTheme.typography.labelSmall, color = tint)
     }
 }
 

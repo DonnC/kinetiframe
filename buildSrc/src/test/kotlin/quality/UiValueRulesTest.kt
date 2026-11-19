@@ -69,11 +69,13 @@ class UiValueRulesTest {
                 StudioButton(title = "Paste", subtitle = name)
                 TextField(value, {}, placeholder = "Search", label = stringResource(R.string.search))
                 Clip(id = "voice", label = name)
+                Image(bitmap, "Frame ${'$'}number preview")
+                Image(bitmap, null)
             }
             """.trimIndent(),
         )
         val findings = KotlinBoundaryScanner.scan(root, listOf("app"))
-        assertEquals(5, findings["text|app/src/main/kotlin/Screen.kt"])
+        assertEquals(6, findings["text|app/src/main/kotlin/Screen.kt"])
     }
 
     @Test fun `design system, tests and previews may use literal values`() {
