@@ -1030,4 +1030,53 @@
     <string name="preset_invalid_compensation">Counter-rotation must use this preset\'s own uncompensated channels.</string>
     <!-- %1$s is the internal name of the problem, for support. -->
     <string name="preset_invalid_data">This motion preset\'s data is invalid (%1$s).</string>
+
+    <!-- The timeline's add-asset menu. -->
+    <string name="asset_source_actor">Actor performance</string>
+    <string name="asset_source_audio">Audio</string>
+    <string name="asset_source_video">Video</string>
+    <string name="asset_source_library">Library</string>
+    <string name="asset_source_back">Back to assets</string>
+    <string name="asset_source_import_audio">Import audio from device</string>
+    <string name="asset_source_record_audio">Record audio</string>
+
+    <!-- A timeline clip's menu. -->
+    <string name="clip_position">Position clip precisely</string>
+    <string name="clip_edit_performance">Edit performance</string>
+    <string name="clip_split">Split at playhead</string>
+    <string name="clip_bring_to_front">Bring to front</string>
+    <string name="clip_send_to_back">Send to back</string>
+    <string name="clip_voice_style">Voice style</string>
+    <string name="clip_detach_sound">Detach sound from video</string>
+    <string name="clip_crossfade">Crossfade to next clip</string>
+    <string name="clip_audio_fades">Audio fades</string>
+    <string name="clip_video_framing">Video fit and crop</string>
+    <string name="clip_transform_video">Transform video</string>
+    <string name="clip_undo_effect">Undo effect edit</string>
+    <string name="clip_redo_effect">Redo effect edit</string>
+    <string name="clip_volume">Volume</string>
+    <string name="clip_reference_opacity">Reference opacity</string>
+
+    <!-- Names given to new clips; the animator can rename them. -->
+    <string name="clip_default_voice_over">Voice-over</string>
+    <string name="clip_default_video">Imported video</string>
+    <string name="clip_default_video_sound">Video sound</string>
+
+    <!-- The editor's background menu. -->
+    <string name="editor_background_remove">Remove background</string>
+    <string name="editor_background_save">Save background to Library</string>
+    <string name="editor_frame_save">Save frame to Library</string>
+
+    <!-- Colour controls. -->
+    <string name="color_custom">Custom colour</string>
+    <string name="color_palettes">Palettes</string>
+    <string name="color_pick_from_screen">Pick color from screen</string>
+    <string name="eyedropper_use">Use sampled color</string>
+    <string name="eyedropper_cancel">Cancel eyedropper</string>
+
+    <!-- The frame studio's toolbar. -->
+    <string name="frame_studio_paste">PASTE</string>
+    <string name="frame_studio_add">ADD</string>
+    <string name="frame_studio_erase">ERASE</string>
+    <string name="frame_studio_copy">COPY</string>
 </resources>

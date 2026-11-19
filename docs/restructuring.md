@@ -41,14 +41,19 @@ softness. The one function left is `CubicStrokeSampler`'s recursive `subdivide`.
 curve as twelve plain values on purpose, so subdividing allocates nothing, and it stays in the
 baseline.
 
+**Labels in the app's own components.** The inline text check now also counts the label of
+`ContextIconAction` and `ContextSliderButton`, and any `label`, `title`, `subtitle`,
+`placeholder` or `supportingText` argument. It skips private preview sample builders such as
+`previewSample()`. The 48 labels it found are string resources: the timeline's clip and add-asset
+menus, the background menu, the colour controls, the frame studio's toolbar and the blur size
+slider. New clips are named from resources too ("Voice-over", "Imported video", "Video sound").
+The English text is unchanged, so device tests that find these labels by text still match.
+
 ## Next
 
-1. **Device check.** Check the pseudo-locales (`en-XA`, `ar-XB`), the new tab rows and the audio
-   ribbon on a device, then fix what clips, overlaps or stays English. Labels passed to custom
-   components aren't counted by the inline text check, and some are still English: the clip,
-   asset-source and background menus in the timeline and editor pass English `ContextIconAction`
-   labels, and the library's default collection is "General Essentials". Move those to resources
-   and extend the check to `ContextIconAction` labels.
+1. **Device check.** Look at the main screens in `en-XA` (long text) and `ar-XB` (right to left)
+   on a device, check the new tab rows and scrubbing the audio ribbon, and fix what clips,
+   overlaps or stays English.
 2. **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
    code, and move `StudioState`'s two onion skin colours to the theme.
 
@@ -263,6 +268,10 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   other modules compiled against, so `presentation`'s lint skipped four Compose checks. A
   transitive dependency can do this again: compare `./gradlew :app:dependencies` with
   `:presentation:dependencies` when bumping a library that depends on Compose.
+- **The default collection is saved in English.** `LibraryOrganization` stores "General
+  Essentials" as the default collection, and the store and browser compare against that text. It
+  is saved data, so translating it needs a migration. Keep it as the saved key and show a
+  translated label wherever a collection name is displayed.
 - **Unused legacy migration.** `LegacyActorMigration.performance` has no production callers; only
   tests use it. Delete it with its tests once old actor files no longer need converting.
 - **Library build defaults.** Library modules relied on default SDK levels until the convention

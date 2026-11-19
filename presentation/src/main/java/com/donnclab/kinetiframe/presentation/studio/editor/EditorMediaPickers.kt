@@ -10,6 +10,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.UiText
@@ -57,6 +58,8 @@ internal fun rememberEditorMediaPickers(
     scope: CoroutineScope,
 ): EditorMediaPickers {
     val messages = ui.messages
+    val videoLabel = stringResource(R.string.clip_default_video)
+    val videoSoundLabel = stringResource(R.string.clip_default_video_sound)
     val background = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         if (uri == null) return@rememberLauncherForActivityResult
         scope.launch {
@@ -108,7 +111,7 @@ internal fun rememberEditorMediaPickers(
         scope.launch {
             media.importVideo(uri).fold(
                 onSuccess = { imported ->
-                    val add = viewModel.state.value.addVideoClip(imported)
+                    val add = viewModel.state.value.addVideoClip(imported, videoLabel, videoSoundLabel)
                     viewModel.handleIntent(add)
                     if (imported.metadata.hasAudio && add.sourceAudio == null) {
                         messages.videoError = UiText.Resource(R.string.editor_video_without_sound)

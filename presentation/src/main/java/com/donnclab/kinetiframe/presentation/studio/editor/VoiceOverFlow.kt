@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.presentation.media.audio.PendingAudioTake
@@ -24,6 +25,7 @@ internal fun VoiceOverFlow(
     val panels = ui.panels
     // A take waiting to be trimmed. Clearing it discards the take without placing anything.
     var pendingTake by remember { mutableStateOf<PendingAudioTake?>(null) }
+    val voiceOverLabel = stringResource(R.string.clip_default_voice_over)
     if (panels.showRecordAudioDialog) {
         VoiceOverRecorderDialog(
             scope,
@@ -50,6 +52,7 @@ internal fun VoiceOverFlow(
                                     destination.absolutePath,
                                     selection,
                                     take.peaks,
+                                    voiceOverLabel,
                                 ),
                             )
                         },

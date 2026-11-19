@@ -199,18 +199,18 @@ fun FrameStudio(
                                     StudioToolbarAction(
                                         icon = Lucide.ClipboardPaste,
                                         arrowLeft = true,
-                                        label = "PASTE",
+                                        label = stringResource(R.string.frame_studio_paste),
                                         onClick = { onIntent(StudioIntent.Frame.PasteFrames(minIdx, before = true)) },
                                     )
                                     StudioToolbarAction(
                                         icon = Lucide.SquarePlus,
                                         arrowLeft = true,
-                                        label = "ADD",
+                                        label = stringResource(R.string.frame_studio_add),
                                         onClick = { onIntent(StudioIntent.Frame.AddFrameAt(minIdx)) },
                                     )
                                     StudioToolbarAction(
                                         icon = Lucide.Trash2,
-                                        label = "ERASE",
+                                        label = stringResource(R.string.frame_studio_erase),
                                         onClick = {
                                             if (selected.size < state.animation.totalFrames) {
                                                 onIntent(StudioIntent.Frame.DeleteFrames(selected.toList()))
@@ -220,19 +220,19 @@ fun FrameStudio(
                                     )
                                     StudioToolbarAction(
                                         icon = Lucide.Copy,
-                                        label = "COPY",
+                                        label = stringResource(R.string.frame_studio_copy),
                                         onClick = { onIntent(StudioIntent.Frame.CopyFrames(selected.toList())) },
                                     )
                                     StudioToolbarAction(
                                         icon = Lucide.SquarePlus,
                                         arrowRight = true,
-                                        label = "ADD",
+                                        label = stringResource(R.string.frame_studio_add),
                                         onClick = { onIntent(StudioIntent.Frame.AddFrameAt(maxIdx + 1)) },
                                     )
                                     StudioToolbarAction(
                                         icon = Lucide.ClipboardPaste,
                                         arrowRight = true,
-                                        label = "PASTE",
+                                        label = stringResource(R.string.frame_studio_paste),
                                         onClick = {
                                             onIntent(StudioIntent.Frame.PasteFrames(maxIdx, before = false))
                                         },

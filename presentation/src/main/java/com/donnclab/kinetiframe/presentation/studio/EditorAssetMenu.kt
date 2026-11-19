@@ -66,14 +66,14 @@ fun EditorAssetMenu(
                 ),
             )
             add(
-                ContextIconAction(Icons.Filled.DeleteOutline, "Remove background", {
+                ContextIconAction(Icons.Filled.DeleteOutline, stringResource(R.string.editor_background_remove), {
                     onDismiss()
                     onRemove()
                 }),
             )
             onSaveBackground?.let { save ->
                 add(
-                    ContextIconAction(Icons.Filled.Wallpaper, "Save background to Library", {
+                    ContextIconAction(Icons.Filled.Wallpaper, stringResource(R.string.editor_background_save), {
                         onDismiss()
                         save()
                     }),
@@ -82,7 +82,7 @@ fun EditorAssetMenu(
         }
         onSaveFrame?.let { save ->
             add(
-                ContextIconAction(Icons.Filled.PhotoLibrary, "Save frame to Library", {
+                ContextIconAction(Icons.Filled.PhotoLibrary, stringResource(R.string.editor_frame_save), {
                     onDismiss()
                     save()
                 }),
