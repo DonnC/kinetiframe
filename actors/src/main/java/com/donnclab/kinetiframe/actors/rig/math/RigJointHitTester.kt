@@ -1,10 +1,10 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
+import com.donnclab.kinetiframe.core.geometry.Point2
 
 /** Pure nearest-joint selection with an explicit document-space hit radius. */
 object RigJointHitTester {
-    fun nearestWithin(point: Offset, joints: List<RigJointTarget>, radius: Float): String? {
+    fun nearestWithin(point: Point2, joints: List<RigJointTarget>, radius: Float): String? {
         val radiusSquared = radius * radius
         return joints.minByOrNull { joint ->
             val dx = joint.position.x - point.x
@@ -18,4 +18,4 @@ object RigJointHitTester {
     }
 }
 
-data class RigJointTarget(val id: String, val position: Offset)
+data class RigJointTarget(val id: String, val position: Point2)

@@ -20,6 +20,8 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.presentation.common.toOffset
+import com.donnclab.kinetiframe.presentation.common.toPoint2
 import com.donnclab.kinetiframe.studio.RulerGuide
 import com.donnclab.kinetiframe.studio.RulerMode
 import kotlin.math.atan2
@@ -66,7 +68,7 @@ fun RulerGuideOverlay(
                         lastGuideLocal = guidePoint
                         if (handle == transient.rotationHandleIndex) {
                             rotationStartDegrees = transient.rotation
-                            rotationStartPointerAngle = documentPoint.angleAround(transient.center)
+                            rotationStartPointerAngle = documentPoint.angleAround(transient.center.toOffset())
                         }
                         handle >= 0
                     }
@@ -76,7 +78,7 @@ fun RulerGuideOverlay(
                     transient = if (handle == transient.rotationHandleIndex) {
                         transient.copy(
                             rotation =
-                            rotationStartDegrees + documentPoint.angleAround(transient.center) -
+                            rotationStartDegrees + documentPoint.angleAround(transient.center.toOffset()) -
                                 rotationStartPointerAngle,
                         )
                     } else {
@@ -88,7 +90,7 @@ fun RulerGuideOverlay(
                             guidePoint -
                                 lastGuideLocal
                         }
-                        moveGuide(transient, handle, delta)
+                        moveGuide(transient, handle, delta.toPoint2())
                     }
                     lastDoc = documentPoint
                     lastGuideLocal = guidePoint
@@ -171,7 +173,7 @@ private fun guideHandle(point: Offset, guide: RulerGuide, radius: Float, rotatio
     }
 
 private fun handles(guide: RulerGuide, rotationOffset: Float = 0f): List<Offset> = when (guide.mode) {
-    RulerMode.LINE, RulerMode.MIRROR -> listOf(guide.start, guide.end, guide.center)
+    RulerMode.LINE, RulerMode.MIRROR -> listOf(guide.start.toOffset(), guide.end.toOffset(), guide.center.toOffset())
 
     RulerMode.CIRCLE, RulerMode.BOX -> listOf(
         Offset(guide.center.x - guide.radius.x, guide.center.y),
@@ -182,7 +184,7 @@ private fun handles(guide: RulerGuide, rotationOffset: Float = 0f): List<Offset>
             guide.center.y + guide.radius.y,
         ),
         Offset(guide.center.x, guide.center.y - guide.radius.y - rotationOffset),
-        guide.center,
+        guide.center.toOffset(),
     )
 
     RulerMode.NONE -> emptyList()

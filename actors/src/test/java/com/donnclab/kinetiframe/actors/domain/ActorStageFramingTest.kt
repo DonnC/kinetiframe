@@ -1,14 +1,14 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.core.geometry.Point2
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class ActorStageFramingTest {
     @Test fun `far away authored artwork fits landscape portrait and square stages`() {
-        val points = listOf(Offset(900f, 200f), Offset(1200f, 900f))
+        val points = listOf(Point2(900f, 200f), Point2(1200f, 900f))
         listOf(StageDimensions(640, 360), StageDimensions.Vertical, StageDimensions.Square).forEach { stage ->
             val fit = ActorStageFraming.fit(points, stage)
             points.forEach { point ->
@@ -20,7 +20,7 @@ class ActorStageFramingTest {
 
     @Test fun `legacy repair distinguishes wholly offstage from partially visible`() {
         val stage = StageDimensions(640, 360)
-        assertTrue(ActorStageFraming.outside(listOf(Offset(900f, 200f), Offset(1200f, 900f)), stage))
-        assertFalse(ActorStageFraming.outside(listOf(Offset(600f, 200f), Offset(1200f, 900f)), stage))
+        assertTrue(ActorStageFraming.outside(listOf(Point2(900f, 200f), Point2(1200f, 900f)), stage))
+        assertFalse(ActorStageFraming.outside(listOf(Point2(600f, 200f), Point2(1200f, 900f)), stage))
     }
 }

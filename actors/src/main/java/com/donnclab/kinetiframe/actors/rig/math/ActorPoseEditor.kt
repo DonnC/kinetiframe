@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.engine.rigging.edit.PoseBend
@@ -10,26 +9,26 @@ import com.donnclab.kinetiframe.engine.rigging.edit.RigSetupEdits
 import com.donnclab.kinetiframe.engine.rigging.edit.RootMoveScope
 
 object ActorPoseEditor {
-    fun moveOrigin(graph: SceneGraph, id: String, target: Offset): SceneGraph =
-        withLegacyRigDiagnostics { RigSetupEdits.moveOrigin(graph, id, Point2(target.x, target.y)) }
+    fun moveOrigin(graph: SceneGraph, id: String, target: Point2): SceneGraph =
+        withLegacyRigDiagnostics { RigSetupEdits.moveOrigin(graph, id, target) }
 
-    fun moveArtwork(graph: SceneGraph, id: String, delta: Offset): SceneGraph =
-        withLegacyRigDiagnostics { RigArtworkEdits.move(graph, id, Point2(delta.x, delta.y)) }
+    fun moveArtwork(graph: SceneGraph, id: String, delta: Point2): SceneGraph =
+        withLegacyRigDiagnostics { RigArtworkEdits.move(graph, id, delta) }
 
-    fun moveRoot(graph: SceneGraph, id: String, target: Offset, allRoots: Boolean = false): SceneGraph =
+    fun moveRoot(graph: SceneGraph, id: String, target: Point2, allRoots: Boolean = false): SceneGraph =
         withLegacyRigDiagnostics {
             RigSetupEdits.moveRoot(
                 graph,
                 id,
-                Point2(target.x, target.y),
+                target,
                 if (allRoots) RootMoveScope.ALL else RootMoveScope.SELECTED,
             )
         }
 
-    fun fit(graph: SceneGraph, id: String, target: Offset): SceneGraph =
-        withLegacyRigDiagnostics { RigSetupEdits.fit(graph, id, Point2(target.x, target.y)) }
+    fun fit(graph: SceneGraph, id: String, target: Point2): SceneGraph =
+        withLegacyRigDiagnostics { RigSetupEdits.fit(graph, id, target) }
 
-    fun pose(graph: SceneGraph, id: String, target: Offset, bendSide: Int? = null): SceneGraph =
+    fun pose(graph: SceneGraph, id: String, target: Point2, bendSide: Int? = null): SceneGraph =
         withLegacyRigDiagnostics {
             val bend = when (bendSide) {
                 null -> PoseBend.AUTOMATIC
@@ -37,6 +36,6 @@ object ActorPoseEditor {
                 1 -> PoseBend.POSITIVE
                 else -> PoseBend.INVALID
             }
-            RigPoseEdits.pose(graph, id, Point2(target.x, target.y), bend)
+            RigPoseEdits.pose(graph, id, target, bend)
         }
 }

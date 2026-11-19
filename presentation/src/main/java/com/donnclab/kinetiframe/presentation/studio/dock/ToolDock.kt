@@ -61,10 +61,13 @@ import com.composables.icons.lucide.Square
 import com.composables.icons.lucide.Type
 import com.composables.icons.lucide.X
 import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
+import com.donnclab.kinetiframe.presentation.common.toOffset
+import com.donnclab.kinetiframe.presentation.common.toPoint2
 import com.donnclab.kinetiframe.studio.CanvasState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
@@ -88,7 +91,7 @@ fun ToolDock(
     // A pending extraction owns the canvas and its Check/Cancel controls exclusively.
     if (state.scene.pivotPlacement != null) return
     var menuTool by remember { mutableStateOf<DrawingTool?>(null) }
-    val dockState = rememberDraggableDockState(state.canvas.dockOffset)
+    val dockState = rememberDraggableDockState(state.canvas.dockOffset.toOffset())
     var isDragging by remember { mutableStateOf(false) }
 
     val isPuppetStudio = state.scene.studioMode != StudioMode.RASTER_DRAWING
@@ -96,7 +99,7 @@ fun ToolDock(
     val performanceOnly = state.actor.isPerformanceAuthoring
 
     LaunchedEffect(state.canvas.dockOffset, dockState.containerSize, dockState.surfaceSize) {
-        if (!isDragging) dockState.snapTo(state.canvas.dockOffset)
+        if (!isDragging) dockState.snapTo(state.canvas.dockOffset.toOffset())
     }
 
     LaunchedEffect(state.tool.activeTool) {
@@ -137,11 +140,11 @@ fun ToolDock(
                         onDragStart = { isDragging = true },
                         onDragCancel = {
                             isDragging = false
-                            dockState.snapTo(state.canvas.dockOffset)
+                            dockState.snapTo(state.canvas.dockOffset.toOffset())
                         },
                         onDragEnd = { finalOffset ->
                             isDragging = false
-                            onIntent(StudioIntent.View.SetDockPosition(state.canvas.dockEdge, finalOffset))
+                            onIntent(StudioIntent.View.SetDockPosition(state.canvas.dockEdge, finalOffset.toPoint2()))
                         },
                     ),
                 )
@@ -435,7 +438,7 @@ private fun ToolDockPreview() {
     Box(Modifier.fillMaxSize()) {
         ToolDock(
             state = StudioState(
-                canvas = CanvasState(dockOffset = Offset(20f, 100f)),
+                canvas = CanvasState(dockOffset = Point2(20f, 100f)),
             ),
             onIntent = {},
         )

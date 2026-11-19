@@ -3,14 +3,13 @@ package com.donnclab.kinetiframe.studio.domain
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.toArgb
 import com.donnclab.kinetiframe.core.document.BrushSnapshot
 import com.donnclab.kinetiframe.core.document.DrawCommand
 import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.core.document.StrokeBakeReceipts
 import com.donnclab.kinetiframe.core.document.StrokeSubmission
 import com.donnclab.kinetiframe.core.document.TouchPoint
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.EraserType
 import com.donnclab.kinetiframe.studio.RulerMode
 import com.donnclab.kinetiframe.studio.StudioState
@@ -86,7 +85,7 @@ class DrawingManager(
             DrawCommand(
                 points,
                 submittedState.tool.activeTool,
-                submittedConfig.color.toArgb(),
+                submittedConfig.color,
                 submittedConfig.size,
                 submittedConfig.opacity,
                 submittedConfig.strength,
@@ -251,7 +250,7 @@ class DrawingManager(
                 DrawCommand(
                     points,
                     DrawingTool.BRUSH,
-                    config.color.toArgb(),
+                    config.color,
                     config.size,
                     config.opacity,
                     config.strength,
@@ -432,7 +431,7 @@ class DrawingManager(
         }
     }
 
-    suspend fun generateFillPreview(offset: Offset): Bitmap? = withContext(dispatcher) {
+    suspend fun generateFillPreview(offset: Point2): Bitmap? = withContext(dispatcher) {
         val currentState = getState()
         val stage = getState().project.stage
         val width = stage.width
@@ -464,7 +463,7 @@ class DrawingManager(
             previewBitmap,
             offset.x.toInt(),
             offset.y.toInt(),
-            config.color.toArgb(),
+            config.color,
             config.size,
             referenceBitmap,
         )

@@ -15,9 +15,14 @@ object MultilineTextRenderer {
         textNode: TextNode,
         typeface: android.graphics.Typeface?,
         density: Float,
-    ): androidx.compose.ui.geometry.Rect {
+    ): com.donnclab.kinetiframe.core.geometry.Rect2 {
         val staticLayout = createLayout(textNode, typeface ?: Typeface.DEFAULT, density)
-        return androidx.compose.ui.geometry.Rect(0f, 0f, staticLayout.width.toFloat(), staticLayout.height.toFloat())
+        return com.donnclab.kinetiframe.core.geometry.Rect2(
+            0f,
+            0f,
+            staticLayout.width.toFloat(),
+            staticLayout.height.toFloat(),
+        )
     }
 
     fun draw(canvas: Canvas, textNode: TextNode, typeface: Typeface, density: Float = 1f) {

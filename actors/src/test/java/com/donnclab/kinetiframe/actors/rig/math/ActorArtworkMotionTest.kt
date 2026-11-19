@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
@@ -17,6 +16,7 @@ import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.geometry.Point2
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -144,7 +144,7 @@ class ActorArtworkMotionTest {
 
     @Test fun `hand drag moves whole arm while retaining wrist orientation and lengths`() {
         val original = limb()
-        val target = Offset(120f, 120f)
+        val target = Point2(120f, 120f)
         val posed = ActorPoseEditor.pose(original, "hand", target)
         val world = RigGeometry.resolve(posed)
         assertEquals(0f, (world.getValue("hand").end - target).getDistance(), .01f)
@@ -160,7 +160,7 @@ class ActorArtworkMotionTest {
         val original = limb()
         var previous = RigGeometry.resolve(original).getValue("lower").angle
         for (step in 0..100) {
-            val posed = ActorPoseEditor.pose(original, "hand", Offset(120f + step * .3f, 120f - step * .2f))
+            val posed = ActorPoseEditor.pose(original, "hand", Point2(120f + step * .3f, 120f - step * .2f))
             val world = RigGeometry.resolve(posed)
             assertTrue(kotlin.math.abs(world.getValue("lower").angle - previous) < 30f)
             assertEquals(0f, world.getValue("hand").angle, .01f)

@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneArtwork
 import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
@@ -8,6 +7,7 @@ import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
+import com.donnclab.kinetiframe.core.geometry.Point2
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -32,7 +32,7 @@ class ActorJointHandleTest {
             )
             assertTrue(ActorJointHandle.isAttachment(graph, "label"))
             assertFalse(ActorJointHandle.isAttachment(graph, "head"))
-            val moved = ActorJointHandle.moveAttachment(graph, "label", Offset(110f, 130f))
+            val moved = ActorJointHandle.moveAttachment(graph, "label", Point2(110f, 130f))
             val world = RigGeometry.resolve(moved).getValue("label")
             assertEquals(110f, world.end.x, .001f)
             assertEquals(130f, world.end.y, .001f)
@@ -44,6 +44,6 @@ class ActorJointHandleTest {
 
     @Test fun `nonfinite attachment input is rejected`() {
         val graph = SceneGraph(listOf("part"), mapOf("part" to BoneNode("part", name = "Part", length = 1f)))
-        assertEquals(graph, ActorJointHandle.moveAttachment(graph, "part", Offset(Float.NaN, 0f)))
+        assertEquals(graph, ActorJointHandle.moveAttachment(graph, "part", Point2(Float.NaN, 0f)))
     }
 }

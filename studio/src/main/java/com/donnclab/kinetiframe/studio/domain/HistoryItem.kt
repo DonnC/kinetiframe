@@ -1,11 +1,10 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Matrix
-import androidx.compose.ui.graphics.Path
 import com.donnclab.kinetiframe.core.document.BaseNode
 import com.donnclab.kinetiframe.core.document.DrawCommand
+import com.donnclab.kinetiframe.core.geometry.Affine2D
+import com.donnclab.kinetiframe.core.geometry.Rect2
 
 sealed class HistoryItem {
     data class Stroke(val command: DrawCommand) : HistoryItem()
@@ -16,12 +15,13 @@ sealed class HistoryItem {
     data class SelectionEdit(
         val bitmap: Bitmap?,
         val nodes: Map<String, BaseNode>,
-        val matrix: Matrix,
-        val originalBounds: Rect,
+        val matrix: Affine2D,
+        val originalBounds: Rect2,
         val type: SelectionEditType,
     ) : HistoryItem()
 
-    data class ClearArea(val path: Path?, val rect: Rect?, val backupBitmap: Bitmap? = null) : HistoryItem()
+    data class ClearArea(val path: android.graphics.Path?, val rect: Rect2?, val backupBitmap: Bitmap? = null) :
+        HistoryItem()
 
     /** Metadata only: never duplicates actor artwork or performance data. */
     data class ObjectEdit(

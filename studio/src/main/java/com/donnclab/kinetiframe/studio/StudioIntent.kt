@@ -2,10 +2,6 @@ package com.donnclab.kinetiframe.studio
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawing
@@ -28,6 +24,9 @@ import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 import com.donnclab.kinetiframe.core.document.VideoFit
 import com.donnclab.kinetiframe.core.document.VoiceEffect
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.core.geometry.Affine2D
+import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.core.geometry.Rect2
 import com.donnclab.kinetiframe.core.mvi.ViewIntent
 import com.donnclab.kinetiframe.library.model.PackFrameTag
 import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorPlacementManager
@@ -79,7 +78,7 @@ sealed class StudioIntent : ViewIntent {
         /** Builds an unsaved actor from [template], named by the template's ID. Only tests send it;
          *  the app creates actors through the actor library. */
         data class Create(val template: ActorTemplate) : Actor()
-        data class Drag(val id: String, val target: Offset) : Actor()
+        data class Drag(val id: String, val target: Point2) : Actor()
         object CommitDrag : Actor()
         object CancelDrag : Actor()
         object ResetPose : Actor()
@@ -181,7 +180,7 @@ sealed class StudioIntent : ViewIntent {
         ) : Draw()
         data class SelectTool(val tool: DrawingTool) : Draw()
         data class SelectConstructionShape(val shape: ConstructionShape?) : Draw()
-        data class SetBrushColor(val color: Color) : Draw()
+        data class SetBrushColor(val color: Int) : Draw()
         data class SetBrushSize(val size: Float) : Draw()
         data class SelectBrush(val brushId: BrushId) : Draw()
         data class SetEraserSize(val size: Float) : Draw()
@@ -189,7 +188,7 @@ sealed class StudioIntent : ViewIntent {
         object ClearAllHandwriting : Draw()
         data class SetBrushOpacity(val opacity: Float) : Draw()
         data class SetBrushStrength(val strength: Float) : Draw()
-        data class SetEraserCursor(val offset: Offset?) : Draw()
+        data class SetEraserCursor(val offset: Point2?) : Draw()
         object Undo : Draw()
         object Redo : Draw()
     }
@@ -235,28 +234,31 @@ sealed class StudioIntent : ViewIntent {
         object ToggleSafeFrame : View()
         data class SetViewportSize(val width: Int, val height: Int) : View()
         data class UpdateTransform(
-            val panDelta: Offset,
+            val panDelta: Point2,
             val zoomDelta: Float,
             val rotationDelta: Float,
-            val pivot: Offset,
+            val pivot: Point2,
         ) : View()
-        data class SetDockPosition(val edge: DockEdge, val offset: Offset) : View()
+        data class SetDockPosition(val edge: DockEdge, val offset: Point2) : View()
     }
 
     sealed class OnionSkin : StudioIntent() {
         data class SetEnabled(val enabled: Boolean) : OnionSkin()
         data class SetFramesBefore(val frames: Int) : OnionSkin()
         data class SetFramesAfter(val frames: Int) : OnionSkin()
-        data class SetColorBefore(val color: Color) : OnionSkin()
-        data class SetColorAfter(val color: Color) : OnionSkin()
+        data class SetColorBefore(val color: Int) : OnionSkin()
+        data class SetColorAfter(val color: Int) : OnionSkin()
         data class SetOpacity(val opacity: Float) : OnionSkin()
         object Reset : OnionSkin()
     }
 
     sealed class Rigging : StudioIntent() {
         data class SetStudioMode(val mode: StudioMode) : Rigging()
-        data class PreparePivotPlacement(val sourceFrame: Bitmap, val lassoPath: Path, val dilationRadius: Int = 8) :
-            Rigging()
+        data class PreparePivotPlacement(
+            val sourceFrame: Bitmap,
+            val lassoPath: android.graphics.Path,
+            val dilationRadius: Int = 8,
+        ) : Rigging()
         data class MovePivot(val x: Float, val y: Float) : Rigging()
         data class AddBoneAt(val x: Float, val y: Float) : Rigging()
         data class SelectBone(val id: String?) : Rigging()
@@ -279,8 +281,8 @@ sealed class StudioIntent : ViewIntent {
     sealed class Selection : StudioIntent() {
         data class SetTool(val type: SelectionToolType) : Selection()
         data class SelectArea(
-            val path: Path? = null,
-            val rect: Rect? = null,
+            val path: android.graphics.Path? = null,
+            val rect: Rect2? = null,
             val density: Float = 1f,
             val fontRegistry: FontRegistry? = null,
             val actors: ActorSelectionGeometry? = null,
@@ -290,9 +292,9 @@ sealed class StudioIntent : ViewIntent {
         data class SelectTextNode(val id: String, val density: Float, val fontRegistry: FontRegistry? = null) :
             Selection()
         data class SetActive(val active: Boolean) : Selection()
-        data class UpdateTransform(val matrix: androidx.compose.ui.graphics.Matrix) : Selection()
-        data class UpdatePivot(val offset: Offset) : Selection()
-        data class SetDockPosition(val offset: Offset) : Selection()
+        data class UpdateTransform(val matrix: Affine2D) : Selection()
+        data class UpdatePivot(val offset: Point2) : Selection()
+        data class SetDockPosition(val offset: Point2) : Selection()
         data class SetContextMenuVisible(val visible: Boolean) : Selection()
         data class SetInteractionMode(val mode: SelectionInteractionMode) : Selection()
         object Cut : Selection()
@@ -318,8 +320,8 @@ sealed class StudioIntent : ViewIntent {
     }
 
     sealed class Fill : StudioIntent() {
-        data class SetPendingTap(val offset: Offset?) : Fill()
-        data class SetDockPosition(val offset: Offset) : Fill()
+        data class SetPendingTap(val offset: Point2?) : Fill()
+        data class SetDockPosition(val offset: Point2) : Fill()
         object Confirm : Fill()
         object Cancel : Fill()
         data class SetPreviewBitmap(val bitmap: Bitmap?) : Fill()
@@ -392,7 +394,7 @@ sealed class StudioIntent : ViewIntent {
     }
     sealed class Construction : StudioIntent() {
         data class SetPreview(val strokes: List<List<TouchPoint>>) : Construction()
-        data class SetDockPosition(val offset: Offset) : Construction()
+        data class SetDockPosition(val offset: Point2) : Construction()
         object Confirm : Construction()
         object Cancel : Construction()
     }

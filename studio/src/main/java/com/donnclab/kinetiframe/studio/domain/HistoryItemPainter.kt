@@ -5,8 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
-import androidx.compose.ui.graphics.Matrix
-import androidx.compose.ui.graphics.asAndroidPath
+import com.donnclab.kinetiframe.core.geometry.Affine2D
 import com.donnclab.kinetiframe.studio.drawing.DrawCommandRenderer
 
 /** Draws undo history items onto a layer bitmap, so a layer can be rebuilt from its history. */
@@ -61,12 +60,9 @@ internal class HistoryItemPainter(val commands: DrawCommandRenderer = DrawComman
 
     private fun paintClear(canvas: Canvas, clear: HistoryItem.ClearArea) {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
-        clear.path?.let { canvas.drawPath(it.asAndroidPath(), paint) }
+        clear.path?.let { canvas.drawPath(it, paint) }
             ?: clear.rect?.let { canvas.drawRect(it.left, it.top, it.right, it.bottom, paint) }
     }
 
-    private fun Matrix.toAndroidMatrix() = android.graphics.Matrix().also { android ->
-        val v = this.values
-        android.setValues(floatArrayOf(v[0], v[4], v[12], v[1], v[5], v[13], v[3], v[7], v[15]))
-    }
+    private fun Affine2D.toAndroidMatrix() = android.graphics.Matrix().also { it.setValues(androidValues()) }
 }

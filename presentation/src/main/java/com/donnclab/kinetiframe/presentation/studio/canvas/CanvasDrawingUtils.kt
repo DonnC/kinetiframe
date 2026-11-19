@@ -14,6 +14,7 @@ import com.donnclab.kinetiframe.core.document.DrawCommand
 import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.core.document.TouchPoint
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.EraserType
 import com.donnclab.kinetiframe.studio.drawing.BrushRenderers
 import com.donnclab.kinetiframe.studio.drawing.ManipulationPreview
@@ -79,7 +80,7 @@ fun textHit(
     if (!inverse.invert(inverse)) return false
     val untransformed = floatArrayOf(point.x, point.y)
     inverse.mapPoints(untransformed)
-    val local = rotateVector(Offset(untransformed[0], untransformed[1]) - Offset(node.x, node.y), -node.rotation)
+    val local = rotateVector(Point2(untransformed[0], untransformed[1]) - Point2(node.x, node.y), -node.rotation)
 
     if (kotlin.math.abs(node.scaleX) < .0001f || kotlin.math.abs(node.scaleY) < .0001f) return false
     val hitX = local.x / node.scaleX

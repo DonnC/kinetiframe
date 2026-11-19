@@ -1,13 +1,13 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.engine.rigging.math.BendLimits
 import kotlin.math.cos
 import kotlin.math.sqrt
 
-// Frozen pre-extraction Offset arithmetic provides an independent adapter parity oracle.
+// Frozen pre-extraction Point2 arithmetic provides an independent adapter parity oracle.
 internal object LegacyTwoBoneReference {
-    fun solve(joints: List<Offset>, target: Offset, bendSide: Int, limits: BendLimits = BendLimits()): List<Offset> {
+    fun solve(joints: List<Point2>, target: Point2, bendSide: Int, limits: BendLimits = BendLimits()): List<Point2> {
         val minimumBendDegrees = limits.minimumDegrees
         val maximumBendDegrees = limits.maximumDegrees
         require(joints.size == 3 && bendSide in listOf(-1, 1))
@@ -33,7 +33,7 @@ internal object LegacyTwoBoneReference {
         val distance = delta.getDistance().toDouble().coerceIn(minimumRadius, maxOf(minimumRadius, maximumRadius))
         val along = ((a * a - b * b + distance * distance) / (2 * distance)).coerceIn(-a, a)
         val height = sqrt((a * a - along * along).coerceAtLeast(0.0))
-        val normal = Offset(-axis.y, axis.x)
+        val normal = Point2(-axis.y, axis.x)
         return listOf(
             joints[0],
             joints[0] + axis * along.toFloat() + normal * (height * bendSide).toFloat(),
@@ -41,7 +41,7 @@ internal object LegacyTwoBoneReference {
         )
     }
 
-    fun bendSide(joints: List<Offset>): Int {
+    fun bendSide(joints: List<Point2>): Int {
         val axis = joints.last() - joints.first()
         val elbow = joints[1] - joints.first()
         return if (axis.x * elbow.y - axis.y * elbow.x < 0f) -1 else 1

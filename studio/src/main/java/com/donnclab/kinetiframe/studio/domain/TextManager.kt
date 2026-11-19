@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.studio.domain
 
-import androidx.compose.ui.graphics.toArgb
 import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.studio.StudioState
 
@@ -18,7 +17,7 @@ class TextManager(private val updateState: ((StudioState) -> StudioState) -> Uni
                 fontFileName = options.fontFileName,
                 fontSizeSp = options.fontSizeSp,
                 style = com.donnclab.kinetiframe.core.document.NodeStyle(
-                    mainColorHex = options.textColor.toArgb(),
+                    mainColorHex = options.textColor,
                 ),
                 alignment = options.alignment,
                 x = x,

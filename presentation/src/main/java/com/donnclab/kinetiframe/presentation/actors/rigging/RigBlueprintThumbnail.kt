@@ -15,17 +15,21 @@ import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.common.toOffset
 
 /** Draw the actual starter graph, not unrelated character art. Geometry is compiled off draw. */
 @Composable
 fun RigBlueprintThumbnail(template: ActorTemplate, modifier: Modifier = Modifier) {
     val segments = remember(template) {
         val joints = RigGeometry.resolve(ActorTemplates.create(template, StageDimensions(1000, 800)))
-        val points = joints.values.flatMap { listOf(it.start, it.end) }
+        val points = joints.values.flatMap { listOf(it.start.toOffset(), it.end.toOffset()) }
         val left = points.minOf { it.x }
         val top = points.minOf { it.y }
         val span = maxOf(points.maxOf { it.x } - left, points.maxOf { it.y } - top, 1f)
-        joints.values.map { (it.start - Offset(left, top)) / span to (it.end - Offset(left, top)) / span }
+        joints.values.map {
+            (it.start.toOffset() - Offset(left, top)) / span to
+                (it.end.toOffset() - Offset(left, top)) / span
+        }
     }
     val color = MaterialTheme.colorScheme.primary
     Canvas(modifier) {

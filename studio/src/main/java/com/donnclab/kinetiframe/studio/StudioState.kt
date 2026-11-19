@@ -1,8 +1,6 @@
 package com.donnclab.kinetiframe.studio
 
 import android.graphics.Bitmap
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import com.donnclab.kinetiframe.actors.rig.model.PivotPlacement
 import com.donnclab.kinetiframe.core.document.BaseNode
 import com.donnclab.kinetiframe.core.document.BrushId
@@ -12,6 +10,9 @@ import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.core.document.TouchPoint
+import com.donnclab.kinetiframe.core.geometry.Affine2D
+import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.core.geometry.Rect2
 import com.donnclab.kinetiframe.core.mvi.ViewState
 import com.donnclab.kinetiframe.studio.drawing.ConstructionShape
 
@@ -37,7 +38,7 @@ data class SelectedContent(
     val strokes: List<DrawCommand> = emptyList(),
     val nodes: Map<String, BaseNode> = emptyMap(),
     val bitmap: Bitmap? = null,
-    val bounds: Rect = Rect.Zero,
+    val bounds: Rect2 = Rect2.Zero,
     /** True when [bitmap] was cut from the rendered layer rather than reconstructed from commands. */
     val isRasterSelection: Boolean = false,
     val actors: Map<String, com.donnclab.kinetiframe.core.document.ActorPlacementReference> = emptyMap(),
@@ -49,10 +50,10 @@ data class SelectedContent(
 
 data class RulerGuide(
     val mode: RulerMode,
-    val start: Offset = Offset(420f, 540f),
-    val end: Offset = Offset(1500f, 540f),
-    val center: Offset = Offset(960f, 540f),
-    val radius: Offset = Offset(360f, 240f),
+    val start: Point2 = Point2(420f, 540f),
+    val end: Point2 = Point2(1500f, 540f),
+    val center: Point2 = Point2(960f, 540f),
+    val radius: Point2 = Point2(360f, 240f),
     val rotation: Float = 0f,
     val locked: Boolean = false,
 )
@@ -60,7 +61,8 @@ data class RulerGuide(
 data class TextToolOptions(
     val fontFileName: String = "inter_regular.ttf",
     val fontSizeSp: Float = 36f,
-    val textColor: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color.Black,
+    /** ARGB. */
+    val textColor: Int = android.graphics.Color.BLACK,
     val alignment: TextNode.TextAlignment = TextNode.TextAlignment.CENTER,
 )
 
@@ -87,7 +89,7 @@ data class CanvasState(
         0f, 0f, 1f,
     ),
     val zoom: Float = 1f,
-    val pan: Offset = Offset.Zero,
+    val pan: Point2 = Point2.Zero,
     val rotation: Float = 0f,
     val viewportWidth: Int = 0,
     val viewportHeight: Int = 0,
@@ -103,8 +105,8 @@ data class CanvasState(
     val rulerMode: RulerMode = RulerMode.NONE,
     val rulerGuide: RulerGuide? = null,
     val dockEdge: DockEdge = DockEdge.LEFT,
-    val dockOffset: Offset = Offset(16f, 100f),
-    val selectionDockOffset: Offset = Offset(1100f, 300f),
+    val dockOffset: Point2 = Point2(16f, 100f),
+    val selectionDockOffset: Point2 = Point2(1100f, 300f),
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -158,7 +160,8 @@ data class CanvasState(
 data class ToolConfig(
     val size: Float = 5f,
     val opacity: Float = 1f,
-    val color: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color.Black,
+    /** ARGB. */
+    val color: Int = android.graphics.Color.BLACK,
     val strength: Float = 0.5f,
     val eraserType: EraserType = EraserType.AREA,
     val brushId: BrushId = BrushId.PEN,
@@ -188,7 +191,7 @@ data class ToolState(
         }
     },
     val constructionConfig: ToolConfig = ToolConfig(),
-    val eraserCursor: Offset? = null,
+    val eraserCursor: Point2? = null,
     /** Null keeps freehand input active; a value starts a transient construction-shape gesture. */
     val constructionShape: ConstructionShape? = null,
     val textToolOptions: TextToolOptions = TextToolOptions(),
@@ -207,22 +210,30 @@ data class ToolState(
         }
 }
 
+/** Default onion skin tints, as ARGB: earlier frames magenta, later frames green. */
+object OnionSkinColors {
+    val BEFORE = 0xFF92003B.toInt()
+    val AFTER = 0xFF00C853.toInt()
+}
+
 data class OnionSkinState(
     val enabled: Boolean = true,
     val depthBefore: Int = 1,
     val depthAfter: Int = 1,
-    val colorBefore: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color(0xFF92003B),
-    val colorAfter: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color(0xFF00C853),
+    /** ARGB. */
+    val colorBefore: Int = OnionSkinColors.BEFORE,
+    /** ARGB. */
+    val colorAfter: Int = OnionSkinColors.AFTER,
     val opacity: Float = 0.2f,
 )
 
 data class SelectionState(
     val toolType: SelectionToolType = SelectionToolType.LASSO,
     val active: Boolean = false,
-    val bounds: Rect? = null,
+    val bounds: Rect2? = null,
     val selectedContent: SelectedContent? = null,
-    val transform: androidx.compose.ui.graphics.Matrix = androidx.compose.ui.graphics.Matrix(),
-    val pivotOffset: Offset = Offset.Zero,
+    val transform: Affine2D = Affine2D(),
+    val pivotOffset: Point2 = Point2.Zero,
     /** Context actions are deliberately opt-in so discovery does not obstruct transforms. */
     val contextMenuVisible: Boolean = false,
     val partialInclude: Boolean = false,
@@ -275,9 +286,9 @@ data class SceneState(
 )
 
 data class FillState(
-    val pendingTap: Offset? = null,
+    val pendingTap: Point2? = null,
     val previewActive: Boolean = false,
-    val dockOffset: Offset = Offset(1100f, 500f),
+    val dockOffset: Point2 = Point2(1100f, 500f),
     val previewBitmap: Bitmap? = null,
 )
 
@@ -285,7 +296,7 @@ data class FillState(
 data class ConstructionShapeState(
     val previewStrokes: List<List<TouchPoint>> = emptyList(),
     val previewActive: Boolean = false,
-    val dockOffset: Offset = Offset(1100f, 500f),
+    val dockOffset: Point2 = Point2(1100f, 500f),
 )
 
 /**
@@ -310,7 +321,7 @@ data class StudioState(
     val packTags: Map<Int, com.donnclab.kinetiframe.library.model.PackFrameTag> = emptyMap(),
 ) : ViewState {
     val isCanvasTransformed: Boolean
-        get() = canvas.zoom != 1f || canvas.pan != Offset.Zero || canvas.rotation != 0f
+        get() = canvas.zoom != 1f || canvas.pan != Point2.Zero || canvas.rotation != 0f
 }
 
 /**

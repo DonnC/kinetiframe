@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.presentation.studio.canvas
 
-import androidx.compose.ui.geometry.Offset
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.RulerGuide
 import com.donnclab.kinetiframe.studio.RulerMode
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -11,12 +11,12 @@ class RulerGuideUtilsTest {
     fun `moving a line endpoint recalculates its centre`() {
         val guide = RulerGuide(
             mode = RulerMode.LINE,
-            start = Offset(0f, 0f),
-            end = Offset(100f, 0f),
-            center = Offset(50f, 0f),
+            start = Point2(0f, 0f),
+            end = Point2(100f, 0f),
+            center = Point2(50f, 0f),
         )
 
-        val moved = moveGuide(guide, handle = 0, delta = Offset(20f, 30f))
+        val moved = moveGuide(guide, handle = 0, delta = Point2(20f, 30f))
 
         assertEquals(20f, moved.start.x, 0.001f)
         assertEquals(30f, moved.start.y, 0.001f)
@@ -28,12 +28,12 @@ class RulerGuideUtilsTest {
     fun `moving a mirror centre translates both axis endpoints`() {
         val guide = RulerGuide(
             mode = RulerMode.MIRROR,
-            start = Offset(0f, 0f),
-            end = Offset(100f, 0f),
-            center = Offset(50f, 0f),
+            start = Point2(0f, 0f),
+            end = Point2(100f, 0f),
+            center = Point2(50f, 0f),
         )
 
-        val moved = moveGuide(guide, handle = 2, delta = Offset(10f, -20f))
+        val moved = moveGuide(guide, handle = 2, delta = Point2(10f, -20f))
 
         assertEquals(10f, moved.start.x, 0.001f)
         assertEquals(-20f, moved.start.y, 0.001f)

@@ -179,7 +179,15 @@ class ActorFrameRenderer(
                 if (command.mesh ==
                     null
                 ) {
-                    List(4) { index -> androidx.compose.ui.geometry.Offset(points[index * 2], points[index * 2 + 1]) }
+                    List(4) { index ->
+                        com.donnclab.kinetiframe.core.geometry.Point2(
+                            points[index * 2],
+                            points[
+                                index * 2 +
+                                    1,
+                            ],
+                        )
+                    }
                 } else {
                     var left = Float.POSITIVE_INFINITY
                     var top = Float.POSITIVE_INFINITY
@@ -194,10 +202,10 @@ class ActorFrameRenderer(
                         index += 2
                     }
                     listOf(
-                        androidx.compose.ui.geometry.Offset(left, top),
-                        androidx.compose.ui.geometry.Offset(right, top),
-                        androidx.compose.ui.geometry.Offset(right, bottom),
-                        androidx.compose.ui.geometry.Offset(left, bottom),
+                        com.donnclab.kinetiframe.core.geometry.Point2(left, top),
+                        com.donnclab.kinetiframe.core.geometry.Point2(right, top),
+                        com.donnclab.kinetiframe.core.geometry.Point2(right, bottom),
+                        com.donnclab.kinetiframe.core.geometry.Point2(left, bottom),
                     )
                 }
             }

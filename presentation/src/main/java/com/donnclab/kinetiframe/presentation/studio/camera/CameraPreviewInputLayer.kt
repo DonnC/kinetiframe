@@ -8,6 +8,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
+import com.donnclab.kinetiframe.presentation.common.toPoint2
 import com.donnclab.kinetiframe.presentation.studio.canvas.workspaceGestures
 import com.donnclab.kinetiframe.studio.StudioIntent
 
@@ -27,7 +28,7 @@ internal fun CameraPreviewInputLayer(
                 consumeAllInput = true,
                 onNavigation = {},
                 onTransform = { pan, zoom, rotation, centre ->
-                    latestIntent(StudioIntent.View.UpdateTransform(pan, zoom, rotation, centre))
+                    latestIntent(StudioIntent.View.UpdateTransform(pan.toPoint2(), zoom, rotation, centre.toPoint2()))
                 },
             )
         },

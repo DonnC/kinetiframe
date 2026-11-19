@@ -1,18 +1,18 @@
 package com.donnclab.kinetiframe.presentation.studio.canvas
 
-import androidx.compose.ui.geometry.Offset
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.RulerGuide
 import com.donnclab.kinetiframe.studio.RulerMode
 
-internal fun nearestGuideHandle(point: Offset, guide: RulerGuide): Int {
+internal fun nearestGuideHandle(point: Point2, guide: RulerGuide): Int {
     val handles = when (guide.mode) {
         RulerMode.LINE, RulerMode.MIRROR -> listOf(guide.start, guide.end, guide.center)
 
         RulerMode.CIRCLE, RulerMode.BOX -> listOf(
-            Offset(guide.center.x - guide.radius.x, guide.center.y),
-            Offset(guide.center.x + guide.radius.x, guide.center.y),
-            Offset(guide.center.x, guide.center.y - guide.radius.y),
-            Offset(guide.center.x, guide.center.y + guide.radius.y),
+            Point2(guide.center.x - guide.radius.x, guide.center.y),
+            Point2(guide.center.x + guide.radius.x, guide.center.y),
+            Point2(guide.center.x, guide.center.y - guide.radius.y),
+            Point2(guide.center.x, guide.center.y + guide.radius.y),
             guide.center,
         )
 
@@ -21,7 +21,7 @@ internal fun nearestGuideHandle(point: Offset, guide: RulerGuide): Int {
     return handles.indexOfFirst { (it - point).getDistance() < 42f }
 }
 
-internal fun moveGuide(guide: RulerGuide, handle: Int, delta: Offset): RulerGuide = when (guide.mode) {
+internal fun moveGuide(guide: RulerGuide, handle: Int, delta: Point2): RulerGuide = when (guide.mode) {
     RulerMode.LINE, RulerMode.MIRROR -> when (handle) {
         0 -> guide.withAxis(start = guide.start + delta, end = guide.end)
         1 -> guide.withAxis(start = guide.start, end = guide.end + delta)
@@ -40,8 +40,8 @@ internal fun moveGuide(guide: RulerGuide, handle: Int, delta: Offset): RulerGuid
 }
 
 /** Keeps the visible centre handle aligned with an edited line or mirror axis. */
-private fun RulerGuide.withAxis(start: Offset, end: Offset): RulerGuide = copy(
+private fun RulerGuide.withAxis(start: Point2, end: Point2): RulerGuide = copy(
     start = start,
     end = end,
-    center = Offset((start.x + end.x) / 2f, (start.y + end.y) / 2f),
+    center = Point2((start.x + end.x) / 2f, (start.y + end.y) / 2f),
 )

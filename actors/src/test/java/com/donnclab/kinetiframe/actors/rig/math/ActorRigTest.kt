@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.core.geometry.Point2
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -13,7 +13,7 @@ class ActorRigTest {
     @Test fun `moving root translates the whole rig without altering lengths`() {
         val graph = ActorTemplates.create(ActorTemplate.ANIMAL, StageDimensions.LandscapeHd)
         val world = RigGeometry.resolve(graph)
-        val shift = Offset(80f, 40f)
+        val shift = Point2(80f, 40f)
         val moved = ActorPoseEditor.moveRoot(graph, "spine", world.getValue("spine").start + shift)
         val result = RigGeometry.resolve(moved)
         graph.bones.forEach { (id, bone) ->
@@ -35,10 +35,10 @@ class ActorRigTest {
     }
 
     @Test fun `reachable target preserves lengths and root`() {
-        val input = listOf(Offset.Zero, Offset(100f, 0f), Offset(150f, 86.60254f))
-        val solved = FabrikSolver.solve(input, Offset(75f, 120f))
+        val input = listOf(Point2.Zero, Point2(100f, 0f), Point2(150f, 86.60254f))
+        val solved = FabrikSolver.solve(input, Point2(75f, 120f))
         assertEquals(input.first(), solved.first())
-        assertTrue((solved.last() - Offset(75f, 120f)).getDistance() < 0.1f)
+        assertTrue((solved.last() - Point2(75f, 120f)).getDistance() < 0.1f)
         input.zipWithNext().zip(solved.zipWithNext()).forEach { (original, result) ->
             assertEquals(
                 (original.second - original.first).getDistance(),
@@ -49,8 +49,8 @@ class ActorRigTest {
     }
 
     @Test fun `unreachable and coincident targets remain finite with fixed lengths`() {
-        val input = listOf(Offset.Zero, Offset(100f, 0f), Offset(200f, 0f))
-        listOf(Offset(1000f, 0f), Offset.Zero, Offset(150f, 0f)).forEach { target ->
+        val input = listOf(Point2.Zero, Point2(100f, 0f), Point2(200f, 0f))
+        listOf(Point2(1000f, 0f), Point2.Zero, Point2(150f, 0f)).forEach { target ->
             val result = FabrikSolver.solve(input, target)
             result.forEach { assertTrue(it.x.isFinite() && it.y.isFinite()) }
             result.zipWithNext().forEach { (a, b) -> assertEquals(100f, (b - a).getDistance(), 0.01f) }
@@ -59,14 +59,14 @@ class ActorRigTest {
 
     @Test fun `invalid chain is rejected`() {
         assertThrows(IllegalArgumentException::class.java) {
-            FabrikSolver.solve(listOf(Offset.Zero, Offset.Zero), Offset.Zero)
+            FabrikSolver.solve(listOf(Point2.Zero, Point2.Zero), Point2.Zero)
         }
     }
 
     @Test fun `posing updates only the limb rotations and fitting keeps attached child connected`() {
         val graph = ActorTemplates.create(ActorTemplate.HUMAN, StageDimensions.LandscapeHd)
         val before = RigGeometry.resolve(graph)
-        val target = before.getValue("left_forearm").end + Offset(30f, -40f)
+        val target = before.getValue("left_forearm").end + Point2(30f, -40f)
         val posed = ActorPoseEditor.pose(graph, "left_forearm", target)
         assertTrue((RigGeometry.resolve(posed).getValue("left_forearm").end - target).getDistance() < 0.1f)
         graph.bones.forEach { (id, bone) ->
@@ -76,7 +76,7 @@ class ActorRigTest {
         val fitted = ActorPoseEditor.fit(
             graph,
             "left_upper_arm",
-            before.getValue("left_upper_arm").end + Offset(-50f, 20f),
+            before.getValue("left_upper_arm").end + Point2(-50f, 20f),
         )
         val fittedWorld = RigGeometry.resolve(fitted)
         assertTrue(
@@ -96,7 +96,7 @@ class ActorRigTest {
                 ActorPoseEditor.pose(
                     graph,
                     "left_forearm",
-                    center + Offset(kotlin.math.sin(t) * 85f, kotlin.math.sin(t * 2f) * 55f),
+                    center + Point2(kotlin.math.sin(t) * 85f, kotlin.math.sin(t * 2f) * 55f),
                 )
             RigGeometry.resolve(graph).values.forEach {
                 assertTrue(it.start.x.isFinite() && it.start.y.isFinite() && it.end.x.isFinite() && it.end.y.isFinite())

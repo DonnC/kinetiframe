@@ -1,14 +1,14 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Matrix
 import com.donnclab.kinetiframe.core.document.AssetKind
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.ProjectAsset
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.document.VideoClipPlacement
+import com.donnclab.kinetiframe.core.geometry.Affine2D
+import com.donnclab.kinetiframe.core.geometry.Rect2
 import com.donnclab.kinetiframe.studio.StudioState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -74,13 +74,10 @@ class SceneVideoSelectionTest {
             UndoStacks(history),
         )
         try {
-            manager.selectArea(null, Rect(0f, 0f, 120f, 80f), 1f).join()
+            manager.selectArea(null, Rect2(0f, 0f, 120f, 80f), 1f).join()
             assertEquals(clip, state.selection.selectedContent?.videos?.get("v"))
             assertNull(state.selection.selectedContent?.bitmap)
-            val transform = Matrix().apply {
-                translate(40f, 30f)
-                scale(2f, 2f)
-            }
+            val transform = Affine2D(a = 2f, d = 2f, tx = 40f, ty = 30f)
             state = state.copy(selection = state.selection.copy(transform = transform))
             manager.commitSelection().join()
             val moved = state.project.videoClips.getValue("v")

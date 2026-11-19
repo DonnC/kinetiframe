@@ -11,12 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import com.donnclab.kinetiframe.core.document.BaseNode
 import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.core.document.TouchPoint
+import com.donnclab.kinetiframe.presentation.common.toPoint2
 import com.donnclab.kinetiframe.studio.RulerGuide
 import com.donnclab.kinetiframe.studio.SelectionToolType
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -190,7 +192,7 @@ fun CanvasInputLayer(
                                 ),
                             )
                             gesture.draggedBone?.takeIf { it.startsWith("artwork:") }?.let {
-                                onIntent(StudioIntent.Actor.Drag(it, mappedPoint))
+                                onIntent(StudioIntent.Actor.Drag(it, mappedPoint.toPoint2()))
                             }
                         }
 
@@ -198,7 +200,7 @@ fun CanvasInputLayer(
                             if ((Offset(screenX, screenY) - gesture.rigDownScreen).getDistance() >
                                 4f * displayDensity
                             ) {
-                                onIntent(StudioIntent.Actor.Drag(it, mappedPoint))
+                                onIntent(StudioIntent.Actor.Drag(it, mappedPoint.toPoint2()))
                             }
                         }
 
@@ -227,7 +229,7 @@ fun CanvasInputLayer(
                         MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
                             val duration = event.eventTime - gesture.activePointerSession.startTime
                             if (duration < 250) {
-                                onIntent(StudioIntent.Fill.SetPendingTap(mappedPoint))
+                                onIntent(StudioIntent.Fill.SetPendingTap(mappedPoint.toPoint2()))
                                 gesture.activePointerSession.end(event.getPointerId(activePointerIndex))
                                 return@pointerInteropFilter true
                             }
@@ -297,7 +299,7 @@ fun CanvasInputLayer(
                                     onIntent(
                                         StudioIntent.Rigging.PreparePivotPlacement(
                                             sourceFrame = frame,
-                                            lassoPath = Path().apply { addPath(selectionPath) },
+                                            lassoPath = android.graphics.Path(selectionPath.asAndroidPath()),
                                         ),
                                     )
                                 }

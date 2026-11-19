@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.core.document.StageDimensions
@@ -12,15 +11,15 @@ import org.junit.jupiter.api.Test
 import kotlin.random.Random
 
 class ActorPoseBridgeParityTest {
-    @Test fun `all graph editing operations match frozen Offset authoring on seeded templates`() {
+    @Test fun `all graph editing operations match frozen Point2 authoring on seeded templates`() {
         val random = Random(111)
         listOf(ActorTemplate.HUMAN, ActorTemplate.ANIMAL).forEach { template ->
             val graph = ActorTemplates.create(template, StageDimensions.LandscapeHd)
             val ids = graph.bones.keys.toList()
             repeat(60) { step ->
                 val id = ids[random.nextInt(ids.size)]
-                val point = Offset(random.nextFloat() * 900f, random.nextFloat() * 650f)
-                val delta = Offset(random.nextFloat() * 80f - 40f, random.nextFloat() * 80f - 40f)
+                val point = Point2(random.nextFloat() * 900f, random.nextFloat() * 650f)
+                val delta = Point2(random.nextFloat() * 80f - 40f, random.nextFloat() * 80f - 40f)
                 val side = listOf(null, -1, 1)[step % 3]
                 assertEquals(
                     LegacyActorPoseReference.moveOrigin(graph, id, point),
@@ -47,7 +46,7 @@ class ActorPoseBridgeParityTest {
     @Test fun `invalid bends retain endpoint diagnostics while missing parts remain no ops`() {
         val graph = ActorTemplates.create(ActorTemplate.HUMAN, StageDimensions.LandscapeHd)
         val endpoint = graph.bones.values.first { it.ikChainRootId != null }.id
-        val target = RigGeometry.resolve(graph).getValue(endpoint).end + Offset(10f, 10f)
+        val target = RigGeometry.resolve(graph).getValue(endpoint).end + Point2(10f, 10f)
         assertEquals(
             assertThrows(IllegalArgumentException::class.java) {
                 LegacyActorPoseReference.pose(graph, endpoint, target, 0)
@@ -57,7 +56,7 @@ class ActorPoseBridgeParityTest {
             }.message,
         )
         assertSame(graph, ActorPoseEditor.pose(graph, "missing", target, 0))
-        assertSame(graph, ActorPoseEditor.pose(graph, endpoint, Offset(Float.NaN, 0f), 0))
+        assertSame(graph, ActorPoseEditor.pose(graph, endpoint, Point2(Float.NaN, 0f), 0))
     }
 
     @Test fun `scaled authoring guard and existing raw fit behavior remain unchanged`() {
@@ -71,11 +70,11 @@ class ActorPoseBridgeParityTest {
                 )
                 ),
         )
-        assertSame(scaled, ActorPoseEditor.fit(scaled, id, Offset(500f, 200f)))
-        assertSame(scaled, ActorPoseEditor.pose(scaled, id, Offset(500f, 200f)))
+        assertSame(scaled, ActorPoseEditor.fit(scaled, id, Point2(500f, 200f)))
+        assertSame(scaled, ActorPoseEditor.pose(scaled, id, Point2(500f, 200f)))
         assertEquals(
-            LegacyActorPoseReference.fit(graph, id, Offset(Float.NaN, 0f)),
-            ActorPoseEditor.fit(graph, id, Offset(Float.NaN, 0f)),
+            LegacyActorPoseReference.fit(graph, id, Point2(Float.NaN, 0f)),
+            ActorPoseEditor.fit(graph, id, Point2(Float.NaN, 0f)),
         )
     }
 }

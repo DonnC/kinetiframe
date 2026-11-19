@@ -1,11 +1,11 @@
 package com.donnclab.kinetiframe.studio.ui.canvas
 
 import android.graphics.Matrix
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.document.camera.CameraAction
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import com.donnclab.kinetiframe.studio.StudioDirectories
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -74,9 +74,9 @@ class CanvasTransformTests {
 
     @Test
     fun pivotIntegrityTest() = runTest {
-        val initialOffset = Offset.Zero
+        val initialOffset = Point2.Zero
         val zoomDelta = 2.0f
-        val pivot = Offset(500f, 500f)
+        val pivot = Point2(500f, 500f)
 
         val expectedOffset = pivot - (pivot - initialOffset) * zoomDelta
 
@@ -132,10 +132,10 @@ class CanvasTransformTests {
         viewModel.handleIntent(StudioIntent.View.SetViewportSize(width = 1_000, height = 1_000))
         viewModel.handleIntent(
             StudioIntent.View.UpdateTransform(
-                panDelta = Offset(48f, -24f),
+                panDelta = Point2(48f, -24f),
                 zoomDelta = 1.5f,
                 rotationDelta = 0f,
-                pivot = Offset(500f, 500f),
+                pivot = Point2(500f, 500f),
             ),
         )
         viewModel.handleIntent(StudioIntent.Frame.AddFrame)

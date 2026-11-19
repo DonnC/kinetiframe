@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Matrix
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.DockEdge
 import com.donnclab.kinetiframe.studio.GridDefaults
 import com.donnclab.kinetiframe.studio.GridSize
@@ -114,7 +114,7 @@ class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Uni
             val newState = state.copy(
                 canvas = state.canvas.copy(
                     zoom = 1f,
-                    pan = Offset.Zero,
+                    pan = Point2.Zero,
                     rotation = 0f,
                 ),
             )
@@ -126,7 +126,7 @@ class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Uni
         state.copy(canvas = state.canvas.copy(showSafeFrame = !state.canvas.showSafeFrame))
     }
 
-    fun updateTransform(panDelta: Offset, zoomDelta: Float, rotationDelta: Float, pivot: Offset) {
+    fun updateTransform(panDelta: Point2, zoomDelta: Float, rotationDelta: Float, pivot: Point2) {
         updateState { state ->
             val matrix = Matrix()
             matrix.setValues(state.canvas.matrixValues)
@@ -173,11 +173,11 @@ class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Uni
         return Math.toDegrees(Math.atan2(skewY.toDouble(), scaleX.toDouble())).toFloat()
     }
 
-    private fun extractPan(matrix: Matrix, viewportWidth: Int, viewportHeight: Int, stage: StageDimensions): Offset {
-        if (viewportWidth <= 0 || viewportHeight <= 0) return Offset.Zero
+    private fun extractPan(matrix: Matrix, viewportWidth: Int, viewportHeight: Int, stage: StageDimensions): Point2 {
+        if (viewportWidth <= 0 || viewportHeight <= 0) return Point2.Zero
         val pts = floatArrayOf(stage.width / 2f, stage.height / 2f)
         matrix.mapPoints(pts)
-        return Offset(pts[0] - viewportWidth / 2f, pts[1] - viewportHeight / 2f)
+        return Point2(pts[0] - viewportWidth / 2f, pts[1] - viewportHeight / 2f)
     }
 
     private fun updateMatrixInternal(state: StudioState): StudioState {
@@ -211,7 +211,7 @@ class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Uni
         )
     }
 
-    fun setDockPosition(edge: DockEdge, offset: Offset) {
+    fun setDockPosition(edge: DockEdge, offset: Point2) {
         updateState { state ->
             state.copy(canvas = state.canvas.copy(dockEdge = edge, dockOffset = offset))
         }

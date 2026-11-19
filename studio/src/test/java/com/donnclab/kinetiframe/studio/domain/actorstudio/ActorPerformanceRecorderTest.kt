@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.studio.domain.actorstudio
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.domain.LegacyActorMigration
 import com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator
 import com.donnclab.kinetiframe.actors.domain.PerformanceIdentity
@@ -11,6 +10,7 @@ import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -49,7 +49,7 @@ class ActorPerformanceRecorderTest {
             })
         recorder.handle(StudioIntent.ActorMotion.StartTake)
         recorder.handle(StudioIntent.ActorMotion.SetTakeMoveCharacter(true))
-        val drag = StudioIntent.Actor.Drag("origin:$root", Offset(700f, 500f))
+        val drag = StudioIntent.Actor.Drag("origin:$root", Point2(700f, 500f))
         assertFalse(recorder.beforeDrag(drag))
         studio.handle(drag)
         recorder.afterDrag()
@@ -102,7 +102,7 @@ class ActorPerformanceRecorderTest {
             })
         recorder.handle(StudioIntent.ActorMotion.StartTake)
         assertEquals(PerformanceTakePhase.ARMED, state.actor.takePhase)
-        recorder.beforeDrag(StudioIntent.Actor.Drag("torso", Offset.Zero))
+        recorder.beforeDrag(StudioIntent.Actor.Drag("torso", Point2.Zero))
         val graph = state.actor.previewGraph!!
         state = state.copy(
             actor = state.actor.copy(
@@ -191,7 +191,7 @@ class ActorPerformanceRecorderTest {
         assertEquals(0L, state.actor.previewTimeMicros)
         assertEquals(PerformanceTakePhase.ARMED, state.actor.takePhase)
         val id = rest.sceneGraph.bones.keys.first { it != "head" }
-        recorder.beforeDrag(StudioIntent.Actor.Drag(id, Offset.Zero))
+        recorder.beforeDrag(StudioIntent.Actor.Drag(id, Point2.Zero))
         val graph = state.actor.previewGraph!!
         state = state.copy(
             actor = state.actor.copy(
@@ -240,7 +240,7 @@ class ActorPerformanceRecorderTest {
             })
         recorder.handle(StudioIntent.ActorMotion.StartTake)
         val id = state.actorDefinition()!!.sceneGraph.bones.keys.first()
-        recorder.beforeDrag(StudioIntent.Actor.Drag(id, Offset.Zero))
+        recorder.beforeDrag(StudioIntent.Actor.Drag(id, Point2.Zero))
         val graph = state.actor.previewGraph!!
         state = state.copy(
             actor = state.actor.copy(

@@ -1,14 +1,14 @@
 package com.donnclab.kinetiframe.presentation.studio.camera
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.StudioIntent
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class CameraWorkspacePolicyTest {
-    private val navigation = StudioIntent.View.UpdateTransform(Offset(10f, 0f), 1.2f, 0f, Offset.Zero)
+    private val navigation = StudioIntent.View.UpdateTransform(Point2(10f, 0f), 1.2f, 0f, Point2.Zero)
     private val edit = StudioIntent.Draw.SelectTool(DrawingTool.BRUSH)
 
     @Test fun `project opens editable even when it has camera shots`() {

@@ -1,14 +1,12 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Matrix
-import androidx.compose.ui.graphics.Path
 import com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry
 import com.donnclab.kinetiframe.core.document.BaseNode
 import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.core.geometry.Affine2D
+import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.core.geometry.Rect2
 import com.donnclab.kinetiframe.studio.SelectedContent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers
@@ -41,7 +39,7 @@ class SelectionManager(
     private val history: MutableList<HistoryItem> = undo.history
     private val redoHistory: MutableList<HistoryItem> = undo.redo
 
-    private data class Clipboard(val content: SelectedContent, val transform: Matrix, val projectId: String)
+    private data class Clipboard(val content: SelectedContent, val transform: Affine2D, val projectId: String)
     private var clipboard: Clipboard? = null
     private var pendingClear: HistoryItem.ClearArea? = null
 
@@ -89,8 +87,8 @@ class SelectionManager(
         }
 
     fun selectArea(
-        path: Path?,
-        rect: Rect?,
+        path: android.graphics.Path?,
+        rect: Rect2?,
         density: Float,
         fontRegistry: FontRegistry? = null,
         actors: ActorSelectionGeometry? = null,
@@ -163,14 +161,14 @@ class SelectionManager(
                 }
                 if (raster != null) {
                     // Clear through history only. Clearing baseBitmap too destroys undo.
-                    pendingClear = HistoryItem.ClearArea(path?.let { Path().apply { addPath(it) } }, rect)
+                    pendingClear = HistoryItem.ClearArea(path?.let { android.graphics.Path(it) }, rect)
                     history.add(requireNotNull(pendingClear))
                     rebuildCurrentBitmap()
                 }
-                val actorBounds = actorHits.flatMap { it.quads.flatten() }.let(::pointsBounds)
+                val actorBounds = Rect2.around(actorHits.flatMap { it.quads.flatten() })
                 val videoBounds = selectedVideos.values.flatMap {
                     com.donnclab.kinetiframe.media.video.SceneVideoGeometry.corners(it)
-                }.let(::pointsBounds)
+                }.let(Rect2::around)
                 val bounds =
                     union(
                         union(union(raster?.bounds, nodesBounds(nodes, density, fontRegistry)), actorBounds),
@@ -192,7 +190,7 @@ class SelectionManager(
         }
     }
 
-    private fun expose(content: SelectedContent, matrix: Matrix = Matrix()) {
+    private fun expose(content: SelectedContent, matrix: Affine2D = Affine2D()) {
         updateState { state ->
             state.copy(
                 selection = state.selection.copy(
@@ -200,7 +198,7 @@ class SelectionManager(
                     active = true,
                     bounds = content.bounds,
                     transform = matrix,
-                    pivotOffset = Offset.Zero,
+                    pivotOffset = Point2.Zero,
                     contextMenuVisible = false,
                 ),
                 scene = state.scene.copy(nodes = state.scene.nodes - content.nodes.keys, activeNodeId = null),
@@ -237,7 +235,7 @@ class SelectionManager(
         ) {
             return
         }
-        val affine = selection.transform.toAffine()
+        val affine = selection.transform
         val beforeActors = if (content.isPaste) emptyMap() else content.actors
         val beforeNodes = if (content.isPaste) emptyMap() else content.nodes
         val beforeVideos = if (content.isPaste) emptyMap() else content.videos
@@ -288,7 +286,7 @@ class SelectionManager(
                     HistoryItem.SelectionEdit(
                         content.bitmap,
                         emptyMap(),
-                        Matrix(selection.transform.values.copyOf()),
+                        selection.transform,
                         content.bounds,
                         SelectionEditType.COMMIT,
                     )
@@ -343,7 +341,7 @@ class SelectionManager(
         val state = getState()
         state.selection.selectedContent?.let {
             clipboard =
-                Clipboard(it, Matrix(state.selection.transform.values.copyOf()), state.project.id)
+                Clipboard(it, state.selection.transform, state.project.id)
         }
     }
     fun hasClipboardContent() = clipboard != null
@@ -369,10 +367,7 @@ class SelectionManager(
                 } else {
                     emptyMap() // Performances are project-scoped, not cross-project raw pixels.
                 }
-                val matrix = Matrix(saved.transform.values.copyOf()).apply {
-                    values[12] += 20f
-                    values[13] += 20f
-                }
+                val matrix = saved.transform.copy(tx = saved.transform.tx + 20f, ty = saved.transform.ty + 20f)
                 // One video lane: copies append sequentially rather than introducing overlapping decoders.
                 var nextVideoFrame = getState().project.videoClips.values.maxOfOrNull { it.timelineEndFrame } ?: 0
                 val audioCopies = mutableMapOf<String, com.donnclab.kinetiframe.core.document.AudioClipPlacement>()
@@ -441,12 +436,15 @@ class SelectionManager(
                 val scaleToFit = minOf(1f, stageWidth.toFloat() / bitmap.width, stageHeight.toFloat() / bitmap.height)
                 val left = (dropCenterX ?: stageWidth / 2f) - bitmap.width / 2f
                 val top = (dropCenterY ?: stageHeight / 2f) - bitmap.height / 2f
-                val bounds = Rect(left, top, left + bitmap.width, top + bitmap.height)
-                val matrix = Matrix().apply {
-                    translate(bounds.center.x, bounds.center.y)
-                    scale(scaleToFit, scaleToFit)
-                    translate(-bounds.center.x, -bounds.center.y)
-                }
+                val bounds = Rect2(left, top, left + bitmap.width, top + bitmap.height)
+                // Scale about the image's centre.
+                val center = bounds.center
+                val matrix = Affine2D(
+                    a = scaleToFit,
+                    d = scaleToFit,
+                    tx = center.x * (1f - scaleToFit),
+                    ty = center.y * (1f - scaleToFit),
+                )
                 expose(
                     SelectedContent(bitmap = bitmap, bounds = bounds, isRasterSelection = true, isPaste = true),
                     matrix,
@@ -465,27 +463,23 @@ class SelectionManager(
     }
 
     private fun nodesBounds(nodes: Map<String, BaseNode>, density: Float, fonts: FontRegistry?) =
-        pointsBounds(nodes.values.filterIsInstance<TextNode>().flatMap { corners(it, density, fonts) })
+        Rect2.around(nodes.values.filterIsInstance<TextNode>().flatMap { corners(it, density, fonts) })
 
-    private fun corners(node: TextNode, density: Float, fonts: FontRegistry?): List<Offset> {
+    private fun corners(node: TextNode, density: Float, fonts: FontRegistry?): List<Point2> {
         val typeface =
             fonts?.availableFonts?.find { it.fileName == node.fontFileName }?.typeface
                 ?: android.graphics.Typeface.DEFAULT
         val bounds = MultilineTextRenderer.getBounds(node, typeface, density)
         val x = bounds.width * node.scaleX / 2f
         val y = bounds.height * node.scaleY / 2f
-        return listOf(Offset(-x, -y), Offset(x, -y), Offset(x, y), Offset(-x, y)).map {
-            val point = rotateVector(it, node.rotation) + Offset(node.x, node.y)
-            Offset(node.selectionTransform.mapX(point.x, point.y), node.selectionTransform.mapY(point.x, point.y))
+        return listOf(Point2(-x, -y), Point2(x, -y), Point2(x, y), Point2(-x, y)).map {
+            val point = rotateVector(it, node.rotation) + Point2(node.x, node.y)
+            Point2(node.selectionTransform.mapX(point.x, point.y), node.selectionTransform.mapY(point.x, point.y))
         }
     }
-    private fun pointsBounds(points: List<Offset>): Rect? = points.takeIf { it.isNotEmpty() }?.let {
-        Rect(it.minOf(Offset::x), it.minOf(Offset::y), it.maxOf(Offset::x), it.maxOf(Offset::y))
-    }
-    private fun union(a: Rect?, b: Rect?): Rect = when {
-        a == null || a == Rect.Zero -> b ?: Rect.Zero
+    private fun union(a: Rect2?, b: Rect2?): Rect2 = when {
+        a == null || a == Rect2.Zero -> b ?: Rect2.Zero
         b == null -> a
-        else -> Rect(minOf(a.left, b.left), minOf(a.top, b.top), maxOf(a.right, b.right), maxOf(a.bottom, b.bottom))
+        else -> a.union(b)
     }
 }
-private fun Matrix.toAffine() = values.let { Affine2D(it[0], it[1], it[4], it[5], it[12], it[13]) }

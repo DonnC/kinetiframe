@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.studio
 
-import androidx.compose.ui.geometry.Rect
+import com.donnclab.kinetiframe.core.geometry.Rect2
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,7 +23,7 @@ class SelectionInteractionModeTest {
             val initial = StudioState(
                 selection = SelectionState(
                     active = true,
-                    bounds = Rect(10f, 10f, 14f, 14f),
+                    bounds = Rect2(10f, 10f, 14f, 14f),
                     contextMenuVisible = true,
                 ),
             )

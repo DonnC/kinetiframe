@@ -27,6 +27,11 @@ import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.common.toAffine2D
+import com.donnclab.kinetiframe.presentation.common.toMatrix
+import com.donnclab.kinetiframe.presentation.common.toOffset
+import com.donnclab.kinetiframe.presentation.common.toPoint2
+import com.donnclab.kinetiframe.presentation.common.toRect
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.ActorWorkflowHint
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.ProjectActorRenderLayer
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.PuppetStudioCanvas
@@ -194,11 +199,11 @@ private fun CanvasAreaContents(
         mutableStateOf<com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry?>(null)
     }
     val selectionTransform = remember(state.selection.selectedContent) {
-        SelectionTransformState(state.selection.transform, state.selection.pivotOffset)
+        SelectionTransformState(state.selection.transform.toMatrix(), state.selection.pivotOffset.toOffset())
     }
     androidx.compose.runtime.LaunchedEffect(state.selection.transform, state.selection.pivotOffset) {
-        selectionTransform.matrix = state.selection.transform
-        selectionTransform.pivotOffset = state.selection.pivotOffset
+        selectionTransform.matrix = state.selection.transform.toMatrix()
+        selectionTransform.pivotOffset = state.selection.pivotOffset.toOffset()
     }
     val context = androidx.compose.ui.platform.LocalContext.current
     val fonts = remember(context) {
@@ -420,7 +425,7 @@ private fun CanvasAreaContents(
                         state.project.stage.width,
                         state.project.stage.height,
                     ),
-                    selectionBounds = bounds,
+                    selectionBounds = bounds.toRect(),
                     transformState = selectionTransform,
                     canvasMatrixValues = state.canvas.matrixValues,
                     onOutsideSelectionTap = { onIntent(StudioIntent.Selection.SetActive(false)) },
@@ -429,8 +434,8 @@ private fun CanvasAreaContents(
                     skewMode = state.selection.skewMode,
                     interactionMode = state.selection.interactionMode,
                     onDragEnd = {
-                        onIntent(StudioIntent.Selection.UpdateTransform(selectionTransform.matrix))
-                        onIntent(StudioIntent.Selection.UpdatePivot(selectionTransform.pivotOffset))
+                        onIntent(StudioIntent.Selection.UpdateTransform(selectionTransform.matrix.toAffine2D()))
+                        onIntent(StudioIntent.Selection.UpdatePivot(selectionTransform.pivotOffset.toPoint2()))
                     },
                     modifier = Modifier.fillMaxSize().zIndex(5f),
                 )

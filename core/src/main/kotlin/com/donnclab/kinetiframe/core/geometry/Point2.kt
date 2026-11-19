@@ -9,5 +9,11 @@ data class Point2(val x: Float, val y: Float) {
     operator fun minus(other: Point2) = Point2(x - other.x, y - other.y)
     operator fun times(scale: Float) = Point2(x * scale, y * scale)
     operator fun div(scale: Float) = Point2(x / scale, y / scale)
+    operator fun unaryMinus() = Point2(-x, -y)
     fun getDistance(): Float = sqrt(x * x + y * y)
+    fun getDistanceSquared(): Float = x * x + y * y
+
+    companion object {
+        val Zero = Point2(0f, 0f)
+    }
 }

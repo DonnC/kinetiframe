@@ -6,8 +6,6 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.asAndroidPath
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -64,10 +62,10 @@ object TextureExtractor {
         return android.graphics.Rect(left, top, right + 1, bottom + 1)
     }
 
-    fun extractLassoCrop(sourceFrame: Bitmap, lassoPath: Path): Bitmap {
+    fun extractLassoCrop(sourceFrame: Bitmap, lassoPath: android.graphics.Path): Bitmap {
         require(!sourceFrame.isRecycled) { "Cannot extract from a recycled bitmap." }
 
-        val sourcePath = android.graphics.Path(lassoPath.asAndroidPath()).apply { close() }
+        val sourcePath = android.graphics.Path(lassoPath).apply { close() }
         val bounds = RectF()
         sourcePath.computeBounds(bounds, true)
 

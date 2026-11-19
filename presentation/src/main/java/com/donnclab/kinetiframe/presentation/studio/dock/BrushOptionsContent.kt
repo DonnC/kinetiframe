@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -80,7 +81,7 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
                 else -> stringResource(R.string.tool_generic)
             }
             Text(title, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
-            ColorPicker(config.color) { onIntent(StudioIntent.Draw.SetBrushColor(it)) }
+            ColorPicker(Color(config.color)) { onIntent(StudioIntent.Draw.SetBrushColor(it.toArgb())) }
         }
 
         if (tool == DrawingTool.BRUSH) {

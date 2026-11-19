@@ -1,17 +1,15 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Region
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.asAndroidPath
+import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.core.geometry.Rect2
 import kotlin.math.ceil
 import kotlin.math.floor
 
 /** One mask per gesture. Region intersection also finds edge-crossings and enclosed areas. */
-internal class SelectionAreaMask private constructor(private val region: Region, private val tap: Offset?) {
+internal class SelectionAreaMask private constructor(private val region: Region, private val tap: Point2?) {
     val isTap: Boolean get() = tap != null
-    fun matches(quads: List<List<Offset>>, partial: Boolean): Boolean {
+    fun matches(quads: List<List<Point2>>, partial: Boolean): Boolean {
         if (quads.isEmpty()) return false
         val objectRegion = Region()
         quads.forEach { quad ->
@@ -30,7 +28,7 @@ internal class SelectionAreaMask private constructor(private val region: Region,
         return if (partial) !remainder.isEmpty else remainder.isEmpty
     }
     companion object {
-        operator fun invoke(path: Path?, rect: Rect?): SelectionAreaMask? {
+        operator fun invoke(path: android.graphics.Path?, rect: Rect2?): SelectionAreaMask? {
             if (rect !=
                 null
             ) {
@@ -48,11 +46,11 @@ internal class SelectionAreaMask private constructor(private val region: Region,
                     },
                 )
             }
-            val outline = path?.asAndroidPath() ?: return null
+            val outline = path ?: return null
             val bounds = android.graphics.RectF().also { outline.computeBounds(it, true) }
             return SelectionAreaMask(
                 regionOf(outline),
-                Offset(bounds.centerX(), bounds.centerY()).takeIf {
+                Point2(bounds.centerX(), bounds.centerY()).takeIf {
                     bounds.width() <
                         3f &&
                         bounds.height() < 3f

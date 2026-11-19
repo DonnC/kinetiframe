@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.studio
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -189,9 +189,9 @@ class StudioViewModelTest {
 
     @Test
     fun `UpdateTransform updates pan and zoom`() {
-        val newPan = Offset(100f, 200f)
+        val newPan = Point2(100f, 200f)
         val newZoom = 2.5f
-        viewModel.handleIntent(StudioIntent.View.UpdateTransform(newPan, newZoom, 0f, Offset.Zero))
+        viewModel.handleIntent(StudioIntent.View.UpdateTransform(newPan, newZoom, 0f, Point2.Zero))
         assertEquals(newPan, viewModel.state.value.canvas.pan)
         assertEquals(newZoom, viewModel.state.value.canvas.zoom)
     }

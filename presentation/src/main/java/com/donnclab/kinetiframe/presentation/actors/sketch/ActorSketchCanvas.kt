@@ -29,6 +29,7 @@ import com.donnclab.kinetiframe.core.actor.artwork.DrawingPoint
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.common.toOffset
 import kotlin.math.hypot
 
 /** One-finger drawing/stylus input; two fingers pan/zoom without leaving ink. No heavy objects
@@ -67,7 +68,7 @@ fun ActorSketchCanvas(
         RigGeometry.resolve(graph).map { (id, joint) ->
             fun source(p: Offset) =
                 Offset((p.x - bounds[0]) * width / bounds[2], (p.y - bounds[1]) * height / bounds[3])
-            Triple(id, source(joint.start), source(joint.end))
+            Triple(id, source(joint.start.toOffset()), source(joint.end.toOffset()))
         }
     }
     val density = LocalDensity.current

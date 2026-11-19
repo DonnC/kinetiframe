@@ -14,6 +14,8 @@ import com.donnclab.kinetiframe.actors.render.toMatrix
 import com.donnclab.kinetiframe.actors.rig.math.CutoutPartGuideFactory
 import com.donnclab.kinetiframe.actors.rig.math.ForwardKinematicsSolver
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
+import com.donnclab.kinetiframe.presentation.common.toOffset
+import com.donnclab.kinetiframe.presentation.common.toPoint2
 import com.donnclab.kinetiframe.studio.ActorEditTarget
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioMode
@@ -94,13 +96,23 @@ fun RigSkeletonOverlay(state: StudioState, modifier: Modifier = Modifier) {
                 // the same two freely draggable joint nodes the renderer uses. The capsule says
                 // exactly where this part starts/ends; the end halos show the intentional overlap
                 // allowance needed for a seamless elbow, knee, shoulder, or hip.
-                val guide = CutoutPartGuideFactory.create(segment.id, segment.start, segment.end)
-                drawLine(accent.copy(alpha = 0.11f), guide.start, guide.end, guide.envelopeRadius * 2f)
-                drawLine(accent.copy(alpha = 0.78f), guide.start, guide.end, ActorStudioTokens.rigStroke.toPx())
-                drawCircle(accent.copy(alpha = 0.12f), guide.overlapRadius, guide.start)
-                drawCircle(accent.copy(alpha = 0.18f), guide.overlapRadius, guide.end)
-                drawCircle(accent.copy(alpha = 0.44f), guide.overlapRadius * 0.58f, guide.start)
-                drawCircle(accent.copy(alpha = 0.56f), guide.overlapRadius * 0.58f, guide.end)
+                val guide = CutoutPartGuideFactory.create(segment.id, segment.start.toPoint2(), segment.end.toPoint2())
+                drawLine(
+                    accent.copy(alpha = 0.11f),
+                    guide.start.toOffset(),
+                    guide.end.toOffset(),
+                    guide.envelopeRadius * 2f,
+                )
+                drawLine(
+                    accent.copy(alpha = 0.78f),
+                    guide.start.toOffset(),
+                    guide.end.toOffset(),
+                    ActorStudioTokens.rigStroke.toPx(),
+                )
+                drawCircle(accent.copy(alpha = 0.12f), guide.overlapRadius, guide.start.toOffset())
+                drawCircle(accent.copy(alpha = 0.18f), guide.overlapRadius, guide.end.toOffset())
+                drawCircle(accent.copy(alpha = 0.44f), guide.overlapRadius * 0.58f, guide.start.toOffset())
+                drawCircle(accent.copy(alpha = 0.56f), guide.overlapRadius * 0.58f, guide.end.toOffset())
             }
             drawLine(jointColor.copy(alpha = 0.7f), segment.start, segment.end, ActorStudioTokens.rigStroke.toPx())
             drawCircle(fill, ActorStudioTokens.jointEndRadius.toPx(), segment.end)

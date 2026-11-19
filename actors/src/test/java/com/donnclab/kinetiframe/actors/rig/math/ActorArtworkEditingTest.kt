@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.core.actor.artwork.ArtworkAlignment
 import com.donnclab.kinetiframe.core.actor.artwork.ArtworkVariant
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
@@ -31,7 +30,7 @@ class ActorArtworkEditingTest {
     )
 
     @Test fun `moving shared joint fits parent without detaching child`() {
-        val moved = ActorPoseEditor.moveOrigin(graph(), "lower", Offset(80f, 160f))
+        val moved = ActorPoseEditor.moveOrigin(graph(), "lower", Point2(80f, 160f))
         val world = RigGeometry.resolve(moved)
         assertEquals(world.getValue("upper").end, world.getValue("lower").start)
         assertEquals(80f, world.getValue("lower").start.x, .001f)
@@ -53,7 +52,7 @@ class ActorArtworkEditingTest {
                         ),
             )
         }
-        val moved = ActorPoseEditor.moveArtwork(original, "upper", Offset(0f, 10f))
+        val moved = ActorPoseEditor.moveArtwork(original, "upper", Point2(0f, 10f))
         assertEquals(original.bones.getValue("upper").localTransform, moved.bones.getValue("upper").localTransform)
         assertEquals(10f, moved.bones.getValue("upper").textureBinding!!.offsetX, .001f)
         assertEquals(0f, moved.bones.getValue("upper").textureBinding!!.offsetY, .001f)
@@ -68,7 +67,7 @@ class ActorArtworkEditingTest {
             original.bones +
                 ("upper" to original.bones.getValue("upper").withArtwork(textureBinding = binding.copy(skin = skin))),
         )
-        val edited = ActorPoseEditor.fit(attached, "lower", Offset(180f, 160f))
+        val edited = ActorPoseEditor.fit(attached, "lower", Point2(180f, 160f))
         val before = ArtworkSkinning.deform(skin, ArtworkSkinning.worldTransforms(edited))
         val rebound = ArtworkSkinRestBinding.rebase(edited)
         val after = ArtworkSkinning.deform(
@@ -80,8 +79,8 @@ class ActorArtworkEditingTest {
     }
 
     @Test fun `invalid target cannot corrupt skeleton or artwork`() {
-        assertEquals(graph(), ActorPoseEditor.moveOrigin(graph(), "lower", Offset(Float.NaN, 0f)))
-        assertEquals(graph(), ActorPoseEditor.moveArtwork(graph(), "upper", Offset(0f, Float.POSITIVE_INFINITY)))
+        assertEquals(graph(), ActorPoseEditor.moveOrigin(graph(), "lower", Point2(Float.NaN, 0f)))
+        assertEquals(graph(), ActorPoseEditor.moveArtwork(graph(), "upper", Point2(0f, Float.POSITIVE_INFINITY)))
     }
 
     @Test fun `expression alternatives follow artwork translation without changing their alignment`() {
@@ -115,7 +114,7 @@ class ActorArtworkEditingTest {
                         ),
             )
         }
-        val moved = ActorPoseEditor.moveArtwork(original, "upper", Offset(0f, 10f)).bones.getValue("upper")
+        val moved = ActorPoseEditor.moveArtwork(original, "upper", Point2(0f, 10f)).bones.getValue("upper")
         assertEquals(15f, moved.textureBinding!!.offsetY)
         assertEquals(17f, moved.artworkVariants.getValue("blink").binding.offsetY)
         assertEquals("blink", moved.artworkVariants.getValue("blink").binding.assetId)

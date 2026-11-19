@@ -1,15 +1,13 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Path
 import com.donnclab.kinetiframe.actors.render.PuppetRenderPlan
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -48,7 +46,7 @@ class ActorBindingIntegrationTest {
         val manager =
             RiggingManager(this, assets, { state }, { state = it(state) }, failures::add, authoring::checkpoint)
         val source = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888)
-        val path = Path().apply { addRect(Rect(10f, 10f, 50f, 50f)) }
+        val path = android.graphics.Path().apply { addRect(10f, 10f, 50f, 50f, android.graphics.Path.Direction.CW) }
         try {
             val rest = state.actorDefinition()!!
             manager.preparePivotPlacement(source, path, 0)
@@ -71,7 +69,7 @@ class ActorBindingIntegrationTest {
             // The attachment survives a pose transaction, which remains instance-local.
             state = state.copy(scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK))
             val endpoint = RigGeometry.resolve(bound.sceneGraph).getValue("left_forearm").end
-            authoring.handle(StudioIntent.Actor.Drag("left_forearm", endpoint + Offset(20f, -25f)))
+            authoring.handle(StudioIntent.Actor.Drag("left_forearm", Point2(endpoint.x + 20f, endpoint.y - 25f)))
             authoring.handle(StudioIntent.Actor.CommitDrag)
             assertTrue(state.activeActor()!!.pose.isNotEmpty())
             authoring.handle(StudioIntent.Actor.Undo)
@@ -120,7 +118,7 @@ class ActorBindingIntegrationTest {
             authoring::reconcileRuntimeAssets,
         )
         val source = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888)
-        val path = Path().apply { addRect(Rect(10f, 10f, 50f, 50f)) }
+        val path = android.graphics.Path().apply { addRect(10f, 10f, 50f, 50f, android.graphics.Path.Direction.CW) }
         try {
             manager.preparePivotPlacement(source, path, 0)
             withTimeout(10_000) { while (state.scene.pivotPlacement == null && failures.isEmpty()) delay(10) }

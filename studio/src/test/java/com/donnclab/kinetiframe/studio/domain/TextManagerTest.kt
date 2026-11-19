@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.studio.domain
 
-import androidx.compose.ui.geometry.Rect
 import com.donnclab.kinetiframe.core.document.TextNode
+import com.donnclab.kinetiframe.core.geometry.Rect2
 import com.donnclab.kinetiframe.studio.SelectedContent
 import com.donnclab.kinetiframe.studio.SelectionState
 import com.donnclab.kinetiframe.studio.StudioState
@@ -20,7 +20,7 @@ class TextManagerTest {
                 active = true,
                 selectedContent = SelectedContent(
                     nodes = mapOf(original.id to original),
-                    bounds = Rect(0f, 0f, 100f, 48f),
+                    bounds = Rect2(0f, 0f, 100f, 48f),
                 ),
             ),
         )
