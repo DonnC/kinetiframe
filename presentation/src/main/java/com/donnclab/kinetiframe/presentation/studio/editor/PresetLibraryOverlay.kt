@@ -2,7 +2,9 @@
 package com.donnclab.kinetiframe.presentation.studio.editor
 
 import androidx.compose.runtime.Composable
+import com.donnclab.kinetiframe.presentation.actors.rigging.PresetAudition
 import com.donnclab.kinetiframe.presentation.actors.rigging.PresetLibrarySheet
+import com.donnclab.kinetiframe.presentation.actors.rigging.PresetPicker
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.activeActor
@@ -20,39 +22,45 @@ internal fun PresetLibraryOverlay(state: StudioState, onIntent: (StudioIntent) -
     val boneIds = state.actorDefinition()?.sceneGraph?.bones?.keys.orEmpty()
     val activeActor = state.activeActor()
     PresetLibrarySheet(
-        presets = actor.presets.filter { it.supportsView(actor.authoredView) && it.missingBones(boneIds).isEmpty() },
-        previewingId = actor.presetPreview?.recipe?.id,
-        onPreview = {
-            stopPreview()
-            onIntent(StudioIntent.ActorPreset.Preview(it))
-            onIntent(StudioIntent.ActorMotion.TogglePlayback)
-        },
-        onApply = {
-            stopPreview()
-            onIntent(StudioIntent.ActorPreset.Apply)
-            onClose()
-        },
-        canApply = actor.presetPreview != null,
-        preview = actor.presetPreview,
-        playing = actor.previewPlaying,
-        replacesKeys = !activeActor?.poseKeys.isNullOrEmpty() || !activeActor?.rotationCurves.isNullOrEmpty(),
-        onPlay = { onIntent(StudioIntent.ActorMotion.TogglePlayback) },
-        onIntensity = { onIntent(StudioIntent.ActorPreset.SetIntensity(it)) },
-        onSpeed = {
-            stopPreview()
-            onIntent(StudioIntent.ActorPreset.SetSpeed(it))
-            onIntent(StudioIntent.ActorMotion.Scrub(0))
-            onIntent(StudioIntent.ActorMotion.TogglePlayback)
-        },
-        onRemove = if (activeActor?.motionPreset != null) {
-            {
+        picker = PresetPicker(
+            presets = actor.presets.filter {
+                it.supportsView(actor.authoredView) && it.missingBones(boneIds).isEmpty()
+            },
+            previewingId = actor.presetPreview?.recipe?.id,
+            canApply = actor.presetPreview != null,
+            onPreview = {
                 stopPreview()
-                onIntent(StudioIntent.ActorPreset.Remove)
+                onIntent(StudioIntent.ActorPreset.Preview(it))
+                onIntent(StudioIntent.ActorMotion.TogglePlayback)
+            },
+            onApply = {
+                stopPreview()
+                onIntent(StudioIntent.ActorPreset.Apply)
                 onClose()
-            }
-        } else {
-            null
-        },
+            },
+        ),
+        audition = PresetAudition(
+            preview = actor.presetPreview,
+            playing = actor.previewPlaying,
+            replacesKeys = !activeActor?.poseKeys.isNullOrEmpty() || !activeActor?.rotationCurves.isNullOrEmpty(),
+            onPlay = { onIntent(StudioIntent.ActorMotion.TogglePlayback) },
+            onIntensity = { onIntent(StudioIntent.ActorPreset.SetIntensity(it)) },
+            onSpeed = {
+                stopPreview()
+                onIntent(StudioIntent.ActorPreset.SetSpeed(it))
+                onIntent(StudioIntent.ActorMotion.Scrub(0))
+                onIntent(StudioIntent.ActorMotion.TogglePlayback)
+            },
+            onRemove = if (activeActor?.motionPreset != null) {
+                {
+                    stopPreview()
+                    onIntent(StudioIntent.ActorPreset.Remove)
+                    onClose()
+                }
+            } else {
+                null
+            },
+        ),
         onDismiss = {
             stopPreview()
             onIntent(StudioIntent.ActorPreset.Cancel)

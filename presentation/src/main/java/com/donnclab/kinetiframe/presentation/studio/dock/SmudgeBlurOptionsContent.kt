@@ -42,7 +42,7 @@ fun SmudgeBlurOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (S
         Spacer(modifier = Modifier.height(Dimens.spaceM))
 
         StandardSlider(
-            label = "Size",
+            label = stringResource(R.string.tool_size),
             value = config.size,
             onValueChange = { onIntent(StudioIntent.Draw.SetBrushSize(it)) },
             range = 1f..100f,

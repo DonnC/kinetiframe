@@ -27,6 +27,7 @@ import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.export.domain.VideoExporter
 import com.donnclab.kinetiframe.media.audio.StreamingAudioMix
 import com.donnclab.kinetiframe.studio.drawing.FontRegistry
+import com.donnclab.kinetiframe.studio.render.CompositorOptions
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import com.donnclab.kinetiframe.studio.render.ProjectFrameCompositor
 import kotlinx.coroutines.CoroutineScope
@@ -112,7 +113,14 @@ class ProjectExporter(
             )
         }
         val compositor =
-            ProjectFrameCompositor(project, document.frameLayers, cacheManager, actorRenderer, backgroundBitmap, fonts)
+            ProjectFrameCompositor(
+                project,
+                document.frameLayers,
+                cacheManager,
+                actorRenderer,
+                backgroundBitmap,
+                CompositorOptions(fontRegistry = fonts),
+            )
 
         val outputDirectory = File(context.filesDir, "video-exports").apply { mkdirs() }
         val outputFile = File(outputDirectory, "$projectId-${System.currentTimeMillis()}.mp4")

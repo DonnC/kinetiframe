@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.studio.drawing
 
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -8,7 +9,15 @@ class CubicStrokeSamplerTest {
     @Test fun `close endpoints with a curved control polygon are not reduced to one line`() {
         var count = 0
         var furthestY = 0f
-        CubicStrokeSampler.forEachEnd(0f, 0f, 0f, 20f, 1f, 20f, 1f, 0f) { _, y, _ ->
+        CubicStrokeSampler.forEachEnd(
+            TouchPoint(0f, 0f),
+            CatmullRomSolver.BezierControlPoints(0f, 20f, 1f, 20f),
+            TouchPoint(1f, 0f),
+        ) {
+                _,
+                y,
+                _,
+            ->
             count++
             furthestY = maxOf(furthestY, y)
         }
@@ -18,11 +27,29 @@ class CubicStrokeSamplerTest {
 
     @Test fun `stationary contacts remain cheap and extreme input stays bounded`() {
         var count = 0
-        CubicStrokeSampler.forEachEnd(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f) { _, _, _ -> count++ }
+        CubicStrokeSampler.forEachEnd(
+            TouchPoint(1f, 1f),
+            CatmullRomSolver.BezierControlPoints(1f, 1f, 1f, 1f),
+            TouchPoint(1f, 1f),
+        ) {
+                _,
+                _,
+                _,
+            ->
+            count++
+        }
         assertEquals(1, count)
         count = 0
         var lastT = 0f
-        CubicStrokeSampler.forEachEnd(0f, 0f, 1e6f, 1e6f, -1e6f, 1e6f, 1f, 0f) { _, _, t ->
+        CubicStrokeSampler.forEachEnd(
+            TouchPoint(0f, 0f),
+            CatmullRomSolver.BezierControlPoints(1e6f, 1e6f, -1e6f, 1e6f),
+            TouchPoint(1f, 0f),
+        ) {
+                _,
+                _,
+                t,
+            ->
             assertTrue(t > lastT)
             lastT = t
             count++

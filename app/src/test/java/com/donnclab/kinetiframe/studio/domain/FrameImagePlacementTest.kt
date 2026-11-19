@@ -27,8 +27,10 @@ class FrameImagePlacementTest {
         val history = mutableListOf<HistoryItem>()
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)
         val manager = SelectionManager(
-            scope, Dispatchers.Unconfined, Mutex(), { state },
-            { transform -> state = transform(state) }, {}, { null }, {}, history,
+            StudioRuntime(scope, Dispatchers.Unconfined, { state }, { transform -> state = transform(state) }),
+            Mutex(),
+            SelectionHooks({}, { null }, {}),
+            UndoStacks(history),
         )
         try {
             val image = Bitmap.createBitmap(200, 100, Bitmap.Config.ARGB_8888)

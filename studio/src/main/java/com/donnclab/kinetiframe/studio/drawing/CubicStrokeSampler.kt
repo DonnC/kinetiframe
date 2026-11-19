@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.studio.drawing
 
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import kotlin.math.abs
 import kotlin.math.hypot
 
@@ -7,20 +8,19 @@ import kotlin.math.hypot
  * chord length also limits footprint spacing. Depth 8 bounds pathological input to 256 leaves.
  */
 object CubicStrokeSampler {
+    /** Emits each sampled point after [start] as (x, y, t), ending exactly at [end]. */
     fun forEachEnd(
-        x0: Float,
-        y0: Float,
-        x1: Float,
-        y1: Float,
-        x2: Float,
-        y2: Float,
-        x3: Float,
-        y3: Float,
+        start: TouchPoint,
+        controls: CatmullRomSolver.BezierControlPoints,
+        end: TouchPoint,
         emit: (Float, Float, Float) -> Unit,
     ) {
-        subdivide(x0, y0, x1, y1, x2, y2, x3, y3, 0f, 1f, 0, emit)
+        val (cp1X, cp1Y, cp2X, cp2Y) = controls
+        subdivide(start.x, start.y, cp1X, cp1Y, cp2X, cp2Y, end.x, end.y, 0f, 1f, 0, emit)
     }
 
+    // Twelve parameters on purpose: the recursion passes the curve as plain floats so that
+    // subdividing allocates nothing. Grouping them would allocate at every level.
     private fun subdivide(
         x0: Float,
         y0: Float,

@@ -15,6 +15,7 @@ import com.donnclab.kinetiframe.core.document.ProjectSaveDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.library.data.LibraryPlacement
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.model.PackFrameTag
 import com.donnclab.kinetiframe.library.model.PackItemEntry
@@ -136,9 +137,11 @@ class PackDrafts(
                     displayName = name,
                     packManifest = pack,
                     frameFiles = frameFiles,
-                    scope = editing?.scope ?: LibraryScope.PERSONAL,
-                    projectId = editing?.sourceProjectId,
-                    tags = editing?.tags ?: emptySet(),
+                    placement = LibraryPlacement(
+                        scope = editing?.scope ?: LibraryScope.PERSONAL,
+                        projectId = editing?.sourceProjectId,
+                        tags = editing?.tags ?: emptySet(),
+                    ),
                     nowEpochMs = editing?.createdAtEpochMs ?: now(),
                 ),
             )

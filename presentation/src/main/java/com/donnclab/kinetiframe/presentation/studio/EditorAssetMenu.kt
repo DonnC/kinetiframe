@@ -19,19 +19,25 @@ import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 
+/** What [EditorAssetMenu]'s items do. A null save action hides its item. */
+data class BackgroundMenuActions(
+    val onChoose: () -> Unit,
+    val onRemove: () -> Unit,
+    val onSaveBackground: (() -> Unit)? = null,
+    val onSaveFrame: (() -> Unit)? = null,
+    val onToggleBackground: () -> Unit = {},
+)
+
 /** Persistent background actions belong together, not mixed with canvas display preferences. */
 @Composable
 fun EditorAssetMenu(
     expanded: Boolean,
     onDismiss: () -> Unit,
     hasBackground: Boolean,
-    onChoose: () -> Unit,
-    onRemove: () -> Unit,
-    onSaveBackground: (() -> Unit)?,
-    onSaveFrame: (() -> Unit)?,
+    menuActions: BackgroundMenuActions,
     backgroundVisible: Boolean = true,
-    onToggleBackground: () -> Unit = {},
 ) {
+    val (onChoose, onRemove, onSaveBackground, onSaveFrame, onToggleBackground) = menuActions
     val actions = buildList {
         add(
             ContextIconAction(
@@ -60,14 +66,14 @@ fun EditorAssetMenu(
                 ),
             )
             add(
-                ContextIconAction(Icons.Filled.DeleteOutline, "Remove background", {
+                ContextIconAction(Icons.Filled.DeleteOutline, stringResource(R.string.editor_background_remove), {
                     onDismiss()
                     onRemove()
                 }),
             )
             onSaveBackground?.let { save ->
                 add(
-                    ContextIconAction(Icons.Filled.Wallpaper, "Save background to Library", {
+                    ContextIconAction(Icons.Filled.Wallpaper, stringResource(R.string.editor_background_save), {
                         onDismiss()
                         save()
                     }),
@@ -76,7 +82,7 @@ fun EditorAssetMenu(
         }
         onSaveFrame?.let { save ->
             add(
-                ContextIconAction(Icons.Filled.PhotoLibrary, "Save frame to Library", {
+                ContextIconAction(Icons.Filled.PhotoLibrary, stringResource(R.string.editor_frame_save), {
                     onDismiss()
                     save()
                 }),
@@ -89,5 +95,5 @@ fun EditorAssetMenu(
 @Preview(showBackground = true)
 @Composable
 private fun BackgroundMenuPreview() {
-    MaterialTheme { EditorAssetMenu(true, {}, true, {}, {}, null, null) }
+    MaterialTheme { EditorAssetMenu(true, {}, true, BackgroundMenuActions({}, {})) }
 }

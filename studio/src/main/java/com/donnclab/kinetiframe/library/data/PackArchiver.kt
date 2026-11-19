@@ -73,9 +73,7 @@ object PackArchiver {
         library: LibraryRepository,
         source: File,
         itemId: String,
-        scope: LibraryScope = LibraryScope.PERSONAL,
-        projectId: String? = null,
-        tags: Set<String> = emptySet(),
+        placement: LibraryPlacement = LibraryPlacement(),
         nowEpochMs: Long,
     ): StoreResult<LibraryItemManifest> = runCatching {
         require(source.isFile) { "Pack file not found" }
@@ -105,9 +103,7 @@ object PackArchiver {
                     displayName = packManifest.packName,
                     packManifest = packManifest,
                     frameFiles = frameFiles,
-                    scope = scope,
-                    projectId = projectId,
-                    tags = tags,
+                    placement = placement,
                     nowEpochMs = nowEpochMs,
                 )
             ) {

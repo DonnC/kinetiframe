@@ -63,7 +63,7 @@ object StrokeGeometry {
         block: (TouchPoint) -> Unit,
     ) {
         val cp = CatmullRomSolver.calculateBezierControlPoints(p0, p1, p2, p3)
-        CubicStrokeSampler.forEachEnd(p1.x, p1.y, cp.cp1X, cp.cp1Y, cp.cp2X, cp.cp2Y, p2.x, p2.y) { x, y, t ->
+        CubicStrokeSampler.forEachEnd(p1, cp, p2) { x, y, t ->
             block(
                 TouchPoint(
                     x,

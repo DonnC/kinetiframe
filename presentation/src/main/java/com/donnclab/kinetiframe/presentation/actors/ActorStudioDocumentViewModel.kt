@@ -99,16 +99,7 @@ class ActorStudioDocumentViewModel(
             intent.exitAfterSaving,
         )
 
-        is ActorStudioDocumentIntent.SavePerformance -> savePerformance(
-            intent.name,
-            intent.poseKeys,
-            intent.motionPreset,
-            intent.durationMicros,
-            intent.rotationCurves,
-            intent.poseInterpolation,
-            intent.artworkKeys,
-            intent.rootMotionCurves,
-        )
+        is ActorStudioDocumentIntent.SavePerformance -> savePerformance(intent)
 
         is ActorStudioDocumentIntent.DuplicatePerformance -> duplicatePerformance(intent.name)
 
@@ -248,16 +239,15 @@ class ActorStudioDocumentViewModel(
         }
     }
 
-    private fun savePerformance(
-        name: String,
-        keys: List<ActorPoseKey>,
-        preset: AppliedActorPreset?,
-        requestedDurationMicros: Long,
-        retainedCurves: List<RotationCurve>,
-        interpolation: CurveInterpolation,
-        artworkKeys: List<ActorArtworkKey>,
-        rootMotionCurves: List<RootMotionCurve>,
-    ) {
+    private fun savePerformance(request: ActorStudioDocumentIntent.SavePerformance) {
+        val name = request.name
+        val keys = request.poseKeys
+        val preset = request.motionPreset
+        val requestedDurationMicros = request.durationMicros
+        val retainedCurves = request.rotationCurves
+        val interpolation = request.poseInterpolation
+        val artworkKeys = request.artworkKeys
+        val rootMotionCurves = request.rootMotionCurves
         if (currentState.loading || currentState.isSaving) return
         val actor = currentState.manifest ?: return
         val revision = currentState.revision ?: return

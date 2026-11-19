@@ -33,6 +33,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
@@ -50,13 +51,14 @@ import com.donnclab.kinetiframe.studio.StudioIntent
 @Composable
 fun ActorSketchEditor(
     definition: PuppetDefinition,
-    stageWidth: Int,
-    stageHeight: Int,
+    stage: StageDimensions,
     assets: RigAssetManager,
     acceptedInkId: String?,
     onIntent: (StudioIntent) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val stageWidth = stage.width
+    val stageHeight = stage.height
     val drawing = remember { definition.sceneGraph.drawing }
     val factor = minOf(1f, 1024f / maxOf(stageWidth, stageHeight))
     val width = drawing?.width ?: (stageWidth * factor).toInt().coerceAtLeast(1)

@@ -9,6 +9,7 @@ import com.donnclab.kinetiframe.core.contracts.StoreFailure
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.library.data.LibraryPlacement
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.data.PackArchiver
 import com.donnclab.kinetiframe.project.data.KframeArchiver
@@ -56,7 +57,7 @@ class ProjectTransfers(
             itemId = "library-${UUID.randomUUID()}",
             displayName = project.displayName,
             sourceFile = tempFile,
-            projectId = project.projectId,
+            placement = LibraryPlacement(projectId = project.projectId),
             nowEpochMs = now(),
         ).also { tempFile.delete() }
     }.getOrElse { StoreResult.Failure(StoreFailure.PROJECT_NOT_ADDED_TO_LIBRARY, it) }

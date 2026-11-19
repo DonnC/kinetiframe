@@ -29,15 +29,27 @@ class NaturalPenInputUiTest {
         compose.setContent {
             view = LocalView.current
             CanvasInputLayer(
-                stage = StageDimensions(10000, 10000),
-                canvasMatrixValues = floatArrayOf(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f),
-                sourceFrame = null, studioMode = StudioMode.RASTER_DRAWING,
-                activeTool = DrawingTool.BRUSH, rulerGuide = null, selectionActive = false,
-                nodes = emptyMap(), displayDensity = 1f, fontRegistry = null,
-                selectionTool = SelectionToolType.LASSO, activeStroke = stroke, selectionPath = Path(),
-                onSelectionRectChanged = {}, onTextNodeSelect = {}, onSelectionAreaComplete = { _, _, _, _ -> },
-                onEraserCursorChange = {}, onIntent = {}, onStrokeSettled = {},
-                onStrokeComplete = { completed += it.toList() },
+                viewport = InputViewport(
+                    StageDimensions(10000, 10000),
+                    floatArrayOf(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f),
+                    displayDensity = 1f,
+                ),
+                tool = InputTool(
+                    StudioMode.RASTER_DRAWING,
+                    DrawingTool.BRUSH,
+                    SelectionToolType.LASSO,
+                    rulerGuide = null,
+                ),
+                targets = InputTargets(null, emptyMap(), null, selectionActive = false, stroke, Path()),
+                callbacks = InputCallbacks(
+                    onIntent = {},
+                    onStrokeSettled = {},
+                    onStrokeComplete = { completed += it.toList() },
+                    onSelectionRectChanged = {},
+                    onTextNodeSelect = {},
+                    onSelectionAreaComplete = { _, _, _, _ -> },
+                    onEraserCursorChange = {},
+                ),
             ) {}
         }
         compose.waitForIdle()

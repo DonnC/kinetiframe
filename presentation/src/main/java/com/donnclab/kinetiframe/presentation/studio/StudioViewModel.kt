@@ -29,7 +29,10 @@ import java.io.File
  * or a manager in [StudioSession].
  */
 class StudioViewModel(
-    cacheDir: File,
+    /** Scratch frames go in the cache folder; durable project assets such as the background image
+     *  go in the files folder, since the OS may clear a cache at any time; crash reports go in a
+     *  diagnostics folder of their own, so they never enter exports. */
+    directories: StudioDirectories,
     private val engineDispatcher: CoroutineDispatcher = Dispatchers.Default,
     private val shouldInitialize: Boolean = true,
     private val loadActorPresets: suspend () -> List<com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset> = {
@@ -37,13 +40,6 @@ class StudioViewModel(
     },
     initialEditorState: StudioState? = null,
     runtimeRigAssetManager: RigAssetManager? = null,
-    /** App-private, non-cache storage root for durable project-level assets such as the
-     *  persistent background image. The app passes Context.filesDir, because the OS may clear a
-     *  cache directory at any time. The [cacheDir] default exists for tests that don't use
-     *  backgrounds. */
-    filesDir: File = cacheDir,
-    /** Separate app-private diagnostics from document storage: reports must not enter exports. */
-    diagnosticsDir: File = filesDir,
 ) : BaseViewModel<StudioState, StudioIntent, StudioEffect>(
     initialEditorState ?: StudioState(
         project = com.donnclab.kinetiframe.core.document.ProjectDocument(
@@ -71,7 +67,7 @@ class StudioViewModel(
     private val store = StudioStore(viewModelScope, { currentState }, { updateState(it) }, { sendEffect(it) })
     private val session = StudioSession(
         store,
-        StudioDirectories(cacheDir, filesDir, diagnosticsDir),
+        directories,
         engineDispatcher,
         shouldInitialize,
         loadActorPresets,

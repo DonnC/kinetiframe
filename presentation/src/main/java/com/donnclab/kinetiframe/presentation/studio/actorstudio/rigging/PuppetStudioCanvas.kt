@@ -33,7 +33,13 @@ import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.studio.canvas.ActiveStroke
 import com.donnclab.kinetiframe.presentation.studio.canvas.CanvasInputLayer
+import com.donnclab.kinetiframe.presentation.studio.canvas.InputCallbacks
+import com.donnclab.kinetiframe.presentation.studio.canvas.InputTargets
+import com.donnclab.kinetiframe.presentation.studio.canvas.InputTool
+import com.donnclab.kinetiframe.presentation.studio.canvas.InputViewport
+import com.donnclab.kinetiframe.presentation.studio.canvas.PivotPlacementActions
 import com.donnclab.kinetiframe.presentation.studio.canvas.PivotPlacementOverlay
+import com.donnclab.kinetiframe.presentation.studio.canvas.StrokeSettings
 import com.donnclab.kinetiframe.presentation.studio.canvas.workspaceGestures
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
@@ -182,130 +188,136 @@ fun PuppetStudioCanvas(
         ) {
             val config = state.tool.activeConfig
             CanvasInputLayer(
-                stage = state.project.stage,
-                canvasMatrixValues = state.canvas.matrixValues,
-                sourceFrame = state.currentBitmap,
-                studioMode = state.scene.studioMode,
-                activeTool = state.tool.activeTool,
-                pressureSensitive = config.brushId != com.donnclab.kinetiframe.core.document.BrushId.PEN,
-                rulerGuide = state.canvas.rulerGuide,
-                constructionShape = state.tool.constructionShape,
-                constructionPreviewPending = state.constructionShape.previewActive,
-                selectionActive = false,
-                nodes = emptyMap(),
-                displayDensity = density,
-                fontRegistry = null,
-                selectionTool = state.selection.toolType,
-                activeStroke = activeStroke,
-                selectionPath = selectionPath,
-                onSelectionRectChanged = {},
-                onTextNodeSelect = {},
-                onSelectionAreaComplete = { path, rect, _, _ ->
-                    val definition = state.actorDefinition(true)
-                    val instance = state.activeActor()
-                    val bounds = rect ?: path?.getBounds()
-                    if (definition != null && instance != null && bounds != null && rigAssetManager != null) {
-                        val selection = path?.asAndroidPath() ?: android.graphics.Path().apply {
-                            addRect(
-                                bounds.left,
-                                bounds.top,
-                                bounds.right,
-                                bounds.bottom,
-                                android.graphics.Path.Direction.CW,
-                            )
-                        }
-                        val id = com.donnclab.kinetiframe.actors.render.PuppetArtworkHitTester.select(
-                            selection,
-                            com.donnclab.kinetiframe.actors.render.PuppetRenderPlan.create(
-                                definition,
-                                instance,
-                            ),
-                            rigAssetManager,
-                        )
-                        onIntent(StudioIntent.Rigging.SelectBone(id))
-                        if (!state.actor.isPerformanceAuthoring) {
-                            onIntent(
-                                StudioIntent.Rigging.SetStudioMode(
-                                    com.donnclab.kinetiframe.studio.StudioMode.RIG_SETUP,
+                viewport = InputViewport(state.project.stage, state.canvas.matrixValues, density),
+                tool = InputTool(
+                    studioMode = state.scene.studioMode,
+                    activeTool = state.tool.activeTool,
+                    selectionTool = state.selection.toolType,
+                    rulerGuide = state.canvas.rulerGuide,
+                    pressureSensitive = config.brushId != com.donnclab.kinetiframe.core.document.BrushId.PEN,
+                    constructionShape = state.tool.constructionShape,
+                    constructionPreviewPending = state.constructionShape.previewActive,
+                ),
+                targets = InputTargets(
+                    sourceFrame = state.currentBitmap,
+                    nodes = emptyMap(),
+                    fontRegistry = null,
+                    selectionActive = false,
+                    activeStroke = activeStroke,
+                    selectionPath = selectionPath,
+                ),
+                callbacks = InputCallbacks(
+                    onSelectionRectChanged = {},
+                    onTextNodeSelect = {},
+                    onSelectionAreaComplete = { path, rect, _, _ ->
+                        val definition = state.actorDefinition(true)
+                        val instance = state.activeActor()
+                        val bounds = rect ?: path?.getBounds()
+                        if (definition != null && instance != null && bounds != null && rigAssetManager != null) {
+                            val selection = path?.asAndroidPath() ?: android.graphics.Path().apply {
+                                addRect(
+                                    bounds.left,
+                                    bounds.top,
+                                    bounds.right,
+                                    bounds.bottom,
+                                    android.graphics.Path.Direction.CW,
+                                )
+                            }
+                            val id = com.donnclab.kinetiframe.actors.render.PuppetArtworkHitTester.select(
+                                selection,
+                                com.donnclab.kinetiframe.actors.render.PuppetRenderPlan.create(
+                                    definition,
+                                    instance,
                                 ),
+                                rigAssetManager,
                             )
-                            onIntent(
-                                StudioIntent.Actor.SetEditTarget(
-                                    com.donnclab.kinetiframe.studio.ActorEditTarget.ARTWORK,
-                                ),
-                            )
+                            onIntent(StudioIntent.Rigging.SelectBone(id))
+                            if (!state.actor.isPerformanceAuthoring) {
+                                onIntent(
+                                    StudioIntent.Rigging.SetStudioMode(
+                                        com.donnclab.kinetiframe.studio.StudioMode.RIG_SETUP,
+                                    ),
+                                )
+                                onIntent(
+                                    StudioIntent.Actor.SetEditTarget(
+                                        com.donnclab.kinetiframe.studio.ActorEditTarget.ARTWORK,
+                                    ),
+                                )
+                            }
+                            onIntent(StudioIntent.Draw.SelectTool(DrawingTool.RIG_SELECT))
                         }
-                        onIntent(StudioIntent.Draw.SelectTool(DrawingTool.RIG_SELECT))
-                    }
-                    selectionPath.reset()
-                },
-                onEraserCursorChange = {},
-                onConstructionPreview = { onIntent(StudioIntent.Construction.SetPreview(it)) },
-                onIntent = onIntent,
-                onStrokeSettled = { points ->
-                    activeStroke.settle(
-                        points = points,
-                        tool = state.tool.activeTool,
-                        eraserType = config.eraserType,
-                        width = config.size,
-                        strength = config.strength,
-                        paint = if (state.tool.activeTool == DrawingTool.ERASER) eraserPaint else pressurePaint,
-                        sourceBitmap = state.currentBitmap,
-                        brush = BrushSnapshot(config.brushId, seed = points.firstOrNull()?.timestamp ?: 0L),
-                    )
-                },
-                onStrokeComplete = { points ->
-                    // The selected part is authoritative. A nearest-bone guess is unsafe for a
-                    // continuous contour that passes close to two limbs; the animator intentionally
-                    // selects the cut-out boundary first, then sketches that one isolated piece.
-                    // The target still travels with this bake so selection cannot race bitmap work.
-                    val targetBoneId = if (state.scene.studioMode ==
-                        com.donnclab.kinetiframe.studio.StudioMode.RASTER_DRAWING
-                    ) {
-                        state.scene.selectedBoneId?.takeIf { boneId ->
-                            state.actorDefinition()?.sceneGraph?.bones?.containsKey(boneId) == true
-                        }
-                    } else {
-                        null
-                    }
-                    onIntent(
-                        StudioIntent.Draw.BakeStroke(
-                            points = points,
-                            brush = BrushSnapshot(config.brushId, seed = points.firstOrNull()?.timestamp ?: 0L),
-                            targetBoneId = targetBoneId,
-                        ),
-                    )
-                },
-                onRigJointHit = { point ->
-                    val definition = state.actorDefinition(true)
-                    val instance = state.activeActor()
-                    if (state.scene.studioMode == com.donnclab.kinetiframe.studio.StudioMode.RIG_SETUP &&
-                        state.actor.editTarget == com.donnclab.kinetiframe.studio.ActorEditTarget.ARTWORK &&
-                        definition != null && instance != null && rigAssetManager != null
-                    ) {
-                        com.donnclab.kinetiframe.actors.render.PuppetArtworkHitTester.hit(
-                            point,
-                            com.donnclab.kinetiframe.actors.render.PuppetRenderPlan.create(
-                                definition,
-                                instance,
+                        selectionPath.reset()
+                    },
+                    onEraserCursorChange = {},
+                    onConstructionPreview = { onIntent(StudioIntent.Construction.SetPreview(it)) },
+                    onIntent = onIntent,
+                    onStrokeSettled = { points ->
+                        activeStroke.settle(
+                            points,
+                            StrokeSettings(
+                                tool = state.tool.activeTool,
+                                eraserType = config.eraserType,
+                                width = config.size,
+                                strength = config.strength,
+                                paint = if (state.tool.activeTool == DrawingTool.ERASER) eraserPaint else pressurePaint,
+                                sourceBitmap = state.currentBitmap,
+                                brush = BrushSnapshot(config.brushId, seed = points.firstOrNull()?.timestamp ?: 0L),
                             ),
-                            rigAssetManager,
-                        )?.let {
-                            "artwork:$it"
-                        }
-                    } else {
-                        RigJointHitTester.nearestWithin(
-                            point,
-                            jointTargets,
-                            radius =
-                            12f * density /
-                                kotlin.math.hypot(
-                                    state.canvas.matrixValues[0],
-                                    state.canvas.matrixValues[3],
-                                ).coerceAtLeast(0.01f),
                         )
-                    }
-                },
+                    },
+                    onStrokeComplete = { points ->
+                        // The selected part is authoritative. A nearest-bone guess is unsafe for a
+                        // continuous contour that passes close to two limbs; the animator intentionally
+                        // selects the cut-out boundary first, then sketches that one isolated piece.
+                        // The target still travels with this bake so selection cannot race bitmap work.
+                        val targetBoneId = if (state.scene.studioMode ==
+                            com.donnclab.kinetiframe.studio.StudioMode.RASTER_DRAWING
+                        ) {
+                            state.scene.selectedBoneId?.takeIf { boneId ->
+                                state.actorDefinition()?.sceneGraph?.bones?.containsKey(boneId) == true
+                            }
+                        } else {
+                            null
+                        }
+                        onIntent(
+                            StudioIntent.Draw.BakeStroke(
+                                points = points,
+                                brush = BrushSnapshot(config.brushId, seed = points.firstOrNull()?.timestamp ?: 0L),
+                                targetBoneId = targetBoneId,
+                            ),
+                        )
+                    },
+                    onRigJointHit = { point ->
+                        val definition = state.actorDefinition(true)
+                        val instance = state.activeActor()
+                        if (state.scene.studioMode == com.donnclab.kinetiframe.studio.StudioMode.RIG_SETUP &&
+                            state.actor.editTarget == com.donnclab.kinetiframe.studio.ActorEditTarget.ARTWORK &&
+                            definition != null && instance != null && rigAssetManager != null
+                        ) {
+                            com.donnclab.kinetiframe.actors.render.PuppetArtworkHitTester.hit(
+                                point,
+                                com.donnclab.kinetiframe.actors.render.PuppetRenderPlan.create(
+                                    definition,
+                                    instance,
+                                ),
+                                rigAssetManager,
+                            )?.let {
+                                "artwork:$it"
+                            }
+                        } else {
+                            RigJointHitTester.nearestWithin(
+                                point,
+                                jointTargets,
+                                radius =
+                                12f * density /
+                                    kotlin.math.hypot(
+                                        state.canvas.matrixValues[0],
+                                        state.canvas.matrixValues[3],
+                                    ).coerceAtLeast(0.01f),
+                            )
+                        }
+                    },
+                ),
             ) {
                 PuppetSourceLayer(
                     referenceUnderlay = referenceUnderlay,
@@ -389,9 +401,11 @@ fun PuppetStudioCanvas(
                     bitmap = rigAssetManager?.getAsset(placement.assetId),
                     stage = state.project.stage,
                     canvasMatrixValues = state.canvas.matrixValues,
-                    onPivotMoved = { x, y -> onIntent(StudioIntent.Rigging.MovePivot(x, y)) },
-                    onConfirmed = { onIntent(StudioIntent.Rigging.ConfirmPivot) },
-                    onCancelled = { onIntent(StudioIntent.Rigging.CancelPivot) },
+                    actions = PivotPlacementActions(
+                        onPivotMoved = { x, y -> onIntent(StudioIntent.Rigging.MovePivot(x, y)) },
+                        onConfirmed = { onIntent(StudioIntent.Rigging.ConfirmPivot) },
+                        onCancelled = { onIntent(StudioIntent.Rigging.CancelPivot) },
+                    ),
                     modifier = Modifier.fillMaxSize(),
                 )
             }

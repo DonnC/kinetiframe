@@ -49,19 +49,21 @@ internal fun StudioState.addAudioClip(
  *
  * The source file is stored whole and the in-point recorded as trimStartMicros rather than the
  * audio being cut on disk, so widening the clip later reaches real audio instead of silence.
- * [sourcePeaks] is the take's full waveform; only the selected slice is stored on the clip.
+ * [sourcePeaks] is the take's full waveform; only the selected slice is stored on the clip. [label]
+ * names the new clip.
  */
 internal fun StudioState.addTrimmedAudioClip(
     assetId: String,
     path: String,
     selection: AudioTrimSelection,
     sourcePeaks: List<Float>,
+    label: String,
 ): StudioIntent.Audio.Add {
     val placement = AudioClipPlacement(
         clipId = "audioclip-${UUID.randomUUID()}",
         assetId = assetId,
         trackIndex = firstFreeAudioTrack(),
-        label = "Voice-over",
+        label = label,
         startFrame = animation.currentFrame,
         durationFrames = selection.toDurationFrames(project.fps),
         trimStartMicros = selection.inMicros,
@@ -74,8 +76,9 @@ internal fun StudioState.addTrimmedAudioClip(
 /**
  * Appends an imported video after whatever already occupies the single video track, centred on
  * the stage at half its size. Its sound goes on the first unlocked audio lane, if there is one.
+ * [label] names the video clip and [soundLabel] its sound.
  */
-internal fun StudioState.addVideoClip(video: ImportedVideo): StudioIntent.Video.Add {
+internal fun StudioState.addVideoClip(video: ImportedVideo, label: String, soundLabel: String): StudioIntent.Video.Add {
     val metadata = video.metadata
     val durationMicros = metadata.durationMicros
     val sourceWidth = metadata.width
@@ -100,7 +103,7 @@ internal fun StudioState.addVideoClip(video: ImportedVideo): StudioIntent.Video.
             "audioclip-${UUID.randomUUID()}",
             video.assetId,
             audioLane,
-            "Video sound",
+            soundLabel,
             startFrame,
             durationFrames,
             sourceDurationMicros = durationMicros,
@@ -112,7 +115,7 @@ internal fun StudioState.addVideoClip(video: ImportedVideo): StudioIntent.Video.
     val placement = VideoClipPlacement(
         clipId = "videoclip-${UUID.randomUUID()}",
         assetId = video.assetId,
-        label = "Imported video",
+        label = label,
         timelineStartFrame = startFrame,
         timelineEndFrame = startFrame + durationFrames,
         sourceDurationFrames = durationFrames,

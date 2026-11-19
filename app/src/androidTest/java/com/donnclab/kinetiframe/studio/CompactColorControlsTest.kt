@@ -23,6 +23,7 @@ import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.library.catalog.PackContentsData
 import com.donnclab.kinetiframe.presentation.library.catalog.PackContentsGrid
 import com.donnclab.kinetiframe.presentation.studio.EditorTopBar
+import com.donnclab.kinetiframe.presentation.studio.EditorTopBarActions
 import com.donnclab.kinetiframe.presentation.studio.color.ScreenColorIntent
 import com.donnclab.kinetiframe.presentation.studio.color.ScreenColorOverlay
 import com.donnclab.kinetiframe.presentation.studio.color.ScreenColorState
@@ -110,9 +111,13 @@ class CompactColorControlsTest {
         compose.setContent {
             KinetiFrameTheme {
                 EditorTopBar(
-                    StudioState(), {}, { home = true }, {}, {}, {},
-                    showOverflowMenu = false, onOverflowMenuToggle = {},
-                    onSaveProjectClick = { saved = "project" }, onSavePackClick = { saved = "pack" },
+                    StudioState(),
+                    {},
+                    EditorTopBarActions({ home = true }, {}, {}, {}),
+                    showOverflowMenu = false,
+                    onOverflowMenuToggle = {},
+                    onSaveProjectClick = { saved = "project" },
+                    onSavePackClick = { saved = "pack" },
                 )
             }
         }
@@ -129,10 +134,7 @@ class CompactColorControlsTest {
                 EditorTopBar(
                     StudioState(),
                     {},
-                    {},
-                    {},
-                    {},
-                    {},
+                    EditorTopBarActions({}, {}, {}, {}),
                     showOverflowMenu = true,
                     onOverflowMenuToggle = {},
                 )

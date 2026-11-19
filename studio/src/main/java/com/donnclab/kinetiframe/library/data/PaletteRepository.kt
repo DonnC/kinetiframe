@@ -46,7 +46,7 @@ class PaletteRepository(
                     palette.id,
                     palette.name,
                     staging,
-                    tags = tags,
+                    placement = LibraryPlacement(tags = tags),
                     nowEpochMs = System.currentTimeMillis(),
                 ),
             )

@@ -30,12 +30,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
 import com.donnclab.kinetiframe.presentation.studio.color.LocalScreenColorRequest
@@ -101,12 +103,12 @@ fun ColorPickerPanel(color: Color, onColorChanged: (Color) -> Unit, onDismiss: (
     ) {
         Row {
             ContextIconButton(
-                ContextIconAction(Icons.Filled.Colorize, "Custom colour", {
+                ContextIconAction(Icons.Filled.Colorize, stringResource(R.string.color_custom), {
                     palettes = false
                 }, selected = !palettes),
             )
             ContextIconButton(
-                ContextIconAction(Icons.Filled.Palette, "Palettes", {
+                ContextIconAction(Icons.Filled.Palette, stringResource(R.string.color_palettes), {
                     palettes = true
                 }, selected = palettes),
             )
@@ -137,7 +139,7 @@ fun ColorPickerPanel(color: Color, onColorChanged: (Color) -> Unit, onDismiss: (
             )
             screenPicker?.let { picker ->
                 ContextIconButton(
-                    ContextIconAction(Icons.Filled.Colorize, "Pick color from screen", {
+                    ContextIconAction(Icons.Filled.Colorize, stringResource(R.string.color_pick_from_screen), {
                         onDismiss()
                         picker.begin(onColorChanged)
                     }),

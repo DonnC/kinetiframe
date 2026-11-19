@@ -24,12 +24,14 @@ import org.jetbrains.kotlin.psi.KtWhenExpression
  * - `colors`: `Color(...)` built from literals, such as `Color(0xFF6750A4)`. Theme colors and
  *   `copy(alpha = ...)` variants of them are fine.
  * - `dp`: numeric `.dp` literals other than zero.
- * - `text`: string literals passed to `Text(...)`, as an `Icon`'s description or as a
- *   `contentDescription`, or assigned to a semantics content or state description. A literal in
- *   a branch of an `if` or `when` counts too.
+ * - `text`: string literals passed to `Text(...)`, as an `Icon`'s or `Image`'s description, as the label of the
+ *   app's `ContextIconAction` and `ContextSliderButton`, as a `contentDescription`, `label`,
+ *   `title`, `subtitle`, `placeholder` or `supportingText` argument, or assigned to a semantics
+ *   content or state description. A literal in a branch of an `if` or `when` counts too.
  *
- * The designsystem module defines the tokens, so it is not scanned. Tests and `@Preview`
- * functions are skipped too: their sample values never reach the animator.
+ * The designsystem module defines the tokens, so it is not scanned. Tests, `@Preview` functions
+ * and private preview sample builders (`previewSample()`) are skipped too: their sample values
+ * never reach the animator.
  */
 internal object UiValueRules {
     const val COLORS = "colors"
@@ -46,9 +48,11 @@ internal object UiValueRules {
         }
         file.accept(object : KtTreeVisitorVoid() {
             override fun visitNamedFunction(function: KtNamedFunction) {
-                if (function.annotationEntries.none { it.shortName?.asString()?.startsWith("Preview") == true }) {
-                    super.visitNamedFunction(function)
-                }
+                val preview = function.annotationEntries.any { it.shortName?.asString()?.startsWith("Preview") == true }
+                // Private sample builders for previews, such as `previewSample()`.
+                val sample =
+                    function.hasModifier(KtTokens.PRIVATE_KEYWORD) && function.name?.startsWith("preview") == true
+                if (!preview && !sample) super.visitNamedFunction(function)
             }
 
             override fun visitCallExpression(expression: KtCallExpression) {
@@ -64,8 +68,10 @@ internal object UiValueRules {
                         if (text.isWords()) add(TEXT)
                     }
 
-                    // Icon(imageVector, contentDescription, ...): the description may be positional.
-                    "Icon" -> {
+                    // Icon(imageVector, contentDescription, ...), Image(bitmap, contentDescription,
+                    // ...) and the app's icon menu items and sliders, ContextIconAction(icon,
+                    // label, ...): the text may be positional.
+                    in ICON_LABEL_CALLS -> {
                         val description = arguments.getOrNull(1)?.takeIf { it.getArgumentName() == null }
                         if (description.isWords()) add(TEXT)
                     }
@@ -74,7 +80,7 @@ internal object UiValueRules {
             }
 
             override fun visitArgument(argument: KtValueArgument) {
-                if (argument.getArgumentName()?.asName?.asString() == "contentDescription" && argument.isWords()) {
+                if (argument.getArgumentName()?.asName?.asString() in TEXT_ARGUMENTS && argument.isWords()) {
                     add(TEXT)
                 }
                 super.visitArgument(argument)
@@ -111,6 +117,13 @@ internal object UiValueRules {
     private fun KtElement.isZero(): Boolean = text.trimEnd('f', 'F').toDoubleOrNull() == 0.0
 
     private val DESCRIPTION_PROPERTIES = setOf("contentDescription", "stateDescription")
+
+    /** Named arguments that reach the screen, whichever component takes them. */
+    private val TEXT_ARGUMENTS =
+        setOf("contentDescription", "label", "title", "subtitle", "placeholder", "supportingText")
+
+    /** Components whose second argument is the visible or spoken label. */
+    private val ICON_LABEL_CALLS = setOf("Icon", "Image", "ContextIconAction", "ContextSliderButton")
 
     private fun KtValueArgument?.isWords(): Boolean = this?.getArgumentExpression().isWords()
 

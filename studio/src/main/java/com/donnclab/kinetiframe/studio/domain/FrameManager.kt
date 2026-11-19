@@ -18,21 +18,25 @@ import kotlinx.coroutines.sync.withLock
  * Manager for frame operations.
  */
 class FrameManager(
-    private val scope: CoroutineScope,
-    private val dispatcher: CoroutineDispatcher,
+    runtime: StudioRuntime,
     private val cacheManager: FrameCacheManager,
     private val frameOperationMutex: Mutex,
-    private val getState: () -> StudioState,
-    private val updateState: ((StudioState) -> StudioState) -> Unit,
-    private val sendEffect: (StudioEffect) -> Unit,
-    private val loadFrameInternal: suspend (Int) -> Unit,
-    private val finalizeFrame: suspend (Int) -> Unit,
-    private val clearHistory: () -> Unit,
+    hooks: FrameHooks,
+) {
+    private val scope: CoroutineScope = runtime.scope
+    private val dispatcher: CoroutineDispatcher = runtime.dispatcher
+    private val getState: () -> StudioState = runtime.getState
+    private val updateState: ((StudioState) -> StudioState) -> Unit = runtime.updateState
+    private val pendingOperations: PendingOperations = runtime.pending
+    private val sendEffect: (StudioEffect) -> Unit = hooks.sendEffect
+    private val loadFrameInternal: suspend (Int) -> Unit = hooks.loadFrameInternal
+    private val finalizeFrame: suspend (Int) -> Unit = hooks.finalizeFrame
+    private val clearHistory: () -> Unit = hooks.clearHistory
+
     /** UI-only guides must be remapped in the same publication turn as the frame indices. */
     private val commitFrameStructure: suspend (Int?, List<Int>, (StudioState) -> StudioState) -> Unit =
-        { _, _, change -> updateState(change) },
-    private val pendingOperations: PendingOperations = PendingOperations(),
-) {
+        hooks.commitFrameStructure ?: { _, _, change -> updateState(change) }
+
     private data class ClipboardFrame(val layers: List<Layer>, val bitmaps: Map<String, Bitmap>)
     private var copiedFrame: ClipboardFrame? = null
     private var copiedFrames: List<ClipboardFrame> = emptyList()

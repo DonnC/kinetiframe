@@ -7,6 +7,7 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.library.data.LibraryPlacement
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.domain.LibraryCatalog
 import com.donnclab.kinetiframe.library.model.PackItemEntry
@@ -60,9 +61,7 @@ class PackEditFlowTest {
                     items = listOf(PackItemEntry("face.png", 0, name)),
                 ),
                 mapOf("face.png" to file),
-                scope,
-                project,
-                tags = setOf("ls-faces"),
+                LibraryPlacement(scope, project, setOf("ls-faces")),
                 nowEpochMs = 12,
             ),
         )

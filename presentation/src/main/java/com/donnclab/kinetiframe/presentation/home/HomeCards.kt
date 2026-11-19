@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.presentation.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -81,6 +82,7 @@ private fun HomeChip(text: String, modifier: Modifier = Modifier, icon: ImageVec
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }
@@ -127,15 +129,21 @@ fun HomeProjectCard(
         } else {
             Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant))
         }
-        HomeChip(
-            stringResource(R.string.home_chip_fps, project.fps),
-            icon = Icons.Filled.PlayArrow,
-            modifier = Modifier.align(Alignment.TopStart).padding(Dimens.spaceS),
-        )
-        HomeChip(
-            stringResource(R.string.size_dimensions, project.stage.width, project.stage.height),
-            modifier = Modifier.align(Alignment.TopEnd).padding(Dimens.spaceS),
-        )
+        // One row, so long text shrinks both badges instead of stacking one over the other.
+        Row(
+            Modifier.align(Alignment.TopStart).fillMaxWidth().padding(Dimens.spaceS),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            HomeChip(
+                stringResource(R.string.home_chip_fps, project.fps),
+                icon = Icons.Filled.PlayArrow,
+                modifier = Modifier.weight(1f, fill = false),
+            )
+            HomeChip(
+                stringResource(R.string.size_dimensions, project.stage.width, project.stage.height),
+                modifier = Modifier.weight(1f, fill = false),
+            )
+        }
         Column(
             Modifier
                 .align(Alignment.BottomStart)
@@ -361,14 +369,10 @@ fun HomeActorCard(
     actor: ActorManifest,
     thumbnailPath: String?,
     onOpen: () -> Unit,
-    onRename: () -> Unit,
-    onDuplicate: () -> Unit,
-    onExport: () -> Unit,
-    onArchive: () -> Unit,
+    actions: ActorCardActions,
     favourite: Boolean = false,
-    onFavourite: () -> Unit = {},
-    onOrganise: () -> Unit = {},
 ) {
+    val (onRename, onDuplicate, onExport, onArchive, onFavourite, onOrganise) = actions
     var menuOpen by remember { mutableStateOf(false) }
     Box(
         Modifier

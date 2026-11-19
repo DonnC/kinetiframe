@@ -32,15 +32,22 @@ class PlaybackManagerTest {
         val audioFrames = mutableListOf<Int>()
         val dispatcher = StandardTestDispatcher(testScheduler)
         val manager = PlaybackManager(
-            backgroundScope, dispatcher, AnimationEngine(backgroundScope, dispatcher),
-            FrameCacheManager(directory, backgroundScope), { state = it(state) }, {},
-            { _, bitmap ->
-                assertNull(bitmap)
-                renders++
-                gate.await()
-                null
-            }, { "empty" },
-            onFrameChanged = { audioFrames += it },
+            backgroundScope,
+            dispatcher,
+            AnimationEngine(backgroundScope, dispatcher),
+            FrameCacheManager(directory, backgroundScope),
+            { state = it(state) },
+            PlaybackHooks(
+                {},
+                { _, bitmap ->
+                    assertNull(bitmap)
+                    renders++
+                    gate.await()
+                    null
+                },
+                { "empty" },
+                onFrameChanged = { audioFrames += it },
+            ),
             clock = com.donnclab.kinetiframe.studio.domain.PlaybackClock {
                 testScheduler.currentTime *
                     1_000_000
@@ -67,14 +74,20 @@ class PlaybackManagerTest {
         val audioFrames = mutableListOf<Int>()
         val dispatcher = StandardTestDispatcher(testScheduler)
         val manager = PlaybackManager(
-            backgroundScope, dispatcher, AnimationEngine(backgroundScope, dispatcher),
-            FrameCacheManager(directory, backgroundScope), { state = it(state) }, {},
-            { _, _ ->
-                gate.await()
-                null
-            }, {
-                "main"
-            }, onFrameChanged = { audioFrames += it },
+            backgroundScope,
+            dispatcher,
+            AnimationEngine(backgroundScope, dispatcher),
+            FrameCacheManager(directory, backgroundScope),
+            { state = it(state) },
+            PlaybackHooks(
+                {},
+                { _, _ ->
+                    gate.await()
+                    null
+                },
+                { "main" },
+                onFrameChanged = { audioFrames += it },
+            ),
             clock = com.donnclab.kinetiframe.studio.domain.PlaybackClock {
                 testScheduler.currentTime *
                     1_000_000
@@ -96,10 +109,17 @@ class PlaybackManagerTest {
         var reported: Exception? = null
         val dispatcher = StandardTestDispatcher(testScheduler)
         val manager = PlaybackManager(
-            backgroundScope, dispatcher, AnimationEngine(backgroundScope, dispatcher),
-            FrameCacheManager(directory, backgroundScope), { state = it(state) }, {},
-            { _, _ -> throw java.io.IOException("broken frame") }, { "main" },
-            onPlaybackError = { reported = it },
+            backgroundScope,
+            dispatcher,
+            AnimationEngine(backgroundScope, dispatcher),
+            FrameCacheManager(directory, backgroundScope),
+            { state = it(state) },
+            PlaybackHooks(
+                {},
+                { _, _ -> throw java.io.IOException("broken frame") },
+                { "main" },
+                onPlaybackError = { reported = it },
+            ),
             clock = com.donnclab.kinetiframe.studio.domain.PlaybackClock {
                 testScheduler.currentTime *
                     1_000_000
@@ -120,10 +140,12 @@ class PlaybackManagerTest {
             )
         val dispatcher = StandardTestDispatcher(testScheduler)
         val manager = PlaybackManager(
-            backgroundScope, dispatcher, AnimationEngine(backgroundScope, dispatcher),
-            FrameCacheManager(directory, backgroundScope), {
-                state = it(state)
-            }, {}, { _, _ -> null }, { "main" },
+            backgroundScope,
+            dispatcher,
+            AnimationEngine(backgroundScope, dispatcher),
+            FrameCacheManager(directory, backgroundScope),
+            { state = it(state) },
+            PlaybackHooks({}, { _, _ -> null }, { "main" }),
             clock = com.donnclab.kinetiframe.studio.domain.PlaybackClock {
                 testScheduler.currentTime *
                     1_000_000

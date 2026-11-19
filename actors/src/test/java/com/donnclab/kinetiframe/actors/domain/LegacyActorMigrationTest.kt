@@ -29,11 +29,7 @@ class LegacyActorMigrationTest {
             )
         val performance = LegacyActorMigration.performance(
             instance,
-            "project-a",
-            "actor-a",
-            "revision-a",
-            "performance-a",
-            "Wave",
+            PerformanceIdentity("project-a", "actor-a", "revision-a", "performance-a", "Wave"),
             1,
         )
         assertEquals(1_000_000L, requireNotNull(performance).durationMicros)
@@ -41,11 +37,7 @@ class LegacyActorMigrationTest {
         assertNull(
             LegacyActorMigration.performance(
                 instance.copy(poseKeys = emptyList()),
-                "project-a",
-                "actor-a",
-                "revision-a",
-                "performance-a",
-                "Wave",
+                PerformanceIdentity("project-a", "actor-a", "revision-a", "performance-a", "Wave"),
                 1,
             ),
         )
@@ -69,11 +61,7 @@ class LegacyActorMigrationTest {
         val migrated = requireNotNull(
             LegacyActorMigration.performance(
                 instance,
-                "project-a",
-                "actor-a",
-                "revision-a",
-                "performance-wave",
-                "Wave",
+                PerformanceIdentity("project-a", "actor-a", "revision-a", "performance-wave", "Wave"),
                 1,
             ),
         )

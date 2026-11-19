@@ -95,40 +95,31 @@ fun drawVariableWidthStroke(
     paint: Paint,
     activeTool: DrawingTool = DrawingTool.BRUSH,
     brush: BrushSnapshot = BrushSnapshot(),
-    sourceBitmap: Bitmap? = null,
-    strength: Float = 1f,
 ) {
     drawVariableWidthStroke(
         canvas = canvas,
-        points = stroke.points,
-        predictedPoint = stroke.predictedTouchPoint,
+        points = withPrediction(stroke.points, stroke.predictedTouchPoint),
         baseWidth = baseWidth,
         paint = paint,
         activeTool = activeTool,
         brush = brush,
-        sourceBitmap = sourceBitmap,
-        strength = strength,
     )
 }
+
+/** [points] with the predicted next point, when there is one, drawn on the end. */
+fun withPrediction(points: List<TouchPoint>, predictedPoint: TouchPoint?): List<TouchPoint> =
+    if (predictedPoint != null && points.isNotEmpty()) points + predictedPoint else points
 
 fun drawVariableWidthStroke(
     canvas: Canvas,
     points: List<TouchPoint>,
-    predictedPoint: TouchPoint? = null,
     baseWidth: Float,
     paint: Paint,
     activeTool: DrawingTool = DrawingTool.BRUSH,
     brush: BrushSnapshot = BrushSnapshot(),
-    sourceBitmap: Bitmap? = null,
-    strength: Float = 1f,
 ) {
     if (points.isEmpty()) return
-
-    val allPoints = if (predictedPoint != null) {
-        points + predictedPoint
-    } else {
-        points
-    }
+    val allPoints = points
 
     if (activeTool != DrawingTool.BLUR && activeTool != DrawingTool.SMUDGE) {
         BrushRenderers.draw(canvas, allPoints, baseWidth, paint, brush)
@@ -138,6 +129,17 @@ fun drawVariableWidthStroke(
     // code, where scratch allocation and raster mutation cause jank. The gesture-scoped
     // ManipulationStrokeSession supplies the precomputed preview instead.
 }
+
+/** The tool settings a finished stroke was drawn with; [paint] is copied when the stroke settles. */
+data class StrokeSettings(
+    val tool: DrawingTool,
+    val eraserType: EraserType,
+    val width: Float,
+    val strength: Float,
+    val paint: Paint,
+    val sourceBitmap: Bitmap?,
+    val brush: BrushSnapshot,
+)
 
 /** A completed live stroke kept onscreen until the identical baked bitmap is available. */
 data class SettledStroke(
@@ -308,16 +310,8 @@ class ActiveStroke {
 
     fun manipulationPreview(): ManipulationPreview? = manipulationSession?.preview()
 
-    fun settle(
-        points: List<TouchPoint>,
-        tool: DrawingTool,
-        eraserType: EraserType,
-        width: Float,
-        strength: Float,
-        paint: Paint,
-        sourceBitmap: Bitmap?,
-        brush: BrushSnapshot,
-    ) {
+    fun settle(points: List<TouchPoint>, settings: StrokeSettings) {
+        val (tool, eraserType, width, strength, paint, sourceBitmap, brush) = settings
         if (points.isEmpty()) return
         manipulationSession?.finish(points)
         val preview = manipulationSession?.preview()

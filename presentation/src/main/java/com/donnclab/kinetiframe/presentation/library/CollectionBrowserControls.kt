@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
@@ -62,7 +63,13 @@ fun CollectionBrowserControls(
                     },
                 ) {
                     Box(contentAlignment = androidx.compose.ui.Alignment.Center) {
-                        Text(stringResource(mode.labelRes()), style = MaterialTheme.typography.labelSmall, maxLines = 1)
+                        Text(
+                            stringResource(mode.labelRes()),
+                            style = MaterialTheme.typography.labelSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.padding(horizontal = Dimens.spaceXs),
+                        )
                     }
                 }
             }

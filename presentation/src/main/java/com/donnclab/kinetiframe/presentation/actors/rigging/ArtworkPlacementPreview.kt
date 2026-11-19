@@ -41,18 +41,27 @@ import com.donnclab.kinetiframe.engine.rigging.math.ArtworkGestureDelta
 import com.donnclab.kinetiframe.engine.rigging.math.ArtworkPlacementGesture
 import com.donnclab.kinetiframe.presentation.R
 
+/**
+ * The rig part the artwork is placed on: the rig, the part, where the rig's other artwork loads
+ * from, and the part's angle on the stage.
+ */
+data class ArtworkTarget(
+    val graph: SceneGraph?,
+    val partId: String?,
+    val assets: RigAssetManager?,
+    val worldAngle: Float,
+)
+
 /** Fixed actor framing: dragging artwork must not make the viewport chase it. Pixels are borrowed. */
 @Composable
 fun ArtworkPlacementPreview(
     bitmap: Bitmap,
     binding: TextureBinding,
-    graph: SceneGraph?,
-    partId: String?,
-    assets: RigAssetManager?,
-    worldAngle: Float,
+    target: ArtworkTarget,
     onChange: (TextureBinding) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val (graph, partId, assets, worldAngle) = target
     var size by remember { mutableStateOf(IntSize.Zero) }
     val latest by rememberUpdatedState(binding)
     val changed by rememberUpdatedState(onChange)
@@ -156,5 +165,5 @@ private fun ArtworkPlacementPreviewSample() {
             Bitmap.createBitmap(32, 48, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.CYAN) }
         }
     DisposableEffect(bitmap) { onDispose { bitmap.recycle() } }
-    ArtworkPlacementPreview(bitmap, TextureBinding("preview", 16f, 24f), null, null, null, 0f, {})
+    ArtworkPlacementPreview(bitmap, TextureBinding("preview", 16f, 24f), ArtworkTarget(null, null, null, 0f), {})
 }

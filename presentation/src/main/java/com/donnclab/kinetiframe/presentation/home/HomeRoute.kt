@@ -162,15 +162,19 @@ fun HomeRoute(
     Scaffold(snackbarHost = { SnackbarHost(snackbar) }) { padding ->
         Box(Modifier.padding(padding)) {
             HomeScreen(
-                hierarchyState = hierarchyState,
-                onHierarchyIntent = hierarchyModel::handleIntent,
-                projectState = projectState,
-                onProjectIntent = projectModel::handleIntent,
-                packState = packState,
-                packPreviewFiles = packPreviewFiles,
-                onPackIntent = packModel::handleIntent,
-                actorState = actorState,
-                onActorIntent = actorModel::handleIntent,
+                states = HomeStates(
+                    projects = projectState,
+                    packs = packState,
+                    packPreviewFiles = packPreviewFiles,
+                    actors = actorState,
+                    hierarchy = hierarchyState,
+                ),
+                intents = HomeIntents(
+                    onProject = projectModel::handleIntent,
+                    onPack = packModel::handleIntent,
+                    onActor = actorModel::handleIntent,
+                    onHierarchy = hierarchyModel::handleIntent,
+                ),
                 onShareProject = { actions.handleIntent(HomeActionsIntent.ShareProject(it)) },
                 onSaveToLibraryProject = { actions.handleIntent(HomeActionsIntent.SaveToLibrary(it)) },
                 onExportVideoProject = { project -> onOpenExport(project.projectId) },

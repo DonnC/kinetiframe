@@ -8,6 +8,7 @@ import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.actors.rigging.PerformanceDurationMenu
 import com.donnclab.kinetiframe.presentation.studio.EditorTopBar
+import com.donnclab.kinetiframe.presentation.studio.EditorTopBarActions
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.PerformanceFrameRuler
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.PuppetTopBar
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -25,9 +26,12 @@ class PerformanceAuthoringControlsTest {
         compose.setContent {
             KinetiFrameTheme {
                 EditorTopBar(
-                    state = StudioState(), onIntent = { intents += it }, onHomeClick = {}, onStudioClick = {},
-                    onGridSettingsClick = {}, onOnionSettingsClick = {}, isActorStudio = true,
-                    showOverflowMenu = false, onOverflowMenuToggle = {},
+                    state = StudioState(),
+                    onIntent = { intents += it },
+                    actions = EditorTopBarActions({}, {}, {}, {}),
+                    isActorStudio = true,
+                    showOverflowMenu = false,
+                    onOverflowMenuToggle = {},
                 )
             }
         }
@@ -48,9 +52,13 @@ class PerformanceAuthoringControlsTest {
         compose.setContent {
             KinetiFrameTheme {
                 EditorTopBar(
-                    state = StudioState(), onIntent = {}, onHomeClick = {}, onStudioClick = {},
-                    onGridSettingsClick = {}, onOnionSettingsClick = {}, isActorStudio = true,
-                    showOverflowMenu = false, onOverflowMenuToggle = {}, onSaveActorClick = { saved = true },
+                    state = StudioState(),
+                    onIntent = {},
+                    actions = EditorTopBarActions({}, {}, {}, {}),
+                    isActorStudio = true,
+                    showOverflowMenu = false,
+                    onOverflowMenuToggle = {},
+                    onSaveActorClick = { saved = true },
                 )
             }
         }

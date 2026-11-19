@@ -32,6 +32,13 @@ import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
 
+/** What dragging the pivot, confirming it and cancelling do. The pivot moves in stage pixels. */
+data class PivotPlacementActions(
+    val onPivotMoved: (x: Float, y: Float) -> Unit,
+    val onConfirmed: () -> Unit,
+    val onCancelled: () -> Unit,
+)
+
 /**
  * Temporary rig-setup surface for one extracted cutout.
  *
@@ -44,11 +51,10 @@ fun PivotPlacementOverlay(
     bitmap: Bitmap?,
     stage: StageDimensions,
     canvasMatrixValues: FloatArray,
-    onPivotMoved: (x: Float, y: Float) -> Unit,
-    onConfirmed: () -> Unit,
-    onCancelled: () -> Unit,
+    actions: PivotPlacementActions,
     modifier: Modifier = Modifier,
 ) {
+    val (onPivotMoved, onConfirmed, onCancelled) = actions
     val transform = remember(stage, canvasMatrixValues) {
         DocumentCoordinateTransform(stage, canvasMatrixValues)
     }
@@ -155,9 +161,7 @@ private fun PivotPlacementOverlayPreview() {
         bitmap = null,
         stage = StageDimensions.LandscapeHd,
         canvasMatrixValues = floatArrayOf(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f),
-        onPivotMoved = { _, _ -> },
-        onConfirmed = {},
-        onCancelled = {},
+        actions = PivotPlacementActions({ _, _ -> }, {}, {}),
         modifier = Modifier,
     )
 }

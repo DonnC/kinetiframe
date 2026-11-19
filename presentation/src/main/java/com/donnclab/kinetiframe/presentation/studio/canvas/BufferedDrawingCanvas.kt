@@ -289,80 +289,86 @@ fun BufferedDrawingCanvas(
             },
     ) {
         CanvasInputLayer(
-            stage = studioState.project.stage,
-            canvasMatrixValues = studioState.canvas.matrixValues,
-            sourceFrame = currentFrameBitmap,
-            manipulationSource = activeLayerBitmap,
-            manipulationWidth = strokeWidth,
-            manipulationStrength = strength,
-            studioMode = studioState.scene.studioMode,
-            activeTool = activeTool,
-            pressureSensitive =
-            activeTool == DrawingTool.BRUSH && brushId != com.donnclab.kinetiframe.core.document.BrushId.PEN,
-            rulerGuide = studioState.canvas.rulerGuide,
-            constructionShape = constructionShape,
-            constructionPreviewPending = constructionPreviewPending,
-            selectionActive = selectionActive,
-            nodes = nodes,
-            displayDensity = displayDensity,
-            fontRegistry = fontRegistry,
-            selectionTool = selectionTool,
-            activeStroke = activeStroke,
-            selectionPath = selectionPath,
-            onSelectionRectChanged = { selectionRect = it },
-            onTextNodeSelect = onTextNodeSelect,
-            onSelectionAreaComplete = onSelectionAreaComplete,
-            onEraserCursorChange = onEraserCursorChange,
-            onIntent = onIntent,
-            onStrokeSettled = { points ->
-                activeStroke.settle(
-                    points = points,
+            viewport = InputViewport(studioState.project.stage, studioState.canvas.matrixValues, displayDensity),
+            tool = InputTool(
+                studioMode = studioState.scene.studioMode,
+                activeTool = activeTool,
+                selectionTool = selectionTool,
+                rulerGuide = studioState.canvas.rulerGuide,
+                pressureSensitive =
+                activeTool == DrawingTool.BRUSH && brushId != com.donnclab.kinetiframe.core.document.BrushId.PEN,
+                constructionShape = constructionShape,
+                constructionPreviewPending = constructionPreviewPending,
+            ),
+            targets = InputTargets(
+                sourceFrame = currentFrameBitmap,
+                nodes = nodes,
+                fontRegistry = fontRegistry,
+                selectionActive = selectionActive,
+                activeStroke = activeStroke,
+                selectionPath = selectionPath,
+                manipulationSource = activeLayerBitmap,
+                manipulationWidth = strokeWidth,
+                manipulationStrength = strength,
+            ),
+            callbacks = InputCallbacks(
+                onIntent = onIntent,
+                onStrokeSettled = { points ->
+                    activeStroke.settle(
+                        points,
+                        StrokeSettings(
+                            tool = activeTool,
+                            eraserType = eraserType,
+                            width = strokeWidth,
+                            strength = strength,
+                            paint = pressurePaint,
+                            sourceBitmap = currentFrameBitmap,
+                            brush = BrushSnapshot(brushId, seed = points.firstOrNull()?.timestamp ?: 0L),
+                        ),
+                    )
+                },
+                onStrokeComplete = { points ->
+                    onStrokeComplete(points, BrushSnapshot(brushId, seed = points.firstOrNull()?.timestamp ?: 0L))
+                },
+                onSelectionRectChanged = { selectionRect = it },
+                onTextNodeSelect = onTextNodeSelect,
+                onSelectionAreaComplete = onSelectionAreaComplete,
+                onEraserCursorChange = onEraserCursorChange,
+                onConstructionPreview = onConstructionPreview,
+            ),
+        ) {
+            CanvasDrawingLayer(
+                sheet = CanvasSheet(documentWidth, documentHeight, canvasMatrix, displayDensity, paperDecoration),
+                onion = OnionSkinLayers(
+                    enabled = onionSkinEnabled,
+                    past = pastBitmaps,
+                    future = futureBitmaps,
+                    opacity = onionSkinOpacity,
+                    pastTint = pastTint,
+                    futureTint = futureTint,
+                ),
+                content = CanvasContent(
+                    background = backgroundBitmap,
+                    currentFrame = currentFrameBitmap,
+                    nodes = nodes,
+                    fontRegistry = fontRegistry,
+                    videoFrame = videoFrameBitmap,
+                    videoOpacity = videoOpacity,
+                    referenceUnderlay = referenceUnderlay,
+                ),
+                preview = StrokePreview(
+                    stroke = activeStroke,
                     tool = activeTool,
                     eraserType = eraserType,
                     width = strokeWidth,
+                    pressurePaint = pressurePaint,
+                    useSaveLayer = activeTool == DrawingTool.ERASER,
+                    alpha = strokeAlpha,
                     strength = strength,
-                    paint = pressurePaint,
-                    sourceBitmap = currentFrameBitmap,
-                    brush = BrushSnapshot(brushId, seed = points.firstOrNull()?.timestamp ?: 0L),
-                )
-            },
-            onStrokeComplete = { points ->
-                onStrokeComplete(points, BrushSnapshot(brushId, seed = points.firstOrNull()?.timestamp ?: 0L))
-            },
-            onConstructionPreview = onConstructionPreview,
-        ) {
-            CanvasDrawingLayer(
-                paperDecoration = paperDecoration,
+                    brush = BrushSnapshot(brushId, seed = activeStroke.points.firstOrNull()?.timestamp ?: 0L),
+                ),
+                selection = SelectionOutline(selectionPath, selectionPaint, selectionRect),
                 modifier = Modifier.fillMaxSize(),
-                docWidth = documentWidth,
-                docHeight = documentHeight,
-                canvasMatrix = canvasMatrix,
-                backgroundBitmap = backgroundBitmap,
-                referenceUnderlay = referenceUnderlay,
-                videoFrameBitmap = videoFrameBitmap,
-                videoOpacity = videoOpacity,
-                onionSkinEnabled = onionSkinEnabled,
-                pastBitmaps = pastBitmaps,
-                futureBitmaps = futureBitmaps,
-                onionSkinOpacity = onionSkinOpacity,
-                pastTint = pastTint,
-                futureTint = futureTint,
-                currentFrameBitmap = currentFrameBitmap,
-                nodes = nodes,
-                fontRegistry = fontRegistry,
-                displayDensity = displayDensity,
-                activeStroke = activeStroke,
-                activeTool = activeTool,
-                eraserType = eraserType,
-                strokeWidth = strokeWidth,
-                strokeAlpha = strokeAlpha,
-                strength = strength,
-                brush = BrushSnapshot(brushId, seed = activeStroke.points.firstOrNull()?.timestamp ?: 0L),
-                pressurePaint = pressurePaint,
-                selectionPath = selectionPath,
-                selectionPaint = selectionPaint,
-                selectionRect = selectionRect,
-                useSaveLayer = activeTool == DrawingTool.ERASER,
                 fillPreviewBitmap = studioState.fill.previewBitmap,
                 fillPreviewActive = studioState.fill.previewActive,
                 manipulationLayers = manipulationLayers,
@@ -373,16 +379,10 @@ fun BufferedDrawingCanvas(
 
         if (selectionActive && selectionBounds != null && !externalSelectionOverlay) {
             SelectionTransformBox(
-                selectedContent = selectedContent,
+                source = SelectionSource(selectedContent, fontRegistry, displayDensity, documentWidth, documentHeight),
                 selectionBounds = selectionBounds,
                 transformState = selectionTransformState,
-                fontRegistry = fontRegistry,
-                displayDensity = displayDensity,
                 canvasMatrixValues = studioState.canvas.matrixValues,
-                docWidth = documentWidth,
-                docHeight = documentHeight,
-                viewportWidth = viewportSize.width,
-                viewportHeight = viewportSize.height,
                 onDragEnd = {
                     onSelectionTransformChanged(selectionTransformState.matrix)
                     onIntent(StudioIntent.Selection.UpdatePivot(selectionTransformState.pivotOffset))
@@ -394,7 +394,6 @@ fun BufferedDrawingCanvas(
                 lockAspectRatio = studioState.selection.lockAspectRatio,
                 skewMode = studioState.selection.skewMode,
                 interactionMode = studioState.selection.interactionMode,
-                onIntent = onIntent,
             )
         }
 

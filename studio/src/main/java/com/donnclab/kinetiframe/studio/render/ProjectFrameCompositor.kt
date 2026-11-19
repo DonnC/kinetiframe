@@ -14,6 +14,15 @@ import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.media.video.SceneVideoRenderer
 import com.donnclab.kinetiframe.studio.drawing.LayerCompositor
 
+/** How a [ProjectFrameCompositor] renders, beyond the project and its layers. */
+data class CompositorOptions(
+    val fontRegistry: com.donnclab.kinetiframe.studio.drawing.FontRegistry? = null,
+    /** Previews render directly into small buffers. Null renders at stage resolution, as export does. */
+    val outputMaxEdge: Int? = null,
+    /** Off only for gallery posters, so they stay legible even when every frame is faded. */
+    val includeFades: Boolean = true,
+)
+
 /**
  * Headless per-frame flattener: background + raster layers ([LayerCompositor], shared with the
  * live editor) + actor placements ([ActorFrameRenderer], also shared) onto one stage-sized [Bitmap]. This is deliberately the *only* place a full frame
@@ -36,14 +45,13 @@ class ProjectFrameCompositor(
     private val cacheManager: FrameCacheManager,
     private val actorRenderer: ActorFrameRenderer?,
     private val backgroundBitmap: Bitmap?,
-    private val fontRegistry: com.donnclab.kinetiframe.studio.drawing.FontRegistry? = null,
-    /** Previews render directly into small buffers; export leaves this at stage resolution. */
-    outputMaxEdge: Int = maxOf(project.stage.width, project.stage.height),
+    options: CompositorOptions = CompositorOptions(),
     /** Optional test/decoder seam; returned frames are owned and recycled by this compositor. */
     private val videoFrameAt: (suspend (Int) -> Bitmap?)? = null,
-    /** Gallery posters remain legible even when every project frame is faded. Never for filmstrips/export. */
-    private val includeFades: Boolean = true,
 ) {
+    private val fontRegistry = options.fontRegistry
+    private val includeFades = options.includeFades
+    private val outputMaxEdge = options.outputMaxEdge ?: maxOf(project.stage.width, project.stage.height)
     private val scale = minOf(
         1f,
         outputMaxEdge.coerceAtLeast(1).toFloat() / maxOf(project.stage.width, project.stage.height),

@@ -22,4 +22,7 @@ class StudioStore(
  * image, because the OS may clear [cache] at any time. [diagnostics] is kept apart so crash reports
  * never end up in exports.
  */
-data class StudioDirectories(val cache: File, val files: File, val diagnostics: File)
+data class StudioDirectories(val cache: File, val files: File, val diagnostics: File) {
+    /** One folder for everything, for tests that don't care where files go. */
+    constructor(root: File) : this(root, root, root)
+}

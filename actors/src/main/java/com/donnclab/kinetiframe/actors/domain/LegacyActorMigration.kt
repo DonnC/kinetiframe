@@ -18,15 +18,8 @@ object LegacyActorMigration {
             createdAtEpochMs = nowEpochMs,
         ).validate()
 
-    fun performance(
-        instance: PuppetInstance,
-        projectId: String,
-        actorId: String,
-        revisionId: String,
-        performanceId: String,
-        name: String,
-        nowEpochMs: Long,
-    ): PerformanceDocument? {
+    fun performance(instance: PuppetInstance, identity: PerformanceIdentity, nowEpochMs: Long): PerformanceDocument? {
+        val (projectId, actorId, revisionId, performanceId, name) = identity
         val preset = instance.motionPreset?.let(AppliedActorPreset::of)
         if (instance.poseKeys.isEmpty() && instance.rotationCurves.isEmpty() && instance.rootMotionCurves.isEmpty() &&
             instance.artworkKeys.isEmpty() &&
@@ -60,3 +53,12 @@ object LegacyActorMigration {
         ).validate()
     }
 }
+
+/** Who a converted performance belongs to, and its ID and display name. */
+data class PerformanceIdentity(
+    val projectId: String,
+    val actorId: String,
+    val revisionId: String,
+    val performanceId: String,
+    val name: String,
+)

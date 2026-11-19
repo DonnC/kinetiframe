@@ -30,10 +30,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
 
@@ -103,7 +105,7 @@ fun ScreenColorOverlay(state: ScreenColorState, origin: Offset, onIntent: (Scree
                 ContextIconButton(
                     ContextIconAction(
                         Icons.Filled.Check,
-                        "Use sampled color",
+                        stringResource(R.string.eyedropper_use),
                         {
                             onIntent(ScreenColorIntent.Confirm)
                         },
@@ -112,7 +114,7 @@ fun ScreenColorOverlay(state: ScreenColorState, origin: Offset, onIntent: (Scree
                     ),
                 )
                 ContextIconButton(
-                    ContextIconAction(Icons.Filled.Close, "Cancel eyedropper", {
+                    ContextIconAction(Icons.Filled.Close, stringResource(R.string.eyedropper_cancel), {
                         onIntent(ScreenColorIntent.Cancel)
                     }),
                 )

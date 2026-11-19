@@ -31,9 +31,11 @@ class TimelineAssetClipTest {
                         0,
                         8,
                         false,
-                        onSelect = { selected++ },
-                        onMove = { _, _ -> writes++ },
-                        onTrim = { _, _ -> writes++ },
+                        ClipGestures(
+                            onSelect = { selected++ },
+                            onMove = { _, _ -> writes++ },
+                            onTrim = { _, _ -> writes++ },
+                        ),
                     )
                 }
             }
@@ -56,9 +58,11 @@ class TimelineAssetClipTest {
                         0,
                         8,
                         true,
-                        onSelect = {},
-                        onMove = { _, _ -> writes++ },
-                        onTrim = { _, _ -> writes++ },
+                        ClipGestures(
+                            onSelect = {},
+                            onMove = { _, _ -> writes++ },
+                            onTrim = { _, _ -> writes++ },
+                        ),
                     )
                 }
             }
@@ -76,11 +80,17 @@ class TimelineAssetClipTest {
             MaterialTheme {
                 Box {
                     TimelineAssetClip(
-                        "voice", "Voice", 0, 8, true, locked = true,
-                        onSelect = {
-                        }, onMove = { _, _ ->
-                            error("Locked clip moved")
-                        }, onTrim = { _, _ -> error("Locked clip trimmed") },
+                        "voice",
+                        "Voice",
+                        0,
+                        8,
+                        true,
+                        ClipGestures(
+                            onSelect = {},
+                            onMove = { _, _ -> error("Locked clip moved") },
+                            onTrim = { _, _ -> error("Locked clip trimmed") },
+                        ),
+                        locked = true,
                     )
                 }
             }

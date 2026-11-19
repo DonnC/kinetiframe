@@ -13,18 +13,21 @@ import kotlinx.coroutines.sync.withLock
 
 /** Raster exposure authoring only; frame indices, scene objects and actor rigs remain separate. */
 class CelHoldManager(
-    private val scope: CoroutineScope,
-    private val dispatcher: CoroutineDispatcher,
+    runtime: StudioRuntime,
     private val cache: FrameCacheManager,
     private val frameMutex: Mutex,
-    private val getState: () -> StudioState,
-    private val updateState: ((StudioState) -> StudioState) -> Unit,
-    private val sendEffect: (StudioEffect) -> Unit,
-    private val finalizeDrawing: suspend () -> Unit,
-    private val clearHistory: () -> Unit,
-    private val loadFrame: suspend (Int) -> Unit,
-    private val pending: PendingOperations,
+    hooks: CelHoldHooks,
 ) {
+    private val scope: CoroutineScope = runtime.scope
+    private val dispatcher: CoroutineDispatcher = runtime.dispatcher
+    private val getState: () -> StudioState = runtime.getState
+    private val updateState: ((StudioState) -> StudioState) -> Unit = runtime.updateState
+    private val pending: PendingOperations = runtime.pending
+    private val sendEffect: (StudioEffect) -> Unit = hooks.sendEffect
+    private val finalizeDrawing: suspend () -> Unit = hooks.finalizeDrawing
+    private val clearHistory: () -> Unit = hooks.clearHistory
+    private val loadFrame: suspend (Int) -> Unit = hooks.loadFrame
+
     fun hold(first: Int, last: Int) = operate(first) { layer, total -> cache.holdDrawing(layer, first, last, total) }
     fun unlink(frame: Int) = operate(frame) { layer, _ -> cache.detachDrawing(layer, frame) }
     fun editScope(frame: Int, allLinked: Boolean) = operate(frame, allLinked) { layer, _ ->

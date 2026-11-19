@@ -31,7 +31,7 @@ class StudioViewModelTest {
         val tempDir = java.io.File.createTempFile("kinetiframe_test_cache", "")
         tempDir.delete()
         tempDir.mkdir()
-        viewModel = StudioViewModel(tempDir, testDispatcher, shouldInitialize = false)
+        viewModel = StudioViewModel(StudioDirectories(tempDir), testDispatcher, shouldInitialize = false)
     }
 
     @After

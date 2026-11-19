@@ -13,39 +13,54 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 
+/** What each source in [TimelineAssetSourceMenu] adds. */
+data class AssetSourceActions(
+    val onActor: () -> Unit,
+    val onImportAudio: () -> Unit,
+    val onRecordAudio: () -> Unit,
+    val onVideo: () -> Unit,
+    val onLibrary: () -> Unit,
+)
+
 /** Choose a media kind first; importing and recording are sources of Audio, not kinds. */
 @Composable
-fun TimelineAssetSourceMenu(
-    expanded: Boolean,
-    onDismiss: () -> Unit,
-    onActor: () -> Unit,
-    onImportAudio: () -> Unit,
-    onRecordAudio: () -> Unit,
-    onVideo: () -> Unit,
-    onLibrary: () -> Unit,
-) {
+fun TimelineAssetSourceMenu(expanded: Boolean, onDismiss: () -> Unit, actions: AssetSourceActions) {
+    val (onActor, onImportAudio, onRecordAudio, onVideo, onLibrary) = actions
     var audio by remember(expanded) { mutableStateOf(false) }
     IconContextMenu(
         expanded && !audio,
         onDismiss,
         listOf(
-            ContextIconAction(Icons.Default.TheaterComedy, "Actor performance", onActor),
-            ContextIconAction(Icons.Default.Audiotrack, "Audio", { audio = true }),
-            ContextIconAction(Icons.Default.VideoLibrary, "Video", onVideo),
-            ContextIconAction(Icons.Default.CollectionsBookmark, "Library", onLibrary),
+            ContextIconAction(Icons.Default.TheaterComedy, stringResource(R.string.asset_source_actor), onActor),
+            ContextIconAction(Icons.Default.Audiotrack, stringResource(R.string.asset_source_audio), { audio = true }),
+            ContextIconAction(Icons.Default.VideoLibrary, stringResource(R.string.asset_source_video), onVideo),
+            ContextIconAction(
+                Icons.Default.CollectionsBookmark,
+                stringResource(R.string.asset_source_library),
+                onLibrary,
+            ),
         ),
     )
     IconContextMenu(
         expanded && audio,
         onDismiss,
         listOf(
-            ContextIconAction(Icons.AutoMirrored.Filled.ArrowBack, "Back to assets", { audio = false }),
-            ContextIconAction(Icons.Default.FolderOpen, "Import audio from device", onImportAudio),
-            ContextIconAction(Icons.Default.Mic, "Record audio", onRecordAudio),
+            ContextIconAction(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.asset_source_back), {
+                audio =
+                    false
+            }),
+            ContextIconAction(
+                Icons.Default.FolderOpen,
+                stringResource(R.string.asset_source_import_audio),
+                onImportAudio,
+            ),
+            ContextIconAction(Icons.Default.Mic, stringResource(R.string.asset_source_record_audio), onRecordAudio),
         ),
     )
 }
@@ -53,5 +68,5 @@ fun TimelineAssetSourceMenu(
 @Preview
 @Composable
 private fun TimelineAssetSourceMenuPreview() {
-    TimelineAssetSourceMenu(true, {}, {}, {}, {}, {}, {})
+    TimelineAssetSourceMenu(true, {}, AssetSourceActions({}, {}, {}, {}, {}))
 }

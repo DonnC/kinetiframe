@@ -56,6 +56,28 @@ class UiValueRulesTest {
         assertEquals(5, findings["text|app/src/main/kotlin/Screen.kt"])
     }
 
+    @Test fun `labels passed to the app's components and named text arguments are counted`() {
+        fixture(
+            "app",
+            "main",
+            """
+            fun Menu(name: String) {
+                ContextIconAction(Icons.Copy, "Duplicate", {})
+                ContextIconAction(Icons.Copy, label = "Duplicate", onClick = {})
+                ContextIconAction(Icons.Copy, name, {})
+                ContextSliderButton(Icons.Volume, "Volume", 1f, {})
+                StudioButton(title = "Paste", subtitle = name)
+                TextField(value, {}, placeholder = "Search", label = stringResource(R.string.search))
+                Clip(id = "voice", label = name)
+                Image(bitmap, "Frame ${'$'}number preview")
+                Image(bitmap, null)
+            }
+            """.trimIndent(),
+        )
+        val findings = KotlinBoundaryScanner.scan(root, listOf("app"))
+        assertEquals(6, findings["text|app/src/main/kotlin/Screen.kt"])
+    }
+
     @Test fun `design system, tests and previews may use literal values`() {
         val source = """
             fun Swatch() { Color(0xFF000000); Text("Sample"); Modifier.padding(4.dp) }
@@ -65,7 +87,8 @@ class UiValueRulesTest {
         fixture(
             "app",
             "main",
-            "@PreviewLightDark @Composable fun Swatch() { Text(\"Sample\"); Modifier.padding(4.dp) }",
+            "@PreviewLightDark @Composable fun Swatch() { Text(\"Sample\"); Modifier.padding(4.dp) }\n" +
+                "private fun previewSample() = Summary(title = \"Walk cycle\")",
         )
         assertEquals(emptyMap<String, Int>(), KotlinBoundaryScanner.scan(root, listOf("app", "designsystem")))
     }

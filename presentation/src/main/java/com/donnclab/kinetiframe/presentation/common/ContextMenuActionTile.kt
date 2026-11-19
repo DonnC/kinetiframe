@@ -29,7 +29,8 @@ fun ContextMenuActionTile(action: ContextIconAction, showLabel: Boolean) {
                 fontSize = 9.sp,
                 lineHeight = 11.sp,
                 textAlign = TextAlign.Center,
-                maxLines = 1,
+                // Two lines fit "Actor performance" and most translations without widening the menu.
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(horizontal = Dimens.spaceXxs, vertical = Dimens.spaceXxs),
             )

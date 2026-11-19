@@ -116,10 +116,7 @@ fun ArtworkAlignmentDialog(
                 ArtworkPlacementPreview(
                     bitmap,
                     binding,
-                    graph,
-                    partId,
-                    assets,
-                    worldAngle,
+                    ArtworkTarget(graph, partId, assets, worldAngle),
                     onChange = { binding = it },
                     modifier = Modifier.fillMaxWidth().height(ActorStudioTokens.alignmentPreviewHeight),
                 )

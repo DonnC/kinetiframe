@@ -4,6 +4,7 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.data.storage.DurableFile
+import com.donnclab.kinetiframe.library.data.LibraryPlacement
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import java.io.File
 import java.io.InputStream
@@ -31,25 +32,22 @@ class BundledDemoLibraryInstaller(
                     val staging = File.createTempFile("resource-", ".${entry.member.substringAfterLast('.')}", receipts)
                     try {
                         extract(entry, staging)
+                        val origin = if (entry.id.startsWith(
+                                "ls-",
+                            )
+                        ) {
+                            setOf("loose-signal", "starter")
+                        } else {
+                            setOf("demo", "starter")
+                        }
+                        val audioTag = if (entry.kind == LibraryItemKind.AUDIO) setOf(entry.audioTag) else emptySet()
                         when (
                             val result = library.exportAsset(
                                 entry.kind,
                                 entry.id,
                                 entry.name,
                                 staging,
-                                tags =
-                                (
-                                    if (entry.id.startsWith(
-                                            "ls-",
-                                        )
-                                    ) {
-                                        setOf("loose-signal", "starter")
-                                    } else {
-                                        setOf("demo", "starter")
-                                    }
-                                    ) +
-                                    (if (entry.kind == LibraryItemKind.AUDIO) setOf(entry.audioTag) else emptySet()) +
-                                    entry.tags,
+                                placement = LibraryPlacement(tags = origin + audioTag + entry.tags),
                                 nowEpochMs = 1791158400000L,
                             )
                         ) {

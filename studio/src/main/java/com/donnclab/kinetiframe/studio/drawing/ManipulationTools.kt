@@ -21,7 +21,8 @@ object ManipulationDefaults {
 
 /** Brush-local reusable buffers: no full-frame readback or bitmap allocation per dab. */
 abstract class BaseManipulationTool(private val blur: Boolean) {
-    private val pixels = ManipulationPixels()
+    private val pixels = ManipulationPixels(blur)
+    private val local = ManipulationDab()
     private var input = IntArray(0)
     private var output = IntArray(0)
     private var patch: Bitmap? = null
@@ -29,9 +30,16 @@ abstract class BaseManipulationTool(private val blur: Boolean) {
     private val destinationRect = Rect()
     private val replace = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC) }
 
-    fun apply(canvas: Canvas, bitmap: Bitmap, x: Float, y: Float, dx: Float, dy: Float, radius: Float, amount: Float) {
+    /** Applies [dab], positioned in [bitmap]'s pixels, through [canvas]. */
+    fun apply(canvas: Canvas, bitmap: Bitmap, dab: ManipulationDab) {
+        val x = dab.x
+        val y = dab.y
+        val dx = dab.dx
+        val dy = dab.dy
+        val radius = dab.radius
+        val amount = dab.amount
         if (bitmap.isRecycled || amount <= 0f) return
-        val kernel = ceil(radius * 0.12f).toInt().coerceAtLeast(1)
+        val kernel = ManipulationPixels.kernelFor(radius)
         // Three box passes need three radii of halo, otherwise a cropped brush leaves seams.
         val halo = if (blur) kernel * 3 + 1 else ceil(hypot(dx, dy)).toInt() + 2
         val left = floor(x - radius - halo).toInt().coerceIn(0, bitmap.width)
@@ -47,7 +55,7 @@ abstract class BaseManipulationTool(private val blur: Boolean) {
             output = IntArray(count)
         }
         bitmap.getPixels(input, 0, width, left, top, width, height)
-        pixels.apply(input, output, width, height, x - left, y - top, radius, dx, dy, amount, blur, kernel)
+        pixels.apply(input, output, width, height, local.set(x - left, y - top, dx, dy, radius, amount))
         val current = patch
         val target = if (current == null || current.width < width || current.height < height) {
             current?.recycle()
@@ -74,22 +82,38 @@ abstract class BaseManipulationTool(private val blur: Boolean) {
 class BlurTool : BaseManipulationTool(true)
 class SmudgeTool : BaseManipulationTool(false)
 
+/** A blur or smudge brush: which tool, its base width and its strength. */
+data class ManipulationBrush(val tool: DrawingTool, val baseWidth: Float, val strength: Float)
+
+/**
+ * How [ManipulationStrokeRenderer] replays a stroke: the source segments to draw (all by default),
+ * engines to reuse, the dab sampler to continue, and where the target bitmap sits in stroke space.
+ */
+data class ManipulationRenderOptions(
+    val startSourceSegment: Int = 0,
+    /** Null draws to the stroke's last segment. */
+    val endExclusiveSourceSegment: Int? = null,
+    val blurTool: BlurTool? = null,
+    val smudgeTool: SmudgeTool? = null,
+    /** Null starts a fresh sampler at the brush's base width. */
+    val sampler: ManipulationDabSampler? = null,
+    val originX: Int = 0,
+    val originY: Int = 0,
+)
+
 object ManipulationStrokeRenderer {
     fun render(
         canvas: Canvas,
         bitmap: Bitmap,
         points: List<TouchPoint>,
-        tool: DrawingTool,
-        baseWidth: Float,
-        strength: Float,
-        startSourceSegment: Int = 0,
-        endExclusiveSourceSegment: Int = points.lastIndex,
-        blurTool: BlurTool? = null,
-        smudgeTool: SmudgeTool? = null,
-        sampler: ManipulationDabSampler = ManipulationDabSampler(baseWidth),
-        originX: Int = 0,
-        originY: Int = 0,
+        brush: ManipulationBrush,
+        options: ManipulationRenderOptions = ManipulationRenderOptions(),
     ) {
+        val (tool, baseWidth, strength) = brush
+        val (startSourceSegment, endSegment, blurTool, smudgeTool, givenSampler, originX, originY) = options
+        val endExclusiveSourceSegment = endSegment ?: points.lastIndex
+        val sampler = givenSampler ?: ManipulationDabSampler(baseWidth)
+        val dab = ManipulationDab()
         require(tool == DrawingTool.BLUR || tool == DrawingTool.SMUDGE)
         if (points.isEmpty() || !baseWidth.isFinite() || !strength.isFinite() || strength <= 0f) return
         val owned = if (tool == DrawingTool.BLUR) blurTool == null else smudgeTool == null
@@ -99,31 +123,15 @@ object ManipulationStrokeRenderer {
                 startSourceSegment == 0
             ) {
                 sampler.begin(points.first()) { x, y, dx, dy, pressure ->
-                    engine.apply(
-                        canvas,
-                        bitmap,
-                        x - originX,
-                        y - originY,
-                        dx,
-                        dy,
-                        sampler.radius,
-                        strength.coerceIn(0f, 1f) * (0.35f + pressure * 0.65f),
-                    )
+                    val amount = strength.coerceIn(0f, 1f) * (0.35f + pressure * 0.65f)
+                    engine.apply(canvas, bitmap, dab.set(x - originX, y - originY, dx, dy, sampler.radius, amount))
                 }
             }
             for (index in startSourceSegment.coerceAtLeast(0) until
                 endExclusiveSourceSegment.coerceAtMost(points.lastIndex)) {
                 sampler.segment(points[index], points[index + 1]) { x, y, dx, dy, pressure ->
-                    engine.apply(
-                        canvas,
-                        bitmap,
-                        x - originX,
-                        y - originY,
-                        dx,
-                        dy,
-                        sampler.radius,
-                        strength.coerceIn(0f, 1f) * (0.35f + pressure * 0.65f),
-                    )
+                    val amount = strength.coerceIn(0f, 1f) * (0.35f + pressure * 0.65f)
+                    engine.apply(canvas, bitmap, dab.set(x - originX, y - originY, dx, dy, sampler.radius, amount))
                 }
             }
         } finally {

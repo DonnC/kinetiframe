@@ -26,6 +26,7 @@ import com.donnclab.kinetiframe.core.document.BrushSnapshot
 import com.donnclab.kinetiframe.core.document.DrawCommand
 import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.studio.EraserType
@@ -34,52 +35,25 @@ import com.donnclab.kinetiframe.studio.drawing.MultilineTextRenderer
 
 @Composable
 fun CanvasDrawingLayer(
+    sheet: CanvasSheet,
+    onion: OnionSkinLayers,
+    content: CanvasContent,
+    preview: StrokePreview,
+    selection: SelectionOutline,
     modifier: Modifier = Modifier,
-    docWidth: Int,
-    docHeight: Int,
-    canvasMatrix: android.graphics.Matrix,
-    /** The project's persistent background image, already decoded and cached by
-     *  [com.donnclab.kinetiframe.studio.media.ProjectAssetManager] -- drawn once per frame, scaled to
-     *  cover the sheet, behind onion skin and the current frame's raster content. Null means no
-     *  background is set; the sheet's existing shadow/border fill shows through as before. */
-    backgroundBitmap: Bitmap?,
-    /** The video reference track's decoded frame for the current playhead position, if any video
-     *  clip covers it -- see [com.donnclab.kinetiframe.studio.media.VideoFrameProvider]. Drawn on top of
-     *  [backgroundBitmap] at [videoOpacity] so the artist can trace over it (a "rotoscope" aid);
-     *  still well behind the current frame's own raster content and outside
-     *  the eraser save-layer group, same as the background image above it in this file. */
-    videoFrameBitmap: Bitmap? = null,
-    videoOpacity: Float = 0.5f,
-    onionSkinEnabled: Boolean,
-    pastBitmaps: List<OnionFrame>,
-    futureBitmaps: List<OnionFrame>,
-    onionSkinOpacity: Float,
-    pastTint: ColorFilter?,
-    futureTint: ColorFilter?,
-    currentFrameBitmap: Bitmap?,
-    nodes: Map<String, com.donnclab.kinetiframe.core.document.BaseNode>,
-    fontRegistry: FontRegistry,
-    displayDensity: Float,
-    activeStroke: ActiveStroke,
-    activeTool: DrawingTool,
-    eraserType: EraserType,
-    strokeWidth: Float,
-    strokeAlpha: Float = 1f,
-    strength: Float = 0.5f,
-    brush: BrushSnapshot = BrushSnapshot(),
-    pressurePaint: android.graphics.Paint,
-    selectionPath: androidx.compose.ui.graphics.Path,
-    selectionPaint: android.graphics.Paint,
-    selectionRect: Rect?,
-    useSaveLayer: Boolean,
     fillPreviewBitmap: Bitmap? = null,
     fillPreviewActive: Boolean = false,
     manipulationLayers: List<Pair<Layer, Bitmap>> = emptyList(),
     activeLayerId: String = "",
     bakedStrokeSeeds: Set<Long> = emptySet(),
-    referenceUnderlay: ((android.graphics.Canvas) -> Unit)? = null,
-    paperDecoration: Boolean = true,
 ) {
+    val (docWidth, docHeight, canvasMatrix, displayDensity, paperDecoration) = sheet
+    val (onionSkinEnabled, pastBitmaps, futureBitmaps, onionSkinOpacity, pastTint, futureTint) = onion
+    val (backgroundBitmap, currentFrameBitmap, nodes, fontRegistry, videoFrameBitmap, videoOpacity, referenceUnderlay) =
+        content
+    val (activeStroke, activeTool, eraserType, strokeWidth, pressurePaint, useSaveLayer, strokeAlpha, strength, brush) =
+        preview
+    val (selectionPath, selectionPaint, selectionRect) = selection
     val shadowPaint = remember {
         android.graphics.Paint().apply {
             color = android.graphics.Color.WHITE
@@ -193,8 +167,7 @@ fun CanvasDrawingLayer(
                             manipulationLayers,
                             activeLayerId,
                             activeStroke,
-                            docWidth,
-                            docHeight,
+                            StageDimensions(docWidth, docHeight),
                             bakedStrokeSeeds,
                         )
                     ) {
@@ -243,8 +216,6 @@ fun CanvasDrawingLayer(
                                 pressurePaint,
                                 activeTool,
                                 brush,
-                                currentFrameBitmap,
-                                strength,
                             )
                             canvas.restore()
                         }
@@ -263,8 +234,6 @@ fun CanvasDrawingLayer(
                                     paint = settled.paint,
                                     activeTool = settled.tool,
                                     brush = settled.brush,
-                                    sourceBitmap = settled.sourceBitmap,
-                                    strength = settled.strength,
                                 )
                                 canvas.restore()
                             }
@@ -300,8 +269,6 @@ fun CanvasDrawingLayer(
                                 paint = settled.paint,
                                 activeTool = settled.tool,
                                 brush = settled.brush,
-                                sourceBitmap = settled.sourceBitmap,
-                                strength = settled.strength,
                             )
                         }
                     }
@@ -330,8 +297,6 @@ fun CanvasDrawingLayer(
                                     paint = pressurePaint,
                                     activeTool = activeTool,
                                     brush = brush,
-                                    sourceBitmap = currentFrameBitmap,
-                                    strength = strength,
                                 )
                             }
                         }
@@ -341,14 +306,11 @@ fun CanvasDrawingLayer(
                 if (activeStroke.mirroredPoints.isNotEmpty()) {
                     drawVariableWidthStroke(
                         canvas = canvas.nativeCanvas,
-                        points = activeStroke.mirroredPoints,
-                        predictedPoint = activeStroke.predictedMirroredTouchPoint,
+                        points = withPrediction(activeStroke.mirroredPoints, activeStroke.predictedMirroredTouchPoint),
                         baseWidth = strokeWidth,
                         paint = pressurePaint,
                         activeTool = activeTool,
                         brush = brush,
-                        sourceBitmap = currentFrameBitmap,
-                        strength = strength,
                     )
                 }
 

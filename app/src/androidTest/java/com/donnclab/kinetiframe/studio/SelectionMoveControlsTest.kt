@@ -48,9 +48,13 @@ class SelectionMoveControlsTest {
             transform = remember { SelectionTransformState() }
             Box(Modifier.size(300.dp, 200.dp).testTag("selection")) {
                 SelectionTransformOverlay(
-                    Rect(98f, 98f, 102f, 102f), transform,
-                    floatArrayOf(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f), null, 1f, 1f,
-                    onTapInside = {}, onTapOutside = {}, interactionMode = SelectionInteractionMode.MOVE,
+                    Rect(98f, 98f, 102f, 102f),
+                    transform,
+                    floatArrayOf(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f),
+                    null,
+                    1f,
+                    onTapOutside = {},
+                    interactionMode = SelectionInteractionMode.MOVE,
                 )
             }
         }
@@ -77,8 +81,6 @@ class SelectionMoveControlsTest {
                     floatArrayOf(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f),
                     null,
                     1f,
-                    1f,
-                    onTapInside = {},
                     onTapOutside = {},
                 )
             }

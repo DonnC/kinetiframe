@@ -31,6 +31,7 @@ import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerState
 import com.donnclab.kinetiframe.presentation.actors.ActorNameDialog
 import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.library.BrowserView
 import com.donnclab.kinetiframe.presentation.library.CollectionAssignmentDialog
 import com.donnclab.kinetiframe.presentation.library.CollectionBrowserControls
 import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserIndex
@@ -42,15 +43,11 @@ import com.donnclab.kinetiframe.presentation.project.ProjectManagerState
 @Composable
 internal fun ProjectsTabContent(
     hierarchy: HierarchyBrowserState,
-    onHierarchyIntent: (HierarchyBrowserIntent) -> Unit,
     state: ProjectManagerState,
     query: String,
-    onIntent: (ProjectManagerIntent) -> Unit,
-    onShare: (ProjectManifest) -> Unit,
-    onSaveToLibrary: (ProjectManifest) -> Unit,
-    onExportVideo: (ProjectManifest) -> Unit,
-    onRequestCreate: () -> Unit,
+    callbacks: ProjectsTabCallbacks,
 ) {
+    val (onIntent, onHierarchyIntent, onShare, onSaveToLibrary, onExportVideo, onRequestCreate) = callbacks
     var renameCandidate by remember { mutableStateOf<ProjectManifest?>(null) }
     var deleteCandidate by remember { mutableStateOf<ProjectManifest?>(null) }
     var organiseCandidate by remember { mutableStateOf<ProjectManifest?>(null) }
@@ -62,9 +59,7 @@ internal fun ProjectsTabContent(
             { "project:${it.projectId}" },
             { it.displayName },
             { it.updatedAtEpochMs },
-            organization,
-            position,
-            query,
+            BrowserView(organization, position, query),
         )
     }
     Column(Modifier.fillMaxSize()) {
@@ -173,14 +168,11 @@ internal fun ProjectsTabContent(
 internal fun ActorsTabContent(
     projectNames: Map<String, String>,
     hierarchy: HierarchyBrowserState,
-    onHierarchyIntent: (HierarchyBrowserIntent) -> Unit,
-    onOpenPerformanceProject: (String) -> Unit,
     state: ActorManagerState,
     query: String,
-    onIntent: (ActorManagerIntent) -> Unit,
-    onRequestCreate: () -> Unit,
-    onRequestRename: (String) -> Unit,
+    callbacks: ActorsTabCallbacks,
 ) {
+    val (onIntent, onHierarchyIntent, onOpenPerformanceProject, onRequestCreate, onRequestRename) = callbacks
     var archiveCandidate by remember { mutableStateOf<ActorManifest?>(null) }
     var selectedActor by remember { mutableStateOf<ActorManifest?>(null) }
     var organiseCandidate by remember { mutableStateOf<ActorManifest?>(null) }
@@ -190,7 +182,7 @@ internal fun ActorsTabContent(
         HierarchyBrowserIndex.filter(state.actors, { "actor:${it.actorId}" }, { actor ->
             actor.displayName + " " +
                 state.performances.filter { it.actorId == actor.actorId }.joinToString { it.displayName }
-        }, { it.updatedAtEpochMs }, organization, position, query)
+        }, { it.updatedAtEpochMs }, BrowserView(organization, position, query))
     }
     Column(Modifier.fillMaxSize()) {
         CollectionBrowserControls(
@@ -234,19 +226,23 @@ internal fun ActorsTabContent(
                 ) {
                     items(filtered, key = { it.actorId }) { actor ->
                         HomeActorCard(
-                            actor, state.thumbnailPaths[actor.actorId], {
+                            actor,
+                            state.thumbnailPaths[actor.actorId],
+                            {
                                 selectedActor = actor
                                 onHierarchyIntent(HierarchyBrowserIntent.Used("actor:${actor.actorId}"))
                             },
-                            {
-                                onRequestRename(actor.actorId)
-                            }, { onIntent(ActorManagerIntent.Duplicate(actor.actorId)) },
-                            { onIntent(ActorManagerIntent.Export(actor.actorId)) }, { archiveCandidate = actor },
+                            ActorCardActions(
+                                onRename = { onRequestRename(actor.actorId) },
+                                onDuplicate = { onIntent(ActorManagerIntent.Duplicate(actor.actorId)) },
+                                onExport = { onIntent(ActorManagerIntent.Export(actor.actorId)) },
+                                onArchive = { archiveCandidate = actor },
+                                onFavourite = {
+                                    onHierarchyIntent(HierarchyBrowserIntent.Favourite("actor:${actor.actorId}"))
+                                },
+                                onOrganise = { organiseCandidate = actor },
+                            ),
                             favourite = organization.items["actor:${actor.actorId}"]?.favourite == true,
-                            onFavourite = {
-                                onHierarchyIntent(HierarchyBrowserIntent.Favourite("actor:${actor.actorId}"))
-                            },
-                            onOrganise = { organiseCandidate = actor },
                         )
                     }
                 }

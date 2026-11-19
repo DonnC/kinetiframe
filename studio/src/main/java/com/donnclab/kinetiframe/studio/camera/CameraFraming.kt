@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.studio.camera
 
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.document.camera.CameraPose
 import kotlin.math.PI
 import kotlin.math.cos
@@ -7,8 +8,10 @@ import kotlin.math.sin
 
 /** Touch deltas in unrotated stage space; dragging the image right moves the camera left. */
 object CameraFraming {
-    fun drag(pose: CameraPose, dx: Float, dy: Float, scale: Float, turn: Float, width: Int, height: Int): CameraPose {
-        require(width > 0 && height > 0 && scale.isFinite() && scale > 0)
+    fun drag(pose: CameraPose, dx: Float, dy: Float, scale: Float, turn: Float, stage: StageDimensions): CameraPose {
+        require(scale.isFinite() && scale > 0)
+        val width = stage.width
+        val height = stage.height
         val angle = pose.rotation * PI / 180
         val x = (cos(angle) * dx - sin(angle) * dy).toFloat()
         val y = (sin(angle) * dx + cos(angle) * dy).toFloat()

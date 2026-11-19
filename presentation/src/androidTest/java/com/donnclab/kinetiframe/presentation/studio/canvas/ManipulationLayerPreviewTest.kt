@@ -6,7 +6,9 @@ import android.graphics.Color
 import android.graphics.Paint
 import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.document.TouchPoint
+import com.donnclab.kinetiframe.studio.drawing.ManipulationBrush
 import com.donnclab.kinetiframe.studio.drawing.ManipulationStrokeRenderer
 import org.junit.Assert.assertArrayEquals
 import org.junit.Test
@@ -32,11 +34,15 @@ class ManipulationLayerPreviewTest {
             ),
             "active",
             stroke,
-            64,
-            64,
+            StageDimensions(64, 64),
         )
         val edited = source.copy(Bitmap.Config.ARGB_8888, true)
-        ManipulationStrokeRenderer.render(Canvas(edited), edited, stroke.points, DrawingTool.BLUR, 20f, 0.72f)
+        ManipulationStrokeRenderer.render(
+            Canvas(edited),
+            edited,
+            stroke.points,
+            ManipulationBrush(DrawingTool.BLUR, 20f, 0.72f),
+        )
         val expected = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888)
         Canvas(expected).apply {
             drawBitmap(lower, 0f, 0f, null)

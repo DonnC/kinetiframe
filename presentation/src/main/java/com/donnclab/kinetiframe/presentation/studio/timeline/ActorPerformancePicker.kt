@@ -97,23 +97,25 @@ fun ActorPerformancePicker(
         TimelineAssetSourceMenu(
             expanded && !showActorPicker,
             ::closeMenu,
-            onActor = { showActorPicker = true },
-            onImportAudio = {
-                onImportAudio()
-                closeMenu()
-            },
-            onRecordAudio = {
-                onRecordAudio()
-                closeMenu()
-            },
-            onVideo = {
-                onImportVideo()
-                closeMenu()
-            },
-            onLibrary = {
-                onFromLibrary()
-                closeMenu()
-            },
+            AssetSourceActions(
+                onActor = { showActorPicker = true },
+                onImportAudio = {
+                    onImportAudio()
+                    closeMenu()
+                },
+                onRecordAudio = {
+                    onRecordAudio()
+                    closeMenu()
+                },
+                onVideo = {
+                    onImportVideo()
+                    closeMenu()
+                },
+                onLibrary = {
+                    onFromLibrary()
+                    closeMenu()
+                },
+            ),
         )
         DropdownMenu(expanded && showActorPicker, { closeMenu() }) {
             if (selectedActor == null) {

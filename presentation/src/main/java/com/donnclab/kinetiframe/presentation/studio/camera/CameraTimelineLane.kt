@@ -23,6 +23,7 @@ import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.IconContextMenu
+import com.donnclab.kinetiframe.presentation.studio.timeline.ClipGestures
 import com.donnclab.kinetiframe.presentation.studio.timeline.TRACK_HEIGHT
 import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineAssetClip
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -42,21 +43,25 @@ internal fun CameraTimelineLane(
             key(shot.id) {
                 TimelineAssetClip(
                     shot.id, shot.action.label(), shot.startFrame, shot.endFrame - shot.startFrame,
-                    selected == shot.id, onSelect = {
-                        selected = shot.id
-                        menu = true
-                    },
-                    onMove = { start, _ ->
-                        val duration = shot.endFrame - shot.startFrame
-                        val from = start.coerceIn(0, (totalFrames - duration).coerceAtLeast(0))
-                        onIntent(StudioIntent.Camera.Put(shot.copy(startFrame = from, endFrame = from + duration)))
-                    }, onTrim = { start, duration ->
-                        onIntent(
-                            StudioIntent.Camera.Put(
-                                shot.copy(startFrame = start, endFrame = minOf(totalFrames, start + duration)),
-                            ),
-                        )
-                    },
+                    selected == shot.id,
+                    gestures = ClipGestures(
+                        onSelect = {
+                            selected = shot.id
+                            menu = true
+                        },
+                        onMove = { start, _ ->
+                            val duration = shot.endFrame - shot.startFrame
+                            val from = start.coerceIn(0, (totalFrames - duration).coerceAtLeast(0))
+                            onIntent(StudioIntent.Camera.Put(shot.copy(startFrame = from, endFrame = from + duration)))
+                        },
+                        onTrim = { start, duration ->
+                            onIntent(
+                                StudioIntent.Camera.Put(
+                                    shot.copy(startFrame = start, endFrame = minOf(totalFrames, start + duration)),
+                                ),
+                            )
+                        },
+                    ),
                     minStart = 0, maxEnd = totalFrames, offsetFrames = offset, visibleFrames = visible,
                     contextMenu = {
                         IconContextMenu(

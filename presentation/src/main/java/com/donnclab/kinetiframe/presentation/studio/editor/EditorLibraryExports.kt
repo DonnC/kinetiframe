@@ -20,6 +20,8 @@ internal class EditorLibraryExports(
     private val viewModel: StudioViewModel,
     private val ui: EditorUiState,
     private val scope: CoroutineScope,
+    /** The name a frame saved to the library gets, from its number counting from 1. */
+    private val frameName: (Int) -> String,
 ) {
     private val messages get() = ui.messages
 
@@ -45,7 +47,7 @@ internal class EditorLibraryExports(
             scope.launch {
                 val state = viewModel.state.value
                 // The saved item's name, kept as written like other library item names.
-                val name = "Frame ${state.animation.currentFrame + 1}"
+                val name = frameName(state.animation.currentFrame + 1)
                 messages.libraryMessage = storage.exportFrame(frame, name, libraryScope, state.project.id)
                     .message(UiText.Resource(R.string.editor_added_frame))
             }

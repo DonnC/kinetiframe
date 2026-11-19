@@ -19,7 +19,7 @@ class HierarchyBrowserIndexTest {
     )
     private fun browse(position: BrowserPosition, query: String = "") = HierarchyBrowserIndex.filter(entries, {
         it.id
-    }, { it.name }, { it.edited }, organization, position, query)
+    }, { it.name }, { it.edited }, BrowserView(organization, position, query))
 
     @Test fun `recent uses last opened without rewriting edited timestamp`() {
         assertEquals(listOf("Tavi", "Guest"), browse(BrowserPosition()).map { it.name })

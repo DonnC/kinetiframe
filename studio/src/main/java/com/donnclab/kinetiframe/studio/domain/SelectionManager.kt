@@ -24,19 +24,23 @@ import java.util.UUID
 
 /** Floating pixels/nodes; actors remain live project references, never flattened. */
 class SelectionManager(
-    private val scope: CoroutineScope,
-    private val dispatcher: CoroutineDispatcher,
+    runtime: StudioRuntime,
     private val frameOperationMutex: Mutex,
-    private val getState: () -> StudioState,
-    private val updateState: ((StudioState) -> StudioState) -> Unit,
-    private val rebuildCurrentBitmap: suspend () -> Unit,
-    private val snapshotActiveLayer: suspend () -> Bitmap?,
-    private val setBaseBitmap: (Bitmap?) -> Unit,
-    private val history: MutableList<HistoryItem>,
-    private val redoHistory: MutableList<HistoryItem> = mutableListOf(),
-    private val trimHistory: suspend () -> Unit = {},
-    private val pendingOperations: PendingOperations = PendingOperations(),
+    hooks: SelectionHooks,
+    undo: UndoStacks,
 ) {
+    private val scope: CoroutineScope = runtime.scope
+    private val dispatcher: CoroutineDispatcher = runtime.dispatcher
+    private val getState: () -> StudioState = runtime.getState
+    private val updateState: ((StudioState) -> StudioState) -> Unit = runtime.updateState
+    private val pendingOperations: PendingOperations = runtime.pending
+    private val rebuildCurrentBitmap: suspend () -> Unit = hooks.rebuildCurrentBitmap
+    private val snapshotActiveLayer: suspend () -> Bitmap? = hooks.snapshotActiveLayer
+    private val setBaseBitmap: (Bitmap?) -> Unit = hooks.setBaseBitmap
+    private val trimHistory: suspend () -> Unit = hooks.trimHistory
+    private val history: MutableList<HistoryItem> = undo.history
+    private val redoHistory: MutableList<HistoryItem> = undo.redo
+
     private data class Clipboard(val content: SelectedContent, val transform: Matrix, val projectId: String)
     private var clipboard: Clipboard? = null
     private var pendingClear: HistoryItem.ClearArea? = null

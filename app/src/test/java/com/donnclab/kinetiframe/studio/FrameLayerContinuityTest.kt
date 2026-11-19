@@ -24,7 +24,7 @@ class FrameLayerContinuityTest {
             val front = Layer(id = "ink", name = "Ink", zIndex = 1)
             val stack = listOf(back, front)
             val editor = StudioViewModel(
-                cacheDir = directory.toFile(),
+                directories = StudioDirectories(directory.toFile()),
                 engineDispatcher = dispatcher,
                 shouldInitialize = false,
                 initialEditorState = StudioState(

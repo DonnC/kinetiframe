@@ -7,6 +7,7 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryScope
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
+import com.donnclab.kinetiframe.library.data.LibraryPlacement
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.domain.LibraryCatalog
 import com.donnclab.kinetiframe.presentation.common.AssetKind
@@ -115,8 +116,7 @@ class BundledDemoLibraryInstallerTest {
                     "shared",
                     "Project drawing",
                     source,
-                    LibraryScope.PROJECT,
-                    id,
+                    LibraryPlacement(LibraryScope.PROJECT, id),
                     nowEpochMs = 1,
                 ),
             )

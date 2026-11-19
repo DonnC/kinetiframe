@@ -15,6 +15,7 @@ import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.AudioClipPlacement
 import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.library.data.LibraryPlacement
 import com.donnclab.kinetiframe.library.data.LibraryRepository
 import com.donnclab.kinetiframe.library.model.PackTrayItem
 import com.donnclab.kinetiframe.media.audio.AudioDurations
@@ -159,8 +160,7 @@ class LibraryTransfers(
             itemId = "library-${UUID.randomUUID()}",
             displayName = displayName,
             sourceFile = source(),
-            scope = scope,
-            projectId = projectId,
+            placement = LibraryPlacement(scope, projectId),
             nowEpochMs = now(),
         )
     }.getOrElse { StoreResult.Failure(StoreFailure.LIBRARY_NOT_ADDED, it) }

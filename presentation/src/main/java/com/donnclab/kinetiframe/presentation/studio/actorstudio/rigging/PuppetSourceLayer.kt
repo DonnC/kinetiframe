@@ -108,8 +108,6 @@ fun PuppetSourceLayer(
                             paint = settled.paint,
                             activeTool = settled.tool,
                             brush = settled.brush,
-                            sourceBitmap = settled.sourceBitmap,
-                            strength = settled.strength,
                         )
                 }
 
@@ -135,8 +133,6 @@ fun PuppetSourceLayer(
                             paint = pressurePaint,
                             activeTool = state.tool.activeTool,
                             brush = brush,
-                            sourceBitmap = state.currentBitmap,
-                            strength = strength,
                         )
                     }
                 }

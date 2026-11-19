@@ -156,9 +156,19 @@ fun TimelineTracksPanel(
     }
     val clipMenu: @Composable () -> Unit = {
         TrackClipContextMenu(
-            actionsOpen, { actionsOpen = false }, state, actor, sound, video,
-            onIntent, { moveOpen = true }, timeline, onEditPlacement,
-            onAddToLibrary, onAddAudioToLibrary, onCreatePerformance,
+            actionsOpen,
+            state,
+            TrackClipTarget(actor, sound, video),
+            timeline,
+            TrackClipActions(
+                onDismiss = { actionsOpen = false },
+                onIntent = onIntent,
+                onPosition = { moveOpen = true },
+                onEdit = onEditPlacement,
+                onSaveActor = onAddToLibrary,
+                onSaveAudio = onAddAudioToLibrary,
+                onCreatePerformance = onCreatePerformance,
+            ),
         )
     }
     // Show contiguous audio lanes, including one empty drop target. Never renumber sparse tracks.
@@ -269,19 +279,21 @@ fun TimelineTracksPanel(
                                     TimelineAssetClip(
                                         placement.placementId, placement.label, placement.startFrame,
                                         placement.durationFrames * placement.repeatCount, actor == placement,
-                                        onSelect = { select("actor:${placement.placementId}") },
-                                        onMove = { start, _ ->
-                                            onIntent(StudioIntent.ActorPlacement.Move(placement.placementId, start))
-                                        },
-                                        onTrim = { start, duration ->
-                                            onIntent(
-                                                StudioIntent.ActorPlacement.Trim(
-                                                    placement.placementId,
-                                                    start,
-                                                    duration,
-                                                ),
-                                            )
-                                        },
+                                        gestures = ClipGestures(
+                                            onSelect = { select("actor:${placement.placementId}") },
+                                            onMove = { start, _ ->
+                                                onIntent(StudioIntent.ActorPlacement.Move(placement.placementId, start))
+                                            },
+                                            onTrim = { start, duration ->
+                                                onIntent(
+                                                    StudioIntent.ActorPlacement.Trim(
+                                                        placement.placementId,
+                                                        start,
+                                                        duration,
+                                                    ),
+                                                )
+                                            },
+                                        ),
                                         minStart = (placement.startFrame - placement.sourceOffsetFrames).coerceAtLeast(
                                             0,
                                         ),
@@ -331,25 +343,27 @@ fun TimelineTracksPanel(
                                                 muted =
                                                 state.project.audioTracks[lane]?.isMuted == true,
                                                 track = lane, trackCount = audioLaneCount,
-                                                onSelect = { select("audio:${clip.clipId}") },
-                                                onMove = { start, target ->
-                                                    if (state.project.audioTracks[target]?.isLocked ==
-                                                        true
-                                                    ) {
-                                                        notice =
-                                                            resources.getString(
-                                                                R.string.tracks_audio_lane_locked,
-                                                                target + 1,
+                                                gestures = ClipGestures(
+                                                    onSelect = { select("audio:${clip.clipId}") },
+                                                    onMove = { start, target ->
+                                                        if (state.project.audioTracks[target]?.isLocked ==
+                                                            true
+                                                        ) {
+                                                            notice =
+                                                                resources.getString(
+                                                                    R.string.tracks_audio_lane_locked,
+                                                                    target + 1,
+                                                                )
+                                                        } else {
+                                                            onIntent(
+                                                                StudioIntent.Audio.Move(clip.clipId, target, start),
                                                             )
-                                                    } else {
-                                                        onIntent(
-                                                            StudioIntent.Audio.Move(clip.clipId, target, start),
-                                                        )
-                                                    }
-                                                },
-                                                onTrim = { start, duration ->
-                                                    onIntent(StudioIntent.Audio.Trim(clip.clipId, start, duration))
-                                                },
+                                                        }
+                                                    },
+                                                    onTrim = { start, duration ->
+                                                        onIntent(StudioIntent.Audio.Trim(clip.clipId, start, duration))
+                                                    },
+                                                ),
                                                 minStart = (clip.startFrame - clip.trimOffsetFrames).coerceAtLeast(0),
                                                 maxEnd =
                                                 clip.startFrame - clip.trimOffsetFrames +
@@ -371,21 +385,28 @@ fun TimelineTracksPanel(
                                             TimelineAssetClip(
                                                 clip.clipId, clip.label, clip.timelineStartFrame,
                                                 clip.timelineEndFrame - clip.timelineStartFrame, video == clip,
-                                                onSelect = { select("video:${clip.clipId}") },
-                                                onMove = { start, _ ->
-                                                    val end = start + clip.timelineEndFrame - clip.timelineStartFrame
-                                                    placeVideo(clip, start, end, clip.videoSourceOffsetSeconds)
-                                                },
-                                                onTrim = { start, duration ->
-                                                    placeVideo(
-                                                        clip,
-                                                        start,
-                                                        start + duration,
-                                                        clip.videoSourceOffsetSeconds +
-                                                            (start - clip.timelineStartFrame).toDouble() /
-                                                            state.project.fps.coerceAtLeast(1),
-                                                    )
-                                                },
+                                                gestures = ClipGestures(
+                                                    onSelect = { select("video:${clip.clipId}") },
+                                                    onMove = { start, _ ->
+                                                        val length = clip.timelineEndFrame - clip.timelineStartFrame
+                                                        placeVideo(
+                                                            clip,
+                                                            start,
+                                                            start + length,
+                                                            clip.videoSourceOffsetSeconds,
+                                                        )
+                                                    },
+                                                    onTrim = { start, duration ->
+                                                        placeVideo(
+                                                            clip,
+                                                            start,
+                                                            start + duration,
+                                                            clip.videoSourceOffsetSeconds +
+                                                                (start - clip.timelineStartFrame).toDouble() /
+                                                                state.project.fps.coerceAtLeast(1),
+                                                        )
+                                                    },
+                                                ),
                                                 minStart =
                                                 (clip.timelineStartFrame - clip.sourceOffsetFrames).coerceAtLeast(
                                                     0,

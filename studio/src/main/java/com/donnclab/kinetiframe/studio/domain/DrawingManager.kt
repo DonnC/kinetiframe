@@ -34,26 +34,30 @@ import kotlinx.coroutines.withContext
  * Manager for handling drawing logic, including stroke baking, undo/redo, and ruler application.
  */
 class DrawingManager(
-    private val scope: CoroutineScope,
-    private val dispatcher: CoroutineDispatcher,
+    runtime: StudioRuntime,
     private val cacheManager: FrameCacheManager,
     private val bakeMutex: Mutex,
     private val frameOperationMutex: Mutex,
-    private val getState: () -> StudioState,
-    private val updateState: ((StudioState) -> StudioState) -> Unit,
-    private val getBaseBitmap: () -> Bitmap?,
-    private val setBaseBitmap: (Bitmap?) -> Unit,
-    private val activeLayerId: () -> String,
-    private val composeFrame: suspend (frameIndex: Int, layerId: String, layerBitmap: Bitmap?) -> Bitmap?,
-    private val history: MutableList<HistoryItem>,
-    private val redoHistory: MutableList<HistoryItem>,
-    private val acquireBitmap: (Int, Int) -> Bitmap,
-    private val releaseBitmap: (Bitmap?) -> Unit,
-    /** Fired after a layer's frame bitmap settles (stroke bake, undo/redo, ...). Used to drive
-     *  "tap a bone, then sketch" auto-binding -- see [RiggingManager.autoBindLayerContent]. */
-    private val onFrameBaked: (layerId: String, bitmap: Bitmap) -> Unit = { _, _ -> },
-    private val pendingOperations: PendingOperations = PendingOperations(),
+    layers: DrawingLayers,
+    undo: UndoStacks,
 ) {
+    private val scope: CoroutineScope = runtime.scope
+    private val dispatcher: CoroutineDispatcher = runtime.dispatcher
+    private val getState: () -> StudioState = runtime.getState
+    private val updateState: ((StudioState) -> StudioState) -> Unit = runtime.updateState
+    private val pendingOperations: PendingOperations = runtime.pending
+    private val getBaseBitmap: () -> Bitmap? = layers.getBaseBitmap
+    private val setBaseBitmap: (Bitmap?) -> Unit = layers.setBaseBitmap
+    private val activeLayerId: () -> String = layers.activeLayerId
+    private val composeFrame = layers.composeFrame
+    private val acquireBitmap: (Int, Int) -> Bitmap = layers.acquireBitmap
+    private val releaseBitmap: (Bitmap?) -> Unit = layers.releaseBitmap
+
+    /** Drives auto-binding after a bake; see [RiggingManager.autoBindLayerContent]. */
+    private val onFrameBaked: (layerId: String, bitmap: Bitmap) -> Unit = layers.onFrameBaked
+    private val history: MutableList<HistoryItem> = undo.history
+    private val redoHistory: MutableList<HistoryItem> = undo.redo
+
     private val maxHistory = 20
     private val selectionHistoryBudget = minOf(24L * 1024 * 1024, Runtime.getRuntime().maxMemory() / 12)
     private val painter = HistoryItemPainter()

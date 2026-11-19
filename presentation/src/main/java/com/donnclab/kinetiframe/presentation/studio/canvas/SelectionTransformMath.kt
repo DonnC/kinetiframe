@@ -7,6 +7,16 @@ import com.donnclab.kinetiframe.core.geometry.Affine2D
 import kotlin.math.abs
 import kotlin.math.atan2
 
+/**
+ * How a handle drag transforms a selection: an optional pivot in document space, whether corners
+ * keep the aspect ratio, and whether edges skew instead.
+ */
+data class TransformOptions(
+    val customPivotDoc: Offset? = null,
+    val lockAspectRatio: Boolean = true,
+    val skewMode: Boolean = false,
+)
+
 /** Absolute gesture math: no accumulated drift, hit-radius jump, or TRS-only decomposition. */
 object SelectionTransformMath {
     data class TransformInfo(val translation: Offset, val scale: Offset, val rotation: Float)
@@ -25,11 +35,9 @@ object SelectionTransformMath {
         handle: Int,
         startTouchDoc: Offset,
         currentTouchDoc: Offset,
-        gestureScale: Float = 1f,
-        customPivotDoc: Offset? = null,
-        lockAspectRatio: Boolean = true,
-        skewMode: Boolean = false,
+        options: TransformOptions = TransformOptions(),
     ): Matrix {
+        val (customPivotDoc, lockAspectRatio, skewMode) = options
         if (handle == 4 || startTouchDoc == currentTouchDoc) return Matrix(startMatrix.values.copyOf())
         val start = startMatrix.affine()
         if (handle !in 0..9) {

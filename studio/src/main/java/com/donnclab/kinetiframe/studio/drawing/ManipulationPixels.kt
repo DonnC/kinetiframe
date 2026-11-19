@@ -1,12 +1,36 @@
 package com.donnclab.kinetiframe.studio.drawing
 
+import kotlin.math.ceil
 import kotlin.math.exp
 import kotlin.math.hypot
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+/**
+ * One blur or smudge dab: where it lands, how far the brush moved since the last dab, its
+ * radius and its strength. Mutable and reused between dabs, so a stroke allocates nothing per dab.
+ */
+class ManipulationDab {
+    var x = 0f
+    var y = 0f
+    var dx = 0f
+    var dy = 0f
+    var radius = 0f
+    var amount = 0f
+
+    fun set(x: Float, y: Float, dx: Float, dy: Float, radius: Float, amount: Float): ManipulationDab {
+        this.x = x
+        this.y = y
+        this.dx = dx
+        this.dy = dy
+        this.radius = radius
+        this.amount = amount
+        return this
+    }
+}
+
 /** Android-independent premultiplied RGBA math. Transparent RGB must never create dark fringes. */
-internal class ManipulationPixels {
+internal class ManipulationPixels(private val blur: Boolean) {
     private var a = FloatArray(0)
     private var b = FloatArray(0)
 
@@ -15,20 +39,20 @@ internal class ManipulationPixels {
         b = FloatArray(0)
     }
 
-    fun apply(
-        input: IntArray,
-        output: IntArray,
-        width: Int,
-        height: Int,
-        cx: Float,
-        cy: Float,
-        radius: Float,
-        dx: Float,
-        dy: Float,
-        amount: Float,
-        blur: Boolean,
-        kernel: Int,
-    ) {
+    companion object {
+        /** The box blur's half-width for a dab of [radius]. */
+        fun kernelFor(radius: Float): Int = ceil(radius * 0.12f).toInt().coerceAtLeast(1)
+    }
+
+    /** Applies [dab], positioned in the patch's own pixels, from [input] into [output]. */
+    fun apply(input: IntArray, output: IntArray, width: Int, height: Int, dab: ManipulationDab) {
+        val cx = dab.x
+        val cy = dab.y
+        val radius = dab.radius
+        val dx = dab.dx
+        val dy = dab.dy
+        val amount = dab.amount
+        val kernel = kernelFor(radius)
         val count = width * height
         if (a.size < count * 4) {
             a = FloatArray(count * 4)

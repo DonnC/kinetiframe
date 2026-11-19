@@ -23,6 +23,7 @@ import com.donnclab.kinetiframe.presentation.studio.actorstudio.ActorArtworkPick
 import com.donnclab.kinetiframe.presentation.studio.color.PaletteViewModel
 import com.donnclab.kinetiframe.presentation.studio.editor.EditorStorageViewModel
 import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineServices
+import com.donnclab.kinetiframe.studio.StudioDirectories
 
 /**
  * Builds every ViewModel that needs the app's services, from [container]. MainActivity provides
@@ -91,12 +92,10 @@ fun appViewModelFactory(container: AppContainer): ViewModelProvider.Factory = vi
     initializer {
         val arguments = checkNotNull(this[StudioViewModel.ArgumentsKey]) { "The editor needs its arguments" }
         StudioViewModel(
-            arguments.cacheDir,
+            StudioDirectories(arguments.cacheDir, arguments.filesDir, container.filesDir),
             loadActorPresets = container.actorPresets::load,
             initialEditorState = arguments.initialEditorState,
             runtimeRigAssetManager = arguments.runtimeRigAssetManager,
-            filesDir = arguments.filesDir,
-            diagnosticsDir = container.filesDir,
         )
     }
 }
