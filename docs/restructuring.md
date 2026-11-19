@@ -282,6 +282,12 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   builds with a shared development keystore, kept as a CI secret, so `adb install -r` works.
 - **Unused legacy migration.** `LegacyActorMigration.performance` has no production callers; only
   tests use it. Delete it with its tests once old actor files no longer need converting.
+- **The checker's compiler API.** The architecture checker parses sources with the Kotlin
+  compiler's `KotlinCoreEnvironment`. Kotlin 2.4 marks it for rework (`CoreEnvironmentDeprecation`)
+  and warns about `kotlin-compiler-embeddable` on the build classpath. The checker opts in for now,
+  and since 2.4 it must also give the environment an empty compiler plugin `extensionsStorage`.
+  Move it to a standalone PSI parser, or run it in an isolated worker classpath, before the API
+  goes away.
 - **Library build defaults.** Library modules relied on default SDK levels until the convention
   plugins set them (#17).
 

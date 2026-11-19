@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 package quality
 
+import org.jetbrains.kotlin.CoreEnvironmentDeprecation
+import org.jetbrains.kotlin.cli.extensionsStorage
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
+import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar
+import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
@@ -30,13 +34,20 @@ import java.io.File
  * the Compose API guidelines ask for, never push a component over the limit.
  */
 internal object KotlinBoundaryScanner {
+    // Only the parser is used. Kotlin 2.4 marks the environment API for rework; see the tracker.
+    @OptIn(CoreEnvironmentDeprecation::class, CompilerConfiguration.Internals::class, ExperimentalCompilerApi::class)
     fun scan(root: File, modules: List<String>): Map<String, Int> {
         val violations = sortedMapOf<String, Int>()
         val disposable = Disposer.newDisposable()
         try {
+            // Since Kotlin 2.4 the environment reads compiler plugins from the configuration, even when there are none.
+            val configuration = CompilerConfiguration().apply {
+                extensionsStorage =
+                    CompilerPluginRegistrar.ExtensionStorage()
+            }
             val environment = KotlinCoreEnvironment.createForProduction(
                 disposable,
-                CompilerConfiguration(),
+                configuration,
                 EnvironmentConfigFiles.JVM_CONFIG_FILES,
             )
             val factory = KtPsiFactory(environment.project, false)
