@@ -1,15 +1,14 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.geometry.Point2
 import kotlin.math.abs
 
-// Frozen Offset operations guard the full graph result, not just the new kernel's own invariants.
+// Frozen Point2 operations guard the full graph result, not just the new kernel's own invariants.
 internal object LegacyActorPoseReference {
     /** Move an attachment origin in its parent's coordinates, not a rotation endpoint. */
-    fun moveOrigin(graph: SceneGraph, id: String, target: Offset): SceneGraph {
+    fun moveOrigin(graph: SceneGraph, id: String, target: Point2): SceneGraph {
         val bone = graph.bones[id] ?: return graph
         if (!target.x.isFinite() || !target.y.isFinite() || !RigGeometry.isRigid(graph)) return graph
         val parentBone = graph.bones[bone.parentId]
@@ -33,7 +32,7 @@ internal object LegacyActorPoseReference {
     }
 
     /** Artwork positioning does not change the bone or its semantic expression alternatives. */
-    fun moveArtwork(graph: SceneGraph, id: String, delta: Offset): SceneGraph {
+    fun moveArtwork(graph: SceneGraph, id: String, delta: Point2): SceneGraph {
         val bone = graph.bones[id] ?: return graph
         if (!delta.x.isFinite() || !delta.y.isFinite()) return graph
         val local = RigGeometry.rotate(delta, -RigGeometry.resolve(graph).getValue(id).angle)
@@ -65,7 +64,7 @@ internal object LegacyActorPoseReference {
     }
 
     /** Moving the root positions the whole rest skeleton without changing its proportions. */
-    fun moveRoot(graph: SceneGraph, id: String, target: Offset, allRoots: Boolean = false): SceneGraph {
+    fun moveRoot(graph: SceneGraph, id: String, target: Point2, allRoots: Boolean = false): SceneGraph {
         val root = graph.bones[id]?.takeIf { it.parentId == null } ?: return graph
         if (!target.x.isFinite() || !target.y.isFinite()) return graph
         if (allRoots) {
@@ -100,7 +99,7 @@ internal object LegacyActorPoseReference {
     }
 
     /** Setup changes the chosen endpoint and carries attached children along with it. */
-    fun fit(graph: SceneGraph, id: String, target: Offset): SceneGraph {
+    fun fit(graph: SceneGraph, id: String, target: Point2): SceneGraph {
         val bone = graph.bones[id] ?: return graph
         if (!RigGeometry.isRigid(graph)) return graph
         val world = RigGeometry.resolve(graph)
@@ -127,7 +126,7 @@ internal object LegacyActorPoseReference {
     }
 
     /** Pose edits rotations only. The chain root stays anchored and bone lengths remain fixed. */
-    fun pose(graph: SceneGraph, id: String, target: Offset, bendSide: Int? = null): SceneGraph {
+    fun pose(graph: SceneGraph, id: String, target: Point2, bendSide: Int? = null): SceneGraph {
         val bone = graph.bones[id] ?: return graph
         if (!target.x.isFinite() || !target.y.isFinite() || !RigGeometry.isRigid(graph)) return graph
         // A middle-joint handle is not an endpoint IK target. Rotate the upper segment

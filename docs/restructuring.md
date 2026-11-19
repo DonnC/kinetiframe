@@ -13,9 +13,18 @@ Keep this page current:
 
 ## Now
 
-Work collects on one milestone branch, `milestone/code-limits`, with a commit per chunk and one
-pull request into `develop` when the milestone is done. #75 finished the previous milestone
-(per-app language, pseudo-locales and theme tokens).
+Work collects on one milestone branch per milestone, with a commit per chunk and one pull request
+into `develop` when the milestone is done. #75 finished per-app language, pseudo-locales and
+theme tokens. #76 (in review) holds the code limits milestone described below. The UI separation
+milestone, `milestone/ui-separation`, starts from it.
+
+**UI separation, part 1: `actors` without Compose.** The rig maths, hit testers, framing and
+templates use `core`'s `Point2` instead of Compose's `Offset`, and the lasso crop takes an
+`android.graphics.Path`. `actors` no longer depends on Compose at all. `presentation` converts
+at the boundary with `Offset.toPoint2()` and `Point2.toOffset()`, and `studio` converts where its
+own Compose-based state meets the rig (the selection maths and the lasso, which part 2 moves).
+`Point2` gains `getDistanceSquared()`, unary minus and `Zero`. CI now also compiles `app`'s unit
+tests, which call these APIs and which no check compiled before.
 
 **Parameter limits.** 50 of the 51 functions over the limit are fixed, mostly by grouping
 parameters that travel together into small data classes. Each function unpacks them under the
@@ -63,8 +72,10 @@ pass:
 
 ## Next
 
-1. **UI separation.** Remove the 38 Compose imports in domain, data, render, rig, math and model
-   code, and move `StudioState`'s two onion skin colours to the theme.
+1. **UI separation, part 2: `studio` without Compose.** The 22 Compose imports left are all in
+   `studio`: strokes, selections, history and text use `Offset`, `Path`, `Rect` and `Matrix`, and
+   `StudioState` holds some of them, along with its two onion skin colours. Move them to `core`
+   geometry and `android.graphics`, then drop Compose from `studio`.
 2. **Right-to-left editor controls.** In `ar-XB` the editor's playback buttons and frame strip
    mirror, so "next frame" sits on the left and time runs right to left. Material keeps media
    controls left to right. Decide whether the timeline should too, and flip the undo and redo
@@ -299,7 +310,7 @@ From `.architecture/` during step 9. Each count may only go down.
 
 | Debt | Count | Files |
 | --- | --- | --- |
-| Compose imports outside UI code | 38 | 25 |
+| Compose imports outside UI code | 22 | 10 |
 | UI imports of `data` packages | 0 | — |
 | Functions over the parameter limit | 1 | — |
 | Inline text values | 0 | — |

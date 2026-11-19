@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
+import com.donnclab.kinetiframe.core.geometry.Point2
 import kotlin.math.max
 import kotlin.math.min
 
@@ -14,8 +14,8 @@ import kotlin.math.min
  */
 data class CutoutPartGuide(
     val partId: String,
-    val start: Offset,
-    val end: Offset,
+    val start: Point2,
+    val end: Point2,
     val envelopeRadius: Float,
     val overlapRadius: Float,
 )
@@ -25,7 +25,7 @@ object CutoutPartGuideFactory {
      * Creates a bounded capsule guide. Long limbs gain enough room for clothing and line weight,
      * but the cap prevents an oversized guide from swallowing neighbouring parts.
      */
-    fun create(partId: String, start: Offset, end: Offset): CutoutPartGuide {
+    fun create(partId: String, start: Point2, end: Point2): CutoutPartGuide {
         val length = (end - start).getDistance()
         val envelope = min(48f, max(22f, length * 0.18f))
         return CutoutPartGuide(

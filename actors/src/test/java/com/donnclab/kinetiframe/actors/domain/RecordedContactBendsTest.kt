@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.math.ActorPoseEditor
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
@@ -11,6 +10,7 @@ import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.core.geometry.Point2
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -20,12 +20,12 @@ class RecordedContactBendsTest {
         val before = ActorPoseEditor.pose(
             rest,
             "left_shin",
-            RigGeometry.resolve(rest).getValue("left_shin").end + Offset(40f, -30f),
+            RigGeometry.resolve(rest).getValue("left_shin").end + Point2(40f, -30f),
             -1,
         )
         val anchor = ActorMotionPose.captureContact(before, "left_shin", "left_foot")
         val base = listOf(ActorPoseTrack.capture(0, before, rest, mapOf("left_shin" to anchor)))
-        val opposite = ActorPoseEditor.pose(before, "left_shin", Offset(anchor.x, anchor.y), 1)
+        val opposite = ActorPoseEditor.pose(before, "left_shin", Point2(anchor.x, anchor.y), 1)
         val curves = listOf("left_thigh", "left_shin").map { id ->
             RotationCurve(
                 id,

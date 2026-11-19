@@ -8,6 +8,7 @@ import com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.StudioState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
@@ -22,6 +23,7 @@ import org.junit.Test
 class ActorSelectionTest {
     private val actor = ActorPlacementReference("placed", "performance", "actor", "revision", "Wave", 0, 24)
     private val quad = listOf(Offset(10f, 10f), Offset(30f, 10f), Offset(30f, 30f), Offset(10f, 30f))
+    private val actorQuad = quad.map { Point2(it.x, it.y) }
 
     @Test fun rectangleSelectsLiveActorAndCommitsExactShear() = runTest {
         var state =
@@ -40,7 +42,11 @@ class ActorSelectionTest {
             null,
             Rect(0f, 0f, 40f, 40f),
             1f,
-            actors = ActorSelectionGeometry("project", 0, listOf(ActorSelectionGeometry.Object(actor, listOf(quad)))),
+            actors = ActorSelectionGeometry(
+                "project",
+                0,
+                listOf(ActorSelectionGeometry.Object(actor, listOf(actorQuad))),
+            ),
         ).join()
         assertEquals(setOf("placed"), state.selection.selectedContent!!.actors.keys)
         assertNull(state.selection.selectedContent!!.bitmap)
@@ -78,7 +84,11 @@ class ActorSelectionTest {
             null,
             Rect(0f, 0f, 40f, 40f),
             1f,
-            actors = ActorSelectionGeometry("project", 0, listOf(ActorSelectionGeometry.Object(actor, listOf(quad)))),
+            actors = ActorSelectionGeometry(
+                "project",
+                0,
+                listOf(ActorSelectionGeometry.Object(actor, listOf(actorQuad))),
+            ),
         ).join()
         state = state.copy(selection = state.selection.copy(transform = Matrix().apply { values[12] = 50f }))
         manager.copySelection()
@@ -106,7 +116,11 @@ class ActorSelectionTest {
             null,
             Rect(0f, 0f, 40f, 40f),
             1f,
-            actors = ActorSelectionGeometry("project", 9, listOf(ActorSelectionGeometry.Object(actor, listOf(quad)))),
+            actors = ActorSelectionGeometry(
+                "project",
+                9,
+                listOf(ActorSelectionGeometry.Object(actor, listOf(actorQuad))),
+            ),
         ).join()
         assertFalse(state.selection.active)
     }

@@ -27,7 +27,7 @@ class RootMotionRecordingTest {
         val moved = com.donnclab.kinetiframe.actors.rig.math.ActorPoseEditor.moveRoot(
             graph,
             root,
-            androidx.compose.ui.geometry.Offset(source.x + 80, source.y - 12),
+            com.donnclab.kinetiframe.core.geometry.Point2(source.x + 80, source.y - 12),
             allRoots = true,
         )
         assertEquals(additional.localTransform.x + 80, moved.bones.getValue(id).localTransform.x, .001f)

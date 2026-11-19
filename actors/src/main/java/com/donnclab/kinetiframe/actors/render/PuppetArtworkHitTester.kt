@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.render
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.geometry.Point2
 
 /** Topmost visible artwork wins. Rigid pieces reject transparent margins at source-pixel precision. */
 object PuppetArtworkHitTester {
@@ -23,11 +23,11 @@ object PuppetArtworkHitTester {
         val region = android.graphics.Region().apply { setPath(path, clip) }
         // Try the centre first, then distributed points for off-centre or concave lassos.
         val samples = buildList {
-            add(Offset(bounds.centerX(), bounds.centerY()))
+            add(Point2(bounds.centerX(), bounds.centerY()))
             for (row in 0 until 16) {
                 for (column in 0 until 16) {
                     add(
-                        Offset(
+                        Point2(
                             bounds.left + bounds.width() * (column + .5f) / 16,
                             bounds.top + bounds.height() * (row + .5f) / 16,
                         ),
@@ -42,7 +42,7 @@ object PuppetArtworkHitTester {
         }
     }
 
-    fun hit(point: Offset, commands: List<PuppetRenderCommand>, assets: RigAssetManager): String? =
+    fun hit(point: Point2, commands: List<PuppetRenderCommand>, assets: RigAssetManager): String? =
         synchronized(assets) {
             commands.asReversed().firstOrNull { command ->
                 val bitmap = assets.getAsset(command.assetId) ?: return@firstOrNull false
@@ -63,7 +63,7 @@ object PuppetArtworkHitTester {
         }
 
     // Test the deformed triangles, not their bounding box: bent elbows contain empty space.
-    private fun meshHit(point: Offset, command: PuppetRenderCommand, bitmap: android.graphics.Bitmap): Boolean {
+    private fun meshHit(point: Point2, command: PuppetRenderCommand, bitmap: android.graphics.Bitmap): Boolean {
         val mesh = requireNotNull(command.mesh)
         val vertices = PuppetArtworkRenderer.outline(command, bitmap.width, bitmap.height)
         fun triangle(a: Int, b: Int, c: Int): Boolean {

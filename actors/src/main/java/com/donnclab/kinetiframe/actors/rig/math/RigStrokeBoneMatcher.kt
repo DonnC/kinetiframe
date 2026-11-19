@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
+import com.donnclab.kinetiframe.core.geometry.Point2
 
 /**
  * Routes one freehand stroke to the skeletal segment it most closely follows.
@@ -11,7 +11,7 @@ import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
  * distance keeps a deliberate limb stroke stable even when its endpoint reaches a joint.
  */
 object RigStrokeBoneMatcher {
-    fun nearestBoneId(graph: SceneGraph, points: List<Offset>): String? {
+    fun nearestBoneId(graph: SceneGraph, points: List<Point2>): String? {
         val samples = points.filter { it.x.isFinite() && it.y.isFinite() }
         if (samples.isEmpty()) return null
         val world = ForwardKinematicsSolver.resolveWorldStates(graph)
@@ -20,7 +20,7 @@ object RigStrokeBoneMatcher {
         }?.key
     }
 
-    private fun distanceSquaredToSegment(point: Offset, start: Offset, end: Offset): Float {
+    private fun distanceSquaredToSegment(point: Point2, start: Point2, end: Point2): Float {
         val segment = end - start
         val lengthSquared = segment.x * segment.x + segment.y * segment.y
         if (lengthSquared <= 0.0001f) return (point - start).getDistanceSquared()

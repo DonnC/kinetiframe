@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.core.actor.motion.ContactBend
 import com.donnclab.kinetiframe.core.actor.motion.ContactFollow
 import com.donnclab.kinetiframe.core.actor.motion.JointContact
@@ -54,7 +53,7 @@ internal object LegacyMotionPoseReference {
             },
         )
         contacts.toSortedMap().forEach { (id, anchor) ->
-            graph = LegacyActorPoseReference.pose(graph, id, Offset(anchor.x, anchor.y), anchor.bendSide)
+            graph = LegacyActorPoseReference.pose(graph, id, Point2(anchor.x, anchor.y), anchor.bendSide)
             val follow = anchor.followBoneId?.let(graph.bones::get) ?: return@forEach
             val parentAngle = RigGeometry.resolve(graph)[follow.parentId]?.angle ?: 0f
             graph =

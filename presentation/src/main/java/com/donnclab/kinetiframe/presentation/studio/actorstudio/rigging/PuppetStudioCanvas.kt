@@ -28,9 +28,11 @@ import com.donnclab.kinetiframe.actors.rig.math.RigJointTarget
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.document.BrushSnapshot
 import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.common.toPoint2
 import com.donnclab.kinetiframe.presentation.studio.canvas.ActiveStroke
 import com.donnclab.kinetiframe.presentation.studio.canvas.CanvasInputLayer
 import com.donnclab.kinetiframe.presentation.studio.canvas.InputCallbacks
@@ -113,7 +115,7 @@ fun PuppetStudioCanvas(
                     val start = floatArrayOf(bone.startPoint.x, bone.startPoint.y)
                     instanceMatrix.mapPoints(start)
                     return@flatMap listOf(
-                        RigJointTarget("origin:${bone.id}", androidx.compose.ui.geometry.Offset(start[0], start[1])),
+                        RigJointTarget("origin:${bone.id}", Point2(start[0], start[1])),
                     )
                 }
                 if (state.scene.studioMode == com.donnclab.kinetiframe.studio.StudioMode.RIG_SETUP &&
@@ -123,7 +125,7 @@ fun PuppetStudioCanvas(
                     val start = floatArrayOf(bone.startPoint.x, bone.startPoint.y)
                     instanceMatrix.mapPoints(start)
                     return@flatMap listOf(
-                        RigJointTarget("origin:${bone.id}", androidx.compose.ui.geometry.Offset(start[0], start[1])),
+                        RigJointTarget("origin:${bone.id}", Point2(start[0], start[1])),
                     )
                 }
                 val point = floatArrayOf(bone.endPoint.x, bone.endPoint.y)
@@ -137,7 +139,7 @@ fun PuppetStudioCanvas(
                     )
                 val endpoint = RigJointTarget(
                     if (attachment) "attachment:${bone.id}" else bone.id,
-                    androidx.compose.ui.geometry.Offset(point[0], point[1]),
+                    Point2(point[0], point[1]),
                 )
                 if (state.scene.studioMode != com.donnclab.kinetiframe.studio.StudioMode.RASTER_DRAWING &&
                     bone.id in definition.sceneGraph.rootBoneIds
@@ -146,7 +148,7 @@ fun PuppetStudioCanvas(
                     instanceMatrix.mapPoints(start)
                     listOf(
                         endpoint,
-                        RigJointTarget("origin:${bone.id}", androidx.compose.ui.geometry.Offset(start[0], start[1])),
+                        RigJointTarget("origin:${bone.id}", Point2(start[0], start[1])),
                     )
                 } else {
                     listOf(endpoint)
@@ -295,7 +297,7 @@ fun PuppetStudioCanvas(
                             definition != null && instance != null && rigAssetManager != null
                         ) {
                             com.donnclab.kinetiframe.actors.render.PuppetArtworkHitTester.hit(
-                                point,
+                                point.toPoint2(),
                                 com.donnclab.kinetiframe.actors.render.PuppetRenderPlan.create(
                                     definition,
                                     instance,
@@ -306,7 +308,7 @@ fun PuppetStudioCanvas(
                             }
                         } else {
                             RigJointHitTester.nearestWithin(
-                                point,
+                                point.toPoint2(),
                                 jointTargets,
                                 radius =
                                 12f * density /

@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.domain.PerformanceAuthoring
 import com.donnclab.kinetiframe.actors.domain.PerformanceCompatibility
@@ -18,6 +17,7 @@ import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.engine.rigging.math.CompiledMotionCurve
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.actorStudioInitialState
@@ -85,14 +85,14 @@ class NaturalActorMotionTest {
     }
 
     @Test fun `two bone chain keeps side and lengths across extension root and unreachable targets`() {
-        val chain = listOf(Offset.Zero, Offset(10f, 0f), Offset(20f, 0f))
+        val chain = listOf(Point2.Zero, Point2(10f, 0f), Point2(20f, 0f))
         for (side in listOf(-1, 1)) {
             for (target in listOf(
-                Offset.Zero,
-                Offset(.00001f, 0f),
-                Offset(19.999f, 0f),
-                Offset(200f, 30f),
-                Offset(-3f, 6f),
+                Point2.Zero,
+                Point2(.00001f, 0f),
+                Point2(19.999f, 0f),
+                Point2(200f, 30f),
+                Point2(-3f, 6f),
             )) {
                 val result = TwoBoneSolver.solve(chain, target, side)
                 assertEquals(10f, (result[1] - result[0]).getDistance(), .001f)
@@ -110,7 +110,7 @@ class NaturalActorMotionTest {
         val shifted = ActorPoseEditor.moveRoot(
             rest,
             "torso",
-            Offset(
+            Point2(
                 rest.bones.getValue("torso").localTransform.x + 12f,
                 rest.bones.getValue("torso").localTransform.y + 6f,
             ),
@@ -134,7 +134,7 @@ class NaturalActorMotionTest {
         for (time in listOf(800_000L, 0L, 500_000L, 1_000_000L, 200_000L, 500_000L)) {
             val posed = PerformanceEvaluator.pose(loaded, time, rest)
             val world = RigGeometry.resolve(posed)
-            assertEquals(0f, (world.getValue("left_shin").end - Offset(anchor.x, anchor.y)).getDistance(), .02f)
+            assertEquals(0f, (world.getValue("left_shin").end - Point2(anchor.x, anchor.y)).getDistance(), .02f)
             assertEquals(anchor.followWorldAngle, world.getValue("left_foot").angle, .001f)
             assertEquals(rest, revision.sceneGraph)
             val preview = studio.copy(
@@ -238,7 +238,7 @@ class NaturalActorMotionTest {
         manager.handle(
             com.donnclab.kinetiframe.studio.StudioIntent.Actor.Drag(
                 "origin:torso",
-                Offset(
+                androidx.compose.ui.geometry.Offset(
                     origin.x + 12f,
                     origin.y + 6f,
                 ),

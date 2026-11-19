@@ -40,7 +40,7 @@ class ActorDrawingTransactionTest {
             val rest = com.donnclab.kinetiframe.actors.rig.math.ActorPoseEditor.moveOrigin(
                 definition.sceneGraph,
                 "root",
-                androidx.compose.ui.geometry.Offset(20f, 30f),
+                com.donnclab.kinetiframe.core.geometry.Point2(20f, 30f),
             )
             val drawing = ActorDrawing(
                 DrawingSource("draft-ink", "draft-colour", SkinSourceSize(16, 16)),

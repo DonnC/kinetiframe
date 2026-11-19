@@ -94,7 +94,7 @@ class ActorStudioManagerTest {
         val rest = state.actorDefinition()!!
         state = state.copy(scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK))
         val endpoint = RigGeometry.resolve(rest.sceneGraph).getValue("left_forearm").end
-        manager.handle(StudioIntent.Actor.Drag("left_forearm", endpoint + Offset(30f, -40f)))
+        manager.handle(StudioIntent.Actor.Drag("left_forearm", Offset(endpoint.x + 30f, endpoint.y - 40f)))
         assertEquals(rest, state.actorDefinition())
         manager.handle(StudioIntent.Actor.CommitDrag)
         val pose = state.activeActor()!!.pose

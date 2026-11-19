@@ -12,9 +12,6 @@ dependencies {
     api(project(":core"))
     api(project(":engine"))
     api(project(":data"))
-    // Rig geometry still uses Compose's Offset and Path; the compose check counts each use.
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.kotlinx.coroutines.test)

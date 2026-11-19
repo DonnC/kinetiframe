@@ -27,6 +27,7 @@ import com.donnclab.kinetiframe.presentation.actors.sketch.ActorSketchState
 import com.donnclab.kinetiframe.presentation.actors.sketch.SketchLayer
 import com.donnclab.kinetiframe.presentation.actors.sketch.SketchTool
 import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.presentation.common.toPoint2
 import com.donnclab.kinetiframe.presentation.common.toUiText
 import com.donnclab.kinetiframe.studio.drawing.BrushRenderers
 import com.donnclab.kinetiframe.studio.drawing.SketchColourFill
@@ -109,13 +110,13 @@ class ActorSketchViewModel(
                     com.donnclab.kinetiframe.actors.rig.math.ActorPoseEditor.moveOrigin(
                         previous.graph,
                         intent.partId,
-                        intent.target,
+                        intent.target.toPoint2(),
                     )
                 } else {
                     com.donnclab.kinetiframe.actors.rig.math.ActorPoseEditor.fit(
                         previous.graph,
                         intent.partId,
-                        intent.target,
+                        intent.target.toPoint2(),
                     )
                 }
                 if (changed != previous.graph) {

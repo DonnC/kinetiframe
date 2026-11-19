@@ -2,8 +2,8 @@ package com.donnclab.kinetiframe.studio.domain.actorstudio
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.asAndroidPath
 import com.donnclab.kinetiframe.actors.rig.math.ForwardKinematicsSolver
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.model.PivotPlacement
@@ -68,7 +68,7 @@ class RiggingManager(
             var installed = false
             try {
                 val placement = kotlinx.coroutines.withContext(Dispatchers.Default) {
-                    val extracted = TextureExtractor.extractLassoCrop(sourceFrame, lassoPath)
+                    val extracted = TextureExtractor.extractLassoCrop(sourceFrame, lassoPath.asAndroidPath())
                     val processed = try {
                         JointProcessor.dilateJointEdges(extracted, dilationRadius)
                     } catch (
@@ -221,7 +221,7 @@ class RiggingManager(
             val textureSlotId = "slot-$id"
             val world = RigGeometry.resolve(definition.sceneGraph).getValue(id)
             val offset = RigGeometry.rotate(
-                Offset(
+                Point2(
                     placement.documentLeft + placement.pivotX,
                     placement.documentTop + placement.pivotY,
                 ) - world.start,
@@ -233,7 +233,7 @@ class RiggingManager(
                     assetId = placement.assetId,
                     pivot = Point2(placement.pivotX, placement.pivotY),
                     alignment = ArtworkAlignment(
-                        Point2(offset.x, offset.y),
+                        offset,
                         -world.angle,
                     ),
                 ),

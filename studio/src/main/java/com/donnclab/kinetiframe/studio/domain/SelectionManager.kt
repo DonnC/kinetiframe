@@ -115,7 +115,12 @@ class SelectionManager(
                 }
                     ?.objects?.filter { geometry ->
                         state.project.actorPlacements[geometry.placement.placementId] == geometry.placement &&
-                            area.matches(geometry.quads, state.selection.partialInclude)
+                            area.matches(
+                                geometry.quads.map { quad ->
+                                    quad.map { Offset(it.x, it.y) }
+                                },
+                                state.selection.partialInclude,
+                            )
                     }.orEmpty()
                 if (area.isTap) actorHits = actorHits.maxByOrNull { it.placement.zIndex }?.let(::listOf).orEmpty()
                 val selectedActors = actorHits.associate { it.placement.placementId to it.placement }
@@ -167,7 +172,9 @@ class SelectionManager(
                     history.add(requireNotNull(pendingClear))
                     rebuildCurrentBitmap()
                 }
-                val actorBounds = actorHits.flatMap { it.quads.flatten() }.let(::pointsBounds)
+                val actorBounds = actorHits.flatMap { hit ->
+                    hit.quads.flatten().map { Offset(it.x, it.y) }
+                }.let(::pointsBounds)
                 val videoBounds = selectedVideos.values.flatMap {
                     com.donnclab.kinetiframe.media.video.SceneVideoGeometry.corners(it)
                 }.let(::pointsBounds)

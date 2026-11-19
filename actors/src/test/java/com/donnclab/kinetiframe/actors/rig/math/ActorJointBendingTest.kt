@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.actors.rig.math
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.core.geometry.Point2
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -22,7 +22,7 @@ class ActorJointBendingTest {
             val lowerAngle = world.getValue(lower).angle
             val sides = listOf(-40f, 40f).map { swing ->
                 val target =
-                    origin + RigGeometry.rotate(Offset(rest.bones.getValue(upper).length, 0f), lowerAngle + swing)
+                    origin + RigGeometry.rotate(Point2(rest.bones.getValue(upper).length, 0f), lowerAngle + swing)
                 val posed = ActorPoseEditor.pose(rest, upper, target)
                 val result = RigGeometry.resolve(posed)
                 assertEquals(lowerAngle, result.getValue(lower).angle, .001f)
@@ -31,7 +31,7 @@ class ActorJointBendingTest {
                 val side = TwoBoneSolver.bendSide(
                     listOf(origin, result.getValue(lower).start, result.getValue(lower).end),
                 )
-                val followed = ActorPoseEditor.pose(posed, lower, result.getValue(lower).end + Offset(1f, 1f))
+                val followed = ActorPoseEditor.pose(posed, lower, result.getValue(lower).end + Point2(1f, 1f))
                 val after = RigGeometry.resolve(followed)
                 assertEquals(
                     side,
@@ -45,16 +45,16 @@ class ActorJointBendingTest {
 
     @Test fun `nonfinite joint input is a no op`() {
         val rest = ActorTemplates.create(ActorTemplate.HUMAN, StageDimensions.LandscapeHd)
-        assertEquals(rest, ActorPoseEditor.pose(rest, "left_thigh", Offset(Float.NaN, 0f)))
+        assertEquals(rest, ActorPoseEditor.pose(rest, "left_thigh", Point2(Float.NaN, 0f)))
     }
 
     @Test fun `endpoint drags retain either bend after full extension and a separate retraction`() {
         val rest = ActorTemplates.create(ActorTemplate.HUMAN, StageDimensions.LandscapeHd)
         val origin = RigGeometry.resolve(rest).getValue("left_thigh").start
         for (side in listOf(-1, 1)) {
-            val initial = ActorPoseEditor.pose(rest, "left_shin", origin + Offset(30f, 120f), side)
-            val extended = ActorPoseEditor.pose(initial, "left_shin", origin + Offset(0f, 1000f))
-            val retracted = ActorPoseEditor.pose(extended, "left_shin", origin + Offset(30f, 120f))
+            val initial = ActorPoseEditor.pose(rest, "left_shin", origin + Point2(30f, 120f), side)
+            val extended = ActorPoseEditor.pose(initial, "left_shin", origin + Point2(0f, 1000f))
+            val retracted = ActorPoseEditor.pose(extended, "left_shin", origin + Point2(30f, 120f))
             val world = RigGeometry.resolve(retracted)
             assertEquals(
                 side,

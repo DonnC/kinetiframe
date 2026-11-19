@@ -3,8 +3,8 @@ package com.donnclab.kinetiframe.actors.render
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Matrix
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.geometry.Point2
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
@@ -35,8 +35,8 @@ class PuppetArtworkHitTesterTest {
                     PuppetRenderCommand("back", Matrix(), boneId = "body"),
                     PuppetRenderCommand("front", Matrix(), boneId = "eyes"),
                 )
-            assertEquals("body", PuppetArtworkHitTester.hit(Offset(5f, 5f), commands, assets))
-            assertEquals("eyes", PuppetArtworkHitTester.hit(Offset(10f, 10f), commands, assets))
+            assertEquals("body", PuppetArtworkHitTester.hit(Point2(5f, 5f), commands, assets))
+            assertEquals("eyes", PuppetArtworkHitTester.hit(Point2(10f, 10f), commands, assets))
         } finally {
             assets.clear()
         }
@@ -53,9 +53,9 @@ class PuppetArtworkHitTesterTest {
             // A diagonal parallelogram occupies only part of its rectangular bounds.
             val mesh = PuppetSkinMesh(20, 20, 1, 1, floatArrayOf(0f, 0f, 20f, 20f, 0f, 10f, 20f, 30f))
             val command = PuppetRenderCommand("arm", Matrix(), mesh, "arm")
-            assertNull(PuppetArtworkHitTester.hit(Offset(18f, 2f), listOf(command), assets))
-            assertEquals("arm", PuppetArtworkHitTester.hit(Offset(5f, 10f), listOf(command), assets))
-            assertNull(PuppetArtworkHitTester.hit(Offset(10f, 15f), listOf(command), assets))
+            assertNull(PuppetArtworkHitTester.hit(Point2(18f, 2f), listOf(command), assets))
+            assertEquals("arm", PuppetArtworkHitTester.hit(Point2(5f, 10f), listOf(command), assets))
+            assertNull(PuppetArtworkHitTester.hit(Point2(10f, 15f), listOf(command), assets))
         } finally {
             assets.clear()
         }

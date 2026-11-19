@@ -40,6 +40,7 @@ import com.donnclab.kinetiframe.engine.rigging.math.ArtworkGestureBasis
 import com.donnclab.kinetiframe.engine.rigging.math.ArtworkGestureDelta
 import com.donnclab.kinetiframe.engine.rigging.math.ArtworkPlacementGesture
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.toOffset
 
 /**
  * The rig part the artwork is placed on: the rig, the part, where the rig's other artwork loads
@@ -66,7 +67,7 @@ fun ArtworkPlacementPreview(
     val latest by rememberUpdatedState(binding)
     val changed by rememberUpdatedState(onChange)
     val world = remember(graph) { graph?.let(RigGeometry::resolve) }
-    val origin = world?.get(partId)?.start ?: Offset.Zero
+    val origin = world?.get(partId)?.start?.toOffset() ?: Offset.Zero
     val framing = remember(graph, size) {
         val points = world?.values?.flatMap { listOf(it.start, it.end) }.orEmpty()
         val left = points.minOfOrNull { it.x } ?: -150f
@@ -151,7 +152,7 @@ fun ArtworkPlacementPreview(
         }
         world?.values?.forEach {
             fun screen(p: Offset) = p * framing.first + Offset(framing.second, framing.third)
-            drawLine(BrandTeal.copy(alpha = .35f), screen(it.start), screen(it.end), 2f)
+            drawLine(BrandTeal.copy(alpha = .35f), screen(it.start.toOffset()), screen(it.end.toOffset()), 2f)
         }
         drawCircle(BrandTeal, 5f, origin * framing.first + Offset(framing.second, framing.third))
     }

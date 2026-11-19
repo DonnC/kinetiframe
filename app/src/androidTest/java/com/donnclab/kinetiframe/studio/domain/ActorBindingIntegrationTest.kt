@@ -71,7 +71,7 @@ class ActorBindingIntegrationTest {
             // The attachment survives a pose transaction, which remains instance-local.
             state = state.copy(scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK))
             val endpoint = RigGeometry.resolve(bound.sceneGraph).getValue("left_forearm").end
-            authoring.handle(StudioIntent.Actor.Drag("left_forearm", endpoint + Offset(20f, -25f)))
+            authoring.handle(StudioIntent.Actor.Drag("left_forearm", Offset(endpoint.x + 20f, endpoint.y - 25f)))
             authoring.handle(StudioIntent.Actor.CommitDrag)
             assertTrue(state.activeActor()!!.pose.isNotEmpty())
             authoring.handle(StudioIntent.Actor.Undo)

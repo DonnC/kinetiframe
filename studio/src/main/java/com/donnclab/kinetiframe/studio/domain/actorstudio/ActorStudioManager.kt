@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.studio.domain.actorstudio
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.actors.domain.PerformanceAuthoring
 import com.donnclab.kinetiframe.actors.rig.math.ActorJointHandle
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
@@ -20,6 +19,7 @@ import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.core.document.unbindTextureFromBone
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.engine.rigging.math.CompiledMotionCurve
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -40,7 +40,7 @@ class ActorStudioManager(
     private val retainRuntimeAssets: (Set<String>) -> Unit = {},
 ) {
     private val history = ActorEditHistory(getState, updateState, retainRuntimeAssets)
-    private var artworkDragStart: Offset? = null
+    private var artworkDragStart: Point2? = null
     private var artworkDragBase: SceneGraph? = null
     private var motionDragBase: SceneGraph? = null
 
@@ -145,10 +145,10 @@ class ActorStudioManager(
                 val transform = state.activeActor()?.transform ?: return@updateState state
                 if (transform.scaleX == 0f || transform.scaleY == 0f) return@updateState state
                 val rotated = RigGeometry.rotate(
-                    intent.target - Offset(transform.x, transform.y),
+                    Point2(intent.target.x, intent.target.y) - Point2(transform.x, transform.y),
                     -transform.rotationDegrees,
                 )
-                val target = Offset(rotated.x / transform.scaleX, rotated.y / transform.scaleY)
+                val target = Point2(rotated.x / transform.scaleX, rotated.y / transform.scaleY)
                 if (!target.x.isFinite() || !target.y.isFinite()) return@updateState state
                 val graph = if (intent.id.startsWith("artwork:") && state.scene.studioMode == StudioMode.RIG_SETUP) {
                     if (artworkDragStart == null) {

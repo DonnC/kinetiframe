@@ -1,13 +1,12 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import androidx.compose.ui.geometry.Offset
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.geometry.Point2
 
 /** Fit actual posed artwork, not its authoring origin, into a useful initial scene framing. */
 object ActorStageFraming {
-    fun fit(points: List<Offset>, stage: StageDimensions): Transform {
+    fun fit(points: List<Point2>, stage: StageDimensions): Transform {
         require(points.isNotEmpty() && points.all { it.x.isFinite() && it.y.isFinite() })
         val left = points.minOf { it.x }
         val right = points.maxOf { it.x }
@@ -25,7 +24,7 @@ object ActorStageFraming {
             stretch = Point2(scale, scale),
         )
     }
-    fun outside(points: List<Offset>, stage: StageDimensions): Boolean = points.isNotEmpty() &&
+    fun outside(points: List<Point2>, stage: StageDimensions): Boolean = points.isNotEmpty() &&
         (
             points.maxOf { it.x } < 0 || points.minOf { it.x } > stage.width ||
                 points.maxOf { it.y } < 0 || points.minOf { it.y } > stage.height

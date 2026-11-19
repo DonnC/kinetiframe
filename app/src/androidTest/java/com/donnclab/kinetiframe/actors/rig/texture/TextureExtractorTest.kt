@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.rig.texture
 
 import android.graphics.Bitmap
-import androidx.compose.ui.graphics.Path
+import android.graphics.Path
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
