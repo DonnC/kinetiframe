@@ -35,6 +35,9 @@ dependencies {
     // Tests may build real file stores to hand the ViewModels; screens themselves never see `data`.
     testImplementation(project(":data"))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.core)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(project(":data"))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.runner)
 }
