@@ -10,12 +10,13 @@ import com.donnclab.kinetiframe.actors.data.ActorRepository
 import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.render.ActorFrameRenderer
 import com.donnclab.kinetiframe.actors.rig.math.ArtworkAttachmentBlend
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.actors.rig.presets.durationMicros
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeDocument
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
@@ -175,7 +176,7 @@ class DirectionalMotionRenderTest {
                 val actorId = "ls-$character-all-views-v3"
                 val revision = value(actors.loadRevision(actorId, "$actorId-profile-joined-v4"))
                 listOf("walk", "run").forEachIndexed { index, motion ->
-                    val recipe = json.decodeFromString<ActorMotionPreset>(
+                    val recipe = json.decodeFromString<PresetRecipeDocument>(
                         DemoAssetFixtures.file(
                             assets,
                             "actor/presets/views/profile-$motion.json",
@@ -183,14 +184,14 @@ class DirectionalMotionRenderTest {
                     ).validate()
                     assertTrue(recipe.supportsView(revision.view))
                     assertTrue(recipe.missingBones(revision.sceneGraph.bones.keys).isEmpty())
-                    val applied = AppliedActorPreset(recipe)
+                    val applied = AppliedPresetDocument(recipe)
                     val document =
                         PerformanceDocument(
                             performanceId = "$character-$motion", projectId = "review", actorId = actorId,
                             actorRevisionId = revision.revisionId,
                             displayName = motion,
                             durationMicros = applied.durationMicros,
-                            presetSnapshot = applied.document(), createdAtEpochMs = 1, updatedAtEpochMs = 1,
+                            presetSnapshot = applied, createdAtEpochMs = 1, updatedAtEpochMs = 1,
                         )
                     value(performances.save(document))
                     repeat(8) { phase ->

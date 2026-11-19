@@ -2,6 +2,7 @@
 package com.donnclab.kinetiframe.core.actor.presets
 
 import com.donnclab.kinetiframe.core.actor.artwork.requiredField
+import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
@@ -19,7 +20,7 @@ object PresetRecipeDocumentSerializerImpl : KSerializer<PresetRecipeDocument> {
     private val roles = ListSerializer(String.serializer())
     private val rotations = ListSerializer(PresetRotationChannel.serializer())
     private val roots = ListSerializer(RootMotionChannel.serializer())
-    private val views = PresetAuthoredView.serializer()
+    private val views = ActorView.serializer()
     override val descriptor = buildClassSerialDescriptor("com.kinetiframe.engine.rigging.presets.ActorMotionPreset") {
         element<Int>("schemaVersion", isOptional = true)
         element<String>("id")
@@ -59,7 +60,7 @@ object PresetRecipeDocumentSerializerImpl : KSerializer<PresetRecipeDocument> {
         ) {
             output.encodeSerializableElement(descriptor, 8, roots, channels.roots)
         }
-        if (value.authoredView != PresetAuthoredView.FRONT ||
+        if (value.authoredView != ActorView.FRONT ||
             output.shouldEncodeElementDefault(descriptor, 9)
         ) {
             output.encodeSerializableElement(descriptor, 9, views, value.authoredView)
@@ -77,7 +78,7 @@ object PresetRecipeDocumentSerializerImpl : KSerializer<PresetRecipeDocument> {
         var channels: List<PresetRotationChannel>? = null
         var loop = true
         var rootMotion = emptyList<RootMotionChannel>()
-        var view = PresetAuthoredView.FRONT
+        var view = ActorView.FRONT
         val input = decoder.beginStructure(descriptor)
         fun read(index: Int) {
             when (index) {

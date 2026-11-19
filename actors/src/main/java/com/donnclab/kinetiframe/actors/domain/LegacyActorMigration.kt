@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.actors.rig.presets.durationMicros
 import com.donnclab.kinetiframe.core.actor.document.ActorRevision
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.document.validate
@@ -20,7 +20,7 @@ object LegacyActorMigration {
 
     fun performance(instance: PuppetInstance, identity: PerformanceIdentity, nowEpochMs: Long): PerformanceDocument? {
         val (projectId, actorId, revisionId, performanceId, name) = identity
-        val preset = instance.motionPreset?.let(AppliedActorPreset::of)
+        val preset = instance.motionPreset
         if (instance.poseKeys.isEmpty() && instance.rotationCurves.isEmpty() && instance.rootMotionCurves.isEmpty() &&
             instance.artworkKeys.isEmpty() &&
             preset == null
@@ -46,7 +46,7 @@ object LegacyActorMigration {
             performanceId = performanceId, projectId = projectId, actorId = actorId,
             actorRevisionId = revisionId, displayName = name, durationMicros = duration,
             playback = if (preset?.recipe?.loop == false) PerformancePlayback.END_HOLD else PerformancePlayback.LOOP,
-            poseKeys = instance.poseKeys, presetSnapshot = preset?.document(),
+            poseKeys = instance.poseKeys, presetSnapshot = preset,
             rotationCurves = instance.rotationCurves, poseInterpolation = instance.poseInterpolation,
             artworkKeys = instance.artworkKeys, rootMotionCurves = instance.rootMotionCurves,
             createdAtEpochMs = nowEpochMs, updatedAtEpochMs = nowEpochMs,

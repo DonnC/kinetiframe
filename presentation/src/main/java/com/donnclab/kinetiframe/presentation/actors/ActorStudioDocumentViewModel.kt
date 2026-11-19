@@ -8,7 +8,7 @@ import com.donnclab.kinetiframe.actors.data.PerformanceRepository
 import com.donnclab.kinetiframe.actors.domain.PerformanceAuthoring
 import com.donnclab.kinetiframe.actors.domain.PerformanceCompatibility
 import com.donnclab.kinetiframe.actors.domain.PerformanceDuration
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.actors.rig.presets.durationMicros
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
@@ -303,7 +303,7 @@ class ActorStudioDocumentViewModel(
                             },
                             poseKeys = keys,
                             artworkKeys = artworkKeys,
-                            presetSnapshot = preset?.document(),
+                            presetSnapshot = preset,
                             poseInterpolation = interpolation,
                             rotationCurves = retainedCurves.ifEmpty {
                                 PerformanceAuthoring.rotationCurves(keys, duration, interpolation)

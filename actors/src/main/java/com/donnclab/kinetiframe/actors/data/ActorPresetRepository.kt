@@ -1,27 +1,27 @@
 package com.donnclab.kinetiframe.actors.data
 
 import android.content.res.AssetManager
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.core.actor.document.validate
+import com.donnclab.kinetiframe.actors.rig.presets.ActorPreset
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeDocument
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
 /** View-specific motion recipes and their paired vector icons are discovered without registration. */
 class ActorPresetRepository(private val assets: AssetManager) {
-    suspend fun load(): List<ActorMotionPreset> = withContext(Dispatchers.IO) {
+    suspend fun load(): List<ActorPreset> = withContext(Dispatchers.IO) {
         val json = Json { ignoreUnknownKeys = false }
         val presets = assets.jsonFiles(DIRECTORY).sorted().map { path ->
             assets.open(path).bufferedReader().use { reader ->
-                val recipe = json.decodeFromString<ActorMotionPreset>(reader.readText()).validate()
+                val recipe = json.decodeFromString<PresetRecipeDocument>(reader.readText()).validate()
                 val preview = ActorPresetAssets.previewPath(
                     path,
                     assets.list(path.substringBeforeLast('/')).orEmpty().toList(),
                 )
-                recipe.copy(previewAssetPath = preview)
+                ActorPreset(recipe, preview)
             }
         }
-        require(presets.map { it.id }.distinct().size == presets.size) { "Duplicate actor preset ID" }
+        require(presets.map { it.recipe.id }.distinct().size == presets.size) { "Duplicate actor preset ID" }
         presets
     }
 

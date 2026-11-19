@@ -3,9 +3,11 @@ package com.donnclab.kinetiframe.actors.data
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.actors.rig.presets.durationMicros
+import com.donnclab.kinetiframe.actors.rig.presets.offsets
 import com.donnclab.kinetiframe.core.actor.document.validate
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeDocument
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.presentation.actors.rigging.PresetVectorIcon
@@ -23,7 +25,7 @@ class ViewPresetCollectionTest {
 
     @Test fun `thirteen distinct motions cover four authored views with valid vector icons`() {
         val files = root.listFiles()!!.filter { it.extension == "json" }
-        val recipes = files.map { Json.decodeFromString<ActorMotionPreset>(it.readText()).validate() }
+        val recipes = files.map { Json.decodeFromString<PresetRecipeDocument>(it.readText()).validate() }
         assertEquals(13, recipes.size)
         assertEquals(13, recipes.map { it.id }.distinct().size)
         assertEquals(
@@ -45,7 +47,7 @@ class ViewPresetCollectionTest {
             ActorView.entries.filter {
                 it != ActorView.ORIGINAL && it != recipe.authoredView
             }.forEach { assertFalse(recipe.supportsView(it)) }
-            val applied = AppliedActorPreset(recipe)
+            val applied = AppliedPresetDocument(recipe)
             val baseline = RigGeometry.resolve(rest)
             val samples = (0..100).map { applied.offsets(applied.durationMicros * it / 100) }
             assertTrue(samples.distinct().size > 30)

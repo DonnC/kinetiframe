@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.presentation.R
@@ -188,7 +187,7 @@ fun ActorStudioScreen(
                     ActorStudioDocumentIntent.SavePerformance(
                         name,
                         instance.poseKeys,
-                        instance.motionPreset?.let(AppliedActorPreset::of),
+                        instance.motionPreset,
                         durationMicros,
                         instance.rotationCurves,
                         instance.poseInterpolation,

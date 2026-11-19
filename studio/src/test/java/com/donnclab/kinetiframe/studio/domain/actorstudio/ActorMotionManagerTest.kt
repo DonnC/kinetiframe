@@ -1,11 +1,9 @@
 package com.donnclab.kinetiframe.studio.domain.actorstudio
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
-import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
 import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RootMotionPoint
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -72,17 +70,8 @@ class ActorMotionManagerTest {
         var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         ActorStudioManager({ state }, { state = it(state) }).handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         val instance = state.activeActor()!!
-        val recipe = ActorMotionPreset(
-            id = "test",
-            name = "Test",
-            description = "",
-            durationSeconds = .8f,
-            requiredBones = listOf("head"),
-            channels = listOf(
-                RotationChannel("head", offsetDegrees = 20f),
-            ),
-            loop = false,
-        )
+        fun recipe(loop: Boolean) =
+            testRecipe("test", listOf(oscillating("head", offset = 20f)), durationSeconds = .8f, loop = loop)
         state =
             state.copy(
                 scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK),
@@ -92,9 +81,7 @@ class ActorMotionManagerTest {
                         (
                             instance.id to
                                 instance.copy(
-                                    motionPreset = AppliedActorPreset(
-                                        recipe,
-                                    ).document(),
+                                    motionPreset = AppliedPresetDocument(recipe(loop = false)),
                                 )
                             ),
                 ),
@@ -120,9 +107,7 @@ class ActorMotionManagerTest {
                     (
                         instance.id to
                             instance.copy(
-                                motionPreset = AppliedActorPreset(
-                                    recipe.copy(loop = true),
-                                ).document(),
+                                motionPreset = AppliedPresetDocument(recipe(loop = true)),
                             )
                         ),
             ),

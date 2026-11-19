@@ -236,19 +236,11 @@ class ActorStudioDocumentViewModelTest {
                 id = { "cheer" },
             )
         model.state.first { !it.loading }
-        val preset = com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset(
-            com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset(
-                id = "human-cheer",
-                name = "Cheer",
-                description = "",
+        val preset = com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument(
+            testRecipe(
+                "human-cheer",
+                listOf(oscillating("torso", amplitude = 15f)),
                 durationSeconds = 2f,
-                requiredBones = listOf("torso"),
-                channels = listOf(
-                    com.donnclab.kinetiframe.actors.rig.presets.RotationChannel(
-                        boneId = "torso",
-                        amplitudeDegrees = 15f,
-                    ),
-                ),
                 loop = false,
             ),
             speed = 2f,
@@ -259,7 +251,7 @@ class ActorStudioDocumentViewModelTest {
         val effect = model.effect.first {
             it is ActorStudioDocumentEffect.PerformanceSaved
         } as ActorStudioDocumentEffect.PerformanceSaved
-        assertEquals(preset.document(), effect.document.presetSnapshot)
+        assertEquals(preset, effect.document.presetSnapshot)
         // durationSeconds 2f at speed 2x plays out in 1 real second -- the saved clip must reflect
         // that, not the hardcoded 1-second fallback used when there is truly no motion at all.
         assertEquals(1_000_000L, effect.document.durationMicros)

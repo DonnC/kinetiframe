@@ -2,10 +2,10 @@ package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
-import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
+import com.donnclab.kinetiframe.actors.rig.presets.oscillating
+import com.donnclab.kinetiframe.actors.rig.presets.testRecipe
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.core.document.StageDimensions
@@ -44,19 +44,12 @@ class LegacyActorMigrationTest {
     }
 
     @Test fun `legacy procedural preset becomes an exact durable performance snapshot`() {
-        val preset = AppliedActorPreset(
-            ActorMotionPreset(
-                id = "wave",
-                name = "Wave",
-                description = "",
-                durationSeconds = 2f,
-                requiredBones = listOf("left_hand"),
-                channels = listOf(RotationChannel("left_hand", amplitudeDegrees = 20f)),
-            ),
+        val preset = AppliedPresetDocument(
+            testRecipe("wave", listOf(oscillating("left_hand", amplitude = 20f)), durationSeconds = 2f),
             intensity = 1f,
             speed = 2f,
         )
-        val instance = PuppetInstance("legacy-instance", "legacy-actor", motionPreset = preset.document())
+        val instance = PuppetInstance("legacy-instance", "legacy-actor", motionPreset = preset)
 
         val migrated = requireNotNull(
             LegacyActorMigration.performance(
@@ -66,7 +59,7 @@ class LegacyActorMigrationTest {
             ),
         )
 
-        assertEquals(preset.document(), migrated.presetSnapshot)
+        assertEquals(preset, migrated.presetSnapshot)
         assertEquals(1_000_000L, migrated.durationMicros)
     }
 }

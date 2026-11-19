@@ -1,9 +1,7 @@
 package com.donnclab.kinetiframe.studio.domain.actorstudio
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
-import com.donnclab.kinetiframe.actors.rig.presets.document
+import com.donnclab.kinetiframe.actors.rig.presets.ActorPreset
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.studio.SceneState
@@ -20,14 +18,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class ActorPresetManagerTest {
-    private val recipe = ActorMotionPreset(
-        id = "nod",
-        name = "Nod",
-        description = "Test",
-        durationSeconds = 2f,
-        requiredBones = listOf("head"),
-        channels = listOf(RotationChannel("head", amplitudeDegrees = 10f)),
-    )
+    private val recipe = testRecipe("nod", listOf(oscillating("head", amplitude = 10f)), durationSeconds = 2f)
     private var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
     private val effects = mutableListOf<StudioEffect>()
     private val authoring = ActorStudioManager({ state }, { state = it(state) })
@@ -38,7 +29,7 @@ class ActorPresetManagerTest {
         state =
             state.copy(
                 scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK),
-                actor = state.actor.copy(presets = listOf(recipe)),
+                actor = state.actor.copy(presets = listOf(ActorPreset(recipe))),
             )
     }
 
@@ -52,7 +43,7 @@ class ActorPresetManagerTest {
         assertNull(state.actor.presetPreview)
         manager.handle(StudioIntent.ActorPreset.Preview("nod"))
         manager.handle(StudioIntent.ActorPreset.Apply)
-        assertEquals(recipe.document(), state.activeActor()!!.motionPreset!!.recipe)
+        assertEquals(recipe, state.activeActor()!!.motionPreset!!.recipe)
         assertTrue(state.activeActor()!!.poseKeys.isEmpty())
         authoring.handle(StudioIntent.Actor.Undo)
         assertEquals(before, state.project)
@@ -71,13 +62,22 @@ class ActorPresetManagerTest {
 
     @Test fun `manual keys and missing capabilities are never silently overwritten`() {
         create()
-        state = state.copy(actor = state.actor.copy(presets = listOf(recipe.copy(requiredBones = listOf("wings")))))
+        state =
+            state.copy(
+                actor = state.actor.copy(
+                    presets = listOf(
+                        ActorPreset(
+                            testRecipe("nod", recipe.rotations, durationSeconds = 2f, requiredBones = listOf("wings")),
+                        ),
+                    ),
+                ),
+            )
         manager.handle(StudioIntent.ActorPreset.Preview("nod"))
         assertNull(state.actor.presetPreview)
         assertEquals(1, effects.size)
         val instance = state.activeActor()!!
         state = state.copy(
-            actor = state.actor.copy(presets = listOf(recipe)),
+            actor = state.actor.copy(presets = listOf(ActorPreset(recipe))),
             project = state.project.copy(
                 puppetInstances = mapOf(instance.id to instance.copy(poseKeys = listOf(ActorPoseKey(0, emptyMap())))),
             ),

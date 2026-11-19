@@ -42,16 +42,16 @@ object PerformanceCompatibility {
             }
         }
         // A saved preset snapshot is exempt from the "unknown revision ID" pattern used for the
-        // rest of this check on purpose: ActorMotionPreset.missingBones already gates which rigs
+        // rest of this check on purpose: PresetRecipeDocument.missingBones already gates which rigs
         // a preset is offered on, so a mismatch here means the actor's rig itself changed after
         // the preset was applied -- surface that distinctly rather than folding it into the
         // generic message below.
-        val missingPresetBones = document.appliedPreset?.recipe?.missingBones(parts).orEmpty()
-        require(document.appliedPreset?.recipe?.supportsView(revision.view) != false) {
+        val missingPresetBones = document.presetSnapshot?.recipe?.missingBones(parts).orEmpty()
+        require(document.presetSnapshot?.recipe?.supportsView(revision.view) != false) {
             "Preset was authored for a different actor view"
         }
         require(
-            document.appliedPreset?.recipe?.rootMotion.orEmpty().all {
+            document.presetSnapshot?.recipe?.rootMotion.orEmpty().all {
                 it.boneId in revision.sceneGraph.rootBoneIds
             },
         ) { "Preset translation must target a root part" }

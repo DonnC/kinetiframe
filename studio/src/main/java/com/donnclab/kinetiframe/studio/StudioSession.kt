@@ -50,7 +50,7 @@ class StudioSession(
     private val directories: StudioDirectories,
     private val engineDispatcher: CoroutineDispatcher,
     val shouldInitialize: Boolean,
-    private val loadActorPresets: suspend () -> List<com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset>,
+    private val loadActorPresets: suspend () -> List<com.donnclab.kinetiframe.actors.rig.presets.ActorPreset>,
     runtimeRigAssetManager: RigAssetManager?,
     /** Suspends until the next display frame. The UI supplies its frame clock. */
     awaitFrame: suspend () -> Unit,

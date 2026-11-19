@@ -3,9 +3,8 @@ package com.donnclab.kinetiframe.actors.domain
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
-import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
+import com.donnclab.kinetiframe.actors.rig.presets.testRecipe
+import com.donnclab.kinetiframe.actors.rig.presets.withRootMotion
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
@@ -15,6 +14,8 @@ import com.donnclab.kinetiframe.core.actor.motion.RootMotionPoint
 import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
+import com.donnclab.kinetiframe.core.actor.presets.PresetRotationChannel
 import com.donnclab.kinetiframe.core.actor.presets.RootMotionChannel
 import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
@@ -72,11 +73,10 @@ class PerformanceClockBridgeParityTest {
     private fun documents(rest: SceneGraph, loop: Boolean): List<PerformanceDocument> {
         val root = rest.rootBoneIds.first()
         val recipe =
-            ActorMotionPreset(
-                schemaVersion = 3, id = "clock-test", name = "Clock", description = "", durationSeconds = .8f,
-                requiredBones = listOf(root),
-                channels = listOf(
-                    RotationChannel(
+            testRecipe(
+                "clock-test",
+                listOf(
+                    PresetRotationChannel(
                         root,
                         points = listOf(
                             RotationPoint(0f, 0f),
@@ -85,8 +85,11 @@ class PerformanceClockBridgeParityTest {
                         ),
                     ),
                 ),
+                durationSeconds = .8f,
                 loop = loop,
-                rootMotion = listOf(
+                schemaVersion = 3,
+            ).withRootMotion(
+                listOf(
                     RootMotionChannel(
                         root,
                         listOf(PresetRootPoint(0f), PresetRootPoint(.5f, .1f, -.1f), PresetRootPoint(1f)),
@@ -97,10 +100,7 @@ class PerformanceClockBridgeParityTest {
             PerformanceDocument(
                 performanceId = "performance", projectId = "project", actorId = "actor", actorRevisionId = "revision",
                 displayName = "Clock", durationMicros = 2_000_000,
-                presetSnapshot = AppliedActorPreset(
-                    recipe,
-                    speed = 1.25f,
-                ).document(),
+                presetSnapshot = AppliedPresetDocument(recipe, speed = 1.25f),
                 createdAtEpochMs = 1, updatedAtEpochMs = 1,
             )
         val endpoint = rest.bones.values.firstOrNull { it.ikChainRootId != null }?.id

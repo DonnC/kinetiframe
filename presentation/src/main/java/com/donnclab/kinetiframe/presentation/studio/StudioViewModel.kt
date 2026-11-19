@@ -35,7 +35,7 @@ class StudioViewModel(
     directories: StudioDirectories,
     private val engineDispatcher: CoroutineDispatcher = Dispatchers.Default,
     private val shouldInitialize: Boolean = true,
-    private val loadActorPresets: suspend () -> List<com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset> = {
+    private val loadActorPresets: suspend () -> List<com.donnclab.kinetiframe.actors.rig.presets.ActorPreset> = {
         emptyList()
     },
     initialEditorState: StudioState? = null,

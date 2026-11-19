@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.valueText
@@ -30,7 +30,7 @@ import com.donnclab.kinetiframe.presentation.common.valueText
  * replaces the performance's keys; a null [onRemove] hides the remove button.
  */
 data class PresetAudition(
-    val preview: AppliedActorPreset?,
+    val preview: AppliedPresetDocument?,
     val playing: Boolean,
     val replacesKeys: Boolean,
     val onPlay: () -> Unit,

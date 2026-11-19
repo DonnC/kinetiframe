@@ -1,7 +1,7 @@
 package com.donnclab.kinetiframe.actors.data
 
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
 import com.donnclab.kinetiframe.core.actor.document.validate
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeDocument
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -41,10 +41,10 @@ class ActorPresetAssetsTest {
             val path = file.relativeTo(root).invariantSeparatorsPath
             val preview = ActorPresetAssets.previewPath(path, requireNotNull(file.parentFile).list().orEmpty().toList())
             assertTrue(File(root, preview).isFile)
-            val recipe = Json.decodeFromString<ActorMotionPreset>(file.readText()).validate()
-            val encoded = Json.encodeToString(recipe.copy(previewAssetPath = preview))
-            assertFalse(encoded.contains("previewAssetPath"))
-            assertEquals(recipe, Json.decodeFromString<ActorMotionPreset>(encoded))
+            val recipe = Json.decodeFromString<PresetRecipeDocument>(file.readText()).validate()
+            val encoded = Json.encodeToString(recipe)
+            assertFalse(encoded.contains(preview.substringAfterLast('/')))
+            assertEquals(recipe, Json.decodeFromString<PresetRecipeDocument>(encoded))
         }
         assertFalse(File(root, "actor/human-template.jpg").exists())
     }

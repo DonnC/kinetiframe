@@ -7,9 +7,12 @@ import com.donnclab.kinetiframe.actors.domain.engineInterpolation
 import com.donnclab.kinetiframe.actors.rig.math.ActorMotionPose
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.actors.rig.presets.ActorPreset
+import com.donnclab.kinetiframe.actors.rig.presets.durationMicros
+import com.donnclab.kinetiframe.actors.rig.presets.offsets
+import com.donnclab.kinetiframe.actors.rig.presets.rootTranslations
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.document.Layer
@@ -42,8 +45,8 @@ data class ActorStudioState(
     val showSource: Boolean = true,
     val previewTimeMicros: Long = 0,
     val previewPlaying: Boolean = false,
-    val presets: List<ActorMotionPreset> = emptyList(),
-    val presetPreview: AppliedActorPreset? = null,
+    val presets: List<ActorPreset> = emptyList(),
+    val presetPreview: AppliedPresetDocument? = null,
     val presetPreviewInstanceId: String? = null,
     val previewGraph: SceneGraph? = null,
     val previewDefinitionId: String? = null,
@@ -73,10 +76,10 @@ fun StudioState.activeActor(): PuppetInstance? {
     return instanceId?.let(project.puppetInstances::get)
 }
 
-fun StudioState.actorPreviewPreset(): AppliedActorPreset? {
+fun StudioState.actorPreviewPreset(): AppliedPresetDocument? {
     val instance = activeActor()
     return actor.presetPreview.takeIf { actor.presetPreviewInstanceId == instance?.id }
-        ?: instance?.motionPreset?.let(AppliedActorPreset::of)
+        ?: instance?.motionPreset
 }
 
 fun StudioState.actorPreviewDuration(): Long {
@@ -127,7 +130,7 @@ fun StudioState.actorDefinition(evaluated: Boolean = false): PuppetDefinition? {
     )
     val preset =
         actor.presetPreview.takeIf { actor.presetPreviewInstanceId == instance.id }
-            ?: instance.motionPreset?.let(AppliedActorPreset::of)
+            ?: instance.motionPreset
     val offsets = preset?.offsets(actor.previewTimeMicros).orEmpty()
     val curveSampling = CurveSampling(
         loop,

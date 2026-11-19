@@ -7,6 +7,9 @@ import com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator
 import com.donnclab.kinetiframe.actors.rig.model.ActorPoseTrack
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
+import com.donnclab.kinetiframe.actors.rig.presets.durationMicros
+import com.donnclab.kinetiframe.actors.rig.presets.offsets
+import com.donnclab.kinetiframe.actors.rig.presets.rootTranslations
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.ActorRevision
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
@@ -183,10 +186,10 @@ class NaturalActorMotionTest {
             File("src/main/assets/actor/presets/views").takeIf(File::isDirectory)
                 ?: File("app/src/main/assets/actor/presets/views")
         for (name in listOf("profile-walk", "profile-run", "profile-jump")) {
-            val recipe = Json.decodeFromString<com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset>(
+            val recipe = Json.decodeFromString<com.donnclab.kinetiframe.core.actor.presets.PresetRecipeDocument>(
                 File(assets, "$name.json").readText(),
             ).validate()
-            val applied = com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset(recipe)
+            val applied = com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument(recipe)
             val sampled = (0..100).map {
                 applied.rootTranslations(it * applied.durationMicros / 100, rest).getValue("torso").y
             }
@@ -213,7 +216,11 @@ class NaturalActorMotionTest {
                 )
                 assertTrue(sampled.min() < -rest.bones.getValue("torso").length * .5)
             }
-            val legacy = applied.copy(recipe = recipe.copy(schemaVersion = 2, rootMotion = emptyList()).validate())
+            val legacy = applied.copy(
+                recipe = recipe.withMetadata {
+                    it.copy(schemaVersion = 2)
+                }.withRootMotion(emptyList()).validate(),
+            )
             assertTrue(legacy.rootTranslations(200_000, rest).isEmpty())
             assertEquals(legacy.offsets(200_000), applied.offsets(200_000))
         }
