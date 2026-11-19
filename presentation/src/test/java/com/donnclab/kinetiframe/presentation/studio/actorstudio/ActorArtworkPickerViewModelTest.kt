@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.studio.ui.actorstudio
+package com.donnclab.kinetiframe.presentation.studio.actorstudio
 
 import android.graphics.Bitmap
 import android.graphics.Color

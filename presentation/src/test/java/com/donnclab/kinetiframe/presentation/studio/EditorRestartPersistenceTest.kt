@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.studio
+package com.donnclab.kinetiframe.presentation.studio
 
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -7,6 +7,11 @@ import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
+import com.donnclab.kinetiframe.studio.AnimationState
+import com.donnclab.kinetiframe.studio.LayerState
+import com.donnclab.kinetiframe.studio.StudioDirectories
+import com.donnclab.kinetiframe.studio.StudioIntent
+import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.render.FrameCacheManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

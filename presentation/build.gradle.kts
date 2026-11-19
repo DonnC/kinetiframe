@@ -26,6 +26,14 @@ dependencies {
     implementation(libs.lucide.icons)
     implementation(libs.coil.compose)
     testImplementation(libs.kotlinx.coroutines.test)
+    // ViewModel tests that need Android classes run on Robolectric with JUnit 4.
+    testImplementation(libs.robolectric)
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.junit)
+    testRuntimeOnly(libs.junit5.vintage)
+    // Tests may build real file stores to hand the ViewModels; screens themselves never see `data`.
+    testImplementation(project(":data"))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.runner)

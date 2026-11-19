@@ -1,7 +1,12 @@
-package com.donnclab.kinetiframe.studio
+package com.donnclab.kinetiframe.presentation.studio
 
 import com.donnclab.kinetiframe.core.geometry.Rect2
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
+import com.donnclab.kinetiframe.studio.SelectionInteractionMode
+import com.donnclab.kinetiframe.studio.SelectionState
+import com.donnclab.kinetiframe.studio.StudioDirectories
+import com.donnclab.kinetiframe.studio.StudioIntent
+import com.donnclab.kinetiframe.studio.StudioState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

@@ -1,9 +1,14 @@
-package com.donnclab.kinetiframe.studio
+package com.donnclab.kinetiframe.presentation.studio
 
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
+import com.donnclab.kinetiframe.studio.StudioDirectories
+import com.donnclab.kinetiframe.studio.StudioIntent
+import com.donnclab.kinetiframe.studio.StudioMode
+import com.donnclab.kinetiframe.studio.TrackGroupKind
+import com.donnclab.kinetiframe.studio.currentFrameLayers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

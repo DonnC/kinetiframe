@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.studio.ui.canvas
+package com.donnclab.kinetiframe.presentation.studio.canvas
 
 import android.graphics.Matrix
 import com.donnclab.kinetiframe.core.document.ProjectDocument

@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.studio.ui.timeline
+package com.donnclab.kinetiframe.presentation.studio.timeline
 
 import android.graphics.Bitmap
 import android.graphics.Color

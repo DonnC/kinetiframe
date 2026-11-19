@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.studio.ui.actorstudio.sketch
+package com.donnclab.kinetiframe.presentation.studio.actorstudio.sketch
 
 import android.graphics.Color
 import com.donnclab.kinetiframe.core.actor.artwork.DrawingExtent
