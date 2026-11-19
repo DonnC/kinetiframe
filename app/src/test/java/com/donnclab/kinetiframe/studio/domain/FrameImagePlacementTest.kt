@@ -38,7 +38,7 @@ class FrameImagePlacementTest {
             assertEquals(DrawingTool.LASSO, state.tool.activeTool)
             assertTrue(state.selection.active)
             assertSame(image, state.selection.selectedContent?.bitmap)
-            assertEquals(0.5f, state.selection.transform.values[0], 0f)
+            assertEquals(0.5f, state.selection.transform.a, 0f)
             assertNull(state.project.backgroundAssetId)
             manager.commitSelection().join()
             assertFalse(state.selection.active)

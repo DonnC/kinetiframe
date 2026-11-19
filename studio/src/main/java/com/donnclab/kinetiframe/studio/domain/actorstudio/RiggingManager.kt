@@ -2,8 +2,6 @@ package com.donnclab.kinetiframe.studio.domain.actorstudio
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.asAndroidPath
 import com.donnclab.kinetiframe.actors.rig.math.ForwardKinematicsSolver
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.model.PivotPlacement
@@ -55,7 +53,7 @@ class RiggingManager(
     private val reconcileRuntimeAssets: () -> Unit = {},
 ) {
     private var extractionGeneration = 0
-    fun preparePivotPlacement(sourceFrame: Bitmap, lassoPath: Path, dilationRadius: Int) {
+    fun preparePivotPlacement(sourceFrame: Bitmap, lassoPath: android.graphics.Path, dilationRadius: Int) {
         val definition = getState().actorDefinition()
         val targetBoneId = getState().scene.selectedBoneId
         if (definition?.sceneGraph?.bones?.containsKey(targetBoneId) != true) {
@@ -68,7 +66,7 @@ class RiggingManager(
             var installed = false
             try {
                 val placement = kotlinx.coroutines.withContext(Dispatchers.Default) {
-                    val extracted = TextureExtractor.extractLassoCrop(sourceFrame, lassoPath.asAndroidPath())
+                    val extracted = TextureExtractor.extractLassoCrop(sourceFrame, lassoPath)
                     val processed = try {
                         JointProcessor.dilateJointEdges(extracted, dilationRadius)
                     } catch (
@@ -80,7 +78,7 @@ class RiggingManager(
                     if (processed !== extracted) extracted.recycle()
                     val assetId = rigAssetManager.registerAsset(processed)
                     registeredId = assetId
-                    val bounds = lassoPath.getBounds()
+                    val bounds = android.graphics.RectF().also { lassoPath.computeBounds(it, true) }
                     PivotPlacement(
                         assetId, processed.width, processed.height,
                         processed.width / 2f, processed.height / 2f,

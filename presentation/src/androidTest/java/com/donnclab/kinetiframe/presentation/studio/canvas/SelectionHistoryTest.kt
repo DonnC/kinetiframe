@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.presentation.studio.canvas
 
 import android.graphics.Bitmap
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Matrix
+import com.donnclab.kinetiframe.core.geometry.Affine2D
+import com.donnclab.kinetiframe.core.geometry.Rect2
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.domain.DrawingLayers
 import com.donnclab.kinetiframe.studio.domain.DrawingManager
@@ -58,8 +58,8 @@ class SelectionHistoryTest {
         val edit = HistoryItem.SelectionEdit(
             bitmap = proxy,
             nodes = emptyMap(),
-            matrix = Matrix(),
-            originalBounds = Rect(0f, 0f, 50f, 50f),
+            matrix = Affine2D(),
+            originalBounds = Rect2(0f, 0f, 50f, 50f),
             type = SelectionEditType.COMMIT,
         )
 

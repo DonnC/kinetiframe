@@ -1,14 +1,13 @@
 package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Matrix
 import com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.core.geometry.Affine2D
 import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.core.geometry.Rect2
 import com.donnclab.kinetiframe.studio.StudioState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
@@ -22,8 +21,7 @@ import org.junit.Test
 
 class ActorSelectionTest {
     private val actor = ActorPlacementReference("placed", "performance", "actor", "revision", "Wave", 0, 24)
-    private val quad = listOf(Offset(10f, 10f), Offset(30f, 10f), Offset(30f, 30f), Offset(10f, 30f))
-    private val actorQuad = quad.map { Point2(it.x, it.y) }
+    private val quad = listOf(Point2(10f, 10f), Point2(30f, 10f), Point2(30f, 30f), Point2(10f, 30f))
 
     @Test fun rectangleSelectsLiveActorAndCommitsExactShear() = runTest {
         var state =
@@ -40,12 +38,12 @@ class ActorSelectionTest {
             )
         manager.selectArea(
             null,
-            Rect(0f, 0f, 40f, 40f),
+            Rect2(0f, 0f, 40f, 40f),
             1f,
             actors = ActorSelectionGeometry(
                 "project",
                 0,
-                listOf(ActorSelectionGeometry.Object(actor, listOf(actorQuad))),
+                listOf(ActorSelectionGeometry.Object(actor, listOf(quad))),
             ),
         ).join()
         assertEquals(setOf("placed"), state.selection.selectedContent!!.actors.keys)
@@ -53,10 +51,7 @@ class ActorSelectionTest {
         state =
             state.copy(
                 selection = state.selection.copy(
-                    transform = Matrix().apply {
-                        values[4] = .5f
-                        values[12] = 20f
-                    },
+                    transform = Affine2D(c = .5f, tx = 20f),
                 ),
             )
         manager.commitSelection().join()
@@ -82,19 +77,19 @@ class ActorSelectionTest {
             )
         manager.selectArea(
             null,
-            Rect(0f, 0f, 40f, 40f),
+            Rect2(0f, 0f, 40f, 40f),
             1f,
             actors = ActorSelectionGeometry(
                 "project",
                 0,
-                listOf(ActorSelectionGeometry.Object(actor, listOf(actorQuad))),
+                listOf(ActorSelectionGeometry.Object(actor, listOf(quad))),
             ),
         ).join()
-        state = state.copy(selection = state.selection.copy(transform = Matrix().apply { values[12] = 50f }))
+        state = state.copy(selection = state.selection.copy(transform = Affine2D(tx = 50f)))
         manager.copySelection()
         manager.pasteSelection()
         assertEquals(2, state.project.actorPlacements.size)
-        assertEquals(70f, state.selection.transform.values[12], 0f)
+        assertEquals(70f, state.selection.transform.tx, 0f)
         manager.cancelSelection().join()
         assertEquals(setOf("placed"), state.project.actorPlacements.keys)
         assertEquals(50f, state.project.actorPlacements.getValue("placed").selectionTransform.tx, 0f)
@@ -114,19 +109,19 @@ class ActorSelectionTest {
             )
         manager.selectArea(
             null,
-            Rect(0f, 0f, 40f, 40f),
+            Rect2(0f, 0f, 40f, 40f),
             1f,
             actors = ActorSelectionGeometry(
                 "project",
                 9,
-                listOf(ActorSelectionGeometry.Object(actor, listOf(actorQuad))),
+                listOf(ActorSelectionGeometry.Object(actor, listOf(quad))),
             ),
         ).join()
         assertFalse(state.selection.active)
     }
 
     @Test fun maskFindsIntersectionEvenWhenNoObjectCornerIsInside() {
-        val area = requireNotNull(SelectionAreaMask(null, Rect(15f, 15f, 25f, 25f)))
+        val area = requireNotNull(SelectionAreaMask(null, Rect2(15f, 15f, 25f, 25f)))
         assertTrue(area.matches(listOf(quad), partial = true))
         assertFalse(area.matches(listOf(quad), partial = false))
     }
@@ -144,11 +139,11 @@ class ActorSelectionTest {
             }, { source.copy(Bitmap.Config.ARGB_8888, true) }, { fail("Selection must not rewrite the base") }),
             UndoStacks(history),
         )
-        manager.selectArea(null, Rect(1f, 1f, 8f, 8f), 1f).join()
+        manager.selectArea(null, Rect2(1f, 1f, 8f, 8f), 1f).join()
         manager.cancelSelection().join()
         assertTrue(history.isEmpty())
         assertEquals(android.graphics.Color.RED, source.getPixel(2, 2))
-        manager.selectArea(null, Rect(1f, 1f, 8f, 8f), 1f).join()
+        manager.selectArea(null, Rect2(1f, 1f, 8f, 8f), 1f).join()
         manager.commitSelection().join()
         assertTrue(history.single() is HistoryItem.RasterSelection)
         source.recycle()

@@ -1,8 +1,8 @@
 package com.donnclab.kinetiframe.studio
 
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Matrix
 import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.geometry.Affine2D
+import com.donnclab.kinetiframe.core.geometry.Point2
 
 // Pure state changes for studio intents that need no manager, file or bitmap work. Each returns
 // the next state, so StudioViewModel applies them inside one updateState call.
@@ -110,7 +110,7 @@ internal fun StudioState.reduceSelectionSetting(intent: StudioIntent.Selection):
     is StudioIntent.Selection.SetSkewMode -> copy(selection = selection.copy(skewMode = intent.enabled))
 
     StudioIntent.Selection.ResetTransform -> copy(
-        selection = selection.copy(transform = Matrix(), pivotOffset = Offset.Zero),
+        selection = selection.copy(transform = Affine2D(), pivotOffset = Point2.Zero),
     )
 
     is StudioIntent.Selection.SetDockPosition -> copy(canvas = canvas.copy(selectionDockOffset = intent.offset))

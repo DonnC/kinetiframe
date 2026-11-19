@@ -2,8 +2,6 @@ package com.donnclab.kinetiframe.studio.domain
 
 import android.graphics.Bitmap
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Path
 import com.donnclab.kinetiframe.actors.render.PuppetRenderPlan
 import com.donnclab.kinetiframe.actors.rig.math.RigGeometry
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
@@ -48,7 +46,7 @@ class ActorBindingIntegrationTest {
         val manager =
             RiggingManager(this, assets, { state }, { state = it(state) }, failures::add, authoring::checkpoint)
         val source = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888)
-        val path = Path().apply { addRect(Rect(10f, 10f, 50f, 50f)) }
+        val path = android.graphics.Path().apply { addRect(10f, 10f, 50f, 50f, android.graphics.Path.Direction.CW) }
         try {
             val rest = state.actorDefinition()!!
             manager.preparePivotPlacement(source, path, 0)
@@ -120,7 +118,7 @@ class ActorBindingIntegrationTest {
             authoring::reconcileRuntimeAssets,
         )
         val source = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888)
-        val path = Path().apply { addRect(Rect(10f, 10f, 50f, 50f)) }
+        val path = android.graphics.Path().apply { addRect(10f, 10f, 50f, 50f, android.graphics.Path.Direction.CW) }
         try {
             manager.preparePivotPlacement(source, path, 0)
             withTimeout(10_000) { while (state.scene.pivotPlacement == null && failures.isEmpty()) delay(10) }

@@ -4,9 +4,9 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Path
+import android.graphics.Path
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.donnclab.kinetiframe.core.geometry.Rect2
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -18,12 +18,12 @@ class SelectionRasterTest {
     @Test
     fun rectangleExtractsAndClearsOnlyCoveredPixels() {
         val source = twoMarks()
-        val rect = Rect(1f, 1f, 5f, 5f)
+        val rect = Rect2(1f, 1f, 5f, 5f)
 
         val cut = requireNotNull(SelectionRaster.extract(source, null, rect))
         SelectionRaster.clear(source, null, rect)
 
-        assertEquals(Rect(2f, 2f, 4f, 4f), cut.bounds)
+        assertEquals(Rect2(2f, 2f, 4f, 4f), cut.bounds)
         assertEquals(Color.RED, cut.bitmap.getPixel(0, 0))
         assertEquals(Color.TRANSPARENT, source.getPixel(2, 2))
         assertEquals("outside content must remain in the background", Color.BLUE, source.getPixel(10, 2))
@@ -49,7 +49,7 @@ class SelectionRasterTest {
 
     @Test
     fun emptyCoverageProducesNoSelection() {
-        assertNull(SelectionRaster.extract(twoMarks(), null, Rect(20f, 20f, 24f, 24f)))
+        assertNull(SelectionRaster.extract(twoMarks(), null, Rect2(20f, 20f, 24f, 24f)))
     }
 
     private fun twoMarks(): Bitmap = Bitmap.createBitmap(16, 8, Bitmap.Config.ARGB_8888).also { bitmap ->

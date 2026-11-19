@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import com.donnclab.kinetiframe.core.document.BaseNode
 import com.donnclab.kinetiframe.core.document.DrawingTool
@@ -297,7 +298,7 @@ fun CanvasInputLayer(
                                     onIntent(
                                         StudioIntent.Rigging.PreparePivotPlacement(
                                             sourceFrame = frame,
-                                            lassoPath = Path().apply { addPath(selectionPath) },
+                                            lassoPath = android.graphics.Path(selectionPath.asAndroidPath()),
                                         ),
                                     )
                                 }

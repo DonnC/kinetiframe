@@ -2,7 +2,6 @@ package com.donnclab.kinetiframe.studio
 
 import android.graphics.Bitmap
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import com.donnclab.kinetiframe.actors.rig.model.PivotPlacement
 import com.donnclab.kinetiframe.core.document.BaseNode
 import com.donnclab.kinetiframe.core.document.BrushId
@@ -12,6 +11,9 @@ import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.core.document.TouchPoint
+import com.donnclab.kinetiframe.core.geometry.Affine2D
+import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.core.geometry.Rect2
 import com.donnclab.kinetiframe.core.mvi.ViewState
 import com.donnclab.kinetiframe.studio.drawing.ConstructionShape
 
@@ -37,7 +39,7 @@ data class SelectedContent(
     val strokes: List<DrawCommand> = emptyList(),
     val nodes: Map<String, BaseNode> = emptyMap(),
     val bitmap: Bitmap? = null,
-    val bounds: Rect = Rect.Zero,
+    val bounds: Rect2 = Rect2.Zero,
     /** True when [bitmap] was cut from the rendered layer rather than reconstructed from commands. */
     val isRasterSelection: Boolean = false,
     val actors: Map<String, com.donnclab.kinetiframe.core.document.ActorPlacementReference> = emptyMap(),
@@ -219,10 +221,10 @@ data class OnionSkinState(
 data class SelectionState(
     val toolType: SelectionToolType = SelectionToolType.LASSO,
     val active: Boolean = false,
-    val bounds: Rect? = null,
+    val bounds: Rect2? = null,
     val selectedContent: SelectedContent? = null,
-    val transform: androidx.compose.ui.graphics.Matrix = androidx.compose.ui.graphics.Matrix(),
-    val pivotOffset: Offset = Offset.Zero,
+    val transform: Affine2D = Affine2D(),
+    val pivotOffset: Point2 = Point2.Zero,
     /** Context actions are deliberately opt-in so discovery does not obstruct transforms. */
     val contextMenuVisible: Boolean = false,
     val partialInclude: Boolean = false,

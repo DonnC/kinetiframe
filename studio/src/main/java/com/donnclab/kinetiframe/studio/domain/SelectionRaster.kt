@@ -5,16 +5,15 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.asAndroidPath
+import com.donnclab.kinetiframe.core.geometry.Rect2
 
 /** One shared raster-mask contract for selection preview and background removal. */
 internal object SelectionRaster {
-    data class Cut(val bitmap: Bitmap, val bounds: Rect)
+    data class Cut(val bitmap: Bitmap, val bounds: Rect2)
 
-    fun extract(source: Bitmap, path: androidx.compose.ui.graphics.Path?, rect: Rect?): Cut? {
+    fun extract(source: Bitmap, path: android.graphics.Path?, rect: Rect2?): Cut? {
         if (path == null && rect == null) return null
-        val area = rect ?: path?.getBounds() ?: return null
+        val area = rect ?: path?.let(::boundsOf) ?: return null
         val left = kotlin.math.floor(area.left).toInt().coerceIn(0, source.width)
         val top = kotlin.math.floor(area.top).toInt().coerceIn(0, source.height)
         val right = kotlin.math.ceil(area.right).toInt().coerceIn(0, source.width)
@@ -27,7 +26,7 @@ internal object SelectionRaster {
         if (path !=
             null
         ) {
-            canvas.clipPath(path.asAndroidPath())
+            canvas.clipPath(path)
         } else {
             rect?.let { canvas.clipRect(it.left, it.top, it.right, it.bottom) }
         }
@@ -46,23 +45,27 @@ internal object SelectionRaster {
             bounds.height.toInt(),
         )
         if (cropped !== masked) masked.recycle()
-        return Cut(cropped, bounds.translate(androidx.compose.ui.geometry.Offset(left.toFloat(), top.toFloat())))
+        return Cut(cropped, bounds.translate(left.toFloat(), top.toFloat()))
     }
 
-    fun clear(source: Bitmap, path: androidx.compose.ui.graphics.Path?, rect: Rect?) {
+    fun clear(source: Bitmap, path: android.graphics.Path?, rect: Rect2?) {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
         Canvas(source).also { canvas ->
             if (path !=
                 null
             ) {
-                canvas.drawPath(path.asAndroidPath(), paint)
+                canvas.drawPath(path, paint)
             } else {
                 rect?.let { canvas.drawRect(it.left, it.top, it.right, it.bottom, paint) }
             }
         }
     }
 
-    private fun alphaBounds(bitmap: Bitmap): Rect? {
+    private fun boundsOf(path: android.graphics.Path): Rect2 = android.graphics.RectF().also {
+        path.computeBounds(it, true)
+    }.let { Rect2(it.left, it.top, it.right, it.bottom) }
+
+    private fun alphaBounds(bitmap: Bitmap): Rect2? {
         var left = bitmap.width
         var top = bitmap.height
         var right = -1
@@ -86,7 +89,7 @@ internal object SelectionRaster {
         ) {
             null
         } else {
-            Rect(left.toFloat(), top.toFloat(), (right + 1).toFloat(), (bottom + 1).toFloat())
+            Rect2(left.toFloat(), top.toFloat(), (right + 1).toFloat(), (bottom + 1).toFloat())
         }
     }
 }

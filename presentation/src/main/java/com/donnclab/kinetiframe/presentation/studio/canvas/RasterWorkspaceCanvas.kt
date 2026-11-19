@@ -3,11 +3,17 @@ package com.donnclab.kinetiframe.presentation.studio.canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.presentation.common.toAffine2D
+import com.donnclab.kinetiframe.presentation.common.toMatrix
+import com.donnclab.kinetiframe.presentation.common.toRect
+import com.donnclab.kinetiframe.presentation.common.toRect2
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.currentFrameLayers
@@ -34,6 +40,9 @@ fun RasterWorkspaceCanvas(
     referenceUnderlay: ((android.graphics.Canvas) -> Unit)? = null,
 ) {
     val config = state.tool.activeConfig
+    // A Compose Matrix compares by identity: convert once per transform so effects keyed on it stay put.
+    val selectionMatrix = remember(state.selection.transform) { state.selection.transform.toMatrix() }
+    val selectionBounds = remember(state.selection.bounds) { state.selection.bounds?.toRect() }
     Box(modifier = modifier.fillMaxSize()) {
         BufferedDrawingCanvas(
             referenceUnderlay = referenceUnderlay,
@@ -57,15 +66,23 @@ fun RasterWorkspaceCanvas(
             eraserCursor = state.tool.eraserCursor,
             selectionTool = state.selection.toolType,
             selectionActive = state.selection.active,
-            selectionBounds = state.selection.bounds,
-            selectionTransform = state.selection.transform,
+            selectionBounds = selectionBounds,
+            selectionTransform = selectionMatrix,
             selectedContent = state.selection.selectedContent,
             externalSelectionOverlay = externalSelectionOverlay,
             sharedFontRegistry = sharedFontRegistry,
             onSelectionAreaComplete = { path, rect, density, registry ->
-                onIntent(StudioIntent.Selection.SelectArea(path, rect, density, registry, actorGeometry))
+                onIntent(
+                    StudioIntent.Selection.SelectArea(
+                        path?.asAndroidPath(),
+                        rect?.toRect2(),
+                        density,
+                        registry,
+                        actorGeometry,
+                    ),
+                )
             },
-            onSelectionTransformChanged = { onIntent(StudioIntent.Selection.UpdateTransform(it)) },
+            onSelectionTransformChanged = { onIntent(StudioIntent.Selection.UpdateTransform(it.toAffine2D())) },
             onEraserCursorChange = { offset -> onIntent(StudioIntent.Draw.SetEraserCursor(offset)) },
             onionSkinEnabled = state.onionSkin.enabled && !state.animation.isPlaying,
             onionSkinFramesBefore = state.onionSkin.depthBefore,

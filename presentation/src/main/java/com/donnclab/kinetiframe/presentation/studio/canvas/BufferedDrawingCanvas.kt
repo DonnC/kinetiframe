@@ -58,6 +58,8 @@ import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.TextNode
 import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.common.toOffset
+import com.donnclab.kinetiframe.presentation.common.toPoint2
 import com.donnclab.kinetiframe.studio.EraserType
 import com.donnclab.kinetiframe.studio.SelectedContent
 import com.donnclab.kinetiframe.studio.SelectionToolType
@@ -251,13 +253,13 @@ fun BufferedDrawingCanvas(
 
     // Use a stable state holder for selection transforms to avoid parent recomposition.
     val selectionTransformState = remember(selectionActive, selectionBounds) {
-        SelectionTransformState(selectionTransform, studioState.selection.pivotOffset)
+        SelectionTransformState(selectionTransform, studioState.selection.pivotOffset.toOffset())
     }
 
     // Keep the stable state in sync with the StudioState (e.g. for Reset logic)
     LaunchedEffect(selectionTransform, studioState.selection.pivotOffset) {
         selectionTransformState.matrix = selectionTransform
-        selectionTransformState.pivotOffset = studioState.selection.pivotOffset
+        selectionTransformState.pivotOffset = studioState.selection.pivotOffset.toOffset()
     }
 
     // Explicit receipts survive conflated bakes and unrelated bitmap refreshes. Drawing also
@@ -385,7 +387,7 @@ fun BufferedDrawingCanvas(
                 canvasMatrixValues = studioState.canvas.matrixValues,
                 onDragEnd = {
                     onSelectionTransformChanged(selectionTransformState.matrix)
-                    onIntent(StudioIntent.Selection.UpdatePivot(selectionTransformState.pivotOffset))
+                    onIntent(StudioIntent.Selection.UpdatePivot(selectionTransformState.pivotOffset.toPoint2()))
                 },
                 onOutsideSelectionTap = {
                     onIntent(StudioIntent.Selection.SetActive(false))

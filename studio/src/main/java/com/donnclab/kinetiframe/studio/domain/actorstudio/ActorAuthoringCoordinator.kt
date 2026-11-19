@@ -1,7 +1,6 @@
 package com.donnclab.kinetiframe.studio.domain.actorstudio
 
 import android.graphics.Bitmap
-import androidx.compose.ui.graphics.Path
 import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioEffect
@@ -234,7 +233,7 @@ class ActorAuthoringCoordinator(
 
     fun clearHistory() = studio.clearHistory()
 
-    fun preparePivotPlacement(sourceFrame: Bitmap, lassoPath: Path, dilationRadius: Int) =
+    fun preparePivotPlacement(sourceFrame: Bitmap, lassoPath: android.graphics.Path, dilationRadius: Int) =
         rigging.preparePivotPlacement(sourceFrame, lassoPath, dilationRadius)
 
     fun updatePivot(x: Float, y: Float) = rigging.updatePivot(x, y)

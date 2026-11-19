@@ -3,9 +3,7 @@ package com.donnclab.kinetiframe.studio
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.core.actor.artwork.ActorDrawing
@@ -28,6 +26,9 @@ import com.donnclab.kinetiframe.core.document.VideoClipPlacement
 import com.donnclab.kinetiframe.core.document.VideoFit
 import com.donnclab.kinetiframe.core.document.VoiceEffect
 import com.donnclab.kinetiframe.core.document.camera.CameraShot
+import com.donnclab.kinetiframe.core.geometry.Affine2D
+import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.core.geometry.Rect2
 import com.donnclab.kinetiframe.core.mvi.ViewIntent
 import com.donnclab.kinetiframe.library.model.PackFrameTag
 import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorPlacementManager
@@ -255,8 +256,11 @@ sealed class StudioIntent : ViewIntent {
 
     sealed class Rigging : StudioIntent() {
         data class SetStudioMode(val mode: StudioMode) : Rigging()
-        data class PreparePivotPlacement(val sourceFrame: Bitmap, val lassoPath: Path, val dilationRadius: Int = 8) :
-            Rigging()
+        data class PreparePivotPlacement(
+            val sourceFrame: Bitmap,
+            val lassoPath: android.graphics.Path,
+            val dilationRadius: Int = 8,
+        ) : Rigging()
         data class MovePivot(val x: Float, val y: Float) : Rigging()
         data class AddBoneAt(val x: Float, val y: Float) : Rigging()
         data class SelectBone(val id: String?) : Rigging()
@@ -279,8 +283,8 @@ sealed class StudioIntent : ViewIntent {
     sealed class Selection : StudioIntent() {
         data class SetTool(val type: SelectionToolType) : Selection()
         data class SelectArea(
-            val path: Path? = null,
-            val rect: Rect? = null,
+            val path: android.graphics.Path? = null,
+            val rect: Rect2? = null,
             val density: Float = 1f,
             val fontRegistry: FontRegistry? = null,
             val actors: ActorSelectionGeometry? = null,
@@ -290,8 +294,8 @@ sealed class StudioIntent : ViewIntent {
         data class SelectTextNode(val id: String, val density: Float, val fontRegistry: FontRegistry? = null) :
             Selection()
         data class SetActive(val active: Boolean) : Selection()
-        data class UpdateTransform(val matrix: androidx.compose.ui.graphics.Matrix) : Selection()
-        data class UpdatePivot(val offset: Offset) : Selection()
+        data class UpdateTransform(val matrix: Affine2D) : Selection()
+        data class UpdatePivot(val offset: Point2) : Selection()
         data class SetDockPosition(val offset: Offset) : Selection()
         data class SetContextMenuVisible(val visible: Boolean) : Selection()
         data class SetInteractionMode(val mode: SelectionInteractionMode) : Selection()
