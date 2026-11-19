@@ -1,4 +1,4 @@
-// Android library: the shared SDK levels, Java 11, JUnit 5 host tests and lint baselines.
+// Android library: the shared SDK levels, Java 17, JUnit Jupiter host tests and lint baselines.
 plugins { id("com.android.library") }
 
 android {

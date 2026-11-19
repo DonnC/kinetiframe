@@ -1,4 +1,4 @@
-// Android app: the shared SDK levels, Java 11, the instrumentation runner and JUnit 5 host tests.
+// Android app: the shared SDK levels, Java 17, the instrumentation runner and JUnit Jupiter host tests.
 plugins { id("com.android.application") }
 
 android {

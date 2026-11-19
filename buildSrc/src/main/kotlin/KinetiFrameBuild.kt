@@ -13,7 +13,7 @@ internal object KinetiFrameBuild {
     const val COMPILE_SDK = 37
     const val TARGET_SDK = 37
     const val MIN_SDK = 28
-    val JAVA = JavaVersion.VERSION_11
+    val JAVA = JavaVersion.VERSION_17
 }
 
 internal val Project.libs: VersionCatalog
@@ -21,7 +21,7 @@ internal val Project.libs: VersionCatalog
 
 internal fun VersionCatalog.library(alias: String) = findLibrary(alias).get()
 
-/** JUnit 5 for host tests. JUnit 4 tests run through the vintage engine where a module adds it. */
+/** JUnit Jupiter for host tests. JUnit 4 tests run through the vintage engine where a module adds it. */
 internal fun Project.useJUnit5() {
     dependencies {
         add("testImplementation", platform(libs.library("junit5-bom")))
