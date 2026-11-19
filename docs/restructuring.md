@@ -15,8 +15,8 @@ Keep this page current:
 
 Work collects on one milestone branch per milestone, with a commit per chunk and one pull request
 into `develop` when the milestone is done. #75 finished per-app language, pseudo-locales and
-theme tokens. #76 (in review) holds the code limits milestone described below. The UI separation
-milestone, `milestone/ui-separation`, starts from it.
+theme tokens, and #76 the code limits milestone (parameter limits, component labels and the
+pseudo-locale pass). The UI separation milestone is on `milestone/ui-separation`.
 
 **UI separation, part 1: `actors` without Compose.** The rig maths, hit testers, framing and
 templates use `core`'s `Point2` instead of Compose's `Offset`, and the lasso crop takes an
@@ -33,61 +33,18 @@ tap, `android.graphics.Path` for lassos, and ARGB `Int` colours. The onion skin 
 `OnionSkinColors` constants. `media`'s video geometry moves too. Neither module depends on Compose
 now; only `presentation`, `designsystem` and `app` do. `presentation` converts at its edges
 (`toPoint2()`, `toOffset()`, `toRect2()`, `toAffine2D()`, `Color(int)`), and remembers the
-converted selection matrix per transform, since a Compose `Matrix` compares by identity.
-
-**Parameter limits.** 50 of the 51 functions over the limit are fixed, mostly by grouping
-parameters that travel together into small data classes. Each function unpacks them under the
-old names, so behaviour is unchanged:
-
-- The studio's managers take a `StudioRuntime`, the shared `UndoStacks` and a hooks class each.
-  The library's exports take a `LibraryPlacement`.
-- Home takes `HomeStates` and `HomeIntents`; its tabs take callback classes like the Packs tab's
-  `PacksTabCallbacks`.
-- The timeline clip takes `ClipGestures`; the clip, asset and background menus and the editor top
-  bar take action classes.
-- Actor Studio's preset sheet takes a `PresetPicker` and `PresetAudition`, and `StudioViewModel`
-  takes the session's `StudioDirectories`.
-- The canvas drawing layer takes a `CanvasSheet`, `OnionSkinLayers`, `CanvasContent`,
-  `StrokePreview` and `SelectionOutline`, and the input layer an `InputViewport`, `InputTool`,
-  `InputTargets` and `InputCallbacks`.
-- Blur and smudge pass a reused, mutable `ManipulationDab`, so applying a dab still allocates
-  nothing; particle stamps take the `TouchPoint` they already built.
-
-Some parameters turned out to be unused and are gone: three in the selection box, the stroke
-drawing's source bitmap and strength, the selection maths' gesture scale and the artwork skin's
-softness. The one function left is `CubicStrokeSampler`'s recursive `subdivide`. It passes the
-curve as twelve plain values on purpose, so subdividing allocates nothing, and it stays in the
-baseline.
-
-**Labels in the app's own components.** The inline text check now also counts the label of
-`ContextIconAction` and `ContextSliderButton`, and any `label`, `title`, `subtitle`,
-`placeholder` or `supportingText` argument. It skips private preview sample builders such as
-`previewSample()`. The 48 labels it found are string resources: the timeline's clip and add-asset
-menus, the background menu, the colour controls, the frame studio's toolbar and the blur size
-slider. New clips are named from resources too ("Voice-over", "Imported video", "Video sound").
-The English text is unchanged, so device tests that find these labels by text still match.
-
-**Pseudo-locale check.** Home, Library, Settings and the editor were checked on a Galaxy A56 in
-`en-XA` (long text) and `ar-XB` (right to left). Right to left mirrors cleanly. Fixed from the
-pass:
-
-- The bottom bar's labels and the frame thumbnails' descriptions were English; frames saved to
-  the library were named "Frame N" in English. All three come from resources, and the check now
-  counts an `Image`'s positional description.
-- A project card's two badges overlapped with long text; they share one row now.
-- Home's browse chips cut long words mid-letter; they end in an ellipsis now.
-- Menu tiles cut labels to one line ("Actor perfor…"); they take two lines now.
-- A long settings title ran into its switch; the row has a gap now.
+converted selection matrix per transform, since a Compose `Matrix` compares by identity. Checked on a phone: lasso selection, pivot and
+scale handles with undo, pen colour, dock dragging and Actor Studio pin dragging.
 
 ## Next
 
-1. **Device check of the separation.** Selection, transform handles, the lasso, pivot placement,
-   ruler guides, docks, colours and Actor Studio dragging all changed type. Check them on a phone,
-   then open the UI separation milestone's pull request.
-2. **Right-to-left editor controls.** In `ar-XB` the editor's playback buttons and frame strip
+1. **Right-to-left editor controls.** In `ar-XB` the editor's playback buttons and frame strip
    mirror, so "next frame" sits on the left and time runs right to left. Material keeps media
    controls left to right. Decide whether the timeline should too, and flip the undo and redo
    icons, which swap places but don't mirror.
+2. **Actor preset types.** Merge the app's `ActorMotionPreset`, `RotationChannel`,
+   `AppliedActorPreset` and `ActorView` into their `core` counterparts and delete the bridges and
+   parity tests (see Later).
 
 ## Later
 
@@ -98,8 +55,9 @@ Tracks that run alongside the module work, a screen or feature at a time:
   documents, such as FPS and stage limits, that only invalid files reach.
 - **Theme tokens.** Done.
 - **UI separation.** Done: only `presentation`, `designsystem` and `app` use Compose, and screens
-  reach storage only through their ViewModels (step 8d). A device check is under Next.
-- **Parameter limits.** Done, except `CubicStrokeSampler.subdivide`, kept on purpose (see Now).
+  reach storage only through their ViewModels (step 8d). Checked on a phone.
+- **Parameter limits.** Done, except `CubicStrokeSampler.subdivide`, kept on purpose: its recursion
+  passes the curve as twelve plain floats so that subdividing allocates nothing.
 - **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
   still mirror `core` types, with bridges and parity tests between them, and `ActorView` duplicates
   `core`'s `PresetAuthoredView`. Merge each pair and delete the parity tests.
@@ -250,6 +208,7 @@ fixed after the module work, unless one blocks testing.
 | #73 | Typed fixable problems and tightened the inline text check (typed errors, part 4) |
 | #74 | Worded media failures, slider values and audio tags from resources (typed errors, part 5) |
 | #75 | Added per-app language and pseudo-locales, and moved all inline sizes and all but two inline colours into tokens |
+| #76 | Brought 50 of 51 functions under the parameter limit, counted component labels as inline text, and fixed the pseudo-locale pass |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
