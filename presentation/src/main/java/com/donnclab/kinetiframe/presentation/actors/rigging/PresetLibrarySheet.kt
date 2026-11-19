@@ -7,13 +7,13 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
+import com.donnclab.kinetiframe.actors.rig.presets.ActorPreset
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 
 /** The presets on offer, the one being previewed, and what picking or applying one does. */
 data class PresetPicker(
-    val presets: List<ActorMotionPreset>,
+    val presets: List<ActorPreset>,
     val previewingId: String?,
     val canApply: Boolean,
     val onPreview: (String) -> Unit,

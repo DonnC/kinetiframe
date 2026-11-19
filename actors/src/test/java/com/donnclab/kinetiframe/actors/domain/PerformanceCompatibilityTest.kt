@@ -2,10 +2,13 @@ package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
+import com.donnclab.kinetiframe.actors.rig.presets.oscillating
+import com.donnclab.kinetiframe.actors.rig.presets.testRecipe
 import com.donnclab.kinetiframe.core.actor.document.ActorRevision
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -31,17 +34,8 @@ class PerformanceCompatibilityTest {
         assertThrows(IllegalArgumentException::class.java) { PerformanceCompatibility.validate(performance, revision) }
     }
 
-    private fun preset(vararg requiredBones: String) = com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset(
-        com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset(
-            id = "test-preset",
-            name = "Test",
-            description = "",
-            durationSeconds = 1f,
-            requiredBones = requiredBones.toList(),
-            channels = requiredBones.map {
-                com.donnclab.kinetiframe.actors.rig.presets.RotationChannel(boneId = it, amplitudeDegrees = 10f)
-            },
-        ),
+    private fun preset(vararg requiredBones: String) = AppliedPresetDocument(
+        testRecipe("test-preset", requiredBones.map { oscillating(it, amplitude = 10f) }),
     )
 
     @Test fun `a saved preset snapshot referencing this revision's parts is accepted`() {
@@ -49,7 +43,7 @@ class PerformanceCompatibilityTest {
             PerformanceDocument(
                 performanceId = "performance-a", projectId = "project-a", actorId = "actor-a",
                 actorRevisionId = "revision-a", displayName = "Wave", durationMicros = 1_000_000,
-                presetSnapshot = preset("torso", "head").document(), createdAtEpochMs = 1, updatedAtEpochMs = 1,
+                presetSnapshot = preset("torso", "head"), createdAtEpochMs = 1, updatedAtEpochMs = 1,
             )
         PerformanceCompatibility.validate(performance, revision) // must not throw
     }
@@ -59,7 +53,7 @@ class PerformanceCompatibilityTest {
             PerformanceDocument(
                 performanceId = "performance-a", projectId = "project-a", actorId = "actor-a",
                 actorRevisionId = "revision-a", displayName = "Wave", durationMicros = 1_000_000,
-                presetSnapshot = preset("torso", "tail").document(), createdAtEpochMs = 1, updatedAtEpochMs = 1,
+                presetSnapshot = preset("torso", "tail"), createdAtEpochMs = 1, updatedAtEpochMs = 1,
             )
         assertThrows(IllegalArgumentException::class.java) { PerformanceCompatibility.validate(performance, revision) }
     }

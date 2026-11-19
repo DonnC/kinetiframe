@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.studio.domain.actorstudio
 
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioFailure
 import com.donnclab.kinetiframe.studio.StudioIntent
@@ -36,7 +36,7 @@ class ActorPresetManager(
         val definition = state.actorDefinition() ?: return
         when (intent) {
             is StudioIntent.ActorPreset.Preview -> {
-                val recipe = state.actor.presets.find { it.id == intent.id } ?: return
+                val recipe = state.actor.presets.find { it.recipe.id == intent.id }?.recipe ?: return
                 if (!recipe.supportsView(state.actor.authoredView)) {
                     sendEffect(
                         // The preset card names the view it was authored for.
@@ -54,7 +54,7 @@ class ActorPresetManager(
                 updateState {
                     it.copy(
                         actor = it.actor.copy(
-                            presetPreview = AppliedActorPreset(recipe),
+                            presetPreview = AppliedPresetDocument(recipe),
                             presetPreviewInstanceId = instance.id,
                             previewTimeMicros = 0,
                             previewGraph = null,
@@ -97,7 +97,7 @@ class ActorPresetManager(
                             puppetInstances = it.project.puppetInstances +
                                 (
                                     instance.id to instance.copy(
-                                        motionPreset = preset?.document(),
+                                        motionPreset = preset,
                                         poseKeys = if (preset != null) emptyList() else instance.poseKeys,
                                         rotationCurves = if (preset != null) emptyList() else instance.rotationCurves,
                                         rootMotionCurves = if (preset !=

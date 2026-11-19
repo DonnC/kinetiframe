@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.presentation.actors
 
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.ActorRevision
@@ -9,6 +8,7 @@ import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
 import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.presentation.common.UiText
@@ -49,7 +49,7 @@ sealed interface ActorStudioDocumentIntent : ViewIntent {
     data class SavePerformance(
         val name: String,
         val poseKeys: List<ActorPoseKey>,
-        val motionPreset: AppliedActorPreset? = null,
+        val motionPreset: AppliedPresetDocument? = null,
         val durationMicros: Long = 1_000_000L,
         val rotationCurves: List<RotationCurve> = emptyList(),
         val poseInterpolation: CurveInterpolation = CurveInterpolation.SMOOTH,

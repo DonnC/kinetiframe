@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.actors.rig.math
 
 import com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator
 import com.donnclab.kinetiframe.actors.rig.model.ActorArtwork
+import com.donnclab.kinetiframe.actors.rig.presets.durationMicros
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.artwork.ArtworkVariant
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
@@ -29,15 +30,8 @@ import org.junit.jupiter.api.Test
 /** Contract: expression timing cannot change skeletal motion; endpoint posing cannot stretch limbs. */
 class ActorArtworkMotionTest {
     @Test fun `expression loop duration preserves whole gait cycles within storage limit`() {
-        val preset = com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset(
-            com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset(
-                id = "walk",
-                name = "Walk",
-                description = "",
-                durationSeconds = 1.8f,
-                requiredBones = emptyList(),
-                channels = emptyList(),
-            ),
+        val preset = com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument(
+            com.donnclab.kinetiframe.actors.rig.presets.testRecipe("walk", emptyList(), durationSeconds = 1.8f),
         )
         val duration = com.donnclab.kinetiframe.actors.domain.PerformanceDuration.expressionLoop(2_000_000, preset)
         assertEquals(preset.durationMicros * 2, duration)

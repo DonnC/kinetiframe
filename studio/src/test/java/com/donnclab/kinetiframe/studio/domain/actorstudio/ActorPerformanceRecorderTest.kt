@@ -4,12 +4,10 @@ import com.donnclab.kinetiframe.actors.domain.LegacyActorMigration
 import com.donnclab.kinetiframe.actors.domain.PerformanceEvaluator
 import com.donnclab.kinetiframe.actors.domain.PerformanceIdentity
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
-import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.SceneState
@@ -77,22 +75,15 @@ class ActorPerformanceRecorderTest {
         var state = StudioState(scene = SceneState(studioMode = StudioMode.RIG_SETUP))
         ActorStudioManager({ state }, { state = it(state) }).handle(StudioIntent.Actor.Create(ActorTemplate.HUMAN))
         val actor = state.activeActor()!!
-        val recipe = ActorMotionPreset(
-            id = "idle",
-            name = "Idle",
-            description = "",
-            durationSeconds = 2f,
-            requiredBones = listOf("head"),
-            channels = listOf(
-                RotationChannel("head", amplitudeDegrees = 12f),
-            ),
-        )
-        val preset = AppliedActorPreset(recipe)
+        val preset =
+            AppliedPresetDocument(
+                testRecipe("idle", listOf(oscillating("head", amplitude = 12f)), durationSeconds = 2f),
+            )
         state = state.copy(
             scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK),
             project = state.project.copy(
                 puppetInstances =
-                state.project.puppetInstances + (actor.id to actor.copy(motionPreset = preset.document())),
+                state.project.puppetInstances + (actor.id to actor.copy(motionPreset = preset)),
             ),
         )
         val recorder =
@@ -121,7 +112,7 @@ class ActorPerformanceRecorderTest {
         advanceTimeBy(300)
         runCurrent()
         recorder.handle(StudioIntent.ActorMotion.StopTake)
-        assertEquals(preset.document(), state.activeActor()!!.motionPreset)
+        assertEquals(preset, state.activeActor()!!.motionPreset)
         assertTrue(state.activeActor()!!.rotationCurves.none { it.boneId == "head" })
         recorder.cancel()
     }

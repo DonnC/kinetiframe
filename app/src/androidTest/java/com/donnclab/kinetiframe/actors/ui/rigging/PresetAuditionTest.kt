@@ -4,10 +4,14 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
-import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
+import com.donnclab.kinetiframe.actors.rig.presets.ActorPreset
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipe
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeChannels
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeDocument
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeMetadata
+import com.donnclab.kinetiframe.core.actor.presets.PresetRotationChannel
 import com.donnclab.kinetiframe.presentation.actors.rigging.PresetAudition
 import com.donnclab.kinetiframe.presentation.actors.rigging.PresetAuditionControls
 import com.donnclab.kinetiframe.presentation.actors.rigging.PresetLibrarySection
@@ -20,20 +24,19 @@ import org.junit.Test
 
 class PresetAuditionTest {
     @get:Rule val compose = createComposeRule()
-    private val recipe = ActorMotionPreset(
-        id = "wave",
-        name = "Wave",
+    private val recipe = PresetRecipeDocument(
+        PresetRecipe(
+            PresetRecipeMetadata(1, "wave", "Wave", 2f),
+            PresetRecipeChannels(listOf("head"), listOf(PresetRotationChannel("head"))),
+        ),
         description = "",
-        durationSeconds = 2f,
-        requiredBones = listOf("head"),
-        channels = listOf(RotationChannel("head")),
     )
 
     @Test fun darkSheetCardCanSelectAndApply() {
         var selected: String? = null
         var applied = false
         compose.setContent {
-            PresetLibrarySection(listOf(recipe), null, true, { selected = it }, { applied = true }, true)
+            PresetLibrarySection(listOf(ActorPreset(recipe)), null, true, { selected = it }, { applied = true }, true)
         }
         compose.onNodeWithText("Wave").performClick()
         compose.onNodeWithContentDescription("Apply retargeting").performClick()
@@ -47,7 +50,7 @@ class PresetAuditionTest {
         var played = false
         compose.setContent {
             PresetAuditionControls(
-                PresetAudition(AppliedActorPreset(recipe), false, true, {
+                PresetAudition(AppliedPresetDocument(recipe), false, true, {
                     played = true
                 }, {}, {}, null),
             )

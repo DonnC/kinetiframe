@@ -2,8 +2,11 @@ package com.donnclab.kinetiframe.actors.rig.math
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.actors.rig.presets.durationMicros
+import com.donnclab.kinetiframe.actors.rig.presets.offsets
+import com.donnclab.kinetiframe.actors.rig.presets.rootTranslations
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeDocument
 import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.geometry.Point2
@@ -22,9 +25,9 @@ class LocomotionDirectionTest {
     }
     private val rest = ActorTemplates.create(ActorTemplate.HUMAN, StageDimensions(1000, 800), ActorView.PROFILE)
     private fun recipe(id: String) =
-        Json.decodeFromString<ActorMotionPreset>(File(assets, "$id.json").readText()).validate()
+        Json.decodeFromString<PresetRecipeDocument>(File(assets, "$id.json").readText()).validate()
     private fun joints(id: String, phase: Double): Map<String, RigGeometry.Joint> {
-        val applied = AppliedActorPreset(recipe(id))
+        val applied = AppliedPresetDocument(recipe(id))
         val time = (phase * applied.durationMicros).toLong()
         val angles = applied.offsets(time)
         val translations = applied.rootTranslations(time, rest)
@@ -92,6 +95,6 @@ class LocomotionDirectionTest {
         }
         assertTrue(joints(id, .48).getValue("right_foot").end.y < floor - 100f)
         assertTrue(joints(id, .68).getValue("right_foot").end.y < floor - 40f)
-        assertEquals(0f, AppliedActorPreset(recipe(id)).offsets(3_000_000)["right_shin"] ?: 0f)
+        assertEquals(0f, AppliedPresetDocument(recipe(id)).offsets(3_000_000)["right_shin"] ?: 0f)
     }
 }

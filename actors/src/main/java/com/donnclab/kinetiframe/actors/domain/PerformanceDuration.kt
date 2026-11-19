@@ -1,10 +1,11 @@
 package com.donnclab.kinetiframe.actors.domain
 
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
+import com.donnclab.kinetiframe.actors.rig.presets.durationMicros
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 
 /** Expression tracks have their own clock, but must not cut a repeating gait mid-cycle. */
 object PerformanceDuration {
-    fun expressionLoop(requested: Long, preset: AppliedActorPreset?): Long {
+    fun expressionLoop(requested: Long, preset: AppliedPresetDocument?): Long {
         if (preset == null || !preset.recipe.loop) return requested
         val period = preset.durationMicros
         val maximum = com.donnclab.kinetiframe.core.actor.document.PerformanceLimits.MAX_DURATION_MICROS

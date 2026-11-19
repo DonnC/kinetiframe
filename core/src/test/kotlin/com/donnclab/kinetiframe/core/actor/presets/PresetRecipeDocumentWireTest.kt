@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.core.actor.presets
 
+import com.donnclab.kinetiframe.core.actor.rigging.ActorView
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -24,7 +25,7 @@ class PresetRecipeDocumentWireTest {
         assertEquals(minimal, Json.encodeToString(value))
         assertEquals(1, value.recipe.metadata.schemaVersion)
         assertTrue(value.recipe.loop)
-        assertEquals(PresetAuthoredView.FRONT, value.authoredView)
+        assertEquals(ActorView.FRONT, value.authoredView)
         val expanded = defaults.encodeToString(value)
         assertEquals(
             """{"schemaVersion":1,"id":"test","name":"Test","description":"","durationSeconds":1.0,"requiredBones":["head"],"channels":[{"boneId":"head","offsetDegrees":0.0,"amplitudeDegrees":0.0,"cyclesPerLoop":1.0,"phaseDegrees":0.0,"points":[],"counterRotationBones":[]}],"loop":true,"rootMotion":[],"authoredView":"FRONT"}""",
@@ -65,15 +66,15 @@ class PresetRecipeDocumentWireTest {
 
     @Test fun `view compatibility retains original wildcard without treating front as universal`() {
         val document = Json.decodeFromString<PresetRecipeDocument>(minimal)
-        PresetAuthoredView.entries.forEach { authored ->
+        ActorView.entries.forEach { authored ->
             val value = document.copy(authoredView = authored)
-            PresetAuthoredView.entries.forEach { requested ->
+            ActorView.entries.forEach { requested ->
                 assertEquals(
-                    requested == PresetAuthoredView.ORIGINAL || requested == authored,
+                    requested == ActorView.ORIGINAL || requested == authored,
                     value.supportsView(requested),
                 )
             }
         }
-        assertFalse(document.supportsView(PresetAuthoredView.PROFILE))
+        assertFalse(document.supportsView(ActorView.PROFILE))
     }
 }

@@ -7,7 +7,22 @@ import com.donnclab.kinetiframe.core.actor.presets.LegacyPresetSampling
 import com.donnclab.kinetiframe.core.actor.presets.PresetRotationChannel
 import kotlin.math.sin
 
-/** Copies channel lists so later caller edits cannot change an evaluated recipe snapshot. */
+/**
+ * Evaluates a recipe's rotation channels. Schema 2 and later evaluate authored curves. Legacy
+ * schema 1 channels evaluate an oscillator in one of two shapes:
+ *
+ * - **Looping**: `offsetDegrees + amplitudeDegrees * sin(phase)`, with the phase growing as time
+ *   advances. This suits a gesture that repeats with no end, such as breathing, walking or talking.
+ * - **One-shot**: progress is clip time clamped to `[0, 1]`, so the motion plays once and holds.
+ *   `eased = smoothstep(progress)` drives `offsetDegrees` from 0 to its full value, the held final
+ *   pose. `settle = 1 - eased` scales the sinusoidal term, a transient overshoot that reaches
+ *   exactly zero at the end whatever `cyclesPerLoop` and `phaseDegrees` are, so the held value is
+ *   always `offsetDegrees`. This is the shape of a lightly damped spring, as in sitting down,
+ *   landing a jump or a startled flinch. A phase of 90 degrees, used by the bundled one-shot
+ *   recipes, starts the clip from a displaced pose.
+ *
+ * Copies channel lists so later caller edits cannot change an evaluated recipe snapshot.
+ */
 class PresetRotationProgram(channels: List<PresetRotationChannel>) {
     private val channels = channels.map {
         it.copy(points = it.points.toList(), counterRotationBones = it.counterRotationBones.toList())

@@ -24,7 +24,7 @@ internal fun PresetLibraryOverlay(state: StudioState, onIntent: (StudioIntent) -
     PresetLibrarySheet(
         picker = PresetPicker(
             presets = actor.presets.filter {
-                it.supportsView(actor.authoredView) && it.missingBones(boneIds).isEmpty()
+                it.recipe.supportsView(actor.authoredView) && it.recipe.missingBones(boneIds).isEmpty()
             },
             previewingId = actor.presetPreview?.recipe?.id,
             canApply = actor.presetPreview != null,

@@ -2,9 +2,11 @@ package com.donnclab.kinetiframe.actors.rig.math
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
-import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
+import com.donnclab.kinetiframe.actors.rig.presets.durationMicros
+import com.donnclab.kinetiframe.actors.rig.presets.offsets
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeDocument
+import com.donnclab.kinetiframe.core.actor.presets.PresetRotationChannel
 import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.document.StageDimensions
@@ -25,10 +27,10 @@ class PresetGestureTest {
     }
     private fun recipes() = root.listFiles()!!.filter {
         it.extension == "json"
-    }.map { Json.decodeFromString<ActorMotionPreset>(it.readText()).validate() }
+    }.map { Json.decodeFromString<PresetRecipeDocument>(it.readText()).validate() }
     private val rest = ActorTemplates.create(ActorTemplate.HUMAN, StageDimensions(1000, 800))
-    private fun posed(preset: ActorMotionPreset, progress: Double): SceneGraph {
-        val applied = AppliedActorPreset(preset)
+    private fun posed(preset: PresetRecipeDocument, progress: Double): SceneGraph {
+        val applied = AppliedPresetDocument(preset)
         val offsets = applied.offsets((progress * applied.durationMicros).toLong())
         return rest.copy(
             bones = rest.bones.mapValues { (id, bone) ->
@@ -44,7 +46,7 @@ class PresetGestureTest {
     @Test fun `authored channels never overshoot their segment or jump at knots`() {
         recipes().forEach { recipe ->
             assertTrue(recipe.schemaVersion in 2..3)
-            recipe.channels.forEach { channel ->
+            recipe.rotations.forEach { channel ->
                 channel.points.zipWithNext().forEach { (a, b) ->
                     repeat(101) { i ->
                         val time = a.progress.toDouble() + (b.progress - a.progress) * i / 100.0
@@ -73,7 +75,7 @@ class PresetGestureTest {
 
     @Test fun `loops match velocity and pose at the seam`() {
         recipes().filter { it.loop }.forEach { recipe ->
-            recipe.channels.forEach { channel ->
+            recipe.rotations.forEach { channel ->
                 val e = .00001
                 val start = PresetCurve.evaluate(channel.points, 0.0, true)
                 val finish = PresetCurve.evaluate(channel.points, 1.0, true)
@@ -89,7 +91,7 @@ class PresetGestureTest {
         val recipe = recipes().first { it.id == "front-wave" }
         val joints = RigGeometry.resolve(posed(recipe, .5))
         assertTrue(joints.getValue("right_hand").end.y < joints.getValue("right_upper_arm").start.y)
-        assertTrue(AppliedActorPreset(recipe).offsets(3_000_000).values.all { it == 0f })
+        assertTrue(AppliedPresetDocument(recipe).offsets(3_000_000).values.all { it == 0f })
     }
 
     @Test fun `walk keeps foot orientation independent from parent hip and knee swings`() {
@@ -109,7 +111,7 @@ class PresetGestureTest {
     @Test fun `invalid curve order nonfinite values and mismatched loop endpoints are rejected`() {
         val recipe = recipes().first { it.loop }
         fun invalid(points: List<RotationPoint>) =
-            recipe.copy(channels = listOf(RotationChannel("head", points = points)))
+            recipe.withRotations(listOf(PresetRotationChannel("head", points = points)))
         assertThrows(IllegalArgumentException::class.java) {
             invalid(listOf(RotationPoint(0f, 0f), RotationPoint(0f, 2f), RotationPoint(1f, 0f))).validate()
         }

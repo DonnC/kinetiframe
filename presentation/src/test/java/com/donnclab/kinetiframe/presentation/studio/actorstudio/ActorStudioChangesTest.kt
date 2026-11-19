@@ -1,9 +1,9 @@
 package com.donnclab.kinetiframe.presentation.studio.actorstudio
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
-import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
+import com.donnclab.kinetiframe.presentation.actors.oscillating
+import com.donnclab.kinetiframe.presentation.actors.testRecipe
 import com.donnclab.kinetiframe.studio.SceneState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
@@ -30,20 +30,12 @@ class ActorStudioChangesTest {
             ),
         )
         val actor = initial.activeActor()!!
-        val preset = AppliedActorPreset(
-            ActorMotionPreset(
-                id = "nod",
-                name = "Nod",
-                description = "",
-                durationSeconds = 2f,
-                requiredBones = listOf("head"),
-                channels = listOf(RotationChannel("head", amplitudeDegrees = 5f)),
-            ),
-        )
+        val preset =
+            AppliedPresetDocument(testRecipe("nod", listOf(oscillating("head", amplitude = 5f)), durationSeconds = 2f))
         val changed = initial.copy(
             project = initial.project.copy(
                 puppetInstances = initial.project.puppetInstances +
-                    (actor.id to actor.copy(motionPreset = preset.document())),
+                    (actor.id to actor.copy(motionPreset = preset)),
             ),
         )
         assertTrue(hasActorStudioChanges(initial, changed))

@@ -1,15 +1,19 @@
 package com.donnclab.kinetiframe.studio
 
+import com.donnclab.kinetiframe.actors.rig.math.testRecipe
+import com.donnclab.kinetiframe.actors.rig.math.withRootMotion
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
-import com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset
-import com.donnclab.kinetiframe.actors.rig.presets.RotationChannel
+import com.donnclab.kinetiframe.actors.rig.presets.offsets
+import com.donnclab.kinetiframe.actors.rig.presets.rootTranslations
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.RootMotionCurve
 import com.donnclab.kinetiframe.core.actor.motion.RootMotionPoint
 import com.donnclab.kinetiframe.core.actor.motion.RootTranslation
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeDocument
+import com.donnclab.kinetiframe.core.actor.presets.PresetRotationChannel
 import com.donnclab.kinetiframe.core.actor.presets.RootMotionChannel
 import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
@@ -28,7 +32,7 @@ class ActorStudioCompositionTest {
         val preset = preset(root)
         val instance = original.copy(
             pose = mapOf(root to Transform(rotationDegrees = 65f)),
-            motionPreset = preset.document(),
+            motionPreset = preset,
             poseKeys = listOf(ActorPoseKey(0, mapOf(root to 20f), mapOf(root to RootTranslation(3f, 4f)))),
             rotationCurves = listOf(RotationCurve(root, points = listOf(RotationCurvePoint(1_000_000, 0f)))),
             rootMotionCurves = listOf(RootMotionCurve(root, listOf(RootMotionPoint(1_000_000, 0f, 0f)))),
@@ -101,21 +105,15 @@ class ActorStudioCompositionTest {
         return state.copy(scene = state.scene.copy(studioMode = StudioMode.ANIMATE_IK))
     }
 
-    private fun preset(root: String): AppliedActorPreset = AppliedActorPreset(
-        ActorMotionPreset(
-            schemaVersion = 3,
-            id = "studio",
-            name = "Studio",
-            description = "",
-            durationSeconds = 2f,
-            requiredBones = listOf(root),
-            channels = listOf(RotationChannel(root, points = listOf(RotationPoint(0f, 10f), RotationPoint(1f, 10f)))),
-            rootMotion = listOf(
-                RootMotionChannel(
-                    root,
-                    listOf(PresetRootPoint(0f), PresetRootPoint(.5f, .1f, -.1f), PresetRootPoint(1f)),
-                ),
-            ),
-        ),
-    )
+    private fun preset(root: String): AppliedPresetDocument {
+        val rotation = PresetRotationChannel(root, points = listOf(RotationPoint(0f, 10f), RotationPoint(1f, 10f)))
+        val translation = RootMotionChannel(
+            root,
+            listOf(PresetRootPoint(0f), PresetRootPoint(.5f, .1f, -.1f), PresetRootPoint(1f)),
+        )
+        return AppliedPresetDocument(
+            testRecipe("studio", listOf(rotation), durationSeconds = 2f, schemaVersion = 3)
+                .withRootMotion(listOf(translation)),
+        )
+    }
 }

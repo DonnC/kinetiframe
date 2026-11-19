@@ -16,7 +16,8 @@ Keep this page current:
 Work collects on one milestone branch per milestone, with a commit per chunk and one pull request
 into `develop` when the milestone is done. #75 finished per-app language, pseudo-locales and
 theme tokens, and #76 the code limits milestone (parameter limits, component labels and the
-pseudo-locale pass). The UI separation milestone is on `milestone/ui-separation`.
+pseudo-locale pass), and #77 the UI separation milestone described below. The actor presets
+milestone is on `milestone/actor-presets`.
 
 **UI separation, part 1: `actors` without Compose.** The rig maths, hit testers, framing and
 templates use `core`'s `Point2` instead of Compose's `Offset`, and the lasso crop takes an
@@ -33,18 +34,28 @@ tap, `android.graphics.Path` for lassos, and ARGB `Int` colours. The onion skin 
 `OnionSkinColors` constants. `media`'s video geometry moves too. Neither module depends on Compose
 now; only `presentation`, `designsystem` and `app` do. `presentation` converts at its edges
 (`toPoint2()`, `toOffset()`, `toRect2()`, `toAffine2D()`, `Color(int)`), and remembers the
-converted selection matrix per transform, since a Compose `Matrix` compares by identity. Checked on a phone: lasso selection, pivot and
-scale handles with undo, pen colour, dock dragging and Actor Studio pin dragging.
+converted selection matrix per transform, since a Compose `Matrix` compares by identity. Checked
+on a phone: lasso selection, pivot and scale handles with undo, pen colour, dock dragging and
+Actor Studio pin dragging.
+
+**Actor preset types.** `core`'s recipe documents are now the only preset types. The app's
+`ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset` are gone, along with their
+serializers, the bridges between them, and the eight bridge and parity test classes with their
+five legacy reference helpers. `PresetAuthoredView`
+merged into `ActorView`, which writes the same names, so saved recipes and performances don't
+change. `PresetRecipeDocument` gains read accessors (`id`, `name`, `rotations` and so on),
+`validate()` and `missingBones()`. Playback is a set of extensions on `AppliedPresetDocument` in
+`actors` (`offsets`, `rootTranslations`, `durationMicros`), still caching one evaluation program
+per saved document. A recipe's icon isn't saved, so the catalog pairs the two in `ActorPreset`
+instead of the recipe carrying it. Studio state, the screens and saved performances hold the core
+documents directly, so applying a preset no longer converts it.
 
 ## Next
 
-1. **Right-to-left editor controls.** In `ar-XB` the editor's playback buttons and frame strip
-   mirror, so "next frame" sits on the left and time runs right to left. Material keeps media
-   controls left to right. Decide whether the timeline should too, and flip the undo and redo
-   icons, which swap places but don't mirror.
-2. **Actor preset types.** Merge the app's `ActorMotionPreset`, `RotationChannel`,
-   `AppliedActorPreset` and `ActorView` into their `core` counterparts and delete the bridges and
-   parity tests (see Later).
+1. **Dependency updates.** Work through the Dependabot pull requests (#1 to #5) one family at a
+   time, with a full check and a device check after each (see Later).
+2. **Screen tests left in `app`.** Let `presentation` run Robolectric tests and read the app's
+   fixtures, then move the screen tests that still live in `app` (see Later).
 
 ## Later
 
@@ -58,9 +69,7 @@ Tracks that run alongside the module work, a screen or feature at a time:
   reach storage only through their ViewModels (step 8d). Checked on a phone.
 - **Parameter limits.** Done, except `CubicStrokeSampler.subdivide`, kept on purpose: its recursion
   passes the curve as twelve plain floats so that subdividing allocates nothing.
-- **Actor preset types.** The app's `ActorMotionPreset`, `RotationChannel` and `AppliedActorPreset`
-  still mirror `core` types, with bridges and parity tests between them, and `ActorView` duplicates
-  `core`'s `PresetAuthoredView`. Merge each pair and delete the parity tests.
+- **Actor preset types.** Done (see Now).
 - **Screen tests left in `app`.** Some tests of `presentation` code still live in `app` and use
   its public API: host tests that need Robolectric or the app's assets, the `studio` package's
   tests that drive `StudioViewModel`, and most device tests in the `studio` and
@@ -209,6 +218,7 @@ fixed after the module work, unless one blocks testing.
 | #74 | Worded media failures, slider values and audio tags from resources (typed errors, part 5) |
 | #75 | Added per-app language and pseudo-locales, and moved all inline sizes and all but two inline colours into tokens |
 | #76 | Brought 50 of 51 functions under the parameter limit, counted component labels as inline text, and fixed the pseudo-locale pass |
+| #77 | Took Compose out of `actors`, `studio` and `media`, which now use `core` geometry (UI separation) |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -233,9 +243,13 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 - **The UI rules read package names.** `uidata` counts UI code by its `ui` segment, and `compose`
   counts domain code by its `domain` segment. A move that leaves those segments hides debt, so
   moved screens go under a `ui` package and managers under `domain`.
-- **Duplicate actor preset types.** The app's preset types mirror `core` types. #14 and #21 moved
-  the two saved fields that used them to the `core` types, which was all the document move needed.
-  Merging the rest is listed under Later.
+- **Duplicate actor preset types.** The app's preset types mirrored `core` types. #14 and #21
+  moved the two saved fields that used them to the `core` types, which was all the document move
+  needed. The actor presets milestone merged the rest.
+- **Right-to-left editor controls.** In `ar-XB` the editor's playback buttons and frame strip
+  mirror, so "next frame" sits on the left and time runs right to left, while Material keeps media
+  controls left to right. The undo and redo icons swap places but don't mirror. This is left to
+  another contributor and isn't part of this plan.
 - **`DurableFileTest` on Windows.** Its concurrent-writer test can fail with a file-lock error on
   Windows. It passes on rerun and in CI.
 - **Local Windows builds.** The IDE's Java language server and Gradle daemons can hold files in

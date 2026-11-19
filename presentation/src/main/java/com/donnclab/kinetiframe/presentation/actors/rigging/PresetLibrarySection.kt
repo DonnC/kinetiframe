@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Check
 import com.composables.icons.lucide.Lucide
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
+import com.donnclab.kinetiframe.actors.rig.presets.ActorPreset
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
@@ -30,7 +30,7 @@ import com.donnclab.kinetiframe.presentation.R
 /** Preset auditioning strip plus the Apply button. One of the sections composed by [PuppetInspector]. */
 @Composable
 fun PresetLibrarySection(
-    presets: List<ActorMotionPreset>,
+    presets: List<ActorPreset>,
     previewingId: String?,
     inPerformanceMode: Boolean,
     onPreview: (String) -> Unit,
@@ -71,12 +71,12 @@ fun PresetLibrarySection(
                     )
                 }
             } else {
-                items(presets, key = { it.id }) { preset ->
+                items(presets, key = { it.recipe.id }) { preset ->
                     ActorPresetCard(
                         preset = preset,
-                        selected = previewingId == preset.id,
+                        selected = previewingId == preset.recipe.id,
                         enabled = inPerformanceMode,
-                        onClick = { onPreview(preset.id) },
+                        onClick = { onPreview(preset.recipe.id) },
                     )
                 }
             }

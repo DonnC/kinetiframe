@@ -33,7 +33,11 @@ import com.composables.icons.lucide.Drama
 import com.composables.icons.lucide.Footprints
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.MessageCircle
-import com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset
+import com.donnclab.kinetiframe.actors.rig.presets.ActorPreset
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipe
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeChannels
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeDocument
+import com.donnclab.kinetiframe.core.actor.presets.PresetRecipeMetadata
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.actors.labelRes
@@ -49,8 +53,8 @@ private enum class PresetCategory(val label: String) {
     ;
 
     companion object {
-        fun of(preset: ActorMotionPreset): PresetCategory {
-            val key = preset.id.lowercase()
+        fun of(preset: ActorPreset): PresetCategory {
+            val key = preset.recipe.id.lowercase()
             return when {
                 listOf("walk", "run", "jump", "sneak", "skip", "leap").any(key::contains) -> LOCOMOTION
                 listOf("talk", "nod", "shake", "wave").any(key::contains) -> CONVERSATIONAL
@@ -87,7 +91,7 @@ private fun rememberPresetThumbnail(path: String?): Bitmap? {
  * ([com.donnclab.kinetiframe.actors.data.ActorPresetRepository]), so a new pack needs no code change here. */
 @Composable
 fun ActorPresetCard(
-    preset: ActorMotionPreset,
+    preset: ActorPreset,
     selected: Boolean,
     enabled: Boolean,
     onClick: () -> Unit,
@@ -104,7 +108,7 @@ fun ActorPresetCard(
             }
         }
     }
-    val category = remember(preset.id) { PresetCategory.of(preset) }
+    val category = remember(preset.recipe.id) { PresetCategory.of(preset) }
     Card(
         onClick = onClick,
         enabled = enabled,
@@ -136,14 +140,14 @@ fun ActorPresetCard(
                     if (vector != null) {
                         Icon(
                             vector!!,
-                            preset.name,
+                            preset.recipe.name,
                             tint = ActorStudioTokens.onPanel,
                             modifier = Modifier.fillMaxSize().padding(Dimens.spaceXs),
                         )
                     } else if (thumbnail != null) {
                         Image(
                             bitmap = thumbnail.asImageBitmap(),
-                            contentDescription = preset.name,
+                            contentDescription = preset.recipe.name,
                             contentScale = ContentScale.Fit,
                             modifier = Modifier.fillMaxSize().padding(Dimens.spaceXs),
                         )
@@ -158,14 +162,14 @@ fun ActorPresetCard(
                 }
             }
             Text(
-                preset.name,
+                preset.recipe.name,
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Bold,
                 color = ActorStudioTokens.onPanel,
                 maxLines = 1,
             )
             Text(
-                stringResource(preset.authoredView.labelRes()),
+                stringResource(preset.recipe.authoredView.labelRes()),
                 style = MaterialTheme.typography.labelSmall,
                 color = ActorStudioTokens.onPanelMuted,
                 maxLines = 1,
@@ -178,13 +182,14 @@ fun ActorPresetCard(
 @Composable
 private fun ActorPresetCardPreview() {
     ActorPresetCard(
-        preset = ActorMotionPreset(
-            id = "wave-hand",
-            name = "Wave",
-            description = "",
-            durationSeconds = 1f,
-            requiredBones = listOf("arm"),
-            channels = emptyList(),
+        preset = ActorPreset(
+            PresetRecipeDocument(
+                PresetRecipe(
+                    PresetRecipeMetadata(1, "wave-hand", "Wave", 1f),
+                    PresetRecipeChannels(listOf("arm"), emptyList()),
+                ),
+                description = "",
+            ),
         ),
         selected = true,
         enabled = true,

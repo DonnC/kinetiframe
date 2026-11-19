@@ -2,31 +2,28 @@ package com.donnclab.kinetiframe.actors.domain
 
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
+import com.donnclab.kinetiframe.actors.rig.presets.offsets
+import com.donnclab.kinetiframe.actors.rig.presets.oscillating
+import com.donnclab.kinetiframe.actors.rig.presets.testRecipe
 import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.core.actor.document.validate
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurve
 import com.donnclab.kinetiframe.core.actor.motion.RotationCurvePoint
+import com.donnclab.kinetiframe.core.actor.presets.AppliedPresetDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class PerformanceEvaluatorTest {
     @Test fun `a later recorded override does not freeze the earlier procedural gesture`() {
-        val recipe = com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset(
-            id = "idle",
-            name = "Idle",
-            description = "",
-            durationSeconds = 2f,
-            requiredBones = listOf("head"),
-            channels = listOf(
-                com.donnclab.kinetiframe.actors.rig.presets.RotationChannel("head", amplitudeDegrees = 12f),
-            ),
-        )
-        val preset = com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset(recipe)
+        val preset =
+            AppliedPresetDocument(
+                testRecipe("idle", listOf(oscillating("head", amplitude = 12f)), durationSeconds = 2f),
+            )
         val document = performance().copy(
             durationMicros = 5_000_000,
-            presetSnapshot = preset.document(),
+            presetSnapshot = preset,
             rotationCurves = listOf(
                 RotationCurve(
                     "head",
@@ -41,18 +38,9 @@ class PerformanceEvaluatorTest {
     }
 
     @Test fun `legacy preset containers do not reset at an unrelated duration or restart a one shot`() {
-        val recipe = com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset(
-            id = "legacy",
-            name = "Legacy",
-            description = "",
-            durationSeconds = 1.8f,
-            requiredBones = listOf("head"),
-            channels = listOf(
-                com.donnclab.kinetiframe.actors.rig.presets.RotationChannel("head", amplitudeDegrees = 12f),
-            ),
-        )
-        val applied = com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset(recipe)
-        val document = performance().copy(durationMicros = 2_000_000, presetSnapshot = applied.document())
+        val recipe = testRecipe("legacy", listOf(oscillating("head", amplitude = 12f)), durationSeconds = 1.8f)
+        val applied = AppliedPresetDocument(recipe)
+        val document = performance().copy(durationMicros = 2_000_000, presetSnapshot = applied)
         val base = rest.bones.getValue("head").localTransform.rotationDegrees
         for (time in listOf(1_999_999L, 2_000_000L, 2_000_001L, 10_000_000L)) {
             assertEquals(
@@ -62,14 +50,14 @@ class PerformanceEvaluatorTest {
             )
         }
         val oneShot = applied.copy(
-            recipe = recipe.copy(
+            recipe = testRecipe(
+                "legacy",
+                listOf(oscillating("head", offset = 30f)),
+                durationSeconds = 1.8f,
                 loop = false,
-                channels = listOf(
-                    com.donnclab.kinetiframe.actors.rig.presets.RotationChannel("head", offsetDegrees = 30f),
-                ),
             ),
         )
-        val saved = document.copy(presetSnapshot = oneShot.document())
+        val saved = document.copy(presetSnapshot = oneShot)
         assertEquals(base + 30f, PerformanceEvaluator.rotations(saved, 2_000_000L, rest).getValue("head"), .001f)
         assertEquals(base + 30f, PerformanceEvaluator.rotations(saved, 10_000_000L, rest).getValue("head"), .001f)
     }
@@ -106,22 +94,10 @@ class PerformanceEvaluatorTest {
         // This is the end-to-end check that a preset saved through ActorStudioDocumentViewModel
         // actually plays back: rotations() must fold presetSnapshot's offsets onto the rig's rest
         // pose, on top of (not replacing) any recorded pose keys or rotation curves.
-        val preset = com.donnclab.kinetiframe.actors.rig.presets.AppliedActorPreset(
-            com.donnclab.kinetiframe.actors.rig.presets.ActorMotionPreset(
-                id = "human-cheer",
-                name = "Cheer",
-                description = "",
-                durationSeconds = 2f,
-                requiredBones = listOf("torso"),
-                channels = listOf(
-                    com.donnclab.kinetiframe.actors.rig.presets.RotationChannel(
-                        boneId = "torso",
-                        amplitudeDegrees = 15f,
-                    ),
-                ),
-            ),
+        val preset = AppliedPresetDocument(
+            testRecipe("human-cheer", listOf(oscillating("torso", amplitude = 15f)), durationSeconds = 2f),
         )
-        val document = performance().copy(durationMicros = 2_000_000, presetSnapshot = preset.document())
+        val document = performance().copy(durationMicros = 2_000_000, presetSnapshot = preset)
         val restTorsoDegrees = rest.bones.getValue("torso").localTransform.rotationDegrees
         val expected = restTorsoDegrees + preset.offsets(500_000).getValue("torso")
         assertEquals(expected, PerformanceEvaluator.rotations(document, 500_000, rest).getValue("torso"), 0.001f)
