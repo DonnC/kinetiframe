@@ -14,7 +14,7 @@ import com.donnclab.kinetiframe.presentation.common.AudioTrackSummary
 import com.donnclab.kinetiframe.presentation.library.LibraryIntent
 import com.donnclab.kinetiframe.presentation.library.catalog.AudioTrackRow
 import com.donnclab.kinetiframe.presentation.library.catalog.FilterChipRow
-import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
+import com.donnclab.kinetiframe.presentation.library.preview.PreviewCatalog
 
 private val filters = listOf(
     R.string.filter_all,

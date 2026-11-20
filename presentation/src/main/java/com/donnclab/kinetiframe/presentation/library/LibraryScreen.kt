@@ -38,11 +38,11 @@ import com.donnclab.kinetiframe.presentation.library.catalog.PackContentsData
 import com.donnclab.kinetiframe.presentation.library.catalog.PackContentsGrid
 import com.donnclab.kinetiframe.presentation.library.catalog.TopTabRow
 import com.donnclab.kinetiframe.presentation.library.catalog.TopTabs
+import com.donnclab.kinetiframe.presentation.library.preview.PreviewCatalog
 import com.donnclab.kinetiframe.presentation.library.tabs.LibraryActorsTab
 import com.donnclab.kinetiframe.presentation.library.tabs.LibraryAudioTab
 import com.donnclab.kinetiframe.presentation.library.tabs.LibraryPacksTab
 import com.donnclab.kinetiframe.presentation.library.tabs.LibraryProjectsTab
-import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
 
 /**
  * The Library destination's content: four tabs (Projects, Actors, Packs, Audio) over the user's

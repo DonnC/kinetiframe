@@ -17,7 +17,7 @@ never on the `data` module.
 | `presentation.common` | Stateless UI shared by features: the brand mark and brand bar, the bottom navigation bar, the add-flow top and bottom bars, icon context menus, sliders and dialogs. The app provides the user's settings through `LocalAppPreferences` and `LocalShowMenuLabels` |
 | `presentation.home` | The Home screen, its tabs and cards, and `HomeActionsViewModel` |
 | `presentation.settings` | The Settings screen and `SettingsViewModel` |
-| `presentation.preview` | `PreviewCatalog`: sample cards and assets for previews and tests |
+| `presentation.library.preview` | `PreviewCatalog`: sample Library cards and assets for previews |
 
 Controls that know nothing about animation belong in [`designsystem`](../designsystem/README.md).
 `app` keeps navigation and the wiring. Screen tests live here, except those that check the app's

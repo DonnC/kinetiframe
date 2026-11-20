@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.presentation.preview
+package com.donnclab.kinetiframe.presentation.library.preview
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector

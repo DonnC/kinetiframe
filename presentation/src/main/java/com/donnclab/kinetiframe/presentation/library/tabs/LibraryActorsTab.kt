@@ -16,7 +16,7 @@ import com.donnclab.kinetiframe.presentation.common.AssetSummary
 import com.donnclab.kinetiframe.presentation.library.LibraryIntent
 import com.donnclab.kinetiframe.presentation.library.catalog.AssetGridCard
 import com.donnclab.kinetiframe.presentation.library.catalog.FilterChipRow
-import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
+import com.donnclab.kinetiframe.presentation.library.preview.PreviewCatalog
 
 private val filters = listOf(R.string.filter_all, R.string.library_filter_rigs, R.string.library_filter_performances)
 

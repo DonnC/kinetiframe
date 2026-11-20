@@ -73,7 +73,7 @@ The `app` packages become:
 | `home`, `settings`, `diagnostics` | Those screens and their storage; the screens are now `presentation.home` and `presentation.settings` | `ui/*`, `data/*` |
 | `navigation` | Navigation keys and the bottom bar | `ui/navigation`, `ui/components/navigation` |
 | `common` | Shared app UI, strings, coroutine helpers and JSON setup | `ui/common`, `ui/components/common`, `core/coroutines` |
-| `preview` | Preview fixtures and fake data, used only by previews and tests; now `presentation.preview` | `ui/common/model/PreviewCatalog.kt` |
+| `preview` | Preview fixtures and fake data, used only by previews and tests; now `presentation.library.preview` | `ui/common/model/PreviewCatalog.kt` |
 
 `MainActivity` and `KinetiFrameApplication` stay in the root package, which the manifest names.
 
