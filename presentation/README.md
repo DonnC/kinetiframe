@@ -20,8 +20,8 @@ never on the `data` module.
 | `presentation.preview` | `PreviewCatalog`: sample cards and assets for previews and tests |
 
 Controls that know nothing about animation belong in [`designsystem`](../designsystem/README.md).
-`app` keeps navigation and the wiring. Some screen tests that need Robolectric or the app's
-assets still live in `app`, as the [restructuring tracker](../docs/restructuring.md) lists.
+`app` keeps navigation and the wiring. Screen tests live here, except those that check the app's
+shipped assets.
 
 ```sh
 ./gradlew :presentation:assembleDebug

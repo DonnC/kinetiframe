@@ -1,14 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 package quality
 
-import org.jetbrains.kotlin.CoreEnvironmentDeprecation
-import org.jetbrains.kotlin.cli.extensionsStorage
-import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
-import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
-import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
-import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar
-import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
-import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtElement
@@ -18,7 +10,6 @@ import org.jetbrains.kotlin.psi.KtNamedDeclaration
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.kotlin.psi.KtPrimaryConstructor
-import org.jetbrains.kotlin.psi.KtPsiFactory
 import org.jetbrains.kotlin.psi.KtSecondaryConstructor
 import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 import java.io.File
@@ -34,30 +25,16 @@ import java.io.File
  * the Compose API guidelines ask for, never push a component over the limit.
  */
 internal object KotlinBoundaryScanner {
-    // Only the parser is used. Kotlin 2.4 marks the environment API for rework; see the tracker.
-    @OptIn(CoreEnvironmentDeprecation::class, CompilerConfiguration.Internals::class, ExperimentalCompilerApi::class)
     fun scan(root: File, modules: List<String>): Map<String, Int> {
         val violations = sortedMapOf<String, Int>()
-        val disposable = Disposer.newDisposable()
-        try {
-            // Since Kotlin 2.4 the environment reads compiler plugins from the configuration, even when there are none.
-            val configuration = CompilerConfiguration().apply {
-                extensionsStorage =
-                    CompilerPluginRegistrar.ExtensionStorage()
-            }
-            val environment = KotlinCoreEnvironment.createForProduction(
-                disposable,
-                configuration,
-                EnvironmentConfigFiles.JVM_CONFIG_FILES,
-            )
-            val factory = KtPsiFactory(environment.project, false)
+        KotlinSourceParser().use { parser ->
             modules.forEach { module ->
                 File(root, "$module/src").walkTopDown().filter { it.isFile && it.extension == "kt" }.forEach { source ->
                     val path = source.relativeTo(root).invariantSeparatorsPath
                     val text = source.readText()
                     val lines = text.lines().size
                     if (lines > MAX_LINES) violations["lines|$path"] = lines
-                    val parsed = factory.createFile(source.name, text.replace("\r\n", "\n").replace('\r', '\n'))
+                    val parsed = parser.parse(source.name, text)
                     val pkg = parsed.packageFqName.asString()
                     if (module == "app" && !isAppPackage(pkg, path)) violations["package|$path|$pkg"] = 1
                     val uiLayer = sortedMapOf<String, Int>()
@@ -160,8 +137,6 @@ internal object KotlinBoundaryScanner {
                     uiLayer.forEach { (rule, count) -> violations["$rule|$path"] = count }
                 }
             }
-        } finally {
-            Disposer.dispose(disposable)
         }
         return violations
     }

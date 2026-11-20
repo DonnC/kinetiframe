@@ -1,7 +1,5 @@
 package com.donnclab.kinetiframe.studio
 
-import com.donnclab.kinetiframe.actors.rig.math.testRecipe
-import com.donnclab.kinetiframe.actors.rig.math.withRootMotion
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.presets.offsets
 import com.donnclab.kinetiframe.actors.rig.presets.rootTranslations
@@ -18,6 +16,8 @@ import com.donnclab.kinetiframe.core.actor.presets.RootMotionChannel
 import com.donnclab.kinetiframe.core.actor.presets.RotationPoint
 import com.donnclab.kinetiframe.core.actor.rigging.Transform
 import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorStudioManager
+import com.donnclab.kinetiframe.studio.domain.actorstudio.testRecipe
+import com.donnclab.kinetiframe.studio.domain.actorstudio.withRootMotion
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import com.donnclab.kinetiframe.core.actor.presets.RootMotionPoint as PresetRootPoint

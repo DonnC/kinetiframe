@@ -1,11 +1,5 @@
-package com.donnclab.kinetiframe.project.model
+package com.donnclab.kinetiframe.core.document
 
-import com.donnclab.kinetiframe.core.document.BrushId
-import com.donnclab.kinetiframe.core.document.BrushSnapshot
-import com.donnclab.kinetiframe.core.document.DrawCommand
-import com.donnclab.kinetiframe.core.document.DrawingTool
-import com.donnclab.kinetiframe.core.document.StrokeSubmission
-import com.donnclab.kinetiframe.core.document.TouchPoint
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertThrows
