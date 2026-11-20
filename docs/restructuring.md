@@ -18,8 +18,8 @@ into `develop` when the milestone is done. #75 finished per-app language, pseudo
 theme tokens, and #76 the code limits milestone (parameter limits, component labels and the
 pseudo-locale pass), #77 UI separation, #78 the actor preset types, #79 the dependency updates
 (Kotlin 2.4, AGP 9.5, JUnit 6 and Java 17 bytecode) and #80 the screen tests, which moved
-`presentation`'s tests out of `app`. The checker and tests milestone,
-`milestone/checker-and-tests`, is in progress.
+`presentation`'s tests out of `app`. The checker and tests milestone is in review as #86, and the
+second dependency updates milestone, `milestone/dependency-updates-2`, starts from it.
 
 **The checker's parser.** The architecture checker no longer builds the compiler's
 `KotlinCoreEnvironment`, which Kotlin 2.4 marks for rework. `KotlinSourceParser` sets up only
@@ -41,10 +41,22 @@ moved into the modules whose code they test, so they run locally and beside that
 files: the 21 that read its assets and their fixtures, `ApplicationNamespaceTest` and
 `BrandResourcesTest`.
 
+**Dependency updates, second round.** Dependabot's five new pull requests, one commit per group:
+setup-java 6.3.0 (#81), Robolectric 4.18 (#82), Gradle 9.9.1 and Spotless 8.11.0 (#83), KSP 2.3.14
+and kotlinx.serialization 1.13.0 (#84), and AGP 9.5.1 (#85). The wrapper files are the
+ones Gradle generated for #83.
+
+**IDE imports.** AGP 9.5 creates a Compose Preview task in every Compose module, and creating it
+fails unless host tests include Android resources and exist for every build type. The command line
+never creates the task, so CI passed, but IDE imports create every task: they failed, retried every
+few minutes and held Gradle's build lock. The Compose convention plugin now includes Android
+resources in host tests and makes host test variants for release too. `verify` still runs only the
+debug ones.
+
 ## Next
 
-1. **Dependency updates.** Take Dependabot's new groups (#81 to #85) a group at a time.
-2. **Compose deprecations.** Move the device tests to the `v2` Compose test rule (see Later).
+1. **Compose deprecations.** Move the device tests to the `v2` Compose test rule (see Later).
+2. **Preview fixtures.** Split `presentation.preview` by feature (see Later).
 
 ## Later
 
@@ -277,7 +289,9 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   architecture checker used it to parse sources. It now sets up only IntelliJ's core PSI
   environment (see Now). That environment and its headless setup still come from
   `kotlin-compiler-embeddable`, so a Kotlin update can still break them; the checker's tests catch
-  that.
+  that. Kotlin also still warns that `kotlin-compiler-embeddable` is on the build classpath, since
+  `buildSrc` compiles the checker against it. Moving the checker into its own build, included with
+  `includeBuild`, would remove the warning.
 - **Library build defaults.** Library modules relied on default SDK levels until the convention
   plugins set them (#17).
 
