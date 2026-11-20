@@ -46,6 +46,13 @@ setup-java 6.3.0 (#81), Robolectric 4.18 (#82), Gradle 9.9.1 and Spotless 8.11.0
 and kotlinx.serialization 1.13.0 (#84), and AGP 9.5.1 (#85). The wrapper files are the
 ones Gradle generated for #83.
 
+**IDE imports.** AGP 9.5 creates a Compose Preview task in every Compose module, and creating it
+fails unless host tests include Android resources and exist for every build type. The command line
+never creates the task, so CI passed, but IDE imports create every task: they failed, retried every
+few minutes and held Gradle's build lock. The Compose convention plugin now includes Android
+resources in host tests and makes host test variants for release too. `verify` still runs only the
+debug ones.
+
 ## Next
 
 1. **Compose deprecations.** Move the device tests to the `v2` Compose test rule (see Later).
@@ -282,7 +289,9 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   architecture checker used it to parse sources. It now sets up only IntelliJ's core PSI
   environment (see Now). That environment and its headless setup still come from
   `kotlin-compiler-embeddable`, so a Kotlin update can still break them; the checker's tests catch
-  that.
+  that. Kotlin also still warns that `kotlin-compiler-embeddable` is on the build classpath, since
+  `buildSrc` compiles the checker against it. Moving the checker into its own build, included with
+  `includeBuild`, would remove the warning.
 - **Library build defaults.** Library modules relied on default SDK levels until the convention
   plugins set them (#17).
 
