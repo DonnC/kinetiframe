@@ -14,57 +14,39 @@ Keep this page current:
 ## Now
 
 Work collects on one milestone branch per milestone, with a commit per chunk and one pull request
-into `develop` when the milestone is done. #75 finished per-app language, pseudo-locales and
-theme tokens, and #76 the code limits milestone (parameter limits, component labels and the
-pseudo-locale pass), #77 UI separation, #78 the actor preset types, #79 the dependency updates
-(Kotlin 2.4, AGP 9.5, JUnit 6 and Java 17 bytecode) and #80 the screen tests, which moved
-`presentation`'s tests out of `app`. The checker and tests milestone is in review as #86, and the
-second dependency updates milestone, `milestone/dependency-updates-2`, starts from it.
+into `develop` when the milestone is done. The module restructuring is finished: #54 ended the
+module work, and #75 to #87 finished strings, tokens, code limits, UI separation, the preset
+types, tests and dependency updates. The last milestone, `milestone/finish`, closes the remaining
+tracks.
 
-**The checker's parser.** The architecture checker no longer builds the compiler's
-`KotlinCoreEnvironment`, which Kotlin 2.4 marks for rework. `KotlinSourceParser` sets up only
-IntelliJ's core PSI environment with the Kotlin parser registered, so the checker needs no opt-ins,
-compiler configuration or plugin storage. It still runs in its own worker process, and its findings
-are unchanged.
+**Compose test rule.** All 46 device test files use the `v2` `createComposeRule`, which queues
+coroutines on a `StandardTestDispatcher` until the test idles. They compile in `presentation`,
+`designsystem` and `app`. Run them on a phone before relying on them, since a test that expected
+effects to run at once may now need `waitForIdle()`.
 
-**Logic tests out of `app`.** 36 `app` host test files that don't read the app's shipped assets
-moved into the modules whose code they test, so they run locally and beside that code:
+**Preview fixtures.** Every user of `PreviewCatalog` is in the library, so it moved to
+`presentation.library.preview`.
 
-- `core`: the five project model tests, now in `core.document` beside the document model.
-  `ProjectDocumentTest` moved from JUnit 4 to JUnit 5, which is all `core` uses.
-- `actors`: the artwork and drawing stores, the artwork renderer and hit tester, and
-  `RigAssetManager`.
-- `studio`: the compositors, frame persistence, `ProjectSaverTest`, the library transfers and pack
-  drafts, the studio managers and the rest.
+**Strings.** `DEFAULT_COLLECTION` names the default library collection in `studio`. It stays the
+saved English key, and the library's collection menu shows it through a string resource. The
+`require` checks in `core`'s documents keep English messages on purpose: only corrupt files break
+them, and the screens show a translated failure first, with that text only as a technical detail.
 
-`actors` and `studio` now have Robolectric for the tests that need real bitmaps. `app` keeps 23
-files: the 21 that read its assets and their fixtures, `ApplicationNamespaceTest` and
-`BrandResourcesTest`.
-
-**Dependency updates, second round.** Dependabot's five new pull requests, one commit per group:
-setup-java 6.3.0 (#81), Robolectric 4.18 (#82), Gradle 9.9.1 and Spotless 8.11.0 (#83), KSP 2.3.14
-and kotlinx.serialization 1.13.0 (#84), and AGP 9.5.1 (#85). The wrapper files are the
-ones Gradle generated for #83.
-
-**IDE imports.** AGP 9.5 creates a Compose Preview task in every Compose module, and creating it
-fails unless host tests include Android resources and exist for every build type. The command line
-never creates the task, so CI passed, but IDE imports create every task: they failed, retried every
-few minutes and held Gradle's build lock. The Compose convention plugin now includes Android
-resources in host tests and makes host test variants for release too. `verify` still runs only the
-debug ones.
+**Changelog.** The changelog's Unreleased section now covers the user-visible changes and the
+contributor changes since #8, ready for the first release.
 
 ## Next
 
-1. **Compose deprecations.** Move the device tests to the `v2` Compose test rule (see Later).
-2. **Preview fixtures.** Split `presentation.preview` by feature (see Later).
+1. **Device test run.** Run the device tests on a phone with the `v2` rule, fix any that now need
+   explicit waits, and delete the ones that fail because their screens changed (see Later).
+2. **First release.** A maintainer merges `develop` into `main`, signs a release build and tags
+   `v0.1.0`, following the [release checklist](releases.md#release-checklist).
 
 ## Later
 
 Tracks that run alongside the module work, a screen or feature at a time:
 
-- **Strings to resources.** The inline text check is at zero and the pseudo-locale pass is done.
-  Left: the default collection's label (see Discoveries) and `require` messages in `core`'s
-  documents, such as FPS and stage limits, that only invalid files reach.
+- **Strings to resources.** Done (see Now). `core`'s `require` messages stay English on purpose.
 - **Theme tokens.** Done.
 - **UI separation.** Done: only `presentation`, `designsystem` and `app` use Compose, and screens
   reach storage only through their ViewModels (step 8d). Checked on a phone.
@@ -74,20 +56,18 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Screen tests left in `app`.** Done (#80). Three remain in `app` on purpose:
   `ViewPresetCollectionTest`, `NaturalActorMotionTest` and `BundledDemoLibraryInstallerTest` check
   the app's shipped assets.
-- **Logic tests left in `app`.** Done (see Now). The tests that read the app's shipped assets stay
-  in `app`, since those assets are what they check.
-- **Preview fixtures.** The shared fixtures moved to `presentation.preview`. Split them by feature
-  as the screens that use them settle.
-- **Dependency updates.** Done (#79). Dependabot keeps proposing updates; take them a group at
-  a time, with a full check and a device check after each.
-- **Compose deprecations.** BOM 2026.09.00 deprecates `createComposeRule` (47 device tests), in
-  favour of a `v2` rule that queues coroutines instead of running them at once, so tests may need
-  explicit waits. The tab rows and tooltips are migrated; check the tabs on a device, since the new
-  rows draw a different indicator, and check scrubbing the audio ribbon.
+- **Logic tests left in `app`.** Done (#86). The tests that read the app's shipped assets stay in
+  `app`, since those assets are what they check.
+- **Preview fixtures.** Done (see Now).
+- **Dependency updates.** Done (#79, #87). Dependabot keeps proposing updates; take them a group
+  at a time, with a full check and a device check after each.
+- **Compose deprecations.** The device tests use the `v2` rule (see Now), and the tab rows and
+  tooltips are migrated. Left: run the device tests on a phone, check the tabs, since the new rows
+  draw a different indicator, and check scrubbing the audio ribbon.
 - **Device tests.** 13 device tests fail on `develop` and failed before the restructuring began.
   They check labels and controls that have since changed. Delete each one when the code it covers
   is replaced.
-- **First release.** Tag `v0.1.0` with a changelog and release notes.
+- **First release.** The changelog is ready (see Now). A maintainer tags `v0.1.0` from `main`.
 
 ## UX fixes
 
@@ -222,6 +202,8 @@ fixed after the module work, unless one blocks testing.
 | #78 | Merged the app's actor preset types into `core`'s and deleted the bridges and parity tests |
 | #79 | Updated Kotlin, AGP, Gradle, JUnit and the other dependencies, and moved to Java 17 bytecode |
 | #80 | Moved the screen and ViewModel tests from `app` into `presentation` |
+| #86 | Parsed sources without `KotlinCoreEnvironment` and moved the logic tests from `app` into their modules |
+| #87 | Updated Gradle 9.9.1, AGP 9.5.1 and the rest, and let IDE imports create the Compose Preview task |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
@@ -277,8 +259,9 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   `:presentation:dependencies` when bumping a library that depends on Compose.
 - **The default collection is saved in English.** `LibraryOrganization` stores "General
   Essentials" as the default collection, and the store and browser compare against that text. It
-  is saved data, so translating it needs a migration. Keep it as the saved key and show a
-  translated label wherever a collection name is displayed.
+  is saved data, so translating it needs a migration. It is now `DEFAULT_COLLECTION`, kept as the
+  saved key, and the collection menu shows a translated label. The dialogs that rename a collection
+  still show the saved name, since that is the text being edited.
 - **CI's development APKs can't update each other.** CI signs each run's debug APK with a new
   debug key, so installing one over another (or over a local build) fails with a signature
   mismatch, and the only way through is uninstalling, which wipes the app's data. Sign debug
