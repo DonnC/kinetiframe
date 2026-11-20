@@ -27,11 +27,24 @@ IntelliJ's core PSI environment with the Kotlin parser registered, so the checke
 compiler configuration or plugin storage. It still runs in its own worker process, and its findings
 are unchanged.
 
+**Logic tests out of `app`.** 36 `app` host test files that don't read the app's shipped assets
+moved into the modules whose code they test, so they run locally and beside that code:
+
+- `core`: the five project model tests, now in `core.document` beside the document model.
+  `ProjectDocumentTest` moved from JUnit 4 to JUnit 5, which is all `core` uses.
+- `actors`: the artwork and drawing stores, the artwork renderer and hit tester, and
+  `RigAssetManager`.
+- `studio`: the compositors, frame persistence, `ProjectSaverTest`, the library transfers and pack
+  drafts, the studio managers and the rest.
+
+`actors` and `studio` now have Robolectric for the tests that need real bitmaps. `app` keeps 23
+files: the 21 that read its assets and their fixtures, `ApplicationNamespaceTest` and
+`BrandResourcesTest`.
+
 ## Next
 
-1. **Logic tests left in `app`.** Move the `app` tests of `studio`, `actors`, `data` and `library`
-   code that don't read the app's assets into those modules (see Later).
-2. **Dependency updates.** Take Dependabot's new groups (#81 to #85) a group at a time.
+1. **Dependency updates.** Take Dependabot's new groups (#81 to #85) a group at a time.
+2. **Compose deprecations.** Move the device tests to the `v2` Compose test rule (see Later).
 
 ## Later
 
@@ -49,11 +62,8 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Screen tests left in `app`.** Done (#80). Three remain in `app` on purpose:
   `ViewPresetCollectionTest`, `NaturalActorMotionTest` and `BundledDemoLibraryInstallerTest` check
   the app's shipped assets.
-- **Logic tests left in `app`.** About 30 `app` host tests cover `studio`, `actors`, `data` and
-  `library` code without reading the app's assets: the compositor and frame persistence tests,
-  `ProjectSaverTest`, the project model tests, `LibraryTransfersTest`, `PackDraftsTest` and others.
-  Move each into the module it tests, adding Robolectric there where a test needs it, so they run
-  locally and next to their code.
+- **Logic tests left in `app`.** Done (see Now). The tests that read the app's shipped assets stay
+  in `app`, since those assets are what they check.
 - **Preview fixtures.** The shared fixtures moved to `presentation.preview`. Split them by feature
   as the screens that use them settle.
 - **Dependency updates.** Done (#79). Dependabot keeps proposing updates; take them a group at

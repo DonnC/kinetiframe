@@ -97,8 +97,9 @@ Check the result in the app's Actor Studio before opening a pull request.
 ## Tests and test data
 
 - `core` and engine math tests use JUnit 5 and need no Android, network or disk.
-- `app` tests use JUnit 4/5 and Robolectric. Some read the bundled sample assets directly, so
-  changing a sample asset re-runs them.
+- `actors`, `studio`, `presentation` and `app` tests use JUnit 4/5, and Robolectric where they
+  need real Android classes. `app`'s tests read the bundled sample assets directly, so changing a
+  sample asset re-runs them.
 - Storage and migration tests build temporary projects instead of relying on old archives.
 - Render tests write images to `.artifacts/` for review. That folder is ignored by Git, and
   running tests never changes the shipped sample projects.

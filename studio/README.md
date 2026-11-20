@@ -20,8 +20,8 @@ screens. The editor's screens and `StudioViewModel` live in `presentation.studio
 | `project.data` | The `.kframe` archiver, which bundles a project with the actors it uses |
 | `project.domain` | The project gallery's storage (`ProjectCatalog`), opening and saving an editor's project (`ProjectOpener`, `ProjectSaver`), and project sharing, importing and saving to the library (`ProjectTransfers`) |
 
-Tests that read the app's assets from disk, need Robolectric, or drive `StudioViewModel` stay in
-`app`.
+Tests that read the app's assets from disk stay in `app`, and `StudioViewModel`'s tests live in
+`presentation`. Tests that need real bitmaps run here on Robolectric.
 
 ```sh
 ./gradlew :studio:testDebugUnitTest

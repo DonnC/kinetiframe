@@ -16,6 +16,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
+    // Stores and renderers that need real Android bitmaps run on Robolectric.
+    testImplementation(libs.robolectric)
     // Runs the existing JUnit 4 tests alongside JUnit 5 ones.
     testRuntimeOnly(libs.junit5.vintage)
 }

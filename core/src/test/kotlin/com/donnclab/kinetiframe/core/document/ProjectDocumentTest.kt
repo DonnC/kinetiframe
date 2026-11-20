@@ -1,4 +1,4 @@
-package com.donnclab.kinetiframe.project.model
+package com.donnclab.kinetiframe.core.document
 
 import com.donnclab.kinetiframe.core.actor.artwork.TextureBinding
 import com.donnclab.kinetiframe.core.actor.rigging.BoneArtwork
@@ -6,23 +6,12 @@ import com.donnclab.kinetiframe.core.actor.rigging.BoneHierarchy
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.BoneRest
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
-import com.donnclab.kinetiframe.core.document.AssetKind
-import com.donnclab.kinetiframe.core.document.Layer
-import com.donnclab.kinetiframe.core.document.LayerType
-import com.donnclab.kinetiframe.core.document.ProjectAsset
-import com.donnclab.kinetiframe.core.document.ProjectDocument
-import com.donnclab.kinetiframe.core.document.PuppetDefinition
-import com.donnclab.kinetiframe.core.document.PuppetInstance
-import com.donnclab.kinetiframe.core.document.StageDimensions
-import com.donnclab.kinetiframe.core.document.TextureSlot
-import com.donnclab.kinetiframe.core.document.bindTextureToBone
-import com.donnclab.kinetiframe.core.document.replaceAsset
-import com.donnclab.kinetiframe.core.document.unbindTextureFromBone
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class ProjectDocumentTest {
     @Test
@@ -33,9 +22,9 @@ class ProjectDocumentTest {
         assertEquals(1920, StageDimensions.Vertical.height)
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun `stage dimensions reject invalid bitmap allocation size`() {
-        StageDimensions(width = 0, height = 1080)
+        assertThrows<IllegalArgumentException> { StageDimensions(width = 0, height = 1080) }
     }
 
     @Test
@@ -53,9 +42,9 @@ class ProjectDocumentTest {
         assertNull(document.instanceForLayer(Layer("Paint")))
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun `project document rejects unsupported preview fps`() {
-        ProjectDocument(fps = 31)
+        assertThrows<IllegalArgumentException> { ProjectDocument(fps = 31) }
     }
 
     @Test

@@ -11,10 +11,11 @@ into this module.
 | `data` | Repositories for actors, performances, placements, presets and bundles, and the artwork store |
 | `domain` | Placement timing and trimming, performance evaluation and duration, recorded motion curves, root motion, legacy migration, and `PerformanceChoices`, the performances a timeline can place |
 | `render` | `ActorFrameRenderer`, which draws placements for the editor, export and thumbnails; `ActorRendering`, which hands screens renderers without the actor stores; plus artwork rendering, hit testing and thumbnails |
-| `rig` | Rig math (`rig.math`), the rig model (`rig.model`), motion presets and their bridges to `core` (`rig.presets`), and texture extraction (`rig.texture`) |
+| `rig` | Rig math (`rig.math`), the rig model (`rig.model`), motion preset playback and the preset catalog (`rig.presets`), and texture extraction (`rig.texture`) |
 
 Bundled actors, presets and preset icons live in the app's assets and are read through a `Context`
-at run time. Tests that read those files from disk, or that need Robolectric, stay in `app`.
+at run time. Tests that read those files from disk stay in `app`. Tests that need real bitmaps run
+here on Robolectric.
 
 ```sh
 ./gradlew :actors:testDebugUnitTest

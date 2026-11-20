@@ -5,8 +5,8 @@ navigation (`navigation`), the service container (`AppContainer`), the ViewModel
 diagnostics sharing and the bundled sample assets. Every screen lives in
 [`presentation`](../presentation/README.md). It depends on all the other production modules.
 
-Its tests still include screen and studio tests that read the app's assets or need Robolectric.
-See the
+Its host tests check the app's shipped assets, its namespace and its brand resources; every
+other test lives in the module it covers. See the
 [project architecture](../docs/architecture/decisions/project-architecture.md) decision and the
 [map of where each feature lives](../docs/architecture/README.md#where-to-find-things).
 
