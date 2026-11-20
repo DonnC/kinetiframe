@@ -5,6 +5,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.model.BrowseMode
 import com.donnclab.kinetiframe.library.model.BrowserPosition
+import com.donnclab.kinetiframe.library.model.DEFAULT_COLLECTION
 
 @Composable
 fun PackBrowserControls(
@@ -25,6 +26,6 @@ fun PackBrowserControls(
 @Composable
 private fun PackBrowserControlsPreview() {
     KinetiFrameTheme {
-        PackBrowserControls(BrowserPosition(BrowseMode.COLLECTIONS), listOf("Loose Signal", "General Essentials"), {})
+        PackBrowserControls(BrowserPosition(BrowseMode.COLLECTIONS), listOf("Loose Signal", DEFAULT_COLLECTION), {})
     }
 }

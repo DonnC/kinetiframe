@@ -2,8 +2,11 @@
 package com.donnclab.kinetiframe.presentation.library
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import com.donnclab.kinetiframe.library.model.AssetCategory
 import com.donnclab.kinetiframe.library.model.BrowseMode
+import com.donnclab.kinetiframe.library.model.DEFAULT_COLLECTION
 import com.donnclab.kinetiframe.presentation.R
 
 @StringRes
@@ -24,3 +27,8 @@ internal fun BrowseMode.labelRes(): Int = when (this) {
     BrowseMode.COLLECTIONS -> R.string.library_browse_collections
     BrowseMode.ALL -> R.string.filter_all
 }
+
+/** A collection's name for display. The default collection is saved in English, so it is translated here. */
+@Composable
+internal fun collectionLabel(name: String): String =
+    if (name == DEFAULT_COLLECTION) stringResource(R.string.library_collection_default) else name

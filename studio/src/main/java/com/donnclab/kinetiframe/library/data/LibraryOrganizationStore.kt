@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.library.data
 import com.donnclab.kinetiframe.data.storage.DurableFile
 import com.donnclab.kinetiframe.library.model.AssetOrganization
 import com.donnclab.kinetiframe.library.model.BrowserPosition
+import com.donnclab.kinetiframe.library.model.DEFAULT_COLLECTION
 import com.donnclab.kinetiframe.library.model.LibraryOrganization
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -40,7 +41,7 @@ class LibraryOrganizationStore(private val file: File) {
     fun removeCollection(name: String): LibraryOrganization = update { state ->
         state.copy(
             items = state.items.mapValues { (_, item) ->
-                if (item.collection == name) item.copy(collection = "General Essentials") else item
+                if (item.collection == name) item.copy(collection = DEFAULT_COLLECTION) else item
             },
             browsers = state.browsers.mapValues { (_, position) ->
                 if (position.collection == name) position.copy(collection = null) else position
