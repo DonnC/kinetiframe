@@ -203,6 +203,8 @@
     <!-- Actor Studio workflow hint: the next thing to do at each step -->
     <string name="actor_hint_needs_skeleton">Add a reference skeleton to start this actor</string>
     <string name="actor_hint_record">Record · move a part · stop and replay</string>
+    <!-- Animate mode's default hint: pose to pose with the handle rings. -->
+    <string name="actor_hint_pose_keys">Drag a ring to pose · move to another frame · pose again</string>
     <string name="actor_hint_drag_artwork">Drag the artwork · joints stay fixed</string>
     <string name="actor_hint_drag_attachment">Drag the highlighted attachment joint</string>
     <string name="actor_hint_fit_sketch">Fit joints to your sketch · drawing menu to edit lines and colour</string>
@@ -565,6 +567,8 @@
         <item quantity="one">Frame %1$d · %2$d key</item>
         <item quantity="other">Frame %1$d · %2$d keys</item>
     </plurals>
+    <!-- The current frame while a motion preset, not keys, moves the actor. -->
+    <string name="pose_timeline_preset">Frame %1$d · motion preset</string>
     <string name="pose_previous_key">Previous pose key</string>
     <string name="pose_next_key">Next pose key</string>
     <string name="pose_play_pause">Play or pause actor preview</string>
