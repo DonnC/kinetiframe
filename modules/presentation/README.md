@@ -1,7 +1,7 @@
 # presentation
 
 Every screen and component of the app, with their ViewModels, as the
-[UI in presentation](../docs/architecture/decisions/ui-in-presentation.md) decision describes. It
+[UI in presentation](../../docs/architecture/decisions/ui-in-presentation.md) decision describes. It
 depends on `core`, `engine`, `designsystem` and the logic modules (`media`, `actors`, `studio`),
 never on the `data` module.
 
@@ -28,4 +28,4 @@ shipped assets.
 ./gradlew :presentation:connectedDebugAndroidTest   # needs a device or emulator
 ```
 
-See [UI contributions](../docs/ui-contributions.md). Licensed under [Apache-2.0](../LICENSE).
+See [UI contributions](../../docs/ui-contributions.md). Licensed under [Apache-2.0](../../LICENSE).

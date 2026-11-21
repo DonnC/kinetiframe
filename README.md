@@ -93,7 +93,7 @@ Everyone is welcome, whether you write code or not.
 | An illustrator | Drawing actor kits, stamp packs, backgrounds and brushes | [Asset guide](docs/assets.md) |
 | An Android developer | Fixing bugs, building features, improving performance | [Contributing](CONTRIBUTING.md) |
 | A UI designer | Improving controls and screens with Compose previews, no project needed | [UI contributions](docs/ui-contributions.md) |
-| Into math or graphics | IK, skinning, interpolation and rendering in the engine | [Engine](engine/README.md) |
+| Into math or graphics | IK, skinning, interpolation and rendering in the engine | [Engine](modules/engine/README.md) |
 | A writer or translator | Improving guides, translating the app | [Roadmap](ROADMAP.md) |
 
 Look for issues labeled
@@ -107,11 +107,11 @@ KinetiFrame is a Kotlin and Jetpack Compose app split into a few Gradle modules:
 | Module | What it holds |
 | --- | --- |
 | [`app`](app/README.md) | The Android app: screens, editor, media, persistence and wiring |
-| [`core`](core/README.md) | Plain Kotlin data models, file codecs and validation. No Android |
-| [`engine`](engine/README.md) | Rigging, IK, deformation, timing and motion presets |
-| [`data`](data/README.md) | Durable file storage |
-| [`presentation`](presentation/README.md) | Shared ViewModel (MVI) infrastructure |
-| [`designsystem`](designsystem/README.md) | Theme, design tokens and reusable Compose controls |
+| [`core`](modules/core/README.md) | Plain Kotlin data models, file codecs and validation. No Android |
+| [`engine`](modules/engine/README.md) | Rigging, IK, deformation, timing and motion presets |
+| [`data`](modules/data/README.md) | Durable file storage |
+| [`presentation`](modules/presentation/README.md) | Shared ViewModel (MVI) infrastructure |
+| [`designsystem`](modules/designsystem/README.md) | Theme, design tokens and reusable Compose controls |
 
 Read the [architecture overview](docs/architecture/README.md) for how a stroke becomes a frame
 and how a performance becomes a pose. Project and pack files are described in

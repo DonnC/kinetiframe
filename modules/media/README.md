@@ -18,4 +18,4 @@ Callers run decoding and mixing off the main thread.
 ./gradlew :media:testDebugUnitTest
 ```
 
-Licensed under [Apache-2.0](../LICENSE).
+Licensed under [Apache-2.0](../../LICENSE).

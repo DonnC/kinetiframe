@@ -40,17 +40,20 @@ flowchart TD
     studio --> media
 ```
 
+`app` sits at the repository root and every other module is in `modules/`. Gradle keeps the
+short project paths, so a module is still `:core` or `:studio`, not `:modules:core`.
+
 | Module | Type | Responsibility |
 | --- | --- | --- |
 | [`app`](../../app/README.md) | Android app | Entry point, navigation, the editor and other screens still to move to `presentation`, bundled assets |
-| [`core`](../../core/README.md) | Kotlin/JVM | The project document and platform-neutral records for actors, rigs, motion and presets; JSON codecs; validation; service contracts; the MVI `StateStore` |
-| [`engine`](../../engine/README.md) | Android library | IK (FABRIK and two-bone), world transforms, skin deformation, artwork registration, pose and curve sampling, performance clocks, motion presets |
-| [`data`](../../data/README.md) | Android library | Crash-safe file writes, the document file store, the Room database, project storage and crash reports |
-| [`studio`](../../studio/README.md) | Android library | The editor's state, managers, drawing tools, frame rendering and caches, camera, playback, video export, and library storage |
-| [`actors`](../../actors/README.md) | Android library | Actor storage, rig math, posing, performances and actor rendering |
-| [`media`](../../media/README.md) | Android library | Audio decoding, mixing, recording and trimming; imported video decoding and framing; background image decoding |
-| [`presentation`](../../presentation/README.md) | Android library | Screens and components with their ViewModels, and `BaseViewModel`; the rest of the screens are moving here from `app` |
-| [`designsystem`](../../designsystem/README.md) | Android library | Compose theme, design tokens and reusable controls |
+| [`core`](../../modules/core/README.md) | Kotlin/JVM | The project document and platform-neutral records for actors, rigs, motion and presets; JSON codecs; validation; service contracts; the MVI `StateStore` |
+| [`engine`](../../modules/engine/README.md) | Android library | IK (FABRIK and two-bone), world transforms, skin deformation, artwork registration, pose and curve sampling, performance clocks, motion presets |
+| [`data`](../../modules/data/README.md) | Android library | Crash-safe file writes, the document file store, the Room database, project storage and crash reports |
+| [`studio`](../../modules/studio/README.md) | Android library | The editor's state, managers, drawing tools, frame rendering and caches, camera, playback, video export, and library storage |
+| [`actors`](../../modules/actors/README.md) | Android library | Actor storage, rig math, posing, performances and actor rendering |
+| [`media`](../../modules/media/README.md) | Android library | Audio decoding, mixing, recording and trimming; imported video decoding and framing; background image decoding |
+| [`presentation`](../../modules/presentation/README.md) | Android library | Screens and components with their ViewModels, and `BaseViewModel`; the rest of the screens are moving here from `app` |
+| [`designsystem`](../../modules/designsystem/README.md) | Android library | Compose theme, design tokens and reusable controls |
 
 Dependencies only point downward. `./gradlew checkArchitecture` fails the build if code imports
 across a boundary it shouldn't, for example Android types in `core` or Compose in engine math.

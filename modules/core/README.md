@@ -34,4 +34,4 @@ When you add a field to a saved model, add tests that load files written before 
 ./gradlew :core:test
 ```
 
-Licensed under [Apache-2.0](../LICENSE).
+Licensed under [Apache-2.0](../../LICENSE).

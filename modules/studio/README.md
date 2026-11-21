@@ -27,4 +27,4 @@ Tests that read the app's assets from disk stay in `app`, and `StudioViewModel`'
 ./gradlew :studio:testDebugUnitTest
 ```
 
-Licensed under [Apache-2.0](../LICENSE).
+Licensed under [Apache-2.0](../../LICENSE).

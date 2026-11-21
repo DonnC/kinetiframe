@@ -21,4 +21,4 @@ here on Robolectric.
 ./gradlew :actors:testDebugUnitTest
 ```
 
-Licensed under [Apache-2.0](../LICENSE).
+Licensed under [Apache-2.0](../../LICENSE).

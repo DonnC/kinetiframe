@@ -27,4 +27,4 @@ Algorithm changes need deterministic tests and a check in the app on a device.
 ./gradlew :engine:testDebugUnitTest
 ```
 
-Licensed under [Apache-2.0](../LICENSE).
+Licensed under [Apache-2.0](../../LICENSE).
