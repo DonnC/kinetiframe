@@ -111,7 +111,7 @@ fixed after the module work, unless one blocks testing.
 **Tavi presents** (first task of the next phase, on its own branch)
 
 - Tavi's expressions animate well, but the hands move like glued-on cutouts. They don't bend like
-  the hand poses on the [model sheet](art-direction/loose-signal/characters/tavi/references/model-sheet.png),
+  the hand poses on the [model sheet](images/tavi-model-sheet.png),
   so the actor looks stiff. Either rework the actor's rigging and hand cutouts, or animate the
   hands frame by frame.
 - Don't change the bundled `Tavi presents`. Make a copy, improve the copy and ship both, so the

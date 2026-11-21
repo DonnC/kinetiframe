@@ -38,7 +38,7 @@ class ActorPlacementPipelineTest {
         is StoreResult.Failure -> throw AssertionError(result.message, result.cause)
     }
 
-    @Test fun `all Mira views reuse render fit and remain visible after repository restart`() {
+    @Test fun `all Tavi views reuse render fit and remain visible after repository restart`() {
         val root = Files.createTempDirectory("actor-placement-test").toFile()
         try {
             val files = DocumentFileStore(root)
@@ -46,19 +46,19 @@ class ActorPlacementPipelineTest {
             BundledActorSourceReader.read(
                 DemoAssetFixtures.file(assets, BundledActorSourceReader.ASSET_PATH),
                 files,
-                setOf("ls-mira-all-views-v3"),
+                setOf("ls-tavi-all-views-v3"),
             )
             val actorRepository = ActorRepository(files)
-            val views = value(actorRepository.load("ls-mira-all-views-v3")).first.authoredViews()
+            val views = value(actorRepository.load("ls-tavi-all-views-v3")).first.authoredViews()
             views.values.forEachIndexed { index, revisionId ->
                 value(
                     PerformanceRepository(files).save(
                         PerformanceDocument(
-                            performanceId = "mira-view-$index",
+                            performanceId = "tavi-view-$index",
                             projectId = "source",
-                            actorId = "ls-mira-all-views-v3",
+                            actorId = "ls-tavi-all-views-v3",
                             actorRevisionId = revisionId,
-                            displayName = "Mira view $index",
+                            displayName = "Tavi view $index",
                             durationMicros = 4_000_000,
                             createdAtEpochMs = 0,
                             updatedAtEpochMs = 0,
@@ -69,7 +69,7 @@ class ActorPlacementPipelineTest {
             val repo = PerformanceRepository(files)
             val target = ProjectDocument(id = "destination", stage = StageDimensions(640, 360), fps = 12)
             val actors = ActorRepository(files)
-            value(repo.listForActor("ls-mira-all-views-v3")).also { assertEquals(4, it.size) }.forEach { source ->
+            value(repo.listForActor("ls-tavi-all-views-v3")).also { assertEquals(4, it.size) }.forEach { source ->
                 val local = value(repo.copyIntoProject(source, target.id))
                 val raw = ActorPlacementReference(
                     "placed-${local.performanceId}",
@@ -122,7 +122,7 @@ class ActorPlacementPipelineTest {
                     renderer.clear()
                 }
             }
-            val preview = value(actors.characterPreview("ls-mira-all-views-v3"))!!
+            val preview = value(actors.characterPreview("ls-tavi-all-views-v3"))!!
             val bitmap = BitmapFactory.decodeFile(preview)
             assertEquals(320, bitmap.width)
             assertEquals(320, bitmap.height)

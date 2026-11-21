@@ -11,7 +11,7 @@ import java.util.zip.ZipFile
  * Validate every relative destination, expansion budget and actor catalog before publication.
  * The staging directory is disposable; durable public writes belong to the repository/installer. */
 object BundledActorSourceReader {
-    const val ASSET_PATH = "actor/starter-actors-v4.zip"
+    const val ASSET_PATH = "actor/starter-actors.zip"
 
     fun read(archive: File, files: DocumentFileStore, expectedIds: Set<String>) {
         var total = 0L

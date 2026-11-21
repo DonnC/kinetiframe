@@ -85,7 +85,7 @@ class BundledActorSampleInstaller(
     companion object {
         private val lock = Any()
         private const val CREATED_AT = 1791158400000L
-        private val entries = listOf("tavi", "mira", "kuda").map { character ->
+        private val entries = listOf("tavi").map { character ->
             val id = "ls-$character-all-views-v3"
             Entry(id, "${character.replaceFirstChar(Char::titlecase)} · All four views")
         }

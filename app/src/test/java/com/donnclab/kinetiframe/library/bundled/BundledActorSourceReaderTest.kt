@@ -23,8 +23,8 @@ class BundledActorSourceReaderTest {
             val entries = zip.entries().asSequence().map { it.name }.toList()
             assertTrue(entries.isNotEmpty())
             assertTrue(entries.all { it.startsWith("dependencies/actors/") })
-            assertEquals(3, entries.count { it.endsWith("/manifest.json") })
-            assertEquals(12, entries.count { it.contains("/revisions/") && it.endsWith(".json") })
+            assertEquals(1, entries.count { it.endsWith("/manifest.json") })
+            assertEquals(4, entries.count { it.contains("/revisions/") && it.endsWith(".json") })
         }
     }
 
@@ -38,7 +38,6 @@ class BundledActorSourceReaderTest {
         )
         assertTrue(ActorRepository(files).load("ls-tavi-all-views-v3") is StoreResult.Value)
         assertTrue(files.projectsRoot().listFiles().orEmpty().isEmpty())
-        assertFalse(files.actorDirectory("ls-mira-all-views-v3").exists())
     }
 
     @Test fun `an actor dependency cannot escape its staging root`() {

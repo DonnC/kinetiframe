@@ -65,7 +65,7 @@ class TaviProductionTest {
         assertArrayEquals(
             com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures.file(
                 assets,
-                "loose-signal/v2/ls-room-background-v2.png",
+                "samples/room-background.png",
             ).readBytes(),
             plate.readBytes(),
         )

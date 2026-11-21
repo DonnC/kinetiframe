@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/art-direction/brand/approved/lockup-source.png" alt="KinetiFrame" width="260">
+  <img src="app/src/main/res/drawable-nodpi/brand_approved_lockup.png" alt="KinetiFrame" width="260">
 </p>
 
 <p align="center">
@@ -44,14 +44,13 @@ It works offline, needs no account and has no ads, in-app purchases or tracking.
 
 New to the terms? The [glossary](docs/glossary.md) explains actors, rigs, performances and the rest.
 
-## Meet the sample cast
+## Meet Tavi
 
-KinetiFrame ships with three ready-to-animate characters: Tavi, Mira and Kuda. Each is drawn
-from four directions and comes with hand poses and facial expressions, so you can try character
-animation before drawing your own.
+KinetiFrame ships with Tavi, a ready-to-animate character drawn from four directions, with hand
+poses and facial expressions, so you can try character animation before drawing your own.
 
 <p align="center">
-  <img src="docs/art-direction/loose-signal/characters/tavi/references/model-sheet.png" alt="Tavi model sheet with expressions and hand poses" width="640">
+  <img src="docs/images/tavi-model-sheet.png" alt="Tavi model sheet with expressions and hand poses" width="640">
 </p>
 
 ## Try it

@@ -37,7 +37,7 @@ class BundledDemoInstaller(
                     // Stream onto disk rather than hold the complete archive in the low-RAM heap.
                     val temporary = File.createTempFile("demo-", ".zip", receipts)
                     try {
-                        openAsset("${demo.folder}/${demo.id}.${if (demo.pack) "kpack" else "kframe"}").use { input ->
+                        openAsset(demo.asset).use { input ->
                             temporary.outputStream().buffered().use { output -> input.copyTo(output) }
                         }
                         val result = if (demo.pack) {
@@ -86,11 +86,10 @@ class BundledDemoInstaller(
                 errors += "${demo.id}: ${error.message ?: "Could not install demo"}"
             }
         }
-        errors += BundledPackKitUpgrade(files, openAsset).upgrade()
         Result(installed, errors)
     }
 
-    private data class Entry(val id: String, val pack: Boolean = false, val folder: String = "demos/v1")
+    private data class Entry(val id: String, val asset: String, val pack: Boolean = false)
 
     companion object {
         private val installLock = Any()
@@ -99,8 +98,6 @@ class BundledDemoInstaller(
         val projectIds = listOf(TAVI_PRESENTATION_ID)
         val curatedPackIds = listOf(
             "ls-tavi-cutouts-v6",
-            "ls-mira-cutouts-v6",
-            "ls-kuda-cutouts-v6",
             "ls-expressions-v3",
             "ls-eyes-v3",
             "ls-mouths-v3",
@@ -109,15 +106,12 @@ class BundledDemoInstaller(
         val packIds = curatedPackIds
         fun projectAssetPath(id: String): String {
             require(id == TAVI_PRESENTATION_ID) { "Unknown bundled project" }
-            return "loose-signal/v2/$id.kframe"
+            return "samples/tavi-presents.kframe"
         }
-        private val entries = projectIds.map { Entry(it, folder = projectAssetPath(it).substringBeforeLast('/')) } +
-            curatedPackIds.map {
-                Entry(
-                    it,
-                    pack = true,
-                    folder = if (it.contains("cutouts-v6")) "loose-signal/curated/v4" else "loose-signal/curated/v3",
-                )
-            }
+
+        /** A pack ships as its saved ID without the `ls-` prefix and version: `packs/tavi-cutouts.kpack`. */
+        fun packAssetPath(id: String): String = "packs/${id.removePrefix("ls-").substringBeforeLast("-v")}.kpack"
+        private val entries = projectIds.map { Entry(it, projectAssetPath(it)) } +
+            curatedPackIds.map { Entry(it, packAssetPath(it), pack = true) }
     }
 }

@@ -50,7 +50,7 @@ class LooseSignalPackTest {
             assertTrue(item.tags.contains("loose-signal"))
             assertEquals(total, manifest.totalItems)
             assertEquals(if (id == "ls-eyes-v3") 256 else 512, manifest.canvasDimension)
-            ZipFile(File(assets, "loose-signal/curated/v3/$id.kpack")).use { zip ->
+            ZipFile(File(assets, BundledDemoInstaller.packAssetPath(id))).use { zip ->
                 manifest.items.forEach { drawing ->
                     assertTrue(drawing.name.isNotBlank())
                     val image = zip.getInputStream(zip.getEntry(drawing.file)).use { ImageIO.read(it) }

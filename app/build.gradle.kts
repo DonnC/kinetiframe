@@ -92,8 +92,9 @@ dependencies {
 tasks.withType<Test>().configureEach {
     // Host-side archive/render tests read these directly, not via Android resources.
     // A changed cutout/fixture must invalidate test results even when Kotlin is unchanged.
-    inputs.dir("src/main/assets/loose-signal").withPropertyName("looseSignalFixtures")
-    inputs.file("src/main/assets/actor/starter-actors-v4.zip").withPropertyName("starterActorFixtures")
+    inputs.dir("src/main/assets/packs").withPropertyName("packFixtures")
+    inputs.dir("src/main/assets/samples").withPropertyName("sampleFixtures")
+    inputs.file("src/main/assets/actor/starter-actors.zip").withPropertyName("starterActorFixtures")
     inputs.dir("src/main/assets/library").withPropertyName("libraryFixtures")
     // Required by Robolectric on Java 17+; production and instrumentation VMs are unaffected.
     jvmArgs(
