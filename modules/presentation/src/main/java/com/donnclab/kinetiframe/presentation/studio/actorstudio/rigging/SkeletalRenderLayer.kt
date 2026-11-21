@@ -51,6 +51,10 @@ fun SkeletalRenderLayer(
             nativeCanvas.save()
             nativeCanvas.concat(viewportMatrix)
             commands.forEach { command ->
+                if (command.figure != null) {
+                    PuppetArtworkRenderer.draw(nativeCanvas, command, paint) { null }
+                    return@forEach
+                }
                 rigAssetManager.getAsset(command.assetId)?.takeUnless { it.isRecycled }?.let { bitmap ->
                     val isolated = eraseSelectedArtwork != null && command.boneId == state.scene.selectedBoneId
                     val save = if (isolated) {

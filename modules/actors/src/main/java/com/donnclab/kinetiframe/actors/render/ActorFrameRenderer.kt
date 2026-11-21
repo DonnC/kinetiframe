@@ -96,9 +96,7 @@ class ActorFrameRenderer(
             canvas.save()
             if (render.geometry.placement.placementId in selectedIds && preview != null) canvas.concat(preview)
             render.commands.forEach { command ->
-                render.assets[command.assetId]?.takeUnless(Bitmap::isRecycled)?.let { bitmap ->
-                    PuppetArtworkRenderer.draw(canvas, command, bitmap, paint)
-                }
+                PuppetArtworkRenderer.draw(canvas, command, paint) { render.assets[it] }
             }
             canvas.restore()
         }
@@ -146,7 +144,7 @@ class ActorFrameRenderer(
         val placementAffine = Matrix().apply { setValues(placement.selectionTransform.androidValues()) }
         commands.forEach { it.matrix.postConcat(placementAffine) }
         val savedBindings = com.donnclab.kinetiframe.actors.rig.model.ActorArtwork.bindings(revision.sceneGraph)
-        val activeAssets = commands.map { it.assetId }.toSet()
+        val activeAssets = commands.filter { it.figure == null }.map { it.assetId }.toSet()
         val assets = revision.artworkAssetPaths.mapNotNull { (partId, relativePath) ->
             // Resolve paths against the saved default/variant bindings, not a posed replacement:
             // a mouth swap must never load the default mouth PNG under the variant asset ID.
@@ -172,8 +170,7 @@ class ActorFrameRenderer(
             return placementDiagnostic(placement, "Continuous artwork dimensions changed; rebind the limb")
         }
         val quads = commands.mapNotNull { command ->
-            assets[command.assetId]?.let { bitmap ->
-                val points = PuppetArtworkRenderer.outline(command, bitmap.width, bitmap.height)
+            PuppetArtworkRenderer.outline(command) { assets[it] }?.let { points ->
                 // SelectionGeometry consumes convex quads. A bent mesh needs its complete extent,
                 // not the rigid source rectangle (which can exclude a displaced wrist).
                 if (command.mesh ==

@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.core.actor.document
 
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.artwork.SceneArtwork
+import com.donnclab.kinetiframe.core.actor.figure.FigureValidation
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
@@ -80,6 +81,7 @@ data class ActorRevision(
         ActorGraphValidation.validate(sceneGraph)
         require(sceneGraph.rootBoneIds.isNotEmpty()) { "Actor revision must have a root part" }
         require(sceneGraph.bones.keys.containsAll(sceneGraph.rootBoneIds)) { "Actor revision has unknown root part" }
+        sceneGraph.figure?.let { FigureValidation.validate(it, sceneGraph) }
         val validArtworkAddresses =
             sceneGraph.bones.keys + SceneArtwork.bindings(sceneGraph).keys
         // Legacy revisions may retain source artwork for an unbound part. Preserve that contract.

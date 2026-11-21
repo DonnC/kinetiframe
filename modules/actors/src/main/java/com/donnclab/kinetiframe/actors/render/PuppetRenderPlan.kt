@@ -17,13 +17,27 @@ data class PuppetRenderCommand(
     val matrix: Matrix,
     val mesh: PuppetSkinMesh? = null,
     val boneId: String? = null,
-)
+    /** Curves of a drawn figure. Such a command has no bitmap; [assetId] is [FIGURE_ASSET]. */
+    val figure: FigureDrawing? = null,
+) {
+    companion object {
+        const val FIGURE_ASSET = "@figure"
+    }
+}
 
 data class PuppetSkinMesh(val width: Int, val height: Int, val columns: Int, val rows: Int, val vertices: FloatArray)
 
 object PuppetRenderPlan {
     fun create(definition: PuppetDefinition, instance: PuppetInstance): List<PuppetRenderCommand> {
         val instanceMatrix = instance.transform.toMatrix()
+        definition.sceneGraph.figure?.let { figure ->
+            // The drawn body first; any image cutouts still bound to bones, such as a face from
+            // an expression pack, are drawn over it.
+            val drawing = FigurePlan.build(figure, ForwardKinematicsSolver.resolveWorldStates(definition.sceneGraph))
+            val body = PuppetRenderCommand(PuppetRenderCommand.FIGURE_ASSET, Matrix(instanceMatrix), figure = drawing)
+            return listOf(body) +
+                create(definition.copy(sceneGraph = definition.sceneGraph.copy(figure = null)), instance)
+        }
         definition.sceneGraph.drawing?.takeIf { it.enabled }?.let { drawing ->
             val vertices = ArtworkSkinning.deform(drawing.skin, ArtworkSkinning.worldTransforms(definition.sceneGraph))
             val mesh = PuppetSkinMesh(drawing.width, drawing.height, drawing.skin.columns, drawing.skin.rows, vertices)

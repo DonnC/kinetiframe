@@ -145,7 +145,7 @@ fun ArtworkPlacementPreview(
             native.translate(framing.second, framing.third)
             native.scale(framing.first, framing.first)
             backdrop.forEach { item ->
-                assets?.getAsset(item.assetId)?.let { PuppetArtworkRenderer.draw(native, item, it, ghostPaint) }
+                PuppetArtworkRenderer.draw(native, item, ghostPaint) { assets?.getAsset(it) }
             }
             PuppetArtworkRenderer.draw(native, command, bitmap, imagePaint)
             native.restoreToCount(save)

@@ -18,6 +18,8 @@ object ArtworkTimeline {
                 val variant = bone.artworkVariants[selected[id]]
                 if (variant == null) bone else bone.withArtwork(textureBinding = variant.binding)
             },
+            // A drawn figure keeps its hand poses and faces as part variants under the same keys.
+            figure = graph.figure?.select(selected),
         )
     }
 
