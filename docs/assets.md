@@ -14,7 +14,7 @@ and file names carry no version numbers. A replaced asset overwrites the file it
 | `actor/starter-actors.zip` | The four-view Tavi actor: actor documents and artwork, with no project frames or performances |
 | `actor/presets/views` | Motion presets for each actor view |
 | `packs` | Stamp packs: Tavi's cutouts and the shared expressions, eyes, mouths and studio items |
-| `samples` | The `Tavi presents` project and its studio background |
+| `samples` | The `Tavi presents` project, its natural-hands copy and their studio background |
 | `backgrounds` | Scene backgrounds by category |
 | `library` | Demo library items: a stage background and audio clips |
 | `fonts` | Text fonts |
@@ -32,7 +32,10 @@ splash and logo images in `app/src/main/res`.
 
 The Tavi references, the studio plate and the character artwork were made with AI image
 generation for this project, then cut out and assembled into packs and actors. Geometric stamps
-were drawn in code. The maintainer authorizes Apache-2.0 distribution of all of it.
+were drawn in code. The two `Tavi presents` samples were rendered from the same cutouts by an
+authoring script. The natural-hands copy draws Tavi's arms and hands with vector curves in every
+frame, following the model sheet, and reuses the original's torso, head, desk, eye and mouth
+artwork. The maintainer authorizes Apache-2.0 distribution of all of it.
 
 ## Animating the bundled actor
 

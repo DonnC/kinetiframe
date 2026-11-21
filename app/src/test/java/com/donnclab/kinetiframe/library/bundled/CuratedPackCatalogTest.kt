@@ -92,7 +92,10 @@ class CuratedPackCatalogTest {
 
     @Test fun `five curated packs have valid names complete view groups and independent facial artwork`() {
         val assets = File("src/main/assets").takeIf(File::isDirectory) ?: File("app/src/main/assets")
-        assertEquals(listOf(BundledDemoInstaller.TAVI_PRESENTATION_ID), BundledDemoInstaller.projectIds)
+        assertEquals(
+            listOf(BundledDemoInstaller.TAVI_PRESENTATION_ID, BundledDemoInstaller.TAVI_NATURAL_HANDS_ID),
+            BundledDemoInstaller.projectIds,
+        )
         assertEquals(5, BundledDemoInstaller.packIds.size)
         BundledDemoInstaller.packIds.forEach { id ->
             ZipFile(

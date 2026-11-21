@@ -15,27 +15,30 @@ Keep this page current:
 
 Work collects on one milestone branch per milestone, with a commit per chunk and one pull request
 into `develop` when the milestone is done. The module restructuring is finished (#54 to #88), and
-#89 prepared version 0.1.0: the release checklist passed up to signing.
+#89 prepared version 0.1.0: the release checklist passed up to signing. #91 cleaned up the
+repository. #90 merged `develop` into `main` before #91, so `main` doesn't have the cleanup yet.
 
-**Repository cleanup.** `milestone/repo-cleanup` tidies the repository before the UX work:
+**Tavi presents with natural hands.** `milestone/tavi-hands` ships a copy of `Tavi presents`
+beside the unchanged original:
 
-- `docs/art-direction` and `tools/loose_signal` are gone. They held superseded v1 to v7 source
-  atlases and cutouts, copies of shipped files and render references, and the scripts that rebuilt
-  packs from them. The shipped assets are now the only copy of the artwork. `docs/brand` keeps the
-  branding board and store icon, and `docs/images` keeps the Tavi model and acting sheets and four
-  background candidates.
-- App assets have no version folders: `actor/starter-actors.zip`, `packs/`, `samples/`,
-  `backgrounds/` and `library/`. Saved IDs such as `ls-tavi-cutouts-v6` are unchanged.
-- Only Tavi ships. Mira and Kuda had the same stiff hands, so their packs and actors are removed;
-  installed copies stay. The v5 cutout packs and the upgrade that read them are removed too.
-- Every module except `app` is in `modules/`. Project paths stay `:core`, `:studio` and so on.
-  The legacy baseline's one entry now names its file under `modules/studio`.
+- Arms and hands are drawn with curves in every frame instead of pasted cutouts, matching the
+  [model sheet](images/tavi-model-sheet.png): one continuous sleeve from shoulder to wrist with
+  a soft elbow, a fold when it bends, and a cuff whose mouth overlaps the wrist. The relaxed,
+  point, fist and palm-up hands are chunky mittens with the thumb on the silhouette.
+- The arms are in the hands layer (renamed "arms + hands"), above the desk, so a hand on the desk
+  or the chest stays attached to its arm. Where an arm leaves the shirt, its outline joins the
+  shirt's, so the shoulder reads as one silhouette.
+- Hands turn with the forearm, and a spring makes them trail a turning arm and settle. Arms ease
+  in joint angles, so hands travel on arcs. The palm, point and fist poses are re-authored.
+- Torso, head, desk, eye and mouth artwork is the original. The sample is 32 MB.
 
 ## Next
 
 1. **First release.** A maintainer merges `develop` into `main`, signs a release build and tags
    `v0.1.0`, following steps 5 to 8 of the [release checklist](releases.md#release-checklist).
-2. **UX fixes**, starting with the improved copy of `Tavi presents` (see UX fixes).
+   The font licences must be added first (see Discoveries).
+2. **UX fixes.** Decide whether the bundled Tavi actor gets the same hand treatment (see UX
+   fixes), then the Actor Studio and editor items.
 3. **Old device test failures.** Fix or delete the 13 failing `presentation` device tests as the
    code they cover changes (see Later).
 
@@ -83,14 +86,20 @@ Tracks that run alongside the module work, a screen or feature at a time:
 Found during device checks on a Galaxy A56. None of them comes from the restructuring. They are
 fixed after the module work, unless one blocks testing.
 
-**Tavi presents** (first task of the next phase, on its own branch)
+**Tavi's hands**
 
 - Tavi's expressions animate well, but the hands move like glued-on cutouts. They don't bend like
   the hand poses on the [model sheet](images/tavi-model-sheet.png),
-  so the actor looks stiff. Either rework the actor's rigging and hand cutouts, or animate the
-  hands frame by frame.
-- Don't change the bundled `Tavi presents`. Make a copy, improve the copy and ship both, so the
-  app itself shows the difference.
+  so the actor looks stiff. Don't change the originals: make copies, improve them and ship both,
+  so the app itself shows the difference.
+- `Tavi presents` was drawn layer by layer without the rig. Each hand was an upright stamp with
+  its own darker cuff, pasted over a rounded sleeve end and barely turned with the forearm, and
+  the forearms sat behind the torso and desk while the hands sat in front. The natural-hands copy
+  draws the arms and hands instead (see Now).
+- The rigged Tavi actor has the same problem: large, detailed hand cutouts with an outlined wrist,
+  drawn on top of three rigid arm cutouts. A copy of the actor needs drawn, bendable sleeves and
+  mitten hands like the sample's, which means the actor renderer must draw curves, not only
+  place images.
 
 **Actor Studio**
 
@@ -228,6 +237,7 @@ fixed after the module work, unless one blocks testing.
 | #87 | Updated Gradle 9.9.1, AGP 9.5.1 and the rest, and let IDE imports create the Compose Preview task |
 | #88 | Moved the device tests to the `v2` Compose rule and Android 16, moved the preview fixtures and translated the default collection's name |
 | #89 | Set version 0.1.0, moved the changelog under it and recorded the release checks |
+| #91 | Removed the art sources and pack builders, shipped unversioned assets with Tavi only, and moved the modules into `modules/` |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
