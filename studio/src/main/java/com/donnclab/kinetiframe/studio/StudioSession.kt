@@ -1,0 +1,457 @@
+package com.donnclab.kinetiframe.studio
+
+import android.graphics.Bitmap
+import com.donnclab.kinetiframe.actors.rig.texture.RigAssetManager
+import com.donnclab.kinetiframe.core.document.LayerType
+import com.donnclab.kinetiframe.studio.domain.AnimationEngine
+import com.donnclab.kinetiframe.studio.domain.BackgroundManager
+import com.donnclab.kinetiframe.studio.domain.BackgroundStorage
+import com.donnclab.kinetiframe.studio.domain.CelHoldHooks
+import com.donnclab.kinetiframe.studio.domain.CelHoldManager
+import com.donnclab.kinetiframe.studio.domain.DrawingLayers
+import com.donnclab.kinetiframe.studio.domain.DrawingManager
+import com.donnclab.kinetiframe.studio.domain.FrameHooks
+import com.donnclab.kinetiframe.studio.domain.FrameManager
+import com.donnclab.kinetiframe.studio.domain.HistoryItem
+import com.donnclab.kinetiframe.studio.domain.LayerManager
+import com.donnclab.kinetiframe.studio.domain.PendingOperations
+import com.donnclab.kinetiframe.studio.domain.PlaybackHooks
+import com.donnclab.kinetiframe.studio.domain.PlaybackManager
+import com.donnclab.kinetiframe.studio.domain.SceneEffectsManager
+import com.donnclab.kinetiframe.studio.domain.SelectionHooks
+import com.donnclab.kinetiframe.studio.domain.SelectionManager
+import com.donnclab.kinetiframe.studio.domain.StudioRuntime
+import com.donnclab.kinetiframe.studio.domain.TextManager
+import com.donnclab.kinetiframe.studio.domain.UndoStacks
+import com.donnclab.kinetiframe.studio.domain.ViewManager
+import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorAuthoringCoordinator
+import com.donnclab.kinetiframe.studio.domain.actorstudio.ActorPlacementManager
+import com.donnclab.kinetiframe.studio.drawing.LayerCompositor
+import com.donnclab.kinetiframe.studio.media.AudioManager
+import com.donnclab.kinetiframe.studio.media.AudioPlaybackManager
+import com.donnclab.kinetiframe.studio.media.VideoFrameProvider
+import com.donnclab.kinetiframe.studio.media.VideoTrackManager
+import com.donnclab.kinetiframe.studio.render.FrameCacheManager
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import java.io.File
+
+/**
+ * Everything one open studio shares: the frame cache, undo history, bitmap pool and locks, the
+ * managers that edit the project, and frame loading and composition. The studio ViewModel owns one
+ * session and routes intents to it through [StudioCanvasIntents] and [StudioSceneIntents].
+ */
+class StudioSession(
+    private val store: StudioStore,
+    private val directories: StudioDirectories,
+    private val engineDispatcher: CoroutineDispatcher,
+    val shouldInitialize: Boolean,
+    private val loadActorPresets: suspend () -> List<com.donnclab.kinetiframe.actors.rig.presets.ActorPreset>,
+    runtimeRigAssetManager: RigAssetManager?,
+    /** Suspends until the next display frame. The UI supplies its frame clock. */
+    awaitFrame: suspend () -> Unit,
+) {
+    val engine = AnimationEngine(store.scope, engineDispatcher)
+    val cacheManager = FrameCacheManager(directories.cache, store.scope).apply {
+        restoreExposures(store.state.layers.linkedCels, store.state.animation.totalFrames)
+    }
+
+    /** Per-frame UI resources, such as reference images, that must follow frame inserts and deletes. */
+    var frameStructureListener: com.donnclab.kinetiframe.studio.reference.FrameStructureListener? = null
+
+    /** Supplied by Actor Studio when reopening a revision with persisted artwork. */
+    val rigAssetManager = runtimeRigAssetManager ?: RigAssetManager()
+
+    /**
+     * Decoded bitmap for the project's persistent background image, if one is set. It is kept apart
+     * from [rigAssetManager] because the background has one bitmap and no undo history.
+     */
+    val projectAssetManager = com.donnclab.kinetiframe.studio.media.ProjectAssetManager()
+    val bakeMutex = Mutex()
+    val frameOperationMutex = Mutex()
+    val pendingOperations = PendingOperations()
+    val saveMutex = Mutex()
+    fun launchSave(block: suspend kotlinx.coroutines.CoroutineScope.() -> Unit) = store.scope.launch {
+        val owner = this
+        saveMutex.withLock { block(owner) }
+    }
+
+    /** Commit floating selection and await accepted raster/frame edits before publishing a save. */
+    suspend fun prepareProjectSave(nodeDensity: Float): com.donnclab.kinetiframe.core.document.ProjectSaveDocument {
+        pendingOperations.awaitIdle()
+        selectionManager.commitSelection().join()
+        pendingOperations.awaitIdle()
+        return frameOperationMutex.withLock {
+            // Accepted drawing/selection jobs have already baked their pixels. Rebuilding
+            // an untouched layer here creates blank artwork and can rebind an actor skin.
+            val state = store.state
+            val stacks = state.layers.frameLayers + (state.animation.currentFrame to state.layers.layers)
+            val document = com.donnclab.kinetiframe.core.document.ProjectSaveDocument(
+                project = state.project.copy(
+                    layers = stacks[0] ?: state.layers.layers,
+                    nodes = state.scene.nodes.mapValues {
+                        it.value.copyWithSelection(false)
+                    },
+                    nodeDensity = nodeDensity,
+                ),
+                frameLayers = stacks,
+                totalFrames = state.animation.totalFrames,
+                activeLayerIndex = state.layers.activeLayerIndex,
+                linkedCels = cacheManager.exposures().filterKeys { id -> state.layers.layers.any { it.id == id } },
+            )
+            cacheManager.persistAllToDisk(stacks.values.flatten().map { it.id }.distinct(), document.totalFrames)
+            document
+        }
+    }
+
+    internal val bitmapPool = com.donnclab.kinetiframe.studio.render.BitmapPool()
+
+    var history = mutableListOf<HistoryItem>()
+    var redoHistory = mutableListOf<HistoryItem>()
+    var baseBitmap: Bitmap? = null
+
+    // Domain Managers
+    private val managerRuntime = StudioRuntime(
+        scope = store.scope,
+        dispatcher = engineDispatcher,
+        getState = { store.state },
+        updateState = { store.update(it) },
+        pending = pendingOperations,
+    )
+    private val undoStacks = UndoStacks(history, redoHistory)
+
+    val drawingManager = DrawingManager(
+        runtime = managerRuntime,
+        cacheManager = cacheManager,
+        bakeMutex = bakeMutex,
+        frameOperationMutex = frameOperationMutex,
+        layers = DrawingLayers(
+            getBaseBitmap = { baseBitmap },
+            setBaseBitmap = { baseBitmap = it },
+            activeLayerId = { activeLayerId() },
+            composeFrame = { frame, layerId, bitmap -> composeFrame(frame, bitmap, layerId) },
+            acquireBitmap = { w, h -> bitmapPool.acquire(w, h) },
+            releaseBitmap = { b -> bitmapPool.release(b) },
+            onFrameBaked = { layerId, bitmap ->
+                val boneId = store.state.currentFrameLayers().find { it.id == layerId }?.boundBoneId
+                if (boneId != null) actorAuthoring.autoBindLayerContent(boneId, bitmap)
+            },
+        ),
+        undo = undoStacks,
+    )
+
+    val frameManager = FrameManager(
+        runtime = managerRuntime,
+        cacheManager = cacheManager,
+        frameOperationMutex = frameOperationMutex,
+        hooks = FrameHooks(
+            sendEffect = { store.send(it) },
+            loadFrameInternal = { loadFrameInternal(it) },
+            // Local JVM tests intentionally construct this ViewModel without Android's
+            // bitmap runtime. Frame state transitions remain testable without invoking
+            // Bitmap.createBitmap from the android.jar stub.
+            finalizeFrame = { if (shouldInitialize && history.isNotEmpty()) drawingManager.rebuildCurrentBitmap() },
+            clearHistory = {
+                history.clear()
+                redoHistory.clear()
+            },
+            commitFrameStructure = { inserted, deleted, change ->
+                withContext(Dispatchers.Main.immediate) {
+                    sceneEffects.clear()
+                    inserted?.let { frameStructureListener?.insert(it) }
+                    deleted.forEach { frameStructureListener?.delete(it) }
+                    store.update { before ->
+                        val next =
+                            change(
+                                before.copy(
+                                    packTags = com.donnclab.kinetiframe.library.model.reindexPackTags(
+                                        before.packTags,
+                                        inserted,
+                                        deleted,
+                                    ),
+                                ),
+                            )
+                        next.copy(
+                            layers = next.layers.copy(linkedCels = cacheManager.exposures(), linkedEditTarget = null),
+                            project = next.project.copy(
+                                cameraShots = com.donnclab.kinetiframe.studio.camera.CameraFrameStructure.reindex(
+                                    before.project.cameraShots,
+                                    inserted,
+                                    deleted,
+                                ),
+                            ),
+                        )
+                    }
+                }
+            },
+        ),
+    )
+
+    val layerManager = LayerManager(
+        updateState = { store.update(it) },
+        // A missing PNG means a transparent layer. Eager blank initialization wasted RAM and
+        // could overwrite a first stroke if its queued job completed after the user's drawing.
+        refreshComposite = { refreshComposite() },
+    )
+
+    val celHoldManager = CelHoldManager(
+        runtime = managerRuntime,
+        cache = cacheManager,
+        frameMutex = frameOperationMutex,
+        hooks = CelHoldHooks(
+            sendEffect = { store.send(it) },
+            finalizeDrawing = { if (history.isNotEmpty()) drawingManager.rebuildCurrentBitmap() },
+            clearHistory = {
+                history.clear()
+                redoHistory.clear()
+            },
+            loadFrame = { loadFrameInternal(it) },
+        ),
+    )
+
+    val selectionManager = SelectionManager(
+        runtime = managerRuntime,
+        frameOperationMutex = frameOperationMutex,
+        hooks = SelectionHooks(
+            rebuildCurrentBitmap = { drawingManager.rebuildCurrentBitmap() },
+            snapshotActiveLayer = {
+                cacheManager.getFrame(activeLayerId(), store.state.animation.currentFrame)
+                    ?.copy(Bitmap.Config.ARGB_8888, true)
+            },
+            setBaseBitmap = { baseBitmap = it },
+            trimHistory = { drawingManager.trimHistory() },
+        ),
+        undo = undoStacks,
+    )
+
+    val diagnosticReports = com.donnclab.kinetiframe.data.diagnostics.CrashReportStore(directories.diagnostics)
+    fun recordPlaybackFailure(error: Throwable, operation: String) {
+        android.util.Log.e("KinetiFramePlayback", operation, error)
+        val state = store.state
+        store.scope.launch(Dispatchers.IO) {
+            runCatching {
+                diagnosticReports.record(
+                    error,
+                    "$operation; frame=${state.animation.playbackFrame}; fps=${state.project.fps}; " +
+                        "stage=${state.project.stage.width}x${state.project.stage.height}",
+                )
+            }
+        }
+    }
+    val audioPlaybackManager = com.donnclab.kinetiframe.studio.media.AudioPlaybackManager(
+        getState = { store.state },
+        scope = store.scope,
+        onAudioError = { recordPlaybackFailure(it, "Audio playback failed") },
+    )
+    val audioManager = com.donnclab.kinetiframe.studio.media.AudioManager(
+        getState = { store.state },
+        updateState = { store.update(it) },
+    )
+
+    /** Public (like [audioPlaybackManager]) so EditorScreen/CanvasArea can pull the current
+     *  video reference frame straight from it on every recomposition, the same way it already
+     *  reads [audioPlaybackManager] indirectly through the playback callbacks below. */
+    val videoFrameProvider = com.donnclab.kinetiframe.studio.media.VideoFrameProvider(getState = { store.state })
+    val videoTrackManager = com.donnclab.kinetiframe.studio.media.VideoTrackManager(
+        getState = { store.state },
+        updateState = { store.update(it) },
+    )
+
+    val playbackManager = PlaybackManager(
+        scope = store.scope,
+        engineDispatcher = engineDispatcher,
+        engine = engine,
+        cacheManager = cacheManager,
+        updateState = { store.update(it) },
+        hooks = PlaybackHooks(
+            loadFrame = { loadFrame(it) },
+            composeFrame = { frame, bitmap -> composeFrame(frame, bitmap) },
+            activeLayerId = { activeLayerId() },
+            onFrameChanged = { frame -> audioPlaybackManager.onFrameChanged(frame) },
+            onPlaybackStateChanged = { playing -> audioPlaybackManager.onPlaybackStateChanged(playing) },
+            onPlaybackError = { error ->
+                recordPlaybackFailure(error, "Frame playback failed")
+                store.send(
+                    StudioEffect.ShowError(
+                        StudioFailure.PLAYBACK_STOPPED,
+                        error,
+                        error.message ?: error.javaClass.simpleName,
+                    ),
+                )
+            },
+        ),
+    )
+
+    val viewManager = ViewManager(
+        updateState = { store.update(it) },
+    )
+
+    val backgroundManager = BackgroundManager(
+        scope = store.scope,
+        dispatcher = Dispatchers.IO,
+        storage = BackgroundStorage(projectAssetManager, File(directories.files, "project-assets")),
+        getState = { store.state },
+        updateState = { store.update(it) },
+        onError = { store.send(it) },
+        pendingOperations = pendingOperations,
+    )
+
+    /** Rig setup, posing and motion, preset auditions, sample artwork and pivot placement. */
+    val actorAuthoring = ActorAuthoringCoordinator(
+        scope = store.scope,
+        rigAssetManager = rigAssetManager,
+        getState = { store.state },
+        updateState = { store.update(it) },
+        sendEffect = { store.send(it) },
+        awaitFrame = awaitFrame,
+    )
+    val actorPlacementManager = ActorPlacementManager({ store.state }, { store.update(it) })
+
+    val textManager = TextManager(
+        updateState = { store.update(it) },
+    )
+
+    init {
+        backgroundManager.restore()
+        store.scope.launch {
+            runCatching { loadActorPresets() }
+                .onSuccess { presets -> store.update { it.copy(actor = it.actor.copy(presets = presets)) } }
+                .onFailure { store.send(StudioEffect.ShowError(StudioFailure.PRESETS_NOT_LOADED, it, it.message)) }
+        }
+        if (shouldInitialize) {
+            pendingOperations.launch(store.scope, engineDispatcher) {
+                // Reopening warms a durable document; it must never delete saved frame PNGs.
+                frameOperationMutex.withLock { loadFrameInternal(0) }
+            }
+        }
+
+        // MediaPlayer requires creation and every access on the same Looper thread. The
+        // clock emits off-main, but playback state/audio controls belong to Main.
+        store.scope.launch {
+            engine.frameTicks.collect {
+                // A buffered clock tick can arrive after Pause. It is not a Next Frame intent.
+                if (store.state.animation.isPlaying) playbackManager.incrementFrame(store.state)
+            }
+        }
+    }
+
+    val sceneEffects = com.donnclab.kinetiframe.studio.domain.SceneEffectsManager({ store.state }, { store.update(it) })
+
+    val frameRequestGeneration = java.util.concurrent.atomic.AtomicLong()
+
+    fun loadFrame(index: Int) {
+        val generation = frameRequestGeneration.incrementAndGet()
+        pendingOperations.launch(store.scope, engineDispatcher) {
+            frameOperationMutex.withLock {
+                // A fast fling must not queue hundreds of obsolete disk decodes/composites.
+                // Keep the mutex: the outgoing drawing still has to be committed safely.
+                if (generation == frameRequestGeneration.get() && index == store.state.animation.currentFrame) {
+                    loadFrameInternal(index)
+                }
+            }
+        }
+    }
+
+    suspend fun loadFrameInternal(index: Int) {
+        if (history.isNotEmpty()) {
+            drawingManager.rebuildCurrentBitmap()
+        }
+        cacheManager.resetEditScope()
+        store.update {
+            it.copy(layers = it.layers.copy(linkedEditTarget = null, linkedCels = cacheManager.exposures()))
+        }
+
+        val bitmap = cacheManager.getFrame(activeLayerId(), index)
+        baseBitmap = withContext(engineDispatcher) {
+            bitmap?.copy(Bitmap.Config.ARGB_8888, true)
+        }
+        history.clear()
+        redoHistory.clear()
+        drawingManager.markLayerSession(activeLayerId(), index)
+
+        val compositeBitmap = composeFrame(index, bitmap)
+        store.update { if (it.animation.currentFrame == index) it.copy(currentBitmap = compositeBitmap) else it }
+
+        // Predictive Loading
+        cacheManager.getFrame(activeLayerId(), (index + 1) % store.state.animation.totalFrames)
+        if (index > 0) {
+            cacheManager.getFrame(activeLayerId(), index - 1)
+        } else {
+            cacheManager.getFrame(activeLayerId(), store.state.animation.totalFrames - 1)
+        }
+    }
+
+    fun generateFillPreview(offset: com.donnclab.kinetiframe.core.geometry.Point2) {
+        pendingOperations.launch(store.scope, engineDispatcher) {
+            val preview = drawingManager.generateFillPreview(offset)
+            withContext(Dispatchers.Main) {
+                store.update { it.reduceFillSetting(StudioIntent.Fill.SetPreviewBitmap(preview)) }
+            }
+        }
+    }
+
+    fun activeLayerId(): String =
+        store.state.currentFrameLayers().getOrNull(store.state.layers.activeLayerIndex)?.id ?: "main"
+
+    /** Ensures one freehand actor stroke has exactly one isolated raster destination. */
+    fun selectActorArtworkLayer(boneId: String): String? {
+        if (store.state.scene.studioMode == StudioMode.ANIMATE_IK || store.state.actorDefinition() == null) return null
+        val existingIndex = store.state.currentFrameLayers().indexOfFirst { it.boundBoneId == boneId }
+        val layerId = if (existingIndex >= 0) {
+            store.update { state -> state.copy(layers = state.layers.copy(activeLayerIndex = existingIndex)) }
+            store.state.currentFrameLayers()[existingIndex].id
+        } else {
+            val boneName = store.state.actorDefinition()?.sceneGraph?.bones?.get(boneId)?.name
+            layerManager.addLayer(LayerType.RASTER, boundBoneId = boneId, customName = boneName)
+        }
+        store.update { state -> state.copy(scene = state.scene.copy(selectedBoneId = boneId)) }
+        return layerId
+    }
+
+    suspend fun composeFrame(
+        frameIndex: Int,
+        activeLayerBitmap: Bitmap? = null,
+        bitmapLayerId: String = activeLayerId(),
+    ): Bitmap? = withContext(engineDispatcher) {
+        val layers = store.state.layersForFrame(frameIndex)
+        if (layers.isEmpty()) return@withContext activeLayerBitmap
+        val loaded = layers.associateWith { layer ->
+            if (frameIndex == store.state.animation.currentFrame &&
+                layer.id == bitmapLayerId && activeLayerBitmap != null
+            ) {
+                activeLayerBitmap
+            } else {
+                cacheManager.getFrame(layer.id, frameIndex)
+            }
+        }
+        if (loaded.values.all { it == null }) return@withContext null
+        val reference = loaded.values.firstOrNull { it != null } ?: return@withContext null
+        val destination = bitmapPool.acquire(reference.width, reference.height)
+        LayerCompositor.compose(layers, frameIndex, destination) { layer, _ -> loaded[layer] }
+        destination
+    }
+
+    fun refreshComposite() {
+        pendingOperations.launch(store.scope, engineDispatcher) {
+            val frame = store.state.animation.currentFrame
+            val activeBitmap = cacheManager.getFrame(activeLayerId(), frame)
+            val composite = composeFrame(frame, activeBitmap)
+            store.update { it.copy(currentBitmap = composite) }
+        }
+    }
+
+    /** Frees bitmaps, players and decoders. Called once, when the studio closes. */
+    fun release() {
+        frameStructureListener?.clear()
+        projectAssetManager.clear()
+        engine.stop()
+        audioPlaybackManager.release()
+        videoFrameProvider.release()
+        rigAssetManager.clear()
+        bitmapPool.clear()
+    }
+}

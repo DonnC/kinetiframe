@@ -29,8 +29,8 @@ class KotlinBoundaryScannerTest {
     @Test fun `new public code cannot import platform UI private storage or exceed size`() {
         fixture("core", "api/Example.kt", "import android.graphics.Bitmap\n" + "// line\n".repeat(500))
         fixture("engine", "math/Example.kt", "import androidx.compose.ui.geometry.Offset")
-        fixture("sandbox", "api/Example.kt", "val store = com.donnclab.kinetiframe.data.storage.DurableFile")
-        val findings = KotlinBoundaryScanner.scan(root, listOf("core", "engine", "sandbox"))
+        fixture("data", "api/Example.kt", "val mesh = com.donnclab.kinetiframe.engine.rigging.Mesh")
+        val findings = KotlinBoundaryScanner.scan(root, listOf("core", "engine", "data"))
         assertEquals(4, findings.size)
         assertTrue(findings.keys.any { it.startsWith("lines|core/") })
         assertEquals(3, findings.keys.count { it.startsWith("dependency|") })
@@ -45,7 +45,7 @@ class KotlinBoundaryScannerTest {
             import com.donnclab.kinetiframe.engine.rigging.SceneGraph
             import com.donnclab.kinetiframe.data.Repository
             import com.donnclab.kinetiframe.core.document.Stage
-            import com.donnclab.kinetiframe.ui.TimelineState
+            import com.donnclab.kinetiframe.ui.StudioState
             import androidx.lifecycle.ViewModel
             """.trimIndent(),
         )
@@ -54,11 +54,49 @@ class KotlinBoundaryScannerTest {
         assertTrue(findings.keys.all { it.startsWith("dependency|") })
     }
 
+    @Test fun `library modules cannot reference app packages`() {
+        fixture("engine", "Bad.kt", "import com.donnclab.kinetiframe.navigation.AppNavHost")
+        fixture("core", "Bad.kt", "val x = com.donnclab.kinetiframe.navigation.Destination.Home")
+        fixture(
+            "app",
+            "Good.kt",
+            "package com.donnclab.kinetiframe\nimport com.donnclab.kinetiframe.navigation.AppNavHost",
+        )
+        val findings = KotlinBoundaryScanner.scan(root, listOf("engine", "core", "app"))
+        assertEquals(2, findings.size)
+        assertTrue(findings.keys.all { it.startsWith("dependency|") && !it.contains("app/") })
+    }
+
+    @Test fun `app code cannot live in layer or module named packages`() {
+        fixture("app", "ui/Old.kt", "package com.donnclab.kinetiframe.ui.home")
+        fixture("app", "engine/Old.kt", "package com.donnclab.kinetiframe.engine")
+        fixture("app", "navigation/Nav.kt", "package com.donnclab.kinetiframe.navigation")
+        fixture("app", "Root.kt", "package com.donnclab.kinetiframe")
+        val findings = KotlinBoundaryScanner.scan(root, listOf("app"))
+        assertEquals(
+            setOf("com.donnclab.kinetiframe.ui.home", "com.donnclab.kinetiframe.engine"),
+            findings.keys.map { it.substringAfterLast('|') }.toSet(),
+        )
+    }
+
+    @Test fun `app main code holds no screens, while its tests may use feature packages`() {
+        fixture("app", "home/Home.kt", "package com.donnclab.kinetiframe.home")
+        fixture("app", "studio/ui/Canvas.kt", "package com.donnclab.kinetiframe.studio.ui")
+        val test = File(root, "app/src/test/kotlin/studio/StudioTest.kt")
+        test.parentFile.mkdirs()
+        test.writeText("package com.donnclab.kinetiframe.studio")
+        val findings = KotlinBoundaryScanner.scan(root, listOf("app"))
+        assertEquals(
+            setOf("com.donnclab.kinetiframe.home", "com.donnclab.kinetiframe.studio.ui"),
+            findings.keys.map { it.substringAfterLast('|') }.toSet(),
+        )
+    }
+
     @Test fun `non UI modules cannot depend on design system types`() {
-        listOf("core", "engine", "data", "sandbox").forEach { module ->
+        listOf("core", "engine", "data").forEach { module ->
             fixture(module, "Bad.kt", "import com.donnclab.kinetiframe.designsystem.theme.EditorTokens")
         }
-        assertEquals(4, KotlinBoundaryScanner.scan(root, listOf("core", "engine", "data", "sandbox")).size)
+        assertEquals(3, KotlinBoundaryScanner.scan(root, listOf("core", "engine", "data")).size)
     }
 
     @Test fun `Windows and Unix source have the same declared parameter counts`() {

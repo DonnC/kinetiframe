@@ -35,6 +35,19 @@ that breaks these rules is listed in `.architecture/legacy-baseline.properties`.
 only shrink. If you touch a file on it, don't add new violations, and fix the existing one if
 the change is small enough.
 
+The same check counts inline UI values per file outside `designsystem`, tests and previews:
+colors built from literals such as `Color(0xFF6750A4)`, non-zero `.dp` literals, and string
+literals passed to `Text(...)` or `contentDescription`. Existing counts are in
+`.architecture/ui-values-baseline.properties`. A file's count may only go down, and a file
+that isn't listed may have none.
+
+It also checks that `app`'s main code stays in the root package and `navigation`, since every
+screen lives in `presentation`. `.architecture/layering-baseline.properties` records Compose
+imports in `domain`, `data`, `render`, `rig`, `math` and `model` packages, and UI code that
+imports a `data` package instead of going through its ViewModel. A ViewModel, meaning a file
+named `*ViewModel.kt`, may use the repositories in the `data` packages of `media`, `actors` and
+`studio`, but not the `data` module.
+
 ## Modules and dependencies
 
 | Module | May depend on |
@@ -45,7 +58,6 @@ the change is small enough.
 | `data` | `core` |
 | `core` | nothing (plain Kotlin, no Android) |
 | `designsystem` | nothing in the project (Compose only) |
-| `sandbox` | `core`, `engine` |
 
 - Dependencies point down this table. No cycles.
 - Engine math packages use no Android or Compose types. Translate geometry at the UI edge.
@@ -55,6 +67,17 @@ the change is small enough.
   realistic. Don't wrap every helper in an interface, and keep indirection out of hot loops.
 - Wire implementations together in `app` at lifecycle boundaries. No global service locator or
   singleton that hands out arbitrary services.
+
+## Packages
+
+- Group code by feature first: `studio`, `actors`, `library`, `project`, `audio` and so on.
+  Inside a feature, `ui`, `domain` and `data` subpackages hold the layers it needs. See the
+  [project architecture](architecture/decisions/project-architecture.md) decision.
+- A package name never repeats a module name. `com.donnclab.kinetiframe.engine` belongs only to
+  the `engine` module. `checkArchitecture` rejects `app` files in the old layer packages (`ui`,
+  `domain`, `data`, `engine`, `models`, `core`).
+- Preview fixtures and fake data live in the `preview` package and are used only by previews and
+  tests.
 
 ## Naming
 
@@ -76,6 +99,9 @@ the change is small enough.
   never save a draft.
 - Do file and media work off the main thread. Never decode images or allocate bitmaps or paths
   inside a Compose draw phase.
+- Take dispatchers as constructor parameters, defaulting to `Dispatchers.IO` or
+  `Dispatchers.Default`, instead of naming them inline. Tests pass a test dispatcher so every
+  coroutine they start also finishes inside the test.
 - Give caches and bitmap pools a size limit and an owner who clears them.
 
 ## Saved files must keep opening

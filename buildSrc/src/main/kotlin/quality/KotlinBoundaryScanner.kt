@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 package quality
 
-import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
-import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
-import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
-import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtElement
@@ -14,7 +10,6 @@ import org.jetbrains.kotlin.psi.KtNamedDeclaration
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.kotlin.psi.KtPrimaryConstructor
-import org.jetbrains.kotlin.psi.KtPsiFactory
 import org.jetbrains.kotlin.psi.KtSecondaryConstructor
 import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 import java.io.File
@@ -32,21 +27,25 @@ import java.io.File
 internal object KotlinBoundaryScanner {
     fun scan(root: File, modules: List<String>): Map<String, Int> {
         val violations = sortedMapOf<String, Int>()
-        val disposable = Disposer.newDisposable()
-        try {
-            val environment = KotlinCoreEnvironment.createForProduction(
-                disposable,
-                CompilerConfiguration(),
-                EnvironmentConfigFiles.JVM_CONFIG_FILES,
-            )
-            val factory = KtPsiFactory(environment.project, false)
+        KotlinSourceParser().use { parser ->
             modules.forEach { module ->
                 File(root, "$module/src").walkTopDown().filter { it.isFile && it.extension == "kt" }.forEach { source ->
                     val path = source.relativeTo(root).invariantSeparatorsPath
                     val text = source.readText()
                     val lines = text.lines().size
                     if (lines > MAX_LINES) violations["lines|$path"] = lines
-                    val parsed = factory.createFile(source.name, text.replace("\r\n", "\n").replace('\r', '\n'))
+                    val parsed = parser.parse(source.name, text)
+                    val pkg = parsed.packageFqName.asString()
+                    if (module == "app" && !isAppPackage(pkg, path)) violations["package|$path|$pkg"] = 1
+                    val uiLayer = sortedMapOf<String, Int>()
+                    fun checkUiLayer(import: String) {
+                        if (!UiLayerRules.applies(path)) return
+                        val rule = UiLayerRules.violation(pkg, import, UiLayerRules.isViewModel(path)) ?: return
+                        uiLayer[rule] = (uiLayer[rule] ?: 0) + 1
+                    }
+                    if (UiValueRules.applies(module, path)) {
+                        UiValueRules.count(parsed).forEach { (kind, count) -> violations["$kind|$path"] = count }
+                    }
                     parsed.accept(object : KtTreeVisitorVoid() {
                         override fun visitNamedFunction(function: KtNamedFunction) {
                             val composable = function.annotationEntries.any { it.shortName?.asString() == "Composable" }
@@ -99,6 +98,7 @@ internal object KotlinBoundaryScanner {
                         }
                         override fun visitImportDirective(directive: KtImportDirective) {
                             checkReference(directive.importedFqName?.asString().orEmpty())
+                            checkUiLayer(directive.importedFqName?.asString().orEmpty())
                             super.visitImportDirective(directive)
                         }
                         override fun visitDotQualifiedExpression(expression: KtDotQualifiedExpression) {
@@ -134,15 +134,17 @@ internal object KotlinBoundaryScanner {
                             violations["dependency|$path|$forbidden"] = 1
                         }
                     })
+                    uiLayer.forEach { (rule, count) -> violations["$rule|$path"] = count }
                 }
             }
-        } finally {
-            Disposer.dispose(disposable)
         }
         return violations
     }
 
-    private fun forbiddenPrefixes(module: String, path: String): List<String> {
+    private fun forbiddenPrefixes(module: String, path: String): List<String> =
+        if (module == "app") emptyList() else moduleRules(module, path) + APP_PACKAGES
+
+    private fun moduleRules(module: String, path: String): List<String> {
         val sdk = listOf("com.google.firebase.", "com.android.billingclient.", "io.appwrite.")
         return when (module) {
             "core" ->
@@ -173,7 +175,13 @@ internal object KotlinBoundaryScanner {
                 "com.donnclab.kinetiframe.designsystem.",
             )
 
-            "presentation" -> listOf("com.donnclab.kinetiframe.data.")
+            // Screens reach storage through their ViewModel. Tests may still build real stores on a
+            // temporary folder to drive a ViewModel end to end.
+            "presentation" -> if ("/src/main/" in path) listOf("com.donnclab.kinetiframe.data.") else emptyList()
+
+            "media" -> LOGIC_ONLY + listOf("com.donnclab.kinetiframe.data.", "com.donnclab.kinetiframe.engine.")
+
+            "actors", "studio" -> LOGIC_ONLY
 
             "designsystem" ->
                 sdk +
@@ -188,18 +196,44 @@ internal object KotlinBoundaryScanner {
                         "androidx.lifecycle.",
                     )
 
-            "sandbox" ->
-                sdk +
-                    listOf(
-                        "com.donnclab.kinetiframe.ui.",
-                        "com.donnclab.kinetiframe.data.",
-                        "com.donnclab.kinetiframe.presentation.",
-                        "com.donnclab.kinetiframe.designsystem.",
-                    )
-
             else -> emptyList()
         }
     }
+
+    // Logic modules hold no screens: their UI lives in presentation. Compose geometry and graphics
+    // types stay allowed here because the compose check already counts them.
+    private val LOGIC_ONLY = listOf(
+        "com.donnclab.kinetiframe.presentation.",
+        "com.donnclab.kinetiframe.designsystem.",
+        "com.donnclab.kinetiframe.ui.",
+        "androidx.compose.runtime.",
+        "androidx.compose.foundation.",
+        "androidx.compose.material",
+        "androidx.lifecycle.",
+    )
+
+    private const val ROOT = "com.donnclab.kinetiframe"
+
+    // The app module's own package below the root. Library modules sit below app and never
+    // reference it.
+    private const val APP_NAVIGATION = "$ROOT.navigation"
+    private val APP_PACKAGES = listOf("$APP_NAVIGATION.")
+
+    // Layer-named packages the app module no longer uses. `engine`, `data` and `core` are module
+    // names, and `ui`, `domain` and `models` group by layer instead of by feature.
+    private val RETIRED_APP_PACKAGES = listOf("core", "data", "domain", "engine", "models", "ui").map { "$ROOT.$it" }
+
+    /**
+     * Whether app code may live in [pkg]. Its main code is only the entry point in the root
+     * package and `navigation`, since every screen lives in presentation. Its tests may still use
+     * the feature packages of the code they test.
+     */
+    private fun isAppPackage(pkg: String, path: String): Boolean = when {
+        RETIRED_APP_PACKAGES.any { pkg == it || pkg.startsWith("$it.") } -> false
+        "/src/main/" in path -> pkg == ROOT || pkg == APP_NAVIGATION || pkg.startsWith("$APP_NAVIGATION.")
+        else -> true
+    }
+
     private const val MAX_LINES = 500
     const val MAX_FUNCTION_PARAMETERS = 6
     const val MAX_CONSTRUCTOR_PARAMETERS = 7

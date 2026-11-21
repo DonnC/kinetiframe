@@ -20,6 +20,7 @@
 - [Module boundaries](architecture/modules.md): what each module may depend on
 - [File formats](file-formats.md): project folders, `.kframe` and `.kpack`
 - [Decision records](architecture/decisions): why things are the way they are
+- [Restructuring tracker](restructuring.md): progress on the feature modules, UX fixes and debt counts
 
 ## For maintainers
 

@@ -6,13 +6,35 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ## Unreleased
 
+## 0.1.0 - not yet tagged
+
+The first release. The maintainer sets the date when `v0.1.0` is tagged. It needs Android 9
+(API 28) or later.
+
+### Added
+
+- A per-app language setting, so KinetiFrame can use a different language from the rest of the
+  phone. Debug builds also offer pseudo-locales for checking layouts with longer and right-to-left
+  text.
+- All of the app's text, including error messages, slider values, camera presets and the default
+  library collection's name, now comes from string resources and can be translated.
+
+### Fixed
+
+- Sharing an exported video.
+- Error messages now say what failed in words instead of showing internal error text, except for
+  a technical detail added after a few rare storage failures.
+
 ### Removed
 
+- The engine sandbox app and the `-PengineOnly` build. Engine work runs the engine's tests and is
+  checked in the app itself.
 - The placeholder Marketplace tab and every "From Marketplace" entry. Sharing works through the
   library, `.kframe` project files and `.kpack` stamp packs.
 - The internet permission. KinetiFrame works fully offline.
-- Unused libraries, including Google Play Services Location, CameraX, Retrofit, OkHttp and Moshi,
-  which makes the app smaller and free of proprietary dependencies.
+- Unused libraries, including Google Play Services Location, CameraX, Retrofit and Moshi, which
+  makes the app smaller and free of proprietary dependencies. OkHttp still comes in with the Coil
+  image loader, but the app makes no network requests.
 
 ### Changed
 
@@ -24,6 +46,15 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
   removed.
 - Debug builds install as `com.donnclab.kinetiframe.dev`, and every successful build of
   `develop` publishes a development APK.
+
+### Known limits
+
+- KinetiFrame is still in development. Projects saved by this version will keep opening in later
+  versions, as the [file formats](docs/file-formats.md) promise, but screens and controls will
+  change.
+- Some screens have known layout and labelling problems, listed in the
+  [restructuring tracker](docs/restructuring.md#ux-fixes).
+- Sharing a large project can take minutes with no progress shown.
 
 ### For contributors
 
@@ -40,5 +71,16 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - Dependabot, CODEOWNERS, an `.editorconfig`, and issue templates for artwork contributions.
 - The shared design system now holds the Compose theme, visual tokens and dock controls.
 - Working notes go in a Git-ignored `notes/` folder.
+- `app` is organised by feature (`studio`, `actors`, `library`, `project`, `audio`, `video`,
+  `export` and others) instead of by layer, and the editor's main types are named `Studio*`. See
+  the [project architecture](docs/architecture/decisions/project-architecture.md) decision.
+- ViewModels take their IO dispatcher as a parameter, so tests control all the work they start.
+- The code is split into nine modules: `core`, `engine`, `data`, `media`, `actors`, `studio`,
+  `presentation`, `designsystem` and `app`. Only `presentation`, `designsystem` and `app` use
+  Compose, and screens reach storage only through their ViewModels. `checkArchitecture` enforces
+  the layout. See the [feature modules](docs/architecture/decisions/feature-modules.md) decision.
+- Every visual size and almost every colour comes from the design system's tokens.
+- Tests live in the module whose code they cover. The device tests use the `v2` Compose test rule.
+- The build targets Java 17 and uses Kotlin 2.4, AGP 9.5, Gradle 9.9 and JUnit 6.
 
 No release history has been reconstructed from earlier development commits.

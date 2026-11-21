@@ -1,0 +1,151 @@
+package com.donnclab.kinetiframe.studio.domain
+
+import android.graphics.Bitmap
+import com.donnclab.kinetiframe.actors.render.ActorSelectionGeometry
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.ProjectDocument
+import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.core.geometry.Affine2D
+import com.donnclab.kinetiframe.core.geometry.Point2
+import com.donnclab.kinetiframe.core.geometry.Rect2
+import com.donnclab.kinetiframe.studio.StudioState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
+import org.junit.Test
+
+class ActorSelectionTest {
+    private val actor = ActorPlacementReference("placed", "performance", "actor", "revision", "Wave", 0, 24)
+    private val quad = listOf(Point2(10f, 10f), Point2(30f, 10f), Point2(30f, 30f), Point2(10f, 30f))
+
+    @Test fun rectangleSelectsLiveActorAndCommitsExactShear() = runTest {
+        var state =
+            StudioState(
+                project = ProjectDocument(id = "project", actorPlacements = mapOf(actor.placementId to actor)),
+            )
+        val history = mutableListOf<HistoryItem>()
+        val manager =
+            SelectionManager(
+                StudioRuntime(this, Dispatchers.Unconfined, { state }, { state = it(state) }),
+                Mutex(),
+                SelectionHooks({}, { null }, {}),
+                UndoStacks(history),
+            )
+        manager.selectArea(
+            null,
+            Rect2(0f, 0f, 40f, 40f),
+            1f,
+            actors = ActorSelectionGeometry(
+                "project",
+                0,
+                listOf(ActorSelectionGeometry.Object(actor, listOf(quad))),
+            ),
+        ).join()
+        assertEquals(setOf("placed"), state.selection.selectedContent!!.actors.keys)
+        assertNull(state.selection.selectedContent!!.bitmap)
+        state =
+            state.copy(
+                selection = state.selection.copy(
+                    transform = Affine2D(c = .5f, tx = 20f),
+                ),
+            )
+        manager.commitSelection().join()
+        val placed = state.project.actorPlacements.getValue("placed")
+        assertEquals(.5f, placed.selectionTransform.c, 0f)
+        assertEquals(20f, placed.selectionTransform.tx, 0f)
+        assertEquals(actor.performanceId, placed.performanceId)
+        assertEquals(actor.actorRevisionId, placed.actorRevisionId)
+        assertTrue(history.single() is HistoryItem.ObjectEdit)
+    }
+
+    @Test fun transformedCopyPastesOnceAndCancelRemovesOnlyTheCopy() = runTest {
+        var state =
+            StudioState(
+                project = ProjectDocument(id = "project", actorPlacements = mapOf(actor.placementId to actor)),
+            )
+        val manager =
+            SelectionManager(
+                StudioRuntime(this, Dispatchers.Unconfined, { state }, { state = it(state) }),
+                Mutex(),
+                SelectionHooks({}, { null }, {}),
+                UndoStacks(mutableListOf()),
+            )
+        manager.selectArea(
+            null,
+            Rect2(0f, 0f, 40f, 40f),
+            1f,
+            actors = ActorSelectionGeometry(
+                "project",
+                0,
+                listOf(ActorSelectionGeometry.Object(actor, listOf(quad))),
+            ),
+        ).join()
+        state = state.copy(selection = state.selection.copy(transform = Affine2D(tx = 50f)))
+        manager.copySelection()
+        manager.pasteSelection()
+        assertEquals(2, state.project.actorPlacements.size)
+        assertEquals(70f, state.selection.transform.tx, 0f)
+        manager.cancelSelection().join()
+        assertEquals(setOf("placed"), state.project.actorPlacements.keys)
+        assertEquals(50f, state.project.actorPlacements.getValue("placed").selectionTransform.tx, 0f)
+    }
+
+    @Test fun staleFrameGeometryCannotSelectAnActor() = runTest {
+        var state =
+            StudioState(
+                project = ProjectDocument(id = "project", actorPlacements = mapOf(actor.placementId to actor)),
+            )
+        val manager =
+            SelectionManager(
+                StudioRuntime(this, Dispatchers.Unconfined, { state }, { state = it(state) }),
+                Mutex(),
+                SelectionHooks({}, { null }, {}),
+                UndoStacks(mutableListOf()),
+            )
+        manager.selectArea(
+            null,
+            Rect2(0f, 0f, 40f, 40f),
+            1f,
+            actors = ActorSelectionGeometry(
+                "project",
+                9,
+                listOf(ActorSelectionGeometry.Object(actor, listOf(quad))),
+            ),
+        ).join()
+        assertFalse(state.selection.active)
+    }
+
+    @Test fun maskFindsIntersectionEvenWhenNoObjectCornerIsInside() {
+        val area = requireNotNull(SelectionAreaMask(null, Rect2(15f, 15f, 25f, 25f)))
+        assertTrue(area.matches(listOf(quad), partial = true))
+        assertFalse(area.matches(listOf(quad), partial = false))
+    }
+
+    @Test fun pixelSelectionCancelDoesNotMutateBaseAndMoveIsOneHistoryStep() = runTest {
+        var state = StudioState(project = ProjectDocument(stage = StageDimensions(32, 32)))
+        val history = mutableListOf<HistoryItem>()
+        val source = Bitmap.createBitmap(32, 32, Bitmap.Config.ARGB_8888).apply {
+            eraseColor(android.graphics.Color.RED)
+        }
+        val manager = SelectionManager(
+            StudioRuntime(this, Dispatchers.Unconfined, { state }, { state = it(state) }),
+            Mutex(),
+            SelectionHooks({
+            }, { source.copy(Bitmap.Config.ARGB_8888, true) }, { fail("Selection must not rewrite the base") }),
+            UndoStacks(history),
+        )
+        manager.selectArea(null, Rect2(1f, 1f, 8f, 8f), 1f).join()
+        manager.cancelSelection().join()
+        assertTrue(history.isEmpty())
+        assertEquals(android.graphics.Color.RED, source.getPixel(2, 2))
+        manager.selectArea(null, Rect2(1f, 1f, 8f, 8f), 1f).join()
+        manager.commitSelection().join()
+        assertTrue(history.single() is HistoryItem.RasterSelection)
+        source.recycle()
+    }
+}

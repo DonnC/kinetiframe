@@ -1,0 +1,172 @@
+package com.donnclab.kinetiframe.presentation.home
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
+import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserControls
+import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserIndex
+import com.donnclab.kinetiframe.presentation.library.packs.PackDetailsScreen
+import com.donnclab.kinetiframe.presentation.library.packs.PackDetailsState
+import com.donnclab.kinetiframe.presentation.library.packs.PackOrganizationDialog
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabCallbacks
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabIntent
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabState
+import java.io.File
+
+/**
+ * Home's Packs tab: the saved-pack gallery, its delete confirmation, and the drill-down overlay a
+ * card opens.
+ *
+ * `internal` because it is part of Home, not a reusable component, and shares Home's
+ * LoadingBox and EmptySearchMessage states.
+ */
+@Composable
+internal fun PacksTabContent(
+    state: PacksTabState,
+    previewFiles: Map<String, List<File>>,
+    query: String,
+    callbacks: PacksTabCallbacks,
+) {
+    val onIntent = callbacks.onIntent
+    val onShare = callbacks.onShare
+    val onRequestCreate = callbacks.onRequestCreate
+    val onEdit = callbacks.onEdit
+    val detailsPreviewFile = callbacks.detailsPreviewFile
+    var deleteCandidate by remember { mutableStateOf<LibraryItemManifest?>(null) }
+    var organizeCandidate by remember { mutableStateOf<LibraryItemManifest?>(null) }
+    val filtered = remember(state.packs, query, state.itemNames, state.organization, state.browser) {
+        PackBrowserIndex.filter(state.packs, state.itemNames, state.organization.items, state.browser, query)
+    }
+    Column(Modifier.fillMaxSize()) {
+        PackBrowserControls(
+            state.browser,
+            state.packs.map {
+                (state.organization.items[it.libraryItemId] ?: PackBrowserIndex.defaults(it)).collection
+            }.distinct().sorted(),
+            { onIntent(PacksTabIntent.Browse(it)) },
+        )
+        Box(Modifier.weight(1f).fillMaxWidth()) {
+            val error = state.error
+            when {
+                state.loading -> LoadingBox()
+
+                error != null -> ActorManagerMessage(error.asString(), stringResource(R.string.action_retry)) {
+                    onIntent(PacksTabIntent.Reload)
+                }
+
+                state.packs.isEmpty() -> ActorManagerMessage(
+                    stringResource(R.string.home_packs_empty),
+                    stringResource(R.string.home_new_pack),
+                    onRequestCreate,
+                )
+
+                filtered.isEmpty() -> EmptySearchMessage()
+
+                else -> LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(
+                        start = Dimens.spaceL,
+                        end = Dimens.spaceL,
+                        top = Dimens.spaceXs,
+                        bottom = HomeTokens.listBottomReserve,
+                    ),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+                ) {
+                    items(filtered, key = { it.libraryItemId }) { pack ->
+                        HomePackCard(
+                            pack.copy(
+                                displayName =
+                                state.organization.items[pack.libraryItemId]?.displayName ?: pack.displayName,
+                            ),
+                            state.itemCounts[pack.libraryItemId] ?: 0,
+                            previewFiles[pack.libraryItemId].orEmpty(),
+                            PackCardActions(
+                                onOpen = { onIntent(PacksTabIntent.OpenDetails(pack)) },
+                                onEdit = { onEdit(pack) },
+                                onShare = { onShare(pack) },
+                                onDelete = { deleteCandidate = pack },
+                                onFavourite = { onIntent(PacksTabIntent.ToggleFavourite(pack)) },
+                                onOrganise = { organizeCandidate = pack },
+                                favourite = state.organization.items[pack.libraryItemId]?.favourite == true,
+                            ),
+                        )
+                    }
+                }
+            }
+        }
+    }
+    organizeCandidate?.let { pack ->
+        PackOrganizationDialog(
+            pack.displayName,
+            state.organization.items[pack.libraryItemId] ?: PackBrowserIndex.defaults(pack),
+            { organizeCandidate = null },
+            {
+                onIntent(PacksTabIntent.Organise(pack, it))
+                organizeCandidate = null
+            },
+        )
+    }
+    deleteCandidate?.let { pack ->
+        AlertDialog(
+            onDismissRequest = { deleteCandidate = null },
+            title = { Text(stringResource(R.string.home_delete_pack_title, pack.displayName)) },
+            text = {
+                Text(stringResource(R.string.home_delete_pack_message))
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    onIntent(PacksTabIntent.Delete(pack.libraryItemId))
+                    deleteCandidate =
+                        null
+                }) { Text(stringResource(R.string.action_delete)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { deleteCandidate = null }) { Text(stringResource(R.string.action_cancel)) }
+            },
+        )
+    }
+    state.openDetails?.let { pack ->
+        Box(Modifier.fillMaxSize()) {
+            Surface(modifier = Modifier.fillMaxSize()) {
+                PackDetailsScreen(
+                    state = PackDetailsState(
+                        packTitle = state.organization.items[pack.libraryItemId]?.displayName ?: pack.displayName,
+                        entries = state.detailsItems,
+                        loading = state.detailsLoading,
+                        itemFile = { entry -> detailsPreviewFile(pack.libraryItemId, entry) },
+                    ),
+                    onClose = { onIntent(PacksTabIntent.CloseDetails) },
+                    onEdit = {
+                        onIntent(PacksTabIntent.CloseDetails)
+                        onEdit(pack)
+                    },
+                )
+            }
+        }
+    }
+}

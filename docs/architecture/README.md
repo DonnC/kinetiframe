@@ -8,37 +8,49 @@ and how data moves through the app when you draw, animate an actor, save and exp
 
 ```mermaid
 flowchart TD
-    app["app<br/><small>screens, editor, media, persistence, wiring</small>"]
+    app["app<br/><small>screens, editor, persistence, wiring</small>"]
     presentation["presentation<br/><small>BaseViewModel, MVI</small>"]
     designsystem["designsystem<br/><small>theme, tokens, controls</small>"]
     engine["engine<br/><small>rigging, IK, skinning, motion</small>"]
-    data["data<br/><small>durable file writes</small>"]
+    data["data<br/><small>storage, Room database</small>"]
+    media["media<br/><small>audio, video, images</small>"]
+    actors["actors<br/><small>rigs, posing, performances, actor rendering</small>"]
+    studio["studio<br/><small>editor state, managers, rendering, export, library storage</small>"]
     core["core<br/><small>models, codecs, validation</small>"]
-    sandbox["sandbox<br/><small>engine test app</small>"]
 
     app --> presentation
     app --> designsystem
     app --> engine
     app --> data
+    app --> media
+    app --> actors
+    app --> studio
     app --> core
+    presentation --> media
+    presentation --> actors
     presentation --> designsystem
     presentation --> engine
     presentation --> core
     engine --> core
     data --> core
-    sandbox --> engine
-    sandbox --> core
+    media --> core
+    actors --> engine
+    actors --> data
+    studio --> actors
+    studio --> media
 ```
 
 | Module | Type | Responsibility |
 | --- | --- | --- |
-| [`app`](../../app/README.md) | Android app | Entry point, navigation, the studio and other screens, rendering and media adapters, repositories, Room database, bundled assets |
-| [`core`](../../core/README.md) | Kotlin/JVM | Platform-neutral records for actors, rigs, motion and presets; JSON codecs; validation; service contracts; the MVI `StateStore` |
+| [`app`](../../app/README.md) | Android app | Entry point, navigation, the editor and other screens still to move to `presentation`, bundled assets |
+| [`core`](../../core/README.md) | Kotlin/JVM | The project document and platform-neutral records for actors, rigs, motion and presets; JSON codecs; validation; service contracts; the MVI `StateStore` |
 | [`engine`](../../engine/README.md) | Android library | IK (FABRIK and two-bone), world transforms, skin deformation, artwork registration, pose and curve sampling, performance clocks, motion presets |
-| [`data`](../../data/README.md) | Android library | `DurableFile`: atomic, crash-safe file writes |
-| [`presentation`](../../presentation/README.md) | Android library | `BaseViewModel` and shared MVI plumbing |
+| [`data`](../../data/README.md) | Android library | Crash-safe file writes, the document file store, the Room database, project storage and crash reports |
+| [`studio`](../../studio/README.md) | Android library | The editor's state, managers, drawing tools, frame rendering and caches, camera, playback, video export, and library storage |
+| [`actors`](../../actors/README.md) | Android library | Actor storage, rig math, posing, performances and actor rendering |
+| [`media`](../../media/README.md) | Android library | Audio decoding, mixing, recording and trimming; imported video decoding and framing; background image decoding |
+| [`presentation`](../../presentation/README.md) | Android library | Screens and components with their ViewModels, and `BaseViewModel`; the rest of the screens are moving here from `app` |
 | [`designsystem`](../../designsystem/README.md) | Android library | Compose theme, design tokens and reusable controls |
-| [`sandbox`](../../sandbox/README.md) | Android app | A small app for trying engine changes without the full app |
 
 Dependencies only point downward. `./gradlew checkArchitecture` fails the build if code imports
 across a boundary it shouldn't, for example Android types in `core` or Compose in engine math.
@@ -46,36 +58,39 @@ across a boundary it shouldn't, for example Android types in `core` or Compose i
 
 ### Work in progress
 
-The modules above are the target layout, and the move is not finished. Most product code still
-lives in `app`, including some packages named `engine`, `data` and `domain`. These are folders
-inside `app`, not the modules of the same name. For example,
-`com.donnclab.kinetiframe.engine.drawing` (brushes) lives in `app`, while
-`com.donnclab.kinetiframe.engine.rigging.math` lives in the `engine` module. Moving that code
-into the right module is on the [roadmap](../../ROADMAP.md).
+Most product code still lives in `app`, organised by feature as described in the
+[project architecture](decisions/project-architecture.md) decision. Code moves from `app` into a
+library module when everything it depends on can move with it. Package names never repeat a
+module name, so `com.donnclab.kinetiframe.engine` is always the `engine` module.
 
-## Where to find things in `app`
+## Where to find things
 
-All paths are under `app/src/main/java/com/donnclab/kinetiframe/`.
+Paths are under each module's `src/main/java/com/donnclab/kinetiframe/`. Rows that name no module
+are in `app`.
 
 | Area | Package |
 | --- | --- |
-| Activity and navigation | `MainActivity.kt`, `ui/navigation` |
-| Home screen | `ui/home`, `ui/projects` |
-| The studio (main editor) | `ui/EditorScreen.kt`, `ui/TimelineViewModel.kt`, `ui/TimelineMvi.kt` |
-| Canvas input and drawing surface | `ui/components/canvas` |
-| Editor toolbars and menus | `ui/components/dock`, `ui/components/timeline` |
-| Brushes and drawing tools | `engine/drawing`, `engine/ruler`, `engine/shape` |
-| Frame and bitmap caches | `engine/cache`, `engine/buffer` |
-| Stroke, undo, layer and rig coordination | `domain/manager` |
-| Actor Studio | `ui/actors`, `ui/components/rigging` |
-| Rendering actors | `engine/rigging/render`, `engine/rigging/texture` |
-| Camera effects | `engine/camera` |
-| Library | `ui/library`, `ui/components/catalog`, `data/library` |
-| Stamp packs | `ui/packs`, `data/library/PackArchiver.kt` |
-| Projects on disk | `data/project` |
-| Actors and performances on disk | `data/actor` |
-| Video export | `data/export`, `ui/export` |
-| Audio | `domain/manager/AudioManager.kt`, `ui/audio`, `data/audio` |
+| Activity and navigation | `MainActivity.kt`, `navigation` |
+| Home and Settings | `presentation` module, `presentation/home` and `presentation/settings`; the project gallery and new-project flow in `presentation/project` |
+| The studio (main editor) | `presentation` module, `presentation/studio` (`EditorScreen.kt`, `StudioViewModel.kt`, and the editor's slots in `editor`); `StudioState`, `StudioIntent` and `StudioSession` in the `studio` module |
+| Canvas input and drawing surface | `presentation` module, `presentation/studio/canvas` |
+| Editor toolbars and menus | `presentation` module, `presentation/studio/dock` and `presentation/studio/timeline` |
+| Brushes and drawing tools | `studio` module, `studio/drawing` |
+| Frame and bitmap caches | `studio` module, `studio/render` and `studio/drawing` |
+| Stroke, undo, layer and selection coordination | `studio` module, `studio/domain` |
+| Actor Studio | `presentation` module, `presentation/studio/actorstudio` (with `rigging` and `sketch`); its managers in the `studio` module, `studio/domain/actorstudio` |
+| Actor library screens and dialogs | `presentation` module, `presentation/actors` |
+| Actor posing, placements and performances | `actors` module, `actors/domain` and `actors/rig` |
+| Rendering actors | `actors` module, `actors/render` and `actors/rig/texture` |
+| Camera effects | `studio` module, `studio/camera`; shot evaluation is `SceneCamera` in `engine` |
+| Library | `presentation` module, `presentation/library` and `presentation/library/catalog`; `library/data` and `library/bundled` in the `studio` module |
+| Stamp packs | `presentation` module, `presentation/library/packs`; `library/data/PackArchiver.kt` in the `studio` module |
+| Projects on disk | `data` module, `data/project`; `.kframe` archives in the `studio` module, `project/data` |
+| Actors and performances on disk | `actors` module, `actors/data` |
+| Video export | `presentation` module, `presentation/export`; `export/data` in the `studio` module |
+| Audio and imported video clips | `media` module, `media/audio` and `media/video`; the recorder and trimmer in `presentation/media/audio` |
+| Studio audio and video playback | `studio` module, `studio/media` |
+| Shared app UI | `presentation` module, `presentation/common` |
 
 ## How the app is structured
 
@@ -89,21 +104,35 @@ flowchart LR
     VM --> Repo["repositories and managers"]
 ```
 
-- A *route* composable gets the ViewModel and collects its state. The screen content below it is
-  stateless and previewable.
+- A *route* composable gets the ViewModel with `appViewModel()` and collects its state. The
+  screen content below it is stateless and previewable.
 - The ViewModel is the only place state changes. It handles every intent explicitly.
 - Effects are for things that happen once, such as navigating or showing a message.
 
-The studio's ViewModel is `TimelineViewModel` (the name predates the rest of the editor). It
-delegates focused jobs to managers in `domain/manager`, such as `DrawingManager` for strokes and
-undo, and `RiggingManager` for actor editing.
+### Where dependencies come from
+
+`AppContainer`, in `app`, creates every shared object once: the database, the document store
+under `actor-studio/`, the repositories and the preference store. `AppViewModelFactory` builds
+each ViewModel from it, and `MainActivity` provides that factory to the UI as
+`LocalViewModelFactory`. A route asks for its ViewModel with `appViewModel()`, passing values such
+as the document it edits as creation extras. Screens don't open the database or build stores.
+The [dependency wiring](decisions/dependency-wiring.md) decision explains why this is a
+container rather than Hilt.
+
+To add a ViewModel: give it its dependencies as constructor parameters, add one `initializer`
+block to `AppViewModelFactory`, and call `appViewModel()` from its route. If it needs a value
+per screen, declare a `CreationExtras.Key` in its companion object and set it in the route.
+
+The studio's ViewModel is `StudioViewModel`. It
+delegates focused jobs to managers, such as `DrawingManager` in `studio/domain` for strokes and
+undo, and `RiggingManager` in `studio/domain/actorstudio` for actor editing.
 
 ## Drawing a stroke
 
 ```mermaid
 sequenceDiagram
     participant Input as CanvasInputLayer
-    participant VM as TimelineViewModel
+    participant VM as StudioViewModel
     participant DM as DrawingManager
     participant Brush as BrushRenderers
     participant Cache as FrameCacheManager
@@ -184,9 +213,13 @@ flowchart LR
 
 Important choices are recorded as architecture decision records:
 
+- [Project architecture](decisions/project-architecture.md)
 - [Design system boundary](decisions/design-system-boundary.md)
 - [Library-only sharing](decisions/library-only-sharing.md)
 - [Standard parameter limits](decisions/parameter-limits.md)
+- [Feature modules](decisions/feature-modules.md)
+- [UI in presentation](decisions/ui-in-presentation.md)
+- [Dependency wiring](decisions/dependency-wiring.md)
 
 See also [module boundaries](modules.md), [code guidelines](../code-guidelines.md),
 [development setup](../development.md) and [UI contributions](../ui-contributions.md).

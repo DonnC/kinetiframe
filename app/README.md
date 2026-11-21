@@ -1,14 +1,14 @@
 # app
 
-The KinetiFrame Android app. It holds the entry point, navigation, every product screen
-including the studio, platform adapters for drawing, audio and video, repositories, the Room
-database and the bundled sample assets. It depends on all the other production modules.
+The KinetiFrame Android app. It holds the entry point (`MainActivity`, `KinetiFrameApplication`),
+navigation (`navigation`), the service container (`AppContainer`), the ViewModel factory,
+diagnostics sharing and the bundled sample assets. Every screen lives in
+[`presentation`](../presentation/README.md). It depends on all the other production modules.
 
-Much of the product code still lives here while shared pieces are moved into their target modules.
-Some packages inside `app` are named `engine`, `data` and `domain`; they are folders in this
-module, not the modules of the same name. The
-[architecture overview](../docs/architecture/README.md#where-to-find-things-in-app) has a map of
-where each feature lives.
+Its host tests check the app's shipped assets, its namespace and its brand resources; every
+other test lives in the module it covers. See the
+[project architecture](../docs/architecture/decisions/project-architecture.md) decision and the
+[map of where each feature lives](../docs/architecture/README.md#where-to-find-things).
 
 ## Things to know before changing code here
 

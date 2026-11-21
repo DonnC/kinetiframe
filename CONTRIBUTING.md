@@ -66,7 +66,7 @@ New contributors often ask where something lives. The short version:
 | If you are changing... | Look in |
 | --- | --- |
 | Colors, spacing, typography or a reusable control | [`designsystem`](designsystem/README.md) |
-| A screen, editor tool or app workflow | `app` (most product code still lives here) |
+| A screen, editor tool or app workflow | `app`, in its feature package such as `studio`, `actors` or `library` |
 | Rigging, IK, deformation or motion math | [`engine`](engine/README.md) |
 | Saved document models and their JSON codecs | [`core`](core/README.md) |
 | Durable file writes | [`data`](data/README.md) |
@@ -123,7 +123,8 @@ In the pull request description, explain:
 - screenshots or a short recording for anything visible
 
 Add a line to the `Unreleased` section of [CHANGELOG.md](CHANGELOG.md) for changes users will
-notice.
+notice. If the pull request starts or finishes a task in the
+[restructuring tracker](docs/restructuring.md), or lowers a debt count, update the tracker too.
 
 A maintainer will review your pull request as soon as they can. If you haven't heard back after a
 week, leave a comment. Reviews are a conversation, not a verdict: expect questions and

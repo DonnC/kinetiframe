@@ -1,0 +1,57 @@
+// SPDX-License-Identifier: Apache-2.0
+package quality
+
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
+
+class UiLayerRulesTest {
+    private val root = "com.donnclab.kinetiframe"
+
+    @Test fun `compose belongs in ui code, not in product rules or storage`() {
+        assertNull(UiLayerRules.violation("$root.studio.ui.canvas", "androidx.compose.ui.geometry.Offset"))
+        assertNull(UiLayerRules.violation("$root.presentation.home", "androidx.compose.runtime.Composable"))
+        assertEquals(
+            UiLayerRules.COMPOSE,
+            UiLayerRules.violation("$root.studio.domain", "androidx.compose.ui.geometry.Offset"),
+        )
+        assertEquals(
+            UiLayerRules.COMPOSE,
+            UiLayerRules.violation("$root.actors.rig.math", "androidx.compose.ui.graphics.Color"),
+        )
+    }
+
+    @Test fun `ui code reaches storage only through its view model`() {
+        assertEquals(
+            UiLayerRules.UI_DATA,
+            UiLayerRules.violation("$root.library.ui", "$root.library.data.LibraryRepository"),
+        )
+        assertEquals(
+            UiLayerRules.UI_DATA,
+            UiLayerRules.violation("$root.presentation.studio.editor", "$root.project.data.ProjectRepository"),
+        )
+        assertEquals(
+            UiLayerRules.UI_DATA,
+            UiLayerRules.violation("$root.navigation", "$root.project.data.ProjectRepository"),
+        )
+        assertNull(UiLayerRules.violation("$root.library.ui", "$root.library.ui.LibraryIntent"))
+        assertNull(UiLayerRules.violation("$root.studio.domain", "$root.project.data.ProjectRepository"))
+        assertNull(UiLayerRules.violation("$root.library.ui", "$root.core.document.ProjectDocument"))
+    }
+
+    @Test fun `a view model uses logic module repositories but not the data module`() {
+        assertNull(
+            UiLayerRules.violation("$root.library.ui", "$root.library.data.LibraryRepository", viewModel = true),
+        )
+        assertEquals(
+            UiLayerRules.UI_DATA,
+            UiLayerRules.violation("$root.project.ui", "$root.data.project.ProjectRepository", viewModel = true),
+        )
+        assertEquals(
+            UiLayerRules.UI_DATA,
+            UiLayerRules.violation("$root.library.ui", "$root.library.data.LibraryRepository", viewModel = false),
+        )
+        assertEquals(true, UiLayerRules.isViewModel("app/src/main/java/x/LibraryViewModel.kt"))
+        assertEquals(false, UiLayerRules.isViewModel("app/src/main/java/x/LibraryRoute.kt"))
+    }
+}

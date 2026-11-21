@@ -1,11 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.kotlin.jvm) apply false
-    alias(libs.plugins.kotlin.compose) apply false
-    alias(libs.plugins.google.devtools.ksp) apply false
-    alias(libs.plugins.jetbrains.kotlin.plugin.serialization) apply false
     alias(libs.plugins.spotless)
 }
 
@@ -14,18 +8,6 @@ plugins {
 spotless {
     kotlin {
         target("**/src/**/*.kt")
-        // Formatting these would take them past the 500-line limit or their cap in
-        // .architecture/legacy-baseline.properties. Each one is formatted when it is split.
-        targetExclude(
-            "app/src/main/java/com/donnclab/kinetiframe/data/actor/ActorRepositories.kt",
-            "app/src/main/java/com/donnclab/kinetiframe/domain/manager/ActorStudioManager.kt",
-            "app/src/main/java/com/donnclab/kinetiframe/domain/manager/DrawingManager.kt",
-            "app/src/main/java/com/donnclab/kinetiframe/engine/drawing/Brushes.kt",
-            "app/src/main/java/com/donnclab/kinetiframe/ui/EditorScreen.kt",
-            "app/src/main/java/com/donnclab/kinetiframe/ui/TimelineMvi.kt",
-            "app/src/main/java/com/donnclab/kinetiframe/ui/TimelineViewModel.kt",
-            "app/src/main/java/com/donnclab/kinetiframe/ui/components/canvas/CanvasInputLayer.kt",
-        )
         ktlint(libs.versions.ktlint.get())
     }
     kotlinGradle {
@@ -34,31 +16,10 @@ spotless {
     }
 }
 
-// One convention entry point for the extracted Android libraries; no per-module version drift.
-subprojects {
-    pluginManager.withPlugin("com.android.library") {
-        extensions.configure<com.android.build.api.dsl.LibraryExtension> {
-            compileSdk = 37
-            defaultConfig { minSdk = 28 }
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_11
-                targetCompatibility = JavaVersion.VERSION_11
-            }
-        }
-    }
-    tasks.withType<Test>().configureEach { useJUnitPlatform() }
-}
-
 val architectureParser by configurations.creating
 dependencies { architectureParser("org.jetbrains.kotlin:kotlin-compiler-embeddable:${libs.versions.kotlin.get()}") }
-// -PengineOnly=true builds only core, engine and the sandbox app (see settings.gradle.kts).
-// -PpublicOnly=true is the old name for the same option and still works.
-val engineOnly = providers.gradleProperty("engineOnly").orElse(providers.gradleProperty("publicOnly")).orNull == "true"
-val auditedModules = if (engineOnly) {
-    listOf("core", "engine", "sandbox")
-} else {
-    listOf("app", "core", "engine", "data", "presentation", "designsystem", "sandbox")
-}
+val auditedModules =
+    listOf("app", "core", "engine", "data", "media", "actors", "studio", "presentation", "designsystem")
 tasks.register<quality.ArchitectureCheckTask>("checkArchitecture") {
     repository.set(layout.projectDirectory)
     modules.set(auditedModules)
@@ -76,20 +37,26 @@ tasks.register<quality.ArchitectureCheckTask>("reportArchitectureDebt") {
 // Device tests (connectedDebugAndroidTest) still need an emulator or phone and run separately.
 tasks.register("verify") {
     group = "verification"
-    description = "Runs formatting, the architecture check, host tests and lint for the modules in this build."
+    description = "Runs formatting, the architecture check, host tests and lint for every module."
     dependsOn(
         "spotlessCheck",
         "checkArchitecture",
         ":core:test",
         ":engine:testDebugUnitTest",
-        ":sandbox:testDebugUnitTest",
+        ":data:testDebugUnitTest",
+        ":media:testDebugUnitTest",
+        ":actors:testDebugUnitTest",
+        ":studio:testDebugUnitTest",
+        ":presentation:testDebugUnitTest",
+        ":designsystem:testDebugUnitTest",
+        ":app:testDebugUnitTest",
+        ":engine:lintDebug",
+        ":data:lintDebug",
+        ":media:lintDebug",
+        ":actors:lintDebug",
+        ":studio:lintDebug",
+        ":presentation:lintDebug",
+        ":designsystem:lintDebug",
+        ":app:lintDebug",
     )
-    if (!engineOnly) {
-        dependsOn(
-            ":data:testDebugUnitTest",
-            ":designsystem:testDebugUnitTest",
-            ":app:testDebugUnitTest",
-            ":app:lintDebug",
-        )
-    }
 }

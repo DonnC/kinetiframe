@@ -1,8 +1,14 @@
-plugins { alias(libs.plugins.android.library) }
+plugins {
+    id("kinetiframe.android.library")
+    id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.serialization")
+}
 android { namespace = "com.donnclab.kinetiframe.data" }
 dependencies {
-    implementation(project(":core"))
-    testImplementation(platform(libs.junit5.bom))
-    testImplementation(libs.junit5.jupiter)
-    testRuntimeOnly(libs.junit5.launcher)
+    // Saved project types and the Room database are part of this module's API.
+    api(project(":core"))
+    api(libs.androidx.room.runtime)
+    api(libs.androidx.room.ktx)
+    implementation(libs.kotlinx.serialization.json)
+    "ksp"(libs.androidx.room.compiler)
 }

@@ -1,8 +1,43 @@
-plugins { alias(libs.plugins.android.library) }
-android { namespace = "com.donnclab.kinetiframe.presentation" }
+plugins {
+    id("kinetiframe.android.library")
+    id("kinetiframe.android.compose")
+}
+android {
+    namespace = "com.donnclab.kinetiframe.presentation"
+    defaultConfig { testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+    testOptions { unitTests.isReturnDefaultValues = true }
+}
 dependencies {
     api(project(":core"))
     implementation(project(":engine"))
     implementation(project(":designsystem"))
+    // Screens drive the logic modules through their ViewModels.
+    implementation(project(":media"))
+    implementation(project(":actors"))
+    implementation(project(":studio"))
     api(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.compose.colorpicker)
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.lucide.icons)
+    implementation(libs.coil.compose)
+    testImplementation(libs.kotlinx.coroutines.test)
+    // ViewModel tests that need Android classes run on Robolectric with JUnit 4.
+    testImplementation(libs.robolectric)
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.junit)
+    testRuntimeOnly(libs.junit5.vintage)
+    // Tests may build real file stores to hand the ViewModels; screens themselves never see `data`.
+    testImplementation(project(":data"))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.core)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(project(":data"))
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.runner)
 }

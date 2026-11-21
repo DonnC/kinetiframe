@@ -1,43 +1,36 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.google.devtools.ksp)
-    alias(libs.plugins.jetbrains.kotlin.plugin.serialization)
+    id("kinetiframe.android.application")
+    id("kinetiframe.android.compose")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
     namespace = "com.donnclab.kinetiframe"
-    compileSdk {
-        version = release(37)
-    }
 
     defaultConfig {
         applicationId = "com.donnclab.kinetiframe"
-        minSdk = 28
-        targetSdk = 37
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1.0"
+    }
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    androidResources {
+        // Lists the app's languages for Android's per-app language setting, from the values-*
+        // folders. resources.properties names the default folder's language.
+        generateLocaleConfig = true
     }
 
     buildTypes {
         debug {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
+            // en-XA (long, accented text) and ar-XB (right to left) for checking layouts.
+            isPseudoLocalesEnabled = true
         }
         release {
             optimization {
                 enable = false
             }
         }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    buildFeatures {
-        compose = true
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
@@ -47,6 +40,9 @@ android {
         // Regenerate it with ./gradlew :app:updateLintBaseline only when removing entries.
         baseline = file("lint-baseline.xml")
         checkDependencies = false
+        // Dependabot reports dependency updates. These checks change with every upstream release,
+        // which would make the same commit pass one day and report new issues the next.
+        disable += setOf("AndroidGradlePluginVersion", "GradleDependency", "NewerVersionAvailable")
     }
 }
 
@@ -54,21 +50,20 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":engine"))
     implementation(project(":data"))
+    implementation(project(":media"))
+    implementation(project(":actors"))
+    implementation(project(":studio"))
     implementation(project(":presentation"))
     implementation(project(":designsystem"))
-    testImplementation("org.robolectric:robolectric:4.16")
-    testImplementation(platform(libs.junit5.bom))
-    testImplementation(libs.junit5.jupiter)
+    testImplementation(libs.robolectric)
+    // Runs the existing JUnit 4 tests alongside JUnit 5 ones.
     testRuntimeOnly(libs.junit5.vintage)
-    testRuntimeOnly(libs.junit5.launcher)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -77,8 +72,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.room.runtime)
     implementation(libs.coil.compose)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
@@ -91,19 +84,12 @@ dependencies {
     testImplementation(libs.androidx.junit)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.runner)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    "ksp"(libs.androidx.room.compiler)
 }
 
-// Keep existing JUnit4 coverage runnable while new engine tests use JUnit5.
 tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
     // Host-side archive/render tests read these directly, not via Android resources.
     // A changed cutout/fixture must invalidate test results even when Kotlin is unchanged.
     inputs.dir("src/main/assets/loose-signal").withPropertyName("looseSignalFixtures")

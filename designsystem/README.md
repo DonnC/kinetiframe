@@ -35,8 +35,6 @@ resource tests check that launcher and splash colors match the theme.
 ./gradlew :designsystem:connectedDebugAndroidTest   # needs a device or emulator
 ```
 
-These need the full build. The engine-only build (`-PengineOnly=true`) leaves this module out.
-
 See [UI contributions](../docs/ui-contributions.md) and the
 [design-system decision](../docs/architecture/decisions/design-system-boundary.md).
 Licensed under [Apache-2.0](../LICENSE).

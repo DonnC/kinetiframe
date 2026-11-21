@@ -1,0 +1,281 @@
+package com.donnclab.kinetiframe.presentation.studio.timeline
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
+import com.donnclab.kinetiframe.media.audio.Waveform
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.media.audio.AudioClipWaveform
+import kotlin.math.roundToInt
+
+internal val FRAME_CELL_WIDTH = TimelineTokens.frameCell
+internal val TRACK_GUTTER = TimelineTokens.trackGutter
+internal val TRACK_HEIGHT = TimelineTokens.trackHeight
+
+/** What a [TimelineAssetClip] does when tapped, moved (to a start frame and track) or trimmed
+ *  (to a start frame and duration). */
+internal data class ClipGestures(
+    val onSelect: () -> Unit,
+    val onMove: (Int, Int) -> Unit,
+    val onTrim: (Int, Int) -> Unit,
+)
+
+/** Local previews only. A cancelled gesture never writes the project; release writes once. */
+@Composable
+internal fun TimelineAssetClip(
+    id: String,
+    label: String,
+    start: Int,
+    duration: Int,
+    selected: Boolean,
+    gestures: ClipGestures,
+    locked: Boolean = false,
+    peaks: List<Float> = emptyList(),
+    muted: Boolean = false,
+    track: Int = 0,
+    trackCount: Int = 1,
+    allowLeftTrim: Boolean = true,
+    allowTrim: Boolean = true,
+    minStart: Int = start,
+    maxEnd: Int = start + duration,
+    offsetFrames: Float = 0f,
+    visibleFrames: Float = 100f,
+    onDragTarget: (Int?) -> Unit = {},
+    waveformStart: Int = start,
+    waveformDuration: Int = duration,
+    contextMenu: (@Composable () -> Unit)? = null,
+) {
+    val (onSelect, onMove, onTrim) = gestures
+    val cellPx = with(LocalDensity.current) { FRAME_CELL_WIDTH.toPx() }
+    val rowPx = with(LocalDensity.current) { TRACK_HEIGHT.toPx() }
+    var previewStart by remember(id, start, duration) { mutableIntStateOf(start) }
+    var previewDuration by remember(id, start, duration) { mutableIntStateOf(duration) }
+    var targetTrack by remember(id, track) { mutableIntStateOf(track) }
+    var dragging by remember { mutableStateOf(false) }
+    var trimming by remember { mutableStateOf(false) }
+    val move by rememberUpdatedState(onMove)
+    val trim by rememberUpdatedState(onTrim)
+    val select by rememberUpdatedState(onSelect)
+    val dragTarget by rememberUpdatedState(onDragTarget)
+    val visibleStart = maxOf(previewStart.toFloat(), offsetFrames)
+    val visibleEnd = minOf((previewStart + previewDuration).toFloat(), offsetFrames + visibleFrames)
+    val sourceShift = if (dragging) start - previewStart else 0
+    val waveform = remember(peaks, visibleStart, visibleEnd, sourceShift, waveformStart, waveformDuration) {
+        val from = (((visibleStart + sourceShift - waveformStart) / waveformDuration) * peaks.size).toInt().coerceIn(
+            0,
+            peaks.size,
+        )
+        val to = (((visibleEnd + sourceShift - waveformStart) / waveformDuration) * peaks.size).toInt().coerceIn(
+            from,
+            peaks.size,
+        )
+        Waveform(peaks.subList(from, to))
+    }
+    fun restore() {
+        previewStart = start
+        previewDuration = duration
+        targetTrack = track
+        dragging = false
+        trimming =
+            false
+        dragTarget(null)
+    }
+    if (visibleEnd <= visibleStart && !dragging) return
+    val clipDescription = pluralStringResource(
+        if (locked) R.plurals.timeline_clip_description_locked else R.plurals.timeline_clip_description,
+        previewDuration,
+        label,
+        previewStart + 1,
+        previewDuration,
+    )
+
+    Box(
+        Modifier.offset(x = FRAME_CELL_WIDTH * (visibleStart - offsetFrames))
+            .width(
+                FRAME_CELL_WIDTH * (visibleEnd - visibleStart).coerceAtLeast(1f),
+            ).height(TRACK_HEIGHT).padding(vertical = TimelineTokens.clipInset)
+            .border(
+                if (selected) TimelineTokens.clipBorderSelected else Dimens.borderThin,
+                MaterialTheme.colorScheme.primary.copy(alpha = if (selected) 1f else .4f),
+                RoundedCornerShape(TimelineTokens.clipCorner),
+            )
+            .background(
+                MaterialTheme.colorScheme.primary.copy(alpha = if (selected) .22f else .1f),
+                RoundedCornerShape(TimelineTokens.clipCorner),
+            ),
+    ) {
+        Box(
+            Modifier.fillMaxSize()
+                .semantics {
+                    contentDescription = clipDescription
+                }
+                .clickable { select() }
+                .pointerInput(id, start, duration, track, trackCount, locked, cellPx) {
+                    if (!locked) {
+                        var delta = ClipDragMath(cellPx)
+                        var dy = 0f
+                        detectDragGesturesAfterLongPress(
+                            onDragStart = {
+                                delta = ClipDragMath(cellPx)
+                                dy = 0f
+                                dragging = true
+                                dragTarget(track)
+                            },
+                            onDragCancel = { restore() },
+                            onDragEnd = {
+                                move(previewStart, targetTrack)
+                                restore()
+                            },
+                        ) { change, amount ->
+                            change.consume()
+                            previewStart = (start + delta.add(amount.x)).coerceAtLeast(0)
+                            dy += amount.y
+                            targetTrack = (track + (dy / rowPx).roundToInt()).coerceIn(0, trackCount - 1)
+                            dragTarget(targetTrack)
+                        }
+                    }
+                },
+        ) {
+            if (peaks.isNotEmpty()) {
+                AudioClipWaveform(
+                    waveform,
+                    MaterialTheme.colorScheme.primary.copy(alpha = if (muted) .18f else .45f),
+                )
+            }
+            Text(
+                if (dragging ||
+                    trimming
+                ) {
+                    "F${previewStart + 1} · ${if (dragging && trackCount > 1) "A${targetTrack + 1}" else "$previewDuration f"}"
+                } else {
+                    label
+                },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.align(
+                    Alignment.CenterStart,
+                ).padding(
+                    horizontal = if (selected) TimelineTokens.clipLabelInsetSelected else TimelineTokens.clipLabelInset,
+                ),
+            )
+        }
+        // Popup menus anchor to the visible clip, not a distant panel header.
+        if (selected && !dragging && !trimming) contextMenu?.invoke()
+        if (selected && !locked && allowTrim) {
+            if (allowLeftTrim &&
+                previewStart >= offsetFrames
+            ) {
+                AssetTrimHandle(
+                    Modifier.align(Alignment.CenterStart),
+                    stringResource(R.string.timeline_trim_start, label),
+                    cellPx,
+                    onDelta = { frames ->
+                        trimming = true
+                        // Lane trims shorten the selected source window. Move uses the body instead.
+                        val cut = frames.coerceIn(minStart - start, duration - 1)
+                        previewStart = start + cut
+                        previewDuration = duration - cut
+                    },
+                    onEnd = {
+                        trim(previewStart, previewDuration)
+                        restore()
+                    },
+                    onCancel = { restore() },
+                )
+            }
+            if (previewStart + previewDuration <=
+                offsetFrames + visibleFrames
+            ) {
+                AssetTrimHandle(
+                    Modifier.align(Alignment.CenterEnd),
+                    stringResource(R.string.timeline_trim_end, label),
+                    cellPx,
+                    onDelta = { frames ->
+                        trimming = true
+                        previewDuration = (duration + frames).coerceIn(1, maxEnd - start)
+                    },
+                    onEnd = {
+                        trim(previewStart, previewDuration)
+                        restore()
+                    },
+                    onCancel = { restore() },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AssetTrimHandle(
+    modifier: Modifier,
+    description: String,
+    cellPx: Float,
+    onDelta: (Int) -> Unit,
+    onEnd: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    val delta by rememberUpdatedState(onDelta)
+    val end by rememberUpdatedState(onEnd)
+    val cancel by rememberUpdatedState(onCancel)
+    Box(
+        modifier.width(TimelineTokens.trimHandleWidth).fillMaxHeight().semantics { contentDescription = description }
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = .3f))
+            .pointerInput(cellPx) {
+                var movement = ClipDragMath(cellPx)
+                detectHorizontalDragGestures(
+                    onDragStart = { movement = ClipDragMath(cellPx) },
+                    onDragEnd = { end() },
+                    onDragCancel = { cancel() },
+                ) { change, px ->
+                    change.consume()
+                    delta(movement.add(px))
+                }
+            },
+        contentAlignment = Alignment.Center,
+    ) {
+        Text("Ⅱ", style = MaterialTheme.typography.labelSmall)
+    }
+}
+
+@Preview(widthDp = 320, heightDp = 48, showBackground = true)
+@Composable
+private fun AssetClipPreview() {
+    MaterialTheme {
+        TimelineAssetClip("preview", "Dialogue", 0, 8, true, ClipGestures({}, { _, _ -> }, { _, _ -> }))
+    }
+}

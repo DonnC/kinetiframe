@@ -17,6 +17,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,63 +26,50 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.donnclab.kinetiframe.data.actor.ActorArtworkStore
-import com.donnclab.kinetiframe.data.actor.ActorFileStore
-import com.donnclab.kinetiframe.data.actor.ActorRepository
-import com.donnclab.kinetiframe.data.actor.LibraryScope
-import com.donnclab.kinetiframe.data.actor.PerformanceDocument
-import com.donnclab.kinetiframe.data.actor.PerformanceRepository
-import com.donnclab.kinetiframe.data.project.db.AppDatabase
-import com.donnclab.kinetiframe.data.settings.AppPreferencesStore
-import com.donnclab.kinetiframe.data.settings.AppTheme
-import com.donnclab.kinetiframe.data.settings.StudioOrientation
+import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.core.actor.document.PerformanceDocument
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
-import com.donnclab.kinetiframe.ui.EditorScreen
-import com.donnclab.kinetiframe.ui.actors.ActorStudioRepositories
-import com.donnclab.kinetiframe.ui.actors.ActorStudioScreen
-import com.donnclab.kinetiframe.ui.actors.ActorStudioTarget
-import com.donnclab.kinetiframe.ui.color.ScreenColorPickerHost
-import com.donnclab.kinetiframe.ui.components.navigation.BottomNavDestination
-import com.donnclab.kinetiframe.ui.components.navigation.ExitConfirmationDialog
-import com.donnclab.kinetiframe.ui.export.ExportRoute
-import com.donnclab.kinetiframe.ui.home.HomeRoute
-import com.donnclab.kinetiframe.ui.library.LibraryOpenTarget
-import com.donnclab.kinetiframe.ui.library.LibraryRoute
-import com.donnclab.kinetiframe.ui.navigation.ActorStudioKey
-import com.donnclab.kinetiframe.ui.navigation.EditorKey
-import com.donnclab.kinetiframe.ui.navigation.ExportKey
-import com.donnclab.kinetiframe.ui.navigation.LibraryKey
-import com.donnclab.kinetiframe.ui.navigation.PackCreatorKey
-import com.donnclab.kinetiframe.ui.navigation.ProjectGalleryKey
-import com.donnclab.kinetiframe.ui.navigation.SettingsKey
-import com.donnclab.kinetiframe.ui.packs.PackCreatorRoute
-import com.donnclab.kinetiframe.ui.settings.LocalAppPreferences
-import com.donnclab.kinetiframe.ui.settings.SettingsScreen
-import com.donnclab.kinetiframe.ui.settings.SettingsViewModel
-import java.io.File
+import com.donnclab.kinetiframe.navigation.ActorStudioKey
+import com.donnclab.kinetiframe.navigation.EditorKey
+import com.donnclab.kinetiframe.navigation.ExitConfirmationDialog
+import com.donnclab.kinetiframe.navigation.ExportKey
+import com.donnclab.kinetiframe.navigation.LibraryKey
+import com.donnclab.kinetiframe.navigation.PackCreatorKey
+import com.donnclab.kinetiframe.navigation.ProjectGalleryKey
+import com.donnclab.kinetiframe.navigation.SettingsKey
+import com.donnclab.kinetiframe.preferences.model.AppTheme
+import com.donnclab.kinetiframe.preferences.model.StudioOrientation
+import com.donnclab.kinetiframe.presentation.actors.ActorStudioTarget
+import com.donnclab.kinetiframe.presentation.common.BottomNavDestination
+import com.donnclab.kinetiframe.presentation.common.LocalAppPreferences
+import com.donnclab.kinetiframe.presentation.common.LocalShowMenuLabels
+import com.donnclab.kinetiframe.presentation.export.ExportRoute
+import com.donnclab.kinetiframe.presentation.home.HomeRoute
+import com.donnclab.kinetiframe.presentation.library.LibraryOpenTarget
+import com.donnclab.kinetiframe.presentation.library.LibraryRoute
+import com.donnclab.kinetiframe.presentation.library.packs.PackCreatorRoute
+import com.donnclab.kinetiframe.presentation.settings.SettingsScreen
+import com.donnclab.kinetiframe.presentation.settings.SettingsViewModel
+import com.donnclab.kinetiframe.presentation.studio.EditorScreen
+import com.donnclab.kinetiframe.presentation.studio.actorstudio.ActorStudioScreen
+import com.donnclab.kinetiframe.presentation.studio.color.ScreenColorPickerHost
+import com.donnclab.kinetiframe.ui.LocalViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val container = (application as KinetiFrameApplication).container
+        val viewModels = appViewModelFactory(container)
         setContent {
-            val settings: SettingsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
-                factory =
-                object : ViewModelProvider.Factory {
-                    @Suppress("UNCHECKED_CAST")
-                    override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                        SettingsViewModel(AppPreferencesStore(File(filesDir, "preferences.json"))) as T
-                },
-            )
+            val settings: SettingsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = viewModels)
             val settingsState by settings.state.collectAsStateWithLifecycle()
             val preferences = settingsState.preferences
             val dark = when (preferences.theme) {
@@ -89,7 +77,11 @@ class MainActivity : ComponentActivity() {
                 AppTheme.LIGHT -> false
                 AppTheme.DARK -> true
             }
-            CompositionLocalProvider(LocalAppPreferences provides preferences) {
+            CompositionLocalProvider(
+                LocalAppPreferences provides preferences,
+                LocalViewModelFactory provides viewModels,
+                LocalShowMenuLabels provides preferences.showMenuLabels,
+            ) {
                 KinetiFrameTheme(darkTheme = dark, dynamicColor = false) {
                     ScreenColorPickerHost {
                         Surface(
@@ -121,7 +113,7 @@ class MainActivity : ComponentActivity() {
                              * [returnedPerformance], because MainActivity owns the back stack and is the
                              * only place that knows a pop happened.
                              */
-                            var homeRefreshToken by remember { mutableStateOf(0) }
+                            var homeRefreshToken by remember { mutableIntStateOf(0) }
                             val goBack: () -> Unit = {
                                 if (backStack.size >
                                     1
@@ -176,12 +168,12 @@ class MainActivity : ComponentActivity() {
                                 // artifact (lifecycle-viewmodel-navigation3). Without
                                 // rememberViewModelStoreNavEntryDecorator, LocalViewModelStoreOwner inside
                                 // every entry resolves to this *Activity*, so a `viewModel()` call is
-                                // stored process-wide: the TimelineViewModel built for an actor sketch was
+                                // stored process-wide: the StudioViewModel built for an actor sketch was
                                 // handed straight back to the next project opened (same class, same
                                 // default key, same owner -> the factory never even ran, so the project's
                                 // own document and cache directories were silently discarded and the
                                 // actor's canvas persisted until the Activity died -- i.e. until an app
-                                // restart). It also meant TimelineViewModel.onCleared() never fired on
+                                // restart). It also meant StudioViewModel.onCleared() never fired on
                                 // leaving a screen, so the animation engine kept running and pooled
                                 // bitmaps/audio/video handles were never released. Scoping stores to the
                                 // NavEntry gives every destination its own store, cleared on pop.
@@ -195,7 +187,6 @@ class MainActivity : ComponentActivity() {
                                     entry<ProjectGalleryKey> {
                                         // Home is one tabbed dashboard for projects, packs and actors.
                                         HomeRoute(
-                                            File(filesDir, "actor-studio"),
                                             refreshToken = homeRefreshToken,
                                             onOpenProject = { projectId -> backStack.add(EditorKey(projectId)) },
                                             onOpenPackCreator = { itemId ->
@@ -241,6 +232,7 @@ class MainActivity : ComponentActivity() {
                                             settingsState,
                                             settings::handleIntent,
                                             goBack,
+                                            onShareDiagnostics = { shareDiagnostics(this@MainActivity) },
                                             onNavigate = { destination ->
                                                 goHome()
                                                 when (destination) {
@@ -252,15 +244,10 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                     entry<ExportKey> { key ->
-                                        ExportRoute(
-                                            File(filesDir, "actor-studio"),
-                                            key.projectId,
-                                            onExit = goBack,
-                                        )
+                                        ExportRoute(key.projectId, onExit = goBack)
                                     }
                                     entry<PackCreatorKey> { key ->
                                         PackCreatorRoute(
-                                            File(filesDir, "actor-studio"),
                                             onExit = goBack,
                                             editingItemId = key.editItemId,
                                             editingScope = LibraryScope.valueOf(
@@ -294,26 +281,12 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                     entry<ActorStudioKey> { key ->
-                                        val db = AppDatabase.getInstance(
-                                            this@MainActivity,
-                                        )
-                                        val actorStore = ActorFileStore(File(filesDir, "actor-studio"))
                                         ActorStudioScreen(
                                             target = ActorStudioTarget(
                                                 actorId = key.actorId,
                                                 projectId = key.projectId,
                                                 performanceId = key.performanceId,
                                                 returnPlacementId = key.returnPlacementId,
-                                            ),
-                                            repositories = ActorStudioRepositories(
-                                                actors = ActorRepository(actorStore, dao = db.actorDao()),
-                                                performances = PerformanceRepository(
-                                                    actorStore,
-                                                    dao = db.performanceDao(),
-                                                ),
-                                                artwork = ActorArtworkStore(
-                                                    actorStore,
-                                                ),
                                             ),
                                             onExit = goBack,
                                             onPerformanceSaved = { returnedPerformance = it },

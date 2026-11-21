@@ -1,17 +1,19 @@
 # Module boundaries
 
-KinetiFrame has six production modules and one development app. This page lists what each may
+KinetiFrame has nine modules. This page lists what each may
 depend on and why. The [architecture overview](README.md) explains what each module does.
 
 | Module | Allowed project dependencies | Must not contain |
 | --- | --- | --- |
-| `app` | `core`, `engine`, `data`, `presentation`, `designsystem` | Nothing other modules need |
+| `app` | `core`, `engine`, `data`, `media`, `actors`, `studio`, `presentation`, `designsystem` | Nothing other modules need |
 | `core` | none | Android, Compose, or any other project module |
 | `engine` | `core` | Compose, app UI, storage. Math packages: no Android at all |
 | `data` | `core` | Compose, `engine`, `presentation`, `designsystem` |
-| `presentation` | `core`, `engine`, `designsystem` | `data` implementations |
+| `media` | `core` | Screens, `data`, `engine`, studio or actor state |
+| `actors` | `core`, `engine`, `data` | Screens, studio state, library, export or other app features |
+| `studio` | `core`, `engine`, `data`, `media`, `actors` | Screens, `presentation`, `designsystem` or ViewModels |
+| `presentation` | `core`, `engine`, `media`, `actors`, `designsystem` | `data` imports |
 | `designsystem` | none | Projects, actors, ViewModels, other project modules |
-| `sandbox` | `core`, `engine` | App UI, `data`, `designsystem` |
 
 `./gradlew checkArchitecture` enforces these rules by reading imports and fully qualified names
 in every Kotlin file. It also rejects provider SDKs (Firebase, Play Billing, Appwrite) in shared
@@ -33,6 +35,18 @@ modules.
 Prefer a new package inside an existing module. Don't create a module per screen, model or
 feature. A new module needs an [architecture decision record](decisions) that shows the benefit,
 the new dependency graph and the build cost, and it needs maintainer approval.
+
+A module's build file applies one of the convention plugins in `buildSrc/src/main/kotlin`, which
+set the SDK levels, Java version and test setup every module shares:
+
+| Plugin | For |
+| --- | --- |
+| `kinetiframe.jvm.library` | Plain Kotlin modules such as `core` |
+| `kinetiframe.android.library` | Android library modules |
+| `kinetiframe.android.application` | The app |
+| `kinetiframe.android.compose` | Added to either Android plugin for modules with Compose UI |
+
+The build file then only names its namespace and its dependencies.
 
 ## Moving code between modules
 

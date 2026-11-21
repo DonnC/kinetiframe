@@ -1,0 +1,95 @@
+package com.donnclab.kinetiframe.presentation.library.packs
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.library.model.AssetCategory
+import com.donnclab.kinetiframe.library.model.AssetOrganization
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
+import com.donnclab.kinetiframe.presentation.library.labelRes
+
+@Composable
+fun PackOrganizationDialog(
+    name: String,
+    initial: AssetOrganization,
+    onDismiss: () -> Unit,
+    onSave: (AssetOrganization) -> Unit,
+) {
+    var displayName by remember { mutableStateOf(initial.displayName ?: name) }
+    var collection by remember { mutableStateOf(initial.collection) }
+    var category by remember { mutableStateOf(initial.category) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(stringResource(R.string.action_organise), style = MaterialTheme.typography.titleMedium)
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
+                CompactTextField(displayName, {
+                    displayName = it.take(60)
+                }, singleLine = true, label = { Text(stringResource(R.string.library_item_name)) })
+                CompactTextField(collection, {
+                    collection = it.take(60)
+                }, singleLine = true, label = { Text(stringResource(R.string.library_collection)) })
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
+                    items(AssetCategory.entries) { value ->
+                        FilterChip(
+                            category == value,
+                            { category = value },
+                            label = {
+                                Text(stringResource(value.labelRes()), style = MaterialTheme.typography.labelSmall)
+                            },
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            IconButton(
+                enabled = displayName.isNotBlank() && collection.isNotBlank(),
+                onClick = {
+                    onSave(
+                        initial.copy(
+                            displayName = displayName.trim(),
+                            collection = collection.trim(),
+                            category = category,
+                        ),
+                    )
+                },
+            ) {
+                Icon(Icons.Default.Check, stringResource(R.string.library_organisation_save))
+            }
+        },
+        dismissButton = {
+            IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, stringResource(R.string.action_cancel)) }
+        },
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PackOrganizationDialogPreview() {
+    KinetiFrameTheme {
+        PackOrganizationDialog("Tavi · Mouths", AssetOrganization("Loose Signal", AssetCategory.EXPRESSIONS), {}, {})
+    }
+}

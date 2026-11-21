@@ -84,23 +84,22 @@ Android lint runs as part of `verify`. Existing warnings are recorded in `app/li
 so only new problems fail the build. Open `app/build/reports/lint-results-debug.html` to read the
 report.
 
-## Engine-only build
+## Engine work
 
-If you are working on rigging, IK or deformation, you can skip the app and its artwork entirely:
+If you are working on rigging, IK or deformation, run the engine's tests on their own:
 
 ```sh
-./gradlew -PengineOnly=true :sandbox:installDebug
-./gradlew -PengineOnly=true verify
+./gradlew :core:test :engine:testDebugUnitTest
 ```
 
-This builds only `core`, `engine` and the [sandbox](../sandbox/README.md) app, which lets you drag
-procedural joints and see the deformation live. The older name `-PpublicOnly=true` still works.
+Check the result in the app's Actor Studio before opening a pull request.
 
 ## Tests and test data
 
 - `core` and engine math tests use JUnit 5 and need no Android, network or disk.
-- `app` tests use JUnit 4/5 and Robolectric. Some read the bundled sample assets directly, so
-  changing a sample asset re-runs them.
+- `actors`, `studio`, `presentation` and `app` tests use JUnit 4/5, and Robolectric where they
+  need real Android classes. `app`'s tests read the bundled sample assets directly, so changing a
+  sample asset re-runs them.
 - Storage and migration tests build temporary projects instead of relying on old archives.
 - Render tests write images to `.artifacts/` for review. That folder is ignored by Git, and
   running tests never changes the shipped sample projects.
