@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.donnclab.kinetiframe.actors.render.toMatrix
 import com.donnclab.kinetiframe.actors.rig.math.CutoutPartGuideFactory
 import com.donnclab.kinetiframe.actors.rig.math.ForwardKinematicsSolver
+import com.donnclab.kinetiframe.actors.rig.math.PoseHandles
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.presentation.common.toOffset
 import com.donnclab.kinetiframe.presentation.common.toPoint2
@@ -23,7 +24,13 @@ import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.activeActor
 import com.donnclab.kinetiframe.studio.actorDefinition
 
-private data class RigSegment(val id: String, val start: Offset, val end: Offset, val bound: Boolean)
+private data class RigSegment(
+    val id: String,
+    val start: Offset,
+    val end: Offset,
+    val bound: Boolean,
+    val handle: Boolean,
+)
 
 /** Constant screen-size endpoint handles remain usable at every viewport zoom. */
 @Composable
@@ -37,15 +44,16 @@ fun RigSkeletonOverlay(state: StudioState, modifier: Modifier = Modifier) {
             val matrix = instance.transform.toMatrix().apply {
                 postConcat(android.graphics.Matrix().apply { setValues(state.canvas.matrixValues) })
             }
+            val handles = PoseHandles.ids(definition.sceneGraph)
             ForwardKinematicsSolver.resolveWorldStates(definition.sceneGraph).values.map { bone ->
                 val points = floatArrayOf(bone.startPoint.x, bone.startPoint.y, bone.endPoint.x, bone.endPoint.y)
                 matrix.mapPoints(points)
-                val boneNode = definition.sceneGraph.bones[bone.id]
                 RigSegment(
                     bone.id,
                     Offset(points[0], points[1]),
                     Offset(points[2], points[3]),
-                    bound = boneNode?.textureBinding != null,
+                    bound = PoseHandles.isCovered(definition.sceneGraph, bone.id),
+                    handle = bone.id in handles,
                 )
             }
         }
@@ -74,6 +82,24 @@ fun RigSkeletonOverlay(state: StudioState, modifier: Modifier = Modifier) {
                     )
                     drawLine(accent, p - Offset(radius, 0f), p + Offset(radius, 0f), ActorStudioTokens.rigStroke.toPx())
                     drawLine(accent, p - Offset(0f, radius), p + Offset(0f, radius), ActorStudioTokens.rigStroke.toPx())
+                }
+                return@forEach
+            }
+            if (state.scene.studioMode == StudioMode.ANIMATE_IK) {
+                // Animating shows only finger-sized, see-through rings at the chain tips, so the
+                // character stays visible; joints and bone lines belong to Setup.
+                if (segment.handle) {
+                    val radius = ActorStudioTokens.poseHandleRadius.toPx()
+                    val selected = segment.id == state.scene.selectedBoneId
+                    drawCircle(accent.copy(alpha = ActorStudioTokens.POSE_HANDLE_FILL_ALPHA), radius, segment.end)
+                    drawCircle(
+                        accent,
+                        radius,
+                        segment.end,
+                        style = Stroke(
+                            (if (selected) ActorStudioTokens.rootStroke else ActorStudioTokens.rigStroke).toPx(),
+                        ),
+                    )
                 }
                 return@forEach
             }

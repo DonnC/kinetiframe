@@ -45,6 +45,10 @@ object ActorStudioTokens {
     val jointEndRadius = 6.dp
     val jointSelectedRadius = 9.dp
 
+    /** A finger-sized ring at a chain tip while animating; see-through so the drawing shows. */
+    val poseHandleRadius = 18.dp
+    const val POSE_HANDLE_FILL_ALPHA = 0.18f
+
     // Sketch editor.
     val sketchHitRadius = 24.dp
     val sketchHandleRadius = 6.dp
