@@ -27,6 +27,8 @@ The first release. The maintainer sets the date when `v0.1.0` is tagged. It need
 
 ### Removed
 
+- The Mira and Kuda sample actors and their cutout packs. Tavi is the bundled actor. Copies
+  already installed stay in your library.
 - The engine sandbox app and the `-PengineOnly` build. Engine work runs the engine's tests and is
   checked in the app itself.
 - The placeholder Marketplace tab and every "From Marketplace" entry. Sharing works through the
@@ -79,6 +81,9 @@ The first release. The maintainer sets the date when `v0.1.0` is tagged. It need
   `presentation`, `designsystem` and `app`. Only `presentation`, `designsystem` and `app` use
   Compose, and screens reach storage only through their ViewModels. `checkArchitecture` enforces
   the layout. See the [feature modules](docs/architecture/decisions/feature-modules.md) decision.
+- Every module except `app` is in `modules/`, and bundled assets have no version folders. The
+  artwork source folders and pack-building scripts are removed; the shipped assets are the only
+  copy.
 - Every visual size and almost every colour comes from the design system's tokens.
 - Tests live in the module whose code they cover. The device tests use the `v2` Compose test rule.
 - The build targets Java 17 and uses Kotlin 2.4, AGP 9.5, Gradle 9.9 and JUnit 6.
