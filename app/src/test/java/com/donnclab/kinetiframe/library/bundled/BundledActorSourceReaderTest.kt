@@ -23,8 +23,8 @@ class BundledActorSourceReaderTest {
             val entries = zip.entries().asSequence().map { it.name }.toList()
             assertTrue(entries.isNotEmpty())
             assertTrue(entries.all { it.startsWith("dependencies/actors/") })
-            assertEquals(1, entries.count { it.endsWith("/manifest.json") })
-            assertEquals(4, entries.count { it.contains("/revisions/") && it.endsWith(".json") })
+            assertEquals(2, entries.count { it.endsWith("/manifest.json") })
+            assertEquals(5, entries.count { it.contains("/revisions/") && it.endsWith(".json") })
         }
     }
 

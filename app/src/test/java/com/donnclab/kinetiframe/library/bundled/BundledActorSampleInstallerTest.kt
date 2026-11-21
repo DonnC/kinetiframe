@@ -29,10 +29,10 @@ class BundledActorSampleInstallerTest {
             BundledActorSampleInstaller(files) {
                 com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures.file(assets, it).inputStream()
             }
-        assertEquals(BundledDemoInstaller.Result(1, emptyList()), installer.install())
+        assertEquals(BundledDemoInstaller.Result(2, emptyList()), installer.install())
         val library = LibraryRepository(files)
         val entries = value(library.list())
-        assertEquals(1, entries.count { it.kind == LibraryItemKind.ACTOR })
+        assertEquals(2, entries.count { it.kind == LibraryItemKind.ACTOR })
         assertEquals(0, entries.count { it.kind == LibraryItemKind.PERFORMANCE })
         assertEquals(0, files.projectsRoot().listFiles().orEmpty().size)
         val actors = ActorRepository(files)

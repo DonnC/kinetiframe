@@ -11,7 +11,7 @@ and file names carry no version numbers. A replaced asset overwrites the file it
 
 | Location | Contents |
 | --- | --- |
-| `actor/starter-actors.zip` | The four-view Tavi actor: actor documents and artwork, with no project frames or performances |
+| `actor/starter-actors.zip` | The four-view cutout Tavi and the drawn Tavi: actor documents and artwork, with no project frames or performances |
 | `actor/presets/views` | Motion presets for each actor view |
 | `packs` | Stamp packs: Tavi's cutouts and the shared expressions, eyes, mouths and studio items |
 | `samples` | The `Tavi presents` project, its natural-hands copy and their studio background |
@@ -24,7 +24,7 @@ stored in people's libraries and projects. They keep their names when a file is 
 changed ID needs a migration (see [file formats](file-formats.md)).
 
 `docs/images` holds the Tavi model and acting sheets, which show how Tavi's hands and face should
-look, and background candidates that aren't in the app yet. `docs/brand` holds the approved
+look. `docs/brand` holds the approved
 branding board and the 512 px store icon. `tools/branding` crops the board into the launcher,
 splash and logo images in `app/src/main/res`.
 
