@@ -21,6 +21,9 @@ dependencies {
     val bom = platform(libs.library("androidx-compose-bom"))
     add("implementation", bom)
     add("androidTestImplementation", bom)
+    // Compose's test library brings an older Espresso that calls InputManager.getInstance, which Android 16
+    // removed, so device tests fail there without a current one.
+    add("androidTestImplementation", libs.library("androidx-espresso-core"))
     add("implementation", libs.library("androidx-compose-ui-tooling-preview"))
     add("debugImplementation", libs.library("androidx-compose-ui-tooling"))
     add("debugImplementation", libs.library("androidx-compose-ui-test-manifest"))

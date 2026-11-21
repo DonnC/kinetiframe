@@ -43,7 +43,7 @@ import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.StampAsset
 import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.presentation.common.asString
-import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
+import com.donnclab.kinetiframe.presentation.library.preview.PreviewCatalog
 
 /** The title + stamp list [PackContentsGrid] renders -- bundled so the screen stays a
  * 4-parameter function. */

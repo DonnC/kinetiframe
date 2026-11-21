@@ -121,6 +121,7 @@
     <string name="library_all_collections">All collections</string>
     <string name="library_all_categories">All categories</string>
     <string name="library_collection">Collection</string>
+    <string name="library_collection_default">General Essentials</string>
     <string name="library_collection_save">Save collection</string>
     <!-- The name an item shows in the library, which can differ from its file name. -->
     <string name="library_item_name">Library name</string>

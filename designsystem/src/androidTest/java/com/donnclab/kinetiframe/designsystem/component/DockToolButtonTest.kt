@@ -1,6 +1,6 @@
 package com.donnclab.kinetiframe.designsystem.component
 
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
@@ -22,6 +22,7 @@ class DockToolButtonTest {
             KinetiFrameTheme { DockToolButton(DockToolAction(Lucide.Pen, LABEL, { selected++ }), false, { menus++ }) }
         }
         compose.onNodeWithContentDescription(LABEL).performClick()
+        passDoubleTapTimeout()
         compose.runOnIdle {
             assertEquals(1, selected)
             assertEquals(0, menus)
@@ -35,6 +36,7 @@ class DockToolButtonTest {
             KinetiFrameTheme { DockToolButton(DockToolAction(Lucide.Pen, LABEL, { selected++ }), true, { menus++ }) }
         }
         compose.onNodeWithContentDescription(LABEL).performClick()
+        passDoubleTapTimeout()
         compose.runOnIdle {
             assertEquals(0, selected)
             assertEquals(1, menus)
@@ -54,7 +56,12 @@ class DockToolButtonTest {
         }
     }
 
+    // The button also takes double-taps, so a single tap only counts once the double-tap timeout has
+    // passed. The v2 rule doesn't move the test clock past that wait on its own.
+    private fun passDoubleTapTimeout() = compose.mainClock.advanceTimeBy(DOUBLE_TAP_WAIT_MS)
+
     private companion object {
         const val LABEL = "Pen"
+        const val DOUBLE_TAP_WAIT_MS = 1_000L
     }
 }

@@ -14,7 +14,7 @@ import com.donnclab.kinetiframe.presentation.common.AssetSummary
 import com.donnclab.kinetiframe.presentation.library.LibraryIntent
 import com.donnclab.kinetiframe.presentation.library.catalog.FlatListNote
 import com.donnclab.kinetiframe.presentation.library.catalog.PackGridCard
-import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
+import com.donnclab.kinetiframe.presentation.library.preview.PreviewCatalog
 
 /** Library's "Component Packs" tab -- deliberately flat, one continuous scroll of every pack the
  * user has saved. */

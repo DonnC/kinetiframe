@@ -6,6 +6,20 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ## Unreleased
 
+### Added
+
+- A per-app language setting, so KinetiFrame can use a different language from the rest of the
+  phone. Debug builds also offer pseudo-locales for checking layouts with longer and right-to-left
+  text.
+- All of the app's text, including error messages, slider values, camera presets and the default
+  library collection's name, now comes from string resources and can be translated.
+
+### Fixed
+
+- Sharing an exported video.
+- Error messages now say what failed in words instead of showing internal error text, except for
+  a technical detail added after a few rare storage failures.
+
 ### Removed
 
 - The engine sandbox app and the `-PengineOnly` build. Engine work runs the engine's tests and is
@@ -46,5 +60,12 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
   `export` and others) instead of by layer, and the editor's main types are named `Studio*`. See
   the [project architecture](docs/architecture/decisions/project-architecture.md) decision.
 - ViewModels take their IO dispatcher as a parameter, so tests control all the work they start.
+- The code is split into nine modules: `core`, `engine`, `data`, `media`, `actors`, `studio`,
+  `presentation`, `designsystem` and `app`. Only `presentation`, `designsystem` and `app` use
+  Compose, and screens reach storage only through their ViewModels. `checkArchitecture` enforces
+  the layout. See the [feature modules](docs/architecture/decisions/feature-modules.md) decision.
+- Every visual size and almost every colour comes from the design system's tokens.
+- Tests live in the module whose code they cover. The device tests use the `v2` Compose test rule.
+- The build targets Java 17 and uses Kotlin 2.4, AGP 9.5, Gradle 9.9 and JUnit 6.
 
 No release history has been reconstructed from earlier development commits.

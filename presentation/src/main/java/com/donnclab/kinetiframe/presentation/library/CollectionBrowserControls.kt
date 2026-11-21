@@ -78,9 +78,9 @@ fun CollectionBrowserControls(
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
                 if (position.mode == BrowseMode.COLLECTIONS) {
                     BrowserFilterMenu(
-                        label = position.collection ?: allCollections,
+                        label = position.collection?.let { collectionLabel(it) } ?: allCollections,
                         icon = Icons.Default.FolderOpen,
-                        options = listOf(allCollections) + names,
+                        options = listOf(allCollections) + names.map { collectionLabel(it) },
                         selectedIndex = position.collection?.let { names.indexOf(it) + 1 } ?: 0,
                         modifier = Modifier.weight(1f),
                         onSelect = { index ->

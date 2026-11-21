@@ -5,6 +5,7 @@ import com.donnclab.kinetiframe.library.model.AssetCategory
 import com.donnclab.kinetiframe.library.model.AssetOrganization
 import com.donnclab.kinetiframe.library.model.BrowseMode
 import com.donnclab.kinetiframe.library.model.BrowserPosition
+import com.donnclab.kinetiframe.library.model.DEFAULT_COLLECTION
 
 /** Pure browsing/search policy shared by Home and the insertion picker. No raster decoding. */
 object PackBrowserIndex {
@@ -31,7 +32,7 @@ object PackBrowserIndex {
             collection = if (pack.libraryItemId.startsWith("ls-") || "loose-signal" in tags) {
                 "Loose Signal"
             } else {
-                "General Essentials"
+                DEFAULT_COLLECTION
             },
             category = category,
         )

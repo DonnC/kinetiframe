@@ -32,7 +32,7 @@ import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AudioTrackSummary
 import com.donnclab.kinetiframe.presentation.common.asString
-import com.donnclab.kinetiframe.presentation.preview.PreviewCatalog
+import com.donnclab.kinetiframe.presentation.library.preview.PreviewCatalog
 
 /** One row in an Audio tab's list: a play button, the title, duration and a small kind tag. */
 @Composable

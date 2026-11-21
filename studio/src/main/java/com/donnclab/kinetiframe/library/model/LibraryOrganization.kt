@@ -21,8 +21,14 @@ import kotlinx.serialization.Serializable
     ALL,
 }
 
+/**
+ * The collection items belong to until someone moves them. The name is saved in organization files
+ * and compared as a key, so it stays in English; screens show a translated label for it.
+ */
+const val DEFAULT_COLLECTION = "General Essentials"
+
 @Serializable data class AssetOrganization(
-    val collection: String = "General Essentials",
+    val collection: String = DEFAULT_COLLECTION,
     val category: AssetCategory? = null,
     val favourite: Boolean = false,
     val lastUsedEpochMs: Long = 0,

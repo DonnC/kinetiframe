@@ -5,6 +5,7 @@ import com.donnclab.kinetiframe.library.data.LibraryOrganizationStore
 import com.donnclab.kinetiframe.library.model.AssetOrganization
 import com.donnclab.kinetiframe.library.model.BrowseMode
 import com.donnclab.kinetiframe.library.model.BrowserPosition
+import com.donnclab.kinetiframe.library.model.DEFAULT_COLLECTION
 import com.donnclab.kinetiframe.library.model.LibraryOrganization
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.UiText
@@ -112,5 +113,5 @@ object HierarchyBrowserIndex {
         }
     }
     fun <T> collections(items: List<T>, key: (T) -> String, organization: LibraryOrganization) =
-        items.map { organization.items[key(it)]?.collection ?: "General Essentials" }.distinct().sorted()
+        items.map { organization.items[key(it)]?.collection ?: DEFAULT_COLLECTION }.distinct().sorted()
 }
