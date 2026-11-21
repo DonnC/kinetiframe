@@ -23,10 +23,10 @@ class BundledSceneBackgroundsTest {
     private fun install(files: DocumentFileStore) =
         BundledDemoLibraryInstaller(files, { File(assets, it).inputStream() }).install()
 
-    @Test fun `ten unique real landscape PNGs cover all five categories within streaming budget`() {
+    @Test fun `fourteen unique real landscape PNGs cover all five categories within streaming budget`() {
         val scenes = BundledSceneBackgrounds.entries
-        assertEquals(10, scenes.size)
-        assertEquals(10, scenes.map { it.libraryId }.distinct().size)
+        assertEquals(14, scenes.size)
+        assertEquals(14, scenes.map { it.libraryId }.distinct().size)
         assertEquals(
             setOf("indoor", "outdoor", "education", "performance", "generic"),
             scenes.map {
@@ -55,8 +55,8 @@ class BundledSceneBackgroundsTest {
             File(assets, path).inputStream()
         }).install()
         assertEquals(6, first.installed)
-        assertEquals(10, first.errors.size)
-        assertEquals(10, install(files).installed)
+        assertEquals(14, first.errors.size)
+        assertEquals(14, install(files).installed)
         val reopened = LibraryRepository(DocumentFileStore(root))
         val scene = BundledSceneBackgrounds.entries.first()
         val item = value(reopened.list()).single { it.libraryItemId == scene.libraryId }
@@ -78,7 +78,7 @@ class BundledSceneBackgroundsTest {
             },
             "mine.txt",
         ).apply { writeText("my artwork") }
-        assertEquals(15, install(files).installed)
+        assertEquals(BundledSceneBackgrounds.entries.size + 5, install(files).installed)
         assertEquals("my artwork", sentinel.readText())
         assertEquals(0, install(DocumentFileStore(root)).installed)
     }

@@ -31,10 +31,16 @@ class BundledDemoLibraryInstallerTest {
 
     @Test fun `migration seeds real independent background and audio with no projects required`() {
         val files = DocumentFileStore(root)
-        assertEquals(16, installer(files).install().installed)
+        assertEquals(DEMO_ITEMS + BundledSceneBackgrounds.entries.size, installer(files).install().installed)
         val library = LibraryRepository(files)
         val entries = value(library.list())
-        assertEquals(12, entries.count { it.kind == LibraryItemKind.BACKGROUND_IMAGE })
+        assertEquals(
+            2 + BundledSceneBackgrounds.entries.size,
+            entries.count {
+                it.kind ==
+                    LibraryItemKind.BACKGROUND_IMAGE
+            },
+        )
         assertEquals(4, entries.count { it.kind == LibraryItemKind.AUDIO })
         entries.forEach { item ->
             val destination = File(root, "copy-${item.libraryItemId}")
@@ -52,7 +58,13 @@ class BundledDemoLibraryInstallerTest {
                 ),
             ).load()
         }
-        assertEquals(12, catalog.projects.count { it.details.kind == AssetKind.BACKGROUND_IMAGE })
+        assertEquals(
+            2 + BundledSceneBackgrounds.entries.size,
+            catalog.projects.count {
+                it.details.kind ==
+                    AssetKind.BACKGROUND_IMAGE
+            },
+        )
         assertEquals(4, catalog.audio.size)
         assertEquals(3, catalog.audio.count { it.tagLabel == "SFX" })
         assertEquals(1, catalog.audio.count { it.tagLabel == "VOICE" })
@@ -64,7 +76,7 @@ class BundledDemoLibraryInstallerTest {
         val files = DocumentFileStore(root)
         val existing = files.libraryDirectory("demo-stage-background-v1").apply { mkdirs() }
         val sentinel = File(existing, "mine.txt").apply { writeText("keep") }
-        assertEquals(15, installer(files).install().installed)
+        assertEquals(DEMO_ITEMS + BundledSceneBackgrounds.entries.size - 1, installer(files).install().installed)
         assertEquals("keep", sentinel.readText())
         value(LibraryRepository(files).delete("demo-ball-audio-v1"))
         assertEquals(0, installer(DocumentFileStore(root)).install().installed)
@@ -77,7 +89,7 @@ class BundledDemoLibraryInstallerTest {
             if (path.contains("small-victory")) error("unavailable")
             File(assets, path).inputStream()
         }).install()
-        assertEquals(15, failed.installed)
+        assertEquals(DEMO_ITEMS + BundledSceneBackgrounds.entries.size - 1, failed.installed)
         assertEquals(1, failed.errors.size)
         val original = value(LibraryRepository(files).list()).associate { it.libraryItemId to it.createdAtEpochMs }
         assertEquals(1, installer(files).install().installed)
@@ -134,5 +146,10 @@ class BundledDemoLibraryInstallerTest {
         assertEquals(3, loaded.projects.count { it.details.kind == AssetKind.FRAME })
         assertEquals(3, loaded.items.keys.distinct().size)
         assertTrue(loaded.audio.isEmpty() && loaded.packs.isEmpty() && loaded.actors.isEmpty())
+    }
+
+    private companion object {
+        /** The stage plate, the room plate and four audio clips, before the scene backgrounds. */
+        const val DEMO_ITEMS = 6
     }
 }
