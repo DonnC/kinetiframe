@@ -29,10 +29,10 @@ class BundledActorSampleInstallerTest {
             BundledActorSampleInstaller(files) {
                 com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures.file(assets, it).inputStream()
             }
-        assertEquals(BundledDemoInstaller.Result(3, emptyList()), installer.install())
+        assertEquals(BundledDemoInstaller.Result(1, emptyList()), installer.install())
         val library = LibraryRepository(files)
         val entries = value(library.list())
-        assertEquals(3, entries.count { it.kind == LibraryItemKind.ACTOR })
+        assertEquals(1, entries.count { it.kind == LibraryItemKind.ACTOR })
         assertEquals(0, entries.count { it.kind == LibraryItemKind.PERFORMANCE })
         assertEquals(0, files.projectsRoot().listFiles().orEmpty().size)
         val actors = ActorRepository(files)
@@ -45,11 +45,6 @@ class BundledActorSampleInstallerTest {
             assertTrue(revision.artworkAssetPaths.size >= 20)
             revision.artworkAssetPaths.values.forEach { assertTrue(File(files.actorDirectory("copy"), it).isFile) }
         }
-        val continuous =
-            value(bundles.importActor("starter-ls-mira-all-views-v3", "mira-copy", "mira-revision", 1791158400001L))
-        val mira = value(actors.loadRevision("mira-copy", continuous.currentRevisionId))
-        assertEquals(5, mira.sceneGraph.bones.values.count { it.textureBinding?.skin != null })
-        mira.artworkAssetPaths.values.forEach { assertTrue(File(files.actorDirectory("mira-copy"), it).isFile) }
         value(library.delete("starter-ls-tavi-all-views-v3"))
         assertEquals(0, installer.install().installed)
         assertFalse(files.libraryDirectory("starter-ls-tavi-all-views-v3").exists())

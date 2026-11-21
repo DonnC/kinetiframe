@@ -14,47 +14,22 @@ Keep this page current:
 ## Now
 
 Work collects on one milestone branch per milestone, with a commit per chunk and one pull request
-into `develop` when the milestone is done. The module restructuring is finished: #54 ended the
-module work, and #75 to #87 finished strings, tokens, code limits, UI separation, the preset
-types, tests and dependency updates. `milestone/finish` (#88) closed the remaining tracks.
+into `develop` when the milestone is done. The module restructuring is finished (#54 to #88), and
+#89 prepared version 0.1.0: the release checklist passed up to signing.
 
-**Release preparation.** `milestone/release-0.1.0` runs the
-[release checklist](releases.md#release-checklist) up to signing:
+**Repository cleanup.** `milestone/repo-cleanup` tidies the repository before the UX work:
 
-- The app's `versionName` is `0.1.0`, and the changelog's entries sit under 0.1.0 with known
-  limits. The maintainer dates it when tagging.
-- CI passed on `develop`, `./gradlew verify` passes locally, and the release build assembles.
-- No keys, keystores, tokens or passwords appear anywhere in the history.
-- The development APK installs on an A56 with Android 17. `Tavi presents` opens and plays, using
-  about 330 MB, and its camera effects open. A new project draws, saves, reopens and exports a
-  video. Tavi opens in Actor Studio and its Performance Stage. Audio, import, updating over an
-  older install and older sample archives were not checked on the phone; the format tests cover
-  older files.
-
-Signing, the tag and the GitHub release stay with the maintainer.
-
-The notes below are from `milestone/finish`.
-
-**Compose test rule.** All 46 device test files use the `v2` `createComposeRule`, which queues
-coroutines on a `StandardTestDispatcher` until the test idles. Run on an A56 with Android 16:
-
-- Compose's test library brought an Espresso too old for Android 16, so every Compose module's
-  device tests now depend on Espresso 3.7.0 through the Compose convention plugin.
-- `DockToolButtonTest` advances the test clock past the button's double-tap wait, which the `v2`
-  rule doesn't do on its own.
-- `presentation` fails the same 13 tests that failed before the restructuring, and nothing else.
-  `app` and `designsystem` pass.
-
-**Preview fixtures.** Every user of `PreviewCatalog` is in the library, so it moved to
-`presentation.library.preview`.
-
-**Strings.** `DEFAULT_COLLECTION` names the default library collection in `studio`. It stays the
-saved English key, and the library's collection menu shows it through a string resource. The
-`require` checks in `core`'s documents keep English messages on purpose: only corrupt files break
-them, and the screens show a translated failure first, with that text only as a technical detail.
-
-**Changelog.** The changelog's Unreleased section now covers the user-visible changes and the
-contributor changes since #8, ready for the first release.
+- `docs/art-direction` and `tools/loose_signal` are gone. They held superseded v1 to v7 source
+  atlases and cutouts, copies of shipped files and render references, and the scripts that rebuilt
+  packs from them. The shipped assets are now the only copy of the artwork. `docs/brand` keeps the
+  branding board and store icon, and `docs/images` keeps the Tavi model and acting sheets and four
+  background candidates.
+- App assets have no version folders: `actor/starter-actors.zip`, `packs/`, `samples/`,
+  `backgrounds/` and `library/`. Saved IDs such as `ls-tavi-cutouts-v6` are unchanged.
+- Only Tavi ships. Mira and Kuda had the same stiff hands, so their packs and actors are removed;
+  installed copies stay. The v5 cutout packs and the upgrade that read them are removed too.
+- Every module except `app` is in `modules/`. Project paths stay `:core`, `:studio` and so on.
+  The legacy baseline's one entry now names its file under `modules/studio`.
 
 ## Next
 
@@ -111,7 +86,7 @@ fixed after the module work, unless one blocks testing.
 **Tavi presents** (first task of the next phase, on its own branch)
 
 - Tavi's expressions animate well, but the hands move like glued-on cutouts. They don't bend like
-  the hand poses on the [model sheet](art-direction/loose-signal/characters/tavi/references/model-sheet.png),
+  the hand poses on the [model sheet](images/tavi-model-sheet.png),
   so the actor looks stiff. Either rework the actor's rigging and hand cutouts, or animate the
   hands frame by frame.
 - Don't change the bundled `Tavi presents`. Make a copy, improve the copy and ship both, so the
@@ -252,12 +227,17 @@ fixed after the module work, unless one blocks testing.
 | #86 | Parsed sources without `KotlinCoreEnvironment` and moved the logic tests from `app` into their modules |
 | #87 | Updated Gradle 9.9.1, AGP 9.5.1 and the rest, and let IDE imports create the Compose Preview task |
 | #88 | Moved the device tests to the `v2` Compose rule and Android 16, moved the preview fixtures and translated the default collection's name |
+| #89 | Set version 0.1.0, moved the changelog under it and recorded the release checks |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
 
 ## Discoveries
 
+- The 17 fonts in `app/src/main/assets/fonts` are Google Fonts, most under the SIL Open Font
+  License, which `THIRD_PARTY_NOTICES.md` doesn't list. Add each font's license before a release.
+- Mira was the only bundled actor drawn as one continuous piece with skinned bones. With her gone,
+  no shipped actor exercises that path; cover it with a test fixture when the actor work resumes.
 - Coil 2.7 brings OkHttp into the release build for loading images over the network, which the
   app never does. Coil 3 without its network module would drop it. The resolved release libraries
   are Apache-2.0, apart from the Lucide icon set, whose artwork is ISC. Keep its notice with

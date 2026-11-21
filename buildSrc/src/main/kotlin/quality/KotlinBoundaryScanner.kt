@@ -29,6 +29,8 @@ internal object KotlinBoundaryScanner {
         val violations = sortedMapOf<String, Int>()
         KotlinSourceParser().use { parser ->
             modules.forEach { module ->
+                // [module] is the folder, such as modules/core; the rules below use the module name.
+                val name = module.substringAfterLast('/')
                 File(root, "$module/src").walkTopDown().filter { it.isFile && it.extension == "kt" }.forEach { source ->
                     val path = source.relativeTo(root).invariantSeparatorsPath
                     val text = source.readText()
@@ -36,14 +38,14 @@ internal object KotlinBoundaryScanner {
                     if (lines > MAX_LINES) violations["lines|$path"] = lines
                     val parsed = parser.parse(source.name, text)
                     val pkg = parsed.packageFqName.asString()
-                    if (module == "app" && !isAppPackage(pkg, path)) violations["package|$path|$pkg"] = 1
+                    if (name == "app" && !isAppPackage(pkg, path)) violations["package|$path|$pkg"] = 1
                     val uiLayer = sortedMapOf<String, Int>()
                     fun checkUiLayer(import: String) {
                         if (!UiLayerRules.applies(path)) return
                         val rule = UiLayerRules.violation(pkg, import, UiLayerRules.isViewModel(path)) ?: return
                         uiLayer[rule] = (uiLayer[rule] ?: 0) + 1
                     }
-                    if (UiValueRules.applies(module, path)) {
+                    if (UiValueRules.applies(name, path)) {
                         UiValueRules.count(parsed).forEach { (kind, count) -> violations["$kind|$path"] = count }
                     }
                     parsed.accept(object : KtTreeVisitorVoid() {

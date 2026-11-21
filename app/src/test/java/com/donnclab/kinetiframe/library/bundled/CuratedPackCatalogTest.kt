@@ -23,13 +23,13 @@ class CuratedPackCatalogTest {
                 BundledActorSourceReader.ASSET_PATH,
             ),
         ).use { archive ->
-            listOf("tavi", "mira", "kuda").forEach { character ->
+            listOf("tavi").forEach { character ->
                 val id = "ls-$character-all-views-v3"
                 val footprints = mutableSetOf<String>()
                 ZipFile(
                     com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures.file(
                         assets,
-                        "loose-signal/curated/v4/ls-$character-cutouts-v6.kpack",
+                        BundledDemoInstaller.packAssetPath("ls-$character-cutouts-v6"),
                     ),
                 ).use { pack ->
                     val manifest = json.decodeFromString<PackManifest>(
@@ -90,16 +90,15 @@ class CuratedPackCatalogTest {
         }
     }
 
-    @Test fun `seven curated packs have valid names complete view groups and independent facial artwork`() {
+    @Test fun `five curated packs have valid names complete view groups and independent facial artwork`() {
         val assets = File("src/main/assets").takeIf(File::isDirectory) ?: File("app/src/main/assets")
         assertEquals(listOf(BundledDemoInstaller.TAVI_PRESENTATION_ID), BundledDemoInstaller.projectIds)
-        assertEquals(7, BundledDemoInstaller.packIds.size)
+        assertEquals(5, BundledDemoInstaller.packIds.size)
         BundledDemoInstaller.packIds.forEach { id ->
-            val folder = if (id.contains("cutouts-v6")) "v4" else "v3"
             ZipFile(
                 com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures.file(
                     assets,
-                    "loose-signal/curated/$folder/$id.kpack",
+                    BundledDemoInstaller.packAssetPath(id),
                 ),
             ).use { zip ->
                 val manifest = Json.decodeFromString<PackManifest>(

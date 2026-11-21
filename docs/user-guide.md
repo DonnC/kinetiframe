@@ -11,7 +11,7 @@ This guide walks through making your first scene. If a word is unfamiliar, check
    the background, characters and effects apart. Turn on onion skinning to see neighboring
    frames while you draw.
 3. **Add a character.** Open the Add menu, choose *Actor performance* and pick a character. The
-   bundled characters (Tavi, Mira and Kuda) are a good place to start before building your own.
+   bundled Tavi actor is a good place to start before building your own.
 4. **Make it move.** Pick one of the character's saved performances, or create a new one in Actor
    Studio by moving the character's parts while recording. Watch the take back before you keep it.
 5. **Add sound.** Import audio or record a voice-over. Scrub the timeline to line up sound with

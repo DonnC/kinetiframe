@@ -50,7 +50,7 @@ class DirectionalMotionRenderTest {
                     BundledActorSourceReader.ASSET_PATH,
                 ),
             ).use { archive ->
-                listOf("tavi", "mira", "kuda").forEach { character ->
+                listOf("tavi").forEach { character ->
                     val sheet = Bitmap.createBitmap(960, 1600, Bitmap.Config.ARGB_8888)
                     val canvas = Canvas(sheet).apply { drawColor(Color.WHITE) }
                     listOf("front", "profile", "three_quarter", "back").forEachIndexed { row, view ->
@@ -116,7 +116,7 @@ class DirectionalMotionRenderTest {
 
     @Test fun viewSpecificHandsAndHeadTiltsRenderWithoutMissingAssets() {
         withCast { actors, performances, renderer ->
-            for (character in listOf("tavi", "mira", "kuda")) {
+            for (character in listOf("tavi")) {
                 val sheet = Bitmap.createBitmap(7 * 320, 4 * 400, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(sheet).apply { drawColor(Color.WHITE) }
                 listOf("front", "profile", "three_quarter", "back").forEachIndexed { row, view ->
@@ -170,9 +170,9 @@ class DirectionalMotionRenderTest {
 
     @Test fun shippingProfileWalkRunRenderAcrossWholeCycleForEveryStarter() {
         withCast { actors, performances, renderer ->
-            val sheet = Bitmap.createBitmap(8 * 320, 6 * 400, Bitmap.Config.ARGB_8888)
+            val sheet = Bitmap.createBitmap(8 * 320, 2 * 400, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(sheet).apply { drawColor(Color.WHITE) }
-            listOf("tavi", "mira", "kuda").forEachIndexed { actorIndex, character ->
+            listOf("tavi").forEachIndexed { actorIndex, character ->
                 val actorId = "ls-$character-all-views-v3"
                 val revision = value(actors.loadRevision(actorId, "$actorId-profile-joined-v4"))
                 listOf("walk", "run").forEachIndexed { index, motion ->
@@ -214,7 +214,7 @@ class DirectionalMotionRenderTest {
         BundledActorSourceReader.read(
             DemoAssetFixtures.file(assets, BundledActorSourceReader.ASSET_PATH),
             files,
-            listOf("tavi", "mira", "kuda").map { "ls-$it-all-views-v3" }.toSet(),
+            listOf("tavi").map { "ls-$it-all-views-v3" }.toSet(),
         )
         val actors = ActorRepository(files)
         val performances = PerformanceRepository(files)

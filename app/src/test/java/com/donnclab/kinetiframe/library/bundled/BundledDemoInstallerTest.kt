@@ -47,10 +47,14 @@ class BundledDemoInstallerTest {
                     ProjectSaveDocument(project = project, frameLayers = mapOf(0 to listOf(layer)), totalFrames = 1),
                 ),
             )
-            value(KframeArchiver.export(source, id, File(fixture, "$id.kframe")))
+            value(
+                KframeArchiver.export(source, id, File(fixture, File(BundledDemoInstaller.projectAssetPath(id)).name)),
+            )
         }
         BundledDemoInstaller.packIds.forEach { packId ->
-            ZipOutputStream(File(fixture, "$packId.kpack").outputStream()).use { zip ->
+            ZipOutputStream(
+                File(fixture, File(BundledDemoInstaller.packAssetPath(packId)).name).outputStream(),
+            ).use { zip ->
                 zip.putNextEntry(ZipEntry("meta.json"))
                 zip.write(
                     (
@@ -124,7 +128,11 @@ class BundledDemoInstallerTest {
         val fixture = policyAssets()
         val firstId = BundledDemoInstaller.projectIds.first()
         val broken = BundledDemoInstaller(files, { path ->
-            if (path.contains(firstId)) throw java.io.IOException("Simulated interrupted installation")
+            if (path ==
+                BundledDemoInstaller.projectAssetPath(firstId)
+            ) {
+                throw java.io.IOException("Simulated interrupted installation")
+            }
             File(fixture, File(path).name).inputStream()
         }).install()
         assertEquals(1, broken.errors.size)

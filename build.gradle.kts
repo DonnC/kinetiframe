@@ -11,15 +11,16 @@ spotless {
         ktlint(libs.versions.ktlint.get())
     }
     kotlinGradle {
-        target("*.gradle.kts", "*/*.gradle.kts")
+        target("*.gradle.kts", "*/*.gradle.kts", "modules/*/*.gradle.kts")
         ktlint(libs.versions.ktlint.get())
     }
 }
 
 val architectureParser by configurations.creating
 dependencies { architectureParser("org.jetbrains.kotlin:kotlin-compiler-embeddable:${libs.versions.kotlin.get()}") }
-val auditedModules =
-    listOf("app", "core", "engine", "data", "media", "actors", "studio", "presentation", "designsystem")
+// Module folders relative to the repository root.
+val auditedModules = listOf("app") +
+    listOf("core", "engine", "data", "media", "actors", "studio", "presentation", "designsystem").map { "modules/$it" }
 tasks.register<quality.ArchitectureCheckTask>("checkArchitecture") {
     repository.set(layout.projectDirectory)
     modules.set(auditedModules)

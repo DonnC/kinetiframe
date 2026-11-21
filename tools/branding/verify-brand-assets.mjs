@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const read = file => fs.readFileSync(path.join(root,file),'utf8');
 const res = 'app/src/main/res/';
-const kotlin = read('designsystem/src/main/java/com/donnclab/kinetiframe/designsystem/theme/Color.kt');
+const kotlin = read('modules/designsystem/src/main/java/com/donnclab/kinetiframe/designsystem/theme/Color.kt');
 const xml = read(res+'values/colors.xml');
 for(const [name,key] of [['BrandTeal','brand_teal'],['BrandAmber','brand_amber'],['BrandIvory','brand_ivory'],['BrandInk','brand_ink'],['BrandMint','brand_rig']]) {
   const hex = kotlin.match(new RegExp(`val ${name} = Color\\(0xFF([0-9A-F]{6})\\)`))[1];
@@ -36,7 +36,7 @@ function luminance(hex) {
   const rgb = [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);
   return rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722;
 }
-const theme = read('designsystem/src/main/java/com/donnclab/kinetiframe/designsystem/theme/KinetiFrameTheme.kt');
+const theme = read('modules/designsystem/src/main/java/com/donnclab/kinetiframe/designsystem/theme/KinetiFrameTheme.kt');
 for(const scheme of ['BrandLightColorScheme','BrandDarkColorScheme']) {
   const body = theme.split(`internal val ${scheme} = `)[1].split('\n)')[0];
   const roles = Object.fromEntries([...body.matchAll(/(\w+) = (Color\(0xFF([0-9A-F]{6})\)|(Brand\w+))/g)].map(m=>[m[1],m[3]||colours[m[4]]]));
