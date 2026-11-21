@@ -95,7 +95,14 @@ class BundledDemoInstaller(
         private val installLock = Any()
         private const val CREATED_AT = 1791158400000L
         const val TAVI_PRESENTATION_ID = "ls-tavi-presentation-v2"
-        val projectIds = listOf(TAVI_PRESENTATION_ID)
+
+        /** A copy of Tavi presents whose hands follow the forearm; the original ships unchanged beside it. */
+        const val TAVI_NATURAL_HANDS_ID = "ls-tavi-presentation-natural-hands-v1"
+        private val projectAssets = mapOf(
+            TAVI_PRESENTATION_ID to "samples/tavi-presents.kframe",
+            TAVI_NATURAL_HANDS_ID to "samples/tavi-presents-natural-hands.kframe",
+        )
+        val projectIds = projectAssets.keys.toList()
         val curatedPackIds = listOf(
             "ls-tavi-cutouts-v6",
             "ls-expressions-v3",
@@ -104,10 +111,7 @@ class BundledDemoInstaller(
             "ls-studio-items-v3",
         )
         val packIds = curatedPackIds
-        fun projectAssetPath(id: String): String {
-            require(id == TAVI_PRESENTATION_ID) { "Unknown bundled project" }
-            return "samples/tavi-presents.kframe"
-        }
+        fun projectAssetPath(id: String): String = requireNotNull(projectAssets[id]) { "Unknown bundled project" }
 
         /** A pack ships as its saved ID without the `ls-` prefix and version: `packs/tavi-cutouts.kpack`. */
         fun packAssetPath(id: String): String = "packs/${id.removePrefix("ls-").substringBeforeLast("-v")}.kpack"

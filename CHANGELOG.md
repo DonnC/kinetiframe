@@ -6,6 +6,13 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ## Unreleased
 
+### Added
+
+- *Tavi presents · natural hands*, a second sample beside the original. Tavi's arms and hands are
+  drawn rather than pasted: his sleeves bend at the elbow, his hands come out of the cuffs and
+  turn with his forearms, and his arms move in arcs. Existing
+  installs get it on their next launch.
+
 ## 0.1.0 - not yet tagged
 
 The first release. The maintainer sets the date when `v0.1.0` is tagged. It needs Android 9
