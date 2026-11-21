@@ -6,6 +6,11 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ## Unreleased
 
+## 0.1.0 - not yet tagged
+
+The first release. The maintainer sets the date when `v0.1.0` is tagged. It needs Android 9
+(API 28) or later.
+
 ### Added
 
 - A per-app language setting, so KinetiFrame can use a different language from the rest of the
@@ -27,8 +32,9 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - The placeholder Marketplace tab and every "From Marketplace" entry. Sharing works through the
   library, `.kframe` project files and `.kpack` stamp packs.
 - The internet permission. KinetiFrame works fully offline.
-- Unused libraries, including Google Play Services Location, CameraX, Retrofit, OkHttp and Moshi,
-  which makes the app smaller and free of proprietary dependencies.
+- Unused libraries, including Google Play Services Location, CameraX, Retrofit and Moshi, which
+  makes the app smaller and free of proprietary dependencies. OkHttp still comes in with the Coil
+  image loader, but the app makes no network requests.
 
 ### Changed
 
@@ -40,6 +46,15 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
   removed.
 - Debug builds install as `com.donnclab.kinetiframe.dev`, and every successful build of
   `develop` publishes a development APK.
+
+### Known limits
+
+- KinetiFrame is still in development. Projects saved by this version will keep opening in later
+  versions, as the [file formats](docs/file-formats.md) promise, but screens and controls will
+  change.
+- Some screens have known layout and labelling problems, listed in the
+  [restructuring tracker](docs/restructuring.md#ux-fixes).
+- Sharing a large project can take minutes with no progress shown.
 
 ### For contributors
 

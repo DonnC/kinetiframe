@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId = "com.donnclab.kinetiframe"
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1.0"
     }
 
     androidResources {
