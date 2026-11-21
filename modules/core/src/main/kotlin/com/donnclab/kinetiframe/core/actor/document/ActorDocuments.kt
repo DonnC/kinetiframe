@@ -46,7 +46,9 @@ data class ActorManifest(
         viewRevisions.values.forEach { ActorDocumentValidation.requireId(it, "view revision ID") }
         require(schemaVersion == SCHEMA_VERSION) { "Unsupported actor schema $schemaVersion" }
         require(displayName.isNotBlank() && displayName.length <= 60) { "Actor name must contain 1–60 characters" }
-        require(templateId in VALID_TEMPLATE_IDS) { "Unsupported actor template '$templateId'" }
+        // Any well-formed ID: skeleton templates can be added without changing this file, and a
+        // newer app's template still opens here, starting from scratch.
+        ActorDocumentValidation.requireId(templateId, "template ID")
         require(createdAtEpochMs >= 0 && updatedAtEpochMs >= createdAtEpochMs) { "Invalid actor timestamps" }
     }
 
@@ -58,6 +60,8 @@ data class ActorManifest(
         /** A blank single-root rig the animator builds bone-by-bone from scratch in Actor Studio --
          *  the actor templates hold the minimal starting graph. */
         const val CUSTOM_TEMPLATE_ID = "custom-v1"
+
+        /** The templates built into every version; others come from the app's template registry. */
         val VALID_TEMPLATE_IDS = setOf(HUMAN_TEMPLATE_ID, ANIMAL_TEMPLATE_ID, CUSTOM_TEMPLATE_ID)
     }
 }

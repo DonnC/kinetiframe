@@ -31,6 +31,14 @@ pose. The plan and the decisions behind it are in `notes/actor-redesign.md` (loc
 - Drawn figures render through the same plan as cutouts, in the editor, export, thumbnails and
   Actor Studio.
 - *Tavi · Drawn* is bundled beside the cutout Tavi, with front view only for now.
+- Animate mode shows handles only at the tips of chains, and dragging one bends the chain through
+  IK. Every joint stays editable in Setup.
+- Skeleton templates are one registry (`SkeletonTemplate`). Two legs, Four legs and Start from
+  scratch are entries in it. A new kind of actor, such as a bird or a car, is one class that
+  lists its bones, and gets posing, keys, recording, presets and saving from the shared base.
+  Saved template IDs no longer need to be in a fixed list.
+- The studio's tool dock fits the tools a mode shows, instead of keeping a fixed height with
+  empty space where tools were hidden.
 
 Next on the branch: posing with handles at chain tips and IK, pose keys with easing as the
 default (recording stays as an option), a simpler studio, setup sliders, then views by mirroring.

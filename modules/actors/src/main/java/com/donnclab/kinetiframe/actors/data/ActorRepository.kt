@@ -2,8 +2,8 @@ package com.donnclab.kinetiframe.actors.data
 
 import com.donnclab.kinetiframe.actors.domain.ActorTemplateContract
 import com.donnclab.kinetiframe.actors.render.ActorThumbnailMaker
-import com.donnclab.kinetiframe.actors.rig.model.ActorTemplate
 import com.donnclab.kinetiframe.actors.rig.model.ActorTemplates
+import com.donnclab.kinetiframe.actors.rig.model.SkeletonTemplates
 import com.donnclab.kinetiframe.core.actor.document.ActorDocumentValidation
 import com.donnclab.kinetiframe.core.actor.document.ActorManifest
 import com.donnclab.kinetiframe.core.actor.document.ActorRevision
@@ -268,11 +268,7 @@ class ActorRepository(
         ) {
             "View already exists"
         }
-        val template = when (manifest.templateId) {
-            ActorManifest.HUMAN_TEMPLATE_ID -> ActorTemplate.HUMAN
-            ActorManifest.ANIMAL_TEMPLATE_ID -> ActorTemplate.ANIMAL
-            else -> ActorTemplate.CUSTOM
-        }
+        val template = SkeletonTemplates.byId(manifest.templateId)
         val revision = ActorRevision(
             revisionId = revisionId,
             actorId = actorId,
