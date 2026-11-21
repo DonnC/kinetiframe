@@ -20,9 +20,14 @@ types, tests and dependency updates. The last milestone, `milestone/finish`, clo
 tracks.
 
 **Compose test rule.** All 46 device test files use the `v2` `createComposeRule`, which queues
-coroutines on a `StandardTestDispatcher` until the test idles. They compile in `presentation`,
-`designsystem` and `app`. Run them on a phone before relying on them, since a test that expected
-effects to run at once may now need `waitForIdle()`.
+coroutines on a `StandardTestDispatcher` until the test idles. Run on an A56 with Android 16:
+
+- Compose's test library brought an Espresso too old for Android 16, so every Compose module's
+  device tests now depend on Espresso 3.7.0 through the Compose convention plugin.
+- `DockToolButtonTest` advances the test clock past the button's double-tap wait, which the `v2`
+  rule doesn't do on its own.
+- `presentation` fails the same 13 tests that failed before the restructuring, and nothing else.
+  `app` and `designsystem` pass.
 
 **Preview fixtures.** Every user of `PreviewCatalog` is in the library, so it moved to
 `presentation.library.preview`.
@@ -37,8 +42,8 @@ contributor changes since #8, ready for the first release.
 
 ## Next
 
-1. **Device test run.** Run the device tests on a phone with the `v2` rule, fix any that now need
-   explicit waits, and delete the ones that fail because their screens changed (see Later).
+1. **Old device test failures.** Fix or delete the 13 failing `presentation` device tests as the
+   code they cover changes (see Later).
 2. **First release.** A maintainer merges `develop` into `main`, signs a release build and tags
    `v0.1.0`, following the [release checklist](releases.md#release-checklist).
 
@@ -61,12 +66,24 @@ Tracks that run alongside the module work, a screen or feature at a time:
 - **Preview fixtures.** Done (see Now).
 - **Dependency updates.** Done (#79, #87). Dependabot keeps proposing updates; take them a group
   at a time, with a full check and a device check after each.
-- **Compose deprecations.** The device tests use the `v2` rule (see Now), and the tab rows and
-  tooltips are migrated. Left: run the device tests on a phone, check the tabs, since the new rows
-  draw a different indicator, and check scrubbing the audio ribbon.
-- **Device tests.** 13 device tests fail on `develop` and failed before the restructuring began.
-  They check labels and controls that have since changed. Delete each one when the code it covers
-  is replaced.
+- **Compose deprecations.** Done: the device tests use the `v2` rule and run on Android 16 (see
+  Now), and the tab rows and tooltips are migrated. Left: check the tabs on a phone, since the new
+  rows draw a different indicator, and check scrubbing the audio ribbon.
+- **Device tests.** 13 `presentation` device tests fail and failed before the restructuring began.
+  They check labels and controls that have since changed. Fix or delete each one when the code it
+  covers changes:
+  - `ActorPartTreeTest.boundAndUnboundPartsShowDistinctArtworkStatus`
+  - `ActorSketchBindingTest.sharedDockSelectsJointModeWithoutDrawing`
+  - `CanvasFirstStudioTest.speedIsOnlyExpandedOnRequest`
+  - `CompactColorControlsTest.disabledFieldCannotEdit`
+  - `DrawingCanvasTest.stationaryTapCommitsOneContact` and `testDrawingStrokeEmitsPoints`
+  - `HierarchyBrowserTest.collectionBrowserHasNoPackCategoriesAndSelectsCollection`
+  - `PenContactRasterTest.stationary_contacts_leave_the_same_visible_disk_at_any_sample_count`
+  - `PerformanceAuthoringControlsTest.diamondSelectsExactSavedTime` and
+    `performanceToolbarExposesActorUndo`
+  - `PuppetWorkspaceTest.studioBarReturnsToRasterAndTogglesHierarchy`
+  - `SelectionDockTest.skewIsDiscoverableWithoutPersistentControls`
+  - `TrackClipContextMenuTest.firstTapShowsIconPaletteAndDuplicateDispatchesOnce`
 - **First release.** The changelog is ready (see Now). A maintainer tags `v0.1.0` from `main`.
 
 ## UX fixes
