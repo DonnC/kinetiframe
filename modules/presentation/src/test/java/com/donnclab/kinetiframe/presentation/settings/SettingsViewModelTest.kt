@@ -37,11 +37,12 @@ class SettingsViewModelTest {
         model.state.first { !it.loading }
         model.handleIntent(SettingsIntent.Theme(AppTheme.DARK))
         model.handleIntent(SettingsIntent.SystemBars(true))
-        model.handleIntent(SettingsIntent.Orientation(StudioOrientation.DEVICE))
-        model.state.first { it.preferences.orientation == StudioOrientation.DEVICE }
+        // The last choice must differ from the default, so waiting for it waits for every save.
+        model.handleIntent(SettingsIntent.Orientation(StudioOrientation.PORTRAIT))
+        model.state.first { it.preferences.orientation == StudioOrientation.PORTRAIT }
         val saved = AppPreferencesStore(file, dispatcher).load()
         assertEquals(AppTheme.DARK, saved.theme)
         assertTrue(saved.hideSystemBars)
-        assertEquals(StudioOrientation.DEVICE, saved.orientation)
+        assertEquals(StudioOrientation.PORTRAIT, saved.orientation)
     }
 }
