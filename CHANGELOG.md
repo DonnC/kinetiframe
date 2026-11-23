@@ -19,6 +19,12 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ### Changed
 
+- A new identity: a bouncing-ball logo that stays clear at small sizes, the Nunito font across
+  the app and in the wordmark, and one brand colour, carmine, on graphite and paper. Every
+  interface colour is a tone of that carmine, the greys are neutral so they don't tint your
+  artwork, and onion skins are carmine before and blue after, which people with red-green
+  colour blindness can tell apart.
+
 - KinetiFrame follows your phone's orientation. The studios no longer turn the screen to
   landscape by default, and browsing is no longer locked to portrait. Settings can still lock the
   studio to one orientation.
