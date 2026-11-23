@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.presentation.studio.editor
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
+import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
@@ -62,18 +64,28 @@ internal fun BoxScope.ActorAuthoringOverlay(
         }
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
             // The selected part's tools share the rail's band instead of floating over the actor.
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = Dimens.spaceL),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                SelectedPartControls(state, definition, ui.artwork, commands)
-                if (definition != null) {
-                    PartRail(
-                        graph = definition.sceneGraph,
-                        selectedPartId = state.scene.selectedBoneId,
-                        onPartSelected = { partId -> commands.onIntent(StudioIntent.Rigging.SelectBone(partId)) },
-                        modifier = Modifier.weight(1f),
-                    )
+            // On a narrow screen, such as a phone held upright, they stack above a full-width rail.
+            BoxWithConstraints(Modifier.fillMaxWidth().padding(bottom = Dimens.spaceL)) {
+                val rail: @Composable (Modifier) -> Unit = { railModifier ->
+                    if (definition != null) {
+                        PartRail(
+                            graph = definition.sceneGraph,
+                            selectedPartId = state.scene.selectedBoneId,
+                            onPartSelected = { partId -> commands.onIntent(StudioIntent.Rigging.SelectBone(partId)) },
+                            modifier = railModifier,
+                        )
+                    }
+                }
+                if (maxWidth < ActorStudioTokens.partBarStackBreakpoint) {
+                    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                        SelectedPartControls(state, definition, ui.artwork, commands)
+                        rail(Modifier.fillMaxWidth())
+                    }
+                } else {
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        SelectedPartControls(state, definition, ui.artwork, commands)
+                        rail(Modifier.weight(1f))
+                    }
                 }
             }
         }

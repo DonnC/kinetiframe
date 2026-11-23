@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -85,9 +86,10 @@ fun ActorPoseTimeline(
     val taking = state.actor.takePhase != PerformanceTakePhase.IDLE
     Surface(modifier, color = MaterialTheme.colorScheme.surfaceContainer, shape = MaterialTheme.shapes.small) {
         Column(Modifier.padding(horizontal = Dimens.spaceS)) {
-            Row(
-                Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                verticalAlignment = Alignment.CenterVertically,
+            // Wraps onto a second line on a narrow screen, so every key control stays in reach.
+            FlowRow(
+                Modifier.fillMaxWidth(),
+                itemVerticalAlignment = Alignment.CenterVertically,
             ) {
                 PerformanceTakeControls(state, onIntent)
                 if (!taking) {

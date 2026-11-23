@@ -86,6 +86,9 @@ object EditorTokens {
     val popupMediumWidth = 280.dp
     val canvasHintStartInset = 64.dp
     val actorHintStartInset = 96.dp
+
+    /** Keeps a canvas hint clear of the floating image button at the canvas's top end. */
+    val canvasHintEndInset = 72.dp
     val transformPanelTop = 72.dp
     val cameraRangeHeight = 14.dp
 

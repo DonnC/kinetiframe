@@ -378,7 +378,7 @@ private fun CanvasAreaContents(
                     Modifier.align(Alignment.TopCenter)
                         .padding(
                             start = EditorTokens.canvasHintStartInset,
-                            end = Dimens.spaceS,
+                            end = EditorTokens.canvasHintEndInset,
                             top = Dimens.spaceXs,
                         ).zIndex(4f),
                 )

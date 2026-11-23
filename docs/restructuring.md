@@ -50,6 +50,9 @@ pose. The plan and the decisions behind it are in `notes/actor-redesign.md` (loc
   - Drawn actors don't show the continuous-drawing toggle, and get a Setup hint about their build.
   - Animate offers a drawn part's variants, such as Tavi's hand poses, from a labelled chip on
     the stage's edge.
+- The app follows the phone's orientation instead of forcing landscape in the studios and
+  portrait elsewhere. In portrait, Actor Studio stacks the part tools above the chip rail, keeps
+  the hint clear of the image button, and wraps the timeline controls. Checked on a Galaxy A56.
 
 Next, in a follow-up milestone: setup sliders for proportions, then side views by mirroring.
 

@@ -52,6 +52,9 @@ object ActorStudioTokens {
     /** How much of the canvas an actor fills when Actor Studio opens it. */
     const val ACTOR_FRAME_FILL = 0.88f
 
+    /** Narrower than this, the selected part's tools stack above the part rail. */
+    val partBarStackBreakpoint = 600.dp
+
     /** The share of the canvas height the part rail and part tools cover at the bottom. */
     const val ACTOR_FRAME_BOTTOM_INSET = 0.24f
 
