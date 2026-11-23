@@ -51,7 +51,7 @@ pose. The plan and the decisions behind it are in `notes/actor-redesign.md` (loc
   - Animate offers a drawn part's variants, such as Tavi's hand poses, from a labelled chip on
     the stage's edge.
 
-Next on the branch: setup sliders for proportions, then views by mirroring.
+Next, in a follow-up milestone: setup sliders for proportions, then side views by mirroring.
 
 **Tavi presents with natural hands.** `milestone/tavi-hands` ships a copy of `Tavi presents`
 beside the unchanged original:
