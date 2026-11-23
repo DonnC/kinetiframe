@@ -35,7 +35,7 @@ import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.core.document.PuppetInstance
 import com.donnclab.kinetiframe.core.geometry.Point2
-import com.donnclab.kinetiframe.designsystem.theme.BrandTeal
+import com.donnclab.kinetiframe.designsystem.theme.BrandCarmine
 import com.donnclab.kinetiframe.engine.rigging.math.ArtworkGestureBasis
 import com.donnclab.kinetiframe.engine.rigging.math.ArtworkGestureDelta
 import com.donnclab.kinetiframe.engine.rigging.math.ArtworkPlacementGesture
@@ -152,9 +152,9 @@ fun ArtworkPlacementPreview(
         }
         world?.values?.forEach {
             fun screen(p: Offset) = p * framing.first + Offset(framing.second, framing.third)
-            drawLine(BrandTeal.copy(alpha = .35f), screen(it.start.toOffset()), screen(it.end.toOffset()), 2f)
+            drawLine(BrandCarmine.copy(alpha = .35f), screen(it.start.toOffset()), screen(it.end.toOffset()), 2f)
         }
-        drawCircle(BrandTeal, 5f, origin * framing.first + Offset(framing.second, framing.third))
+        drawCircle(BrandCarmine, 5f, origin * framing.first + Offset(framing.second, framing.third))
     }
 }
 

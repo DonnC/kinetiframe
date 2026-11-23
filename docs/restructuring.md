@@ -50,8 +50,30 @@ pose. The plan and the decisions behind it are in `notes/actor-redesign.md` (loc
   - Drawn actors don't show the continuous-drawing toggle, and get a Setup hint about their build.
   - Animate offers a drawn part's variants, such as Tavi's hand poses, from a labelled chip on
     the stage's edge.
+- The app follows the phone's orientation instead of forcing landscape in the studios and
+  portrait elsewhere. In portrait, Actor Studio stacks the part tools above the chip rail, keeps
+  the hint clear of the image button, and wraps the timeline controls. Checked on a Galaxy A56.
 
 Next, in a follow-up milestone: setup sliders for proportions, then side views by mirroring.
+
+**Brand.** `milestone/brand` replaces the teal and amber identity, which read as generic, with
+one drawn from the animator's desk. The reasons are in [the brand](assets.md#the-brand).
+
+- The mark is a bouncing ball in three frames on one diagonal: round, stretched as it falls, and
+  squashed on the ground, in carmine and graphite on a paper tile. It reads at 16 px and as a
+  themed icon.
+- The interface and the wordmark use Nunito, bundled as one variable font under the OFL. The
+  wordmark is Nunito ExtraBold with carmine balls for the i dots.
+- One brand colour: the logo's carmine is the primary, and every other interface colour is a
+  tone of it from its Material HCT palette, over the logo's graphite and paper neutrals. The
+  greys are neutral, so the interface doesn't tint the artwork.
+- Every brand image is a vector generated from one geometry: the launcher, themed and splash
+  icons, the in-app mark and wordmark (`BrandArt`), and the SVGs and board in `docs/brand`. The
+  generator is in `tools/brand`. The raster brand PNGs and the `tools/branding` scripts are gone.
+- The default onion skins are carmine before and blue after, the paper convention. That blue is
+  the only colour outside the brand, and only on the canvas.
+- Checked on a Galaxy A73 in the dark theme: splash, Home and the editor. The light theme and the
+  launcher icon on a home screen aren't checked on a phone yet.
 
 **Tavi presents with natural hands.** `milestone/tavi-hands` ships a copy of `Tavi presents`
 beside the unchanged original:
@@ -279,6 +301,8 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Discoveries
 
+- Leaving the editor asks to save a project that wasn't changed. Opening a project and pressing
+  Home shows "Save before leaving?" with no edits made.
 - The 17 fonts in `app/src/main/assets/fonts` are Google Fonts, most under the SIL Open Font
   License, which `THIRD_PARTY_NOTICES.md` doesn't list. Add each font's license before a release.
 - Mira was the only bundled actor drawn as one continuous piece with skinned bones. With her gone,

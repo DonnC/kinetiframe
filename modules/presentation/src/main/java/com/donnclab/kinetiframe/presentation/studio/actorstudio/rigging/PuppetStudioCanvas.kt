@@ -433,7 +433,11 @@ fun PuppetStudioCanvas(
                     state,
                     Modifier.align(
                         Alignment.TopCenter,
-                    ).padding(start = ActorStudioTokens.hintStartInset, end = Dimens.spaceS, top = Dimens.spaceXs),
+                    ).padding(
+                        start = ActorStudioTokens.hintStartInset,
+                        end = com.donnclab.kinetiframe.designsystem.theme.EditorTokens.canvasHintEndInset,
+                        top = Dimens.spaceXs,
+                    ),
                 )
             }
         }

@@ -137,9 +137,11 @@ class MainActivity : ComponentActivity() {
                             }
                             SideEffect {
                                 if (!settingsState.loading) {
+                                    // The app follows the phone's orientation. Only the studios
+                                    // honour an animator's explicit choice to lock one.
                                     requestedOrientation =
                                         if (!studio) {
-                                            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                                            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                                         } else {
                                             preferences.orientation.activityOrientation()
                                         }
@@ -157,7 +159,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-                            // Browsing stays portrait. Studio's preference is independent of export geometry.
+                            // Studio orientation is independent of export geometry.
 
                             NavDisplay(
                                 backStack = backStack,

@@ -24,9 +24,40 @@ stored in people's libraries and projects. They keep their names when a file is 
 changed ID needs a migration (see [file formats](file-formats.md)).
 
 `docs/images` holds the Tavi model and acting sheets, which show how Tavi's hands and face should
-look. `docs/brand` holds the approved
-branding board and the 512 px store icon. `tools/branding` crops the board into the launcher,
-splash and logo images in `app/src/main/res`.
+look.
+
+## The brand
+
+The mark is a bouncing ball, the first exercise every animator learns and the plainest picture of
+squash and stretch. Three frames fall along one diagonal: round near the top, where the ball
+moves slowly; stretched and further on as it speeds up; and squashed on the ground. The earlier
+frames are carmine, like onion skins on paper, and the landed ball and ground are graphite. The
+mark is three solid shapes and a line on a paper tile, so it stays recognisable at 16 px and as a
+one-colour themed icon. The diagonal is deliberate: shapes in a triangle read as a face.
+
+The wordmark and the interface use [Nunito](https://github.com/googlefonts/nunito). Its rounded
+ends match the pencil look, and its large x-height keeps small labels readable. The wordmark is
+Nunito ExtraBold with carmine balls for the dots on the i's.
+
+There is one brand colour, the logo's carmine, with the logo's two neutrals, graphite and paper.
+Most leading brands use one or two colours, and an accent only draws the eye while it is scarce
+(the 60-30-10 rule: mostly neutral surfaces, some secondary, a little accent). Every interface
+colour is carmine or one of its tones: primary is carmine, secondary and tertiary are carmine at
+low chroma, and containers are lighter or darker tones, all from carmine's Material HCT palette.
+The greys stay neutral so they don't tint the colours on the canvas.
+
+The one colour outside the brand is a drawing aid: the next-frame onion skin on the canvas is
+blue, the paper convention, because blue stays distinct from carmine with red-green colour
+blindness. Users can change it.
+
+Everything is vector art drawn from one geometry in [`tools/brand`](../tools/brand/README.md):
+
+- the launcher foreground, themed icon and splash in `app/src/main/res/drawable`;
+- the in-app mark and wordmark as path data in the designsystem's `BrandArt`;
+- `docs/brand`: the brand board, the SVG icon and lockup, and the 512 px store icon.
+
+Change the brand in that geometry and regenerate every file from it, rather than editing one
+copy. `BrandResourcesTest` and `BrandThemeTest` check the colours, icons and text contrast.
 
 ## Where the artwork came from
 

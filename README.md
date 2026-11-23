@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="app/src/main/res/drawable-nodpi/brand_approved_lockup.png" alt="KinetiFrame" width="260">
+  <img src="docs/brand/kinetiframe-lockup.svg" alt="KinetiFrame" width="320">
 </p>
 
 <p align="center">

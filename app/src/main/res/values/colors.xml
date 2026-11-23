@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="brand_teal">#176B62</color>
-    <color name="brand_amber">#DEA64A</color>
-    <color name="brand_ivory">#F7F3E8</color>
-    <color name="brand_ink">#202825</color>
-    <color name="brand_rig">#96BDAF</color>
-    <color name="brand_mark_foreground">@color/brand_teal</color>
-    <color name="brand_window_background">@color/brand_ivory</color>
-    <color name="brand_on_window">@color/brand_ink</color>
+    <!-- Animation pencils on paper; the same values as designsystem's Color.kt. -->
+    <color name="brand_carmine">#C9372C</color>
+    <color name="brand_graphite">#22201E</color>
+    <color name="brand_paper">#F6F3EC</color>
+    <color name="brand_window_background">@color/brand_paper</color>
+    <color name="brand_on_window">@color/brand_graphite</color>
 </resources>

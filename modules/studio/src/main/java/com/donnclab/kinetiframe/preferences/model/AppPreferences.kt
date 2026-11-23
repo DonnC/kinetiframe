@@ -8,7 +8,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable data class AppPreferences(
     val theme: AppTheme = AppTheme.SYSTEM,
-    val orientation: StudioOrientation = StudioOrientation.LANDSCAPE,
+    // Follow the phone unless the animator chooses to lock the studio; never force a rotation.
+    val orientation: StudioOrientation = StudioOrientation.DEVICE,
     val hideSystemBars: Boolean = false,
     val hideToolsDuringPlayback: Boolean = true,
     val showMenuLabels: Boolean = true,

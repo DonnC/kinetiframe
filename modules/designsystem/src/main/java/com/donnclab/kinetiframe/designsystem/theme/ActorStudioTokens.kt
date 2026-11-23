@@ -4,22 +4,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 object ActorStudioTokens {
-    val panelSurface = BrandNightSurface
-    val panelSurfaceVariant = BrandNightVariant
-    val panelDivider = Color(0xFF414F46)
-    val onPanel = BrandIvory
-    val onPanelMuted = Color(0xFFBFCBBF)
+    val panelSurface = NeutralNightSurface
+    val panelSurfaceVariant = NeutralNightHigh
+    val panelDivider = NeutralInkVariant
+    val onPanel = BrandPaper
+    val onPanelMuted = NeutralNightOnVariant
 
-    // This panel is always dark, even in the light app theme.
-    val accent = BrandMint
+    // Handles, selected parts and binding marks use the brand carmine, as selection does in the
+    // editor; it reads on the stage's paper and on this always-dark panel.
+    val accent = BrandCarmine
 
     /** Content on [accent], such as an enabled apply icon. */
-    val onAccent = Color(0xFF0B1416)
+    val onAccent = Color.White
 
     /** The sketch editor's binding region and its outline. */
-    val sketchBind = Color(0xFF32B6AC)
-    val partRailIdle = Color(0xFFF1EBF3)
-    val presetIconStroke = Color(0xFF172B36)
+    val sketchBind = BrandCarmine
+    val partRailIdle = NeutralPaperHigh
+    val presetIconStroke = BrandGraphite
     val panelWidth = 320.dp
 
     // Floating bars over the stage (part rail, part actions).
@@ -51,6 +52,9 @@ object ActorStudioTokens {
 
     /** How much of the canvas an actor fills when Actor Studio opens it. */
     const val ACTOR_FRAME_FILL = 0.88f
+
+    /** Narrower than this, the selected part's tools stack above the part rail. */
+    val partBarStackBreakpoint = 600.dp
 
     /** The share of the canvas height the part rail and part tools cover at the bottom. */
     const val ACTOR_FRAME_BOTTOM_INSET = 0.24f

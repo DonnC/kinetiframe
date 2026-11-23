@@ -17,7 +17,7 @@ class AppPreferencesStoreTest {
     @Test fun `missing settings use studio friendly defaults`() = runBlocking {
         val settings = AppPreferencesStore(File(root, "settings.json")).load()
         assertEquals(AppTheme.SYSTEM, settings.theme)
-        assertEquals(StudioOrientation.LANDSCAPE, settings.orientation)
+        assertEquals(StudioOrientation.DEVICE, settings.orientation)
         assertFalse(settings.hideSystemBars)
         assertTrue(settings.showMenuLabels)
     }
