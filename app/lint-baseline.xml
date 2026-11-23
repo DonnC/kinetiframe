@@ -3,35 +3,6 @@
 
     <issue
         id="UnusedResources"
-        message="The resource `R.drawable.brand_approved_lockup` appears to be unused">
-        <location
-            file="src/main/res/drawable-nodpi/brand_approved_lockup.png"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.brand_rig` appears to be unused"
-        errorLine1="    &lt;color name=&quot;brand_rig&quot;>#96BDAF&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="7"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.brand_mark_foreground` appears to be unused"
-        errorLine1="    &lt;color name=&quot;brand_mark_foreground&quot;>@color/brand_teal&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="8"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
         message="The resource `R.drawable.placeholder` appears to be unused">
         <location
             file="src/main/res/drawable/placeholder.png"/>

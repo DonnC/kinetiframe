@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Approved rig-node mark on a density-aware 288dp native splash layer. -->
-<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/brand_splash_pixels" android:gravity="fill" android:filter="true" />
+<!-- Generated from tools/brand/BrandExport.java: the bouncing-ball mark. Do not edit by hand. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp" android:height="240dp"
+    android:viewportWidth="512" android:viewportHeight="512">
+    <path android:fillColor="#C9372C" android:fillType="evenOdd"
+        android:pathData="M190.7 151.1C177.6 151.1 167.1 161.7 167.1 174.7C167.1 187.8 177.6 198.4 190.7 198.4C203.8 198.4 214.3 187.8 214.3 174.7C214.3 161.7 203.8 151.1 190.7 151.1Z" />
+    <path android:fillColor="#C9372C" android:fillType="evenOdd"
+        android:pathData="M220.4 208.6C217.4 208.6 214.6 209.3 212.1 210.9C201.6 217.4 201.5 236.2 211.8 252.8C219.8 265.5 231.6 273.3 241.4 273.3C244.4 273.3 247.2 272.5 249.7 271C260.2 264.4 260.3 245.6 249.9 229C242 216.3 230.2 208.6 220.4 208.6Z" />
+    <path android:fillColor="#22201E" android:fillType="evenOdd"
+        android:pathData="M286.4 289.4C259 289.4 236.8 301 236.8 315.4C236.8 329.7 259 341.4 286.4 341.4C313.8 341.4 336.1 329.7 336.1 315.4C336.1 301 313.8 289.4 286.4 289.4Z" />
+    <path android:fillColor="#22201E" android:fillType="evenOdd"
+        android:pathData="M235.6 345.5C231.4 345.5 227.9 349 227.9 353.2C227.9 357.5 231.4 360.9 235.6 360.9L337.3 360.9C341.5 360.9 344.9 357.5 344.9 353.2C344.9 349 341.5 345.5 337.3 345.5Z" />
+</vector>
