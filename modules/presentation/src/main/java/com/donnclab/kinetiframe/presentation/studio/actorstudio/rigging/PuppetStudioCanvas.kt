@@ -62,6 +62,7 @@ fun PuppetStudioCanvas(
     modifier: Modifier = Modifier,
     referenceUnderlay: ((android.graphics.Canvas) -> Unit)? = null,
 ) {
+    FrameActorOnOpen(state, onIntent)
     val activeStroke = remember { ActiveStroke() }
     val selectionPath = remember { Path() }
     val density = LocalDensity.current.density

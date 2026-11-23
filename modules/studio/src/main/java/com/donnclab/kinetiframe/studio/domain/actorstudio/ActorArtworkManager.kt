@@ -392,8 +392,7 @@ class ActorArtworkManager(
     fun select(part: String, variant: String) {
         val state = getState()
         val definition = state.actorDefinition() ?: return
-        val bone = definition.sceneGraph.bones[part] ?: return
-        if (variant.isNotEmpty() && variant !in bone.artworkVariants) return
+        if (!ActorArtwork.hasVariant(definition.sceneGraph, part, variant)) return
         if (state.scene.studioMode != StudioMode.ANIMATE_IK) return
         val instance = state.activeActor() ?: return
         if (instance.artworkKeys.size >= 720 &&

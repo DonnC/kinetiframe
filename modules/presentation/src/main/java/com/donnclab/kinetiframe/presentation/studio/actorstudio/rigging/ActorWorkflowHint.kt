@@ -50,6 +50,9 @@ fun ActorWorkflowHint(state: StudioState, modifier: Modifier = Modifier) {
 
         state.scene.selectedBoneId == null -> stringResource(R.string.actor_hint_pick_part)
 
+        // A drawn actor has no drawing to match; its joints set its proportions.
+        rigSetup && definition.sceneGraph.figure != null -> stringResource(R.string.actor_hint_drawn_setup)
+
         rigSetup -> stringResource(R.string.actor_hint_fit_joints)
 
         else -> stringResource(

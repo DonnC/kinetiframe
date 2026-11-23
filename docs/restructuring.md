@@ -39,9 +39,19 @@ pose. The plan and the decisions behind it are in `notes/actor-redesign.md` (loc
   Saved template IDs no longer need to be in a fixed list.
 - The studio's tool dock fits the tools a mode shows, instead of keeping a fixed height with
   empty space where tools were hidden.
+- Animate mode's hint describes posing pose to pose. Recording a take stays as an option, and its
+  hint shows only while a take runs.
+- Actor Studio, checked on a Galaxy A73:
+  - The mode switch reads "Setup | Animate" in words.
+  - The duplicate bone buttons in the top bar and dock are gone.
+  - The actor is framed large in every mode, in the area the panels leave clear.
+  - The selected part's tools sit in the part rail instead of floating over the actor.
+  - The part chips use theme colours and count drawn pieces as artwork.
+  - Drawn actors don't show the continuous-drawing toggle, and get a Setup hint about their build.
+  - Animate offers a drawn part's variants, such as Tavi's hand poses, from a labelled chip on
+    the stage's edge.
 
-Next on the branch: posing with handles at chain tips and IK, pose keys with easing as the
-default (recording stays as an option), a simpler studio, setup sliders, then views by mirroring.
+Next on the branch: setup sliders for proportions, then views by mirroring.
 
 **Tavi presents with natural hands.** `milestone/tavi-hands` ships a copy of `Tavi presents`
 beside the unchanged original:

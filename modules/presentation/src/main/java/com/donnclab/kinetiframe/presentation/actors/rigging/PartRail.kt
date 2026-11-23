@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.actors.rig.math.PoseHandles
 import com.donnclab.kinetiframe.core.actor.rigging.BoneNode
 import com.donnclab.kinetiframe.core.actor.rigging.SceneGraph
 import com.donnclab.kinetiframe.designsystem.theme.ActorStudioTokens
@@ -44,24 +45,40 @@ fun PartRail(
     modifier: Modifier = Modifier,
 ) {
     val parts = remember(graph) { graph.orderedBones() }
-    Surface(color = Color.White, shadowElevation = ActorStudioTokens.floatingElevation, modifier = modifier) {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shadowElevation = ActorStudioTokens.floatingElevation,
+        modifier = modifier,
+    ) {
         Row(
             Modifier.horizontalScroll(
                 rememberScrollState(),
             ).padding(horizontal = Dimens.spaceM, vertical = Dimens.spaceSPlus),
             horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
         ) {
-            parts.forEach { part -> PartChip(part, part.id == selectedPartId, onClick = { onPartSelected(part.id) }) }
+            parts.forEach { part ->
+                PartChip(
+                    part,
+                    covered = PoseHandles.isCovered(graph, part.id),
+                    selected = part.id == selectedPartId,
+                    onClick = { onPartSelected(part.id) },
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun PartChip(part: BoneNode, selected: Boolean, onClick: () -> Unit) {
+private fun PartChip(part: BoneNode, covered: Boolean, selected: Boolean, onClick: () -> Unit) {
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(ActorStudioTokens.partChipCorner),
-        color = if (selected) ActorStudioTokens.accent.copy(alpha = 0.14f) else ActorStudioTokens.partRailIdle,
+        // Theme colours, so chips stay readable in light and dark themes.
+        color = if (selected) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerHighest
+        },
         border = if (selected) BorderStroke(Dimens.borderMedium, ActorStudioTokens.accent) else null,
     ) {
         Row(
@@ -73,7 +90,7 @@ private fun PartChip(part: BoneNode, selected: Boolean, onClick: () -> Unit) {
             // unbound-joint color give elsewhere, just small enough for a chip.
             Box(
                 Modifier.size(ActorStudioTokens.partDot).background(
-                    if (part.textureBinding != null) ActorStudioTokens.accent else MaterialTheme.colorScheme.error,
+                    if (covered) ActorStudioTokens.accent else MaterialTheme.colorScheme.error,
                     CircleShape,
                 ),
             )
@@ -82,7 +99,11 @@ private fun PartChip(part: BoneNode, selected: Boolean, onClick: () -> Unit) {
                 part.name,
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold,
-                color = if (selected) ActorStudioTokens.accent else EditorTokens.dark,
+                color = if (selected) {
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
             )
         }
     }

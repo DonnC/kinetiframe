@@ -122,6 +122,40 @@ class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Uni
         }
     }
 
+    /** Same terms as [updateMatrixInternal]: zoom is relative to the fitted stage, pan in pixels. */
+    fun frameStageRect(rect: StudioIntent.View.FrameStageRect) {
+        updateState { state ->
+            val canvas = state.canvas
+            val width = rect.right - rect.left
+            val height = rect.bottom - rect.top
+            if (canvas.viewportWidth <= 0 || canvas.viewportHeight <= 0 || width <= 0f || height <= 0f) {
+                return@updateState state
+            }
+            val stage = state.project.stage
+            val fitScale = minOf(
+                canvas.viewportWidth.toFloat() / stage.width,
+                canvas.viewportHeight.toFloat() / stage.height,
+            )
+            // The same zoom limits as a pinch.
+            val clear = canvas.viewportHeight * (1f - rect.bottomInset.coerceIn(0f, 0.6f))
+            val zoom = (minOf(canvas.viewportWidth / width, clear / height) * rect.fill / fitScale)
+                .coerceIn(0.25f, 50f)
+            val scale = zoom * fitScale
+            val centreX = (rect.left + rect.right) / 2f - stage.width / 2f
+            val centreY = (rect.top + rect.bottom) / 2f - stage.height / 2f
+            updateMatrixInternal(
+                state.copy(
+                    canvas = canvas.copy(
+                        zoom = zoom,
+                        // Centred in the clear part of the canvas, above the bottom panels.
+                        pan = Point2(-centreX * scale, -centreY * scale - (canvas.viewportHeight - clear) / 2f),
+                        rotation = 0f,
+                    ),
+                ),
+            )
+        }
+    }
+
     fun toggleSafeFrame() = updateState { state ->
         state.copy(canvas = state.canvas.copy(showSafeFrame = !state.canvas.showSafeFrame))
     }
@@ -240,6 +274,8 @@ class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Uni
             is StudioIntent.View.UpdateCanvasTransform -> updateCanvasTransform(intent.matrix)
 
             StudioIntent.View.ResetCanvasTransform -> resetCanvasTransform()
+
+            is StudioIntent.View.FrameStageRect -> frameStageRect(intent)
 
             StudioIntent.View.ToggleSafeFrame -> toggleSafeFrame()
 

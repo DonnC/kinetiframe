@@ -173,7 +173,9 @@ fun ToolDock(
                     // Bone sits beside Pen for any document with a rig -- creating an actor
                     // ("Puppet layer") only ever happens inside the standalone Actor Studio (see
                     // LayerPanel), so this can never surface in a plain FxF project.
-                    if (!performanceOnly && state.actorDefinition() != null) {
+                    // In Actor Studio the mode switch in the top bar opens Setup, so the dock
+                    // doesn't repeat it.
+                    if (!performanceOnly && !isPuppetStudio && state.actorDefinition() != null) {
                         item {
                             ToolButton(
                                 Lucide.Bone,
