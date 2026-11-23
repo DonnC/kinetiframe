@@ -12,22 +12,25 @@ object EditorTokens {
     val row = 54.dp
     val field = 34.dp
     val corner = 8.dp
-    val muted = Color(0xFF7C7F88)
+    val muted = NeutralOutline
     val dark: Color @Composable get() = MaterialTheme.colorScheme.onSurface
-    val inactive = Color(0xFFB7B9C2)
-    val border = Color(0xFF6B6D74)
+    val inactive = Color(0xFFBFBBB5)
+    val border = Color(0xFF6E6A65)
     val accent: Color @Composable get() = MaterialTheme.colorScheme.primary
 
     // Canvas overlays and timeline markers, drawn over artwork, so they don't follow the theme.
-    val selection = Color(0xFF4285F4)
-    val playhead = Color(0xFF5796F5)
-    val onionBefore = Color(0xFF92003B)
-    val onionAfter = Color(0xFF00C853)
+    // Selection and the playhead use the brand carmine. Onion skins follow the animator's
+    // convention: earlier frames carmine, later frames blue, a pair red-green colour blindness
+    // keeps apart. That blue is the one colour outside the brand (see OnionNextBlue).
+    val selection = BrandCarmine
+    val playhead = BrandCarmine
+    val onionBefore = BrandCarmine
+    val onionAfter = OnionNextBlue
 
     // Light wells behind the dock's previews (grid, onion skin and brush stroke), which show
     // dark marks on paper whatever the theme.
     val previewWell = Color(0xFFF8F8F8)
-    val brushPreviewWell = Color(0xFFF7F5F8)
+    val brushPreviewWell = BrandPaper
     val hairline = Color(0xFFE0E0E0)
 
     // The tool dock: its rail, whose height depends on the studio mode, and its menus.

@@ -210,10 +210,14 @@ data class ToolState(
         }
 }
 
-/** Default onion skin tints, as ARGB: earlier frames magenta, later frames green. */
+/**
+ * Default onion skin tints, as ARGB: earlier frames carmine, later frames blue, like the
+ * animator's red and blue pencils. Unlike red and green, the pair stays distinct with red-green
+ * colour blindness. Matches EditorTokens.onionBefore and onionAfter.
+ */
 object OnionSkinColors {
-    val BEFORE = 0xFF92003B.toInt()
-    val AFTER = 0xFF00C853.toInt()
+    val BEFORE = 0xFFC9372C.toInt()
+    val AFTER = 0xFF2E6BD1.toInt()
 }
 
 data class OnionSkinState(

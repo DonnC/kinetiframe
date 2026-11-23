@@ -50,7 +50,6 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
-import com.donnclab.kinetiframe.designsystem.theme.LibraryAccent
 import com.donnclab.kinetiframe.library.model.PackItemEntry
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
@@ -154,6 +153,9 @@ fun HomeScreen(
                         Tab(
                             selected = selectedTab == index,
                             onClick = { selectedTab = index },
+                            // Only the selected tab carries the brand colour.
+                            selectedContentColor = MaterialTheme.colorScheme.primary,
+                            unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                             text = {
                                 Text(
                                     title,
@@ -382,7 +384,7 @@ private fun ImportSheetContent(onFile: () -> Unit, onLibrary: () -> Unit) {
         )
         ImportRow(
             Lucide.Layers,
-            LibraryAccent,
+            MaterialTheme.colorScheme.secondary,
             stringResource(R.string.import_from_library_title),
             stringResource(R.string.import_from_library_subtitle),
             onLibrary,

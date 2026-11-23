@@ -39,3 +39,12 @@ projects.
 
 Keep the license files in [LICENSES](LICENSES) and any notices inside individual files. Earlier
 license grants are described in [NOTICE](NOTICE).
+
+## Fonts
+
+The interface font and wordmark use [Nunito](https://github.com/googlefonts/nunito), copyright
+2014 The Nunito Project Authors, under the SIL Open Font License 1.1. The font files are the
+`nunito_*.ttf` weights in `modules/designsystem/src/main/res/font`, cut from the variable font
+without other changes, and its license is in
+[LICENSES/OFL-1.1-Nunito.txt](LICENSES/OFL-1.1-Nunito.txt). The wordmark outlines in
+`BrandArt.kt` and `docs/brand` are drawn from Nunito ExtraBold.
