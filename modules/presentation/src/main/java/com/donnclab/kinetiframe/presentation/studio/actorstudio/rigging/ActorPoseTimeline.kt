@@ -92,12 +92,17 @@ fun ActorPoseTimeline(
                 PerformanceTakeControls(state, onIntent)
                 if (!taking) {
                     Text(
-                        pluralStringResource(
-                            R.plurals.pose_timeline_summary,
-                            rulerKeys.size,
-                            frame + 1,
-                            rulerKeys.size,
-                        ),
+                        // A preset moves the actor without keys; say so instead of "0 keys".
+                        if (hasPreset && rulerKeys.isEmpty()) {
+                            stringResource(R.string.pose_timeline_preset, frame + 1)
+                        } else {
+                            pluralStringResource(
+                                R.plurals.pose_timeline_summary,
+                                rulerKeys.size,
+                                frame + 1,
+                                rulerKeys.size,
+                            )
+                        },
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.widthIn(
                             min = ActorStudioTokens.poseLabelMinWidth,

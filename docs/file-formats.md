@@ -93,6 +93,11 @@ Actors are stored as folders with a manifest and immutable revisions. Each revis
 rig (`SceneGraph`) and artwork. Performances are JSON documents tied to an actor revision. Their
 models are in `core/.../actor` and `app/.../actors/data/ActorDocuments.kt`.
 
+A drawn actor's `SceneGraph` also has a `figure` (`core/.../actor/figure/DrawnFigure.kt`): a
+named palette, and parts, tubes and surfaces whose curves are SVG path strings (absolute `M`,
+`L`, `Q`, `C` and `Z`) in a bone's space or, for surfaces, the rest pose. Cutout actors have no
+`figure` field, so their files are unchanged.
+
 Some older serialized type names still start with `com.kinetiframe.` (the project's previous
 package name). They are part of the file format and must not be renamed.
 

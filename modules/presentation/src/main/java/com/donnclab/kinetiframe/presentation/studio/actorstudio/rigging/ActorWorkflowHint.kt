@@ -13,6 +13,7 @@ import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.ActorEditTarget
+import com.donnclab.kinetiframe.studio.PerformanceTakePhase
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.actorDefinition
@@ -27,7 +28,12 @@ fun ActorWorkflowHint(state: StudioState, modifier: Modifier = Modifier) {
     val text = when {
         definition == null -> stringResource(R.string.actor_hint_needs_skeleton)
 
-        state.scene.studioMode == StudioMode.ANIMATE_IK -> stringResource(R.string.actor_hint_record)
+        // Pose to pose is the default; the recording hint only shows while a take is running.
+        state.scene.studioMode == StudioMode.ANIMATE_IK &&
+            state.actor.takePhase in listOf(PerformanceTakePhase.ARMED, PerformanceTakePhase.RECORDING) ->
+            stringResource(R.string.actor_hint_record)
+
+        state.scene.studioMode == StudioMode.ANIMATE_IK -> stringResource(R.string.actor_hint_pose_keys)
 
         rigSetup && state.actor.editTarget == ActorEditTarget.ARTWORK -> stringResource(
             R.string.actor_hint_drag_artwork,
@@ -43,6 +49,9 @@ fun ActorWorkflowHint(state: StudioState, modifier: Modifier = Modifier) {
         state.tool.activeTool == DrawingTool.LASSO_CUT -> stringResource(R.string.actor_hint_trace_artwork)
 
         state.scene.selectedBoneId == null -> stringResource(R.string.actor_hint_pick_part)
+
+        // A drawn actor has no drawing to match; its joints set its proportions.
+        rigSetup && definition.sceneGraph.figure != null -> stringResource(R.string.actor_hint_drawn_setup)
 
         rigSetup -> stringResource(R.string.actor_hint_fit_joints)
 

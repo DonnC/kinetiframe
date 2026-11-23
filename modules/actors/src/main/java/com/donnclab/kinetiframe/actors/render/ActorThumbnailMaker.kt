@@ -33,6 +33,9 @@ object ActorThumbnailMaker {
             }
         }
         val points = commands.flatMap { command ->
+            command.figure?.let { _ ->
+                return@flatMap PuppetArtworkRenderer.outline(command) { null }?.toList().orEmpty().chunked(2)
+            }
             val size = sizes[command.assetId] ?: return@flatMap emptyList()
             if (size.outWidth <= 0 || size.outHeight <= 0) return@flatMap emptyList()
             PuppetArtworkRenderer.outline(command, size.outWidth, size.outHeight).toList().chunked(2)
@@ -50,6 +53,10 @@ object ActorThumbnailMaker {
             canvas.scale(fit, fit)
             val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
             commands.forEach { command ->
+                if (command.figure != null) {
+                    PuppetArtworkRenderer.draw(canvas, command, paint) { null }
+                    return@forEach
+                }
                 val size = sizes[command.assetId] ?: return@forEach
                 // Refuse giant imported parts rather than allocate an unbounded thumbnail heap.
                 require(size.outWidth.toLong() * size.outHeight <= 8_000_000) { "Artwork is too large for preview" }

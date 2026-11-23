@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.core.actor.document
 
 import com.donnclab.kinetiframe.core.actor.artwork.ActorArtworkKey
 import com.donnclab.kinetiframe.core.actor.artwork.SceneArtwork
+import com.donnclab.kinetiframe.core.actor.figure.FigureValidation
 import com.donnclab.kinetiframe.core.actor.motion.ActorPoseKey
 import com.donnclab.kinetiframe.core.actor.motion.CurveInterpolation
 import com.donnclab.kinetiframe.core.actor.motion.PerformancePlayback
@@ -45,7 +46,9 @@ data class ActorManifest(
         viewRevisions.values.forEach { ActorDocumentValidation.requireId(it, "view revision ID") }
         require(schemaVersion == SCHEMA_VERSION) { "Unsupported actor schema $schemaVersion" }
         require(displayName.isNotBlank() && displayName.length <= 60) { "Actor name must contain 1–60 characters" }
-        require(templateId in VALID_TEMPLATE_IDS) { "Unsupported actor template '$templateId'" }
+        // Any well-formed ID: skeleton templates can be added without changing this file, and a
+        // newer app's template still opens here, starting from scratch.
+        ActorDocumentValidation.requireId(templateId, "template ID")
         require(createdAtEpochMs >= 0 && updatedAtEpochMs >= createdAtEpochMs) { "Invalid actor timestamps" }
     }
 
@@ -57,6 +60,8 @@ data class ActorManifest(
         /** A blank single-root rig the animator builds bone-by-bone from scratch in Actor Studio --
          *  the actor templates hold the minimal starting graph. */
         const val CUSTOM_TEMPLATE_ID = "custom-v1"
+
+        /** The templates built into every version; others come from the app's template registry. */
         val VALID_TEMPLATE_IDS = setOf(HUMAN_TEMPLATE_ID, ANIMAL_TEMPLATE_ID, CUSTOM_TEMPLATE_ID)
     }
 }
@@ -80,6 +85,7 @@ data class ActorRevision(
         ActorGraphValidation.validate(sceneGraph)
         require(sceneGraph.rootBoneIds.isNotEmpty()) { "Actor revision must have a root part" }
         require(sceneGraph.bones.keys.containsAll(sceneGraph.rootBoneIds)) { "Actor revision has unknown root part" }
+        sceneGraph.figure?.let { FigureValidation.validate(it, sceneGraph) }
         val validArtworkAddresses =
             sceneGraph.bones.keys + SceneArtwork.bindings(sceneGraph).keys
         // Legacy revisions may retain source artwork for an unbound part. Preserve that contract.

@@ -153,17 +153,7 @@ fun EditorTopBar(
                     }
                 }
                 if (isActorStudio) {
-                    com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(
-                        Lucide.Bone,
-                        stringResource(R.string.puppet_edit_joints),
-                    ) {
-                        onIntent(
-                            StudioIntent.Rigging.SetStudioMode(com.donnclab.kinetiframe.studio.StudioMode.RIG_SETUP),
-                        )
-                        onIntent(
-                            StudioIntent.Actor.SetEditTarget(com.donnclab.kinetiframe.studio.ActorEditTarget.JOINT_END),
-                        )
-                    }
+                    // Setup is reached from the mode switch beside this row; no second bone button.
                     com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(
                         Lucide.Undo,
                         stringResource(R.string.editor_undo),

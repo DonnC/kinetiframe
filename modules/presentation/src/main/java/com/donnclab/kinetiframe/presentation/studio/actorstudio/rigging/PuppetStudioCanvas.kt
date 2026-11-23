@@ -62,6 +62,7 @@ fun PuppetStudioCanvas(
     modifier: Modifier = Modifier,
     referenceUnderlay: ((android.graphics.Canvas) -> Unit)? = null,
 ) {
+    FrameActorOnOpen(state, onIntent)
     val activeStroke = remember { ActiveStroke() }
     val selectionPath = remember { Path() }
     val density = LocalDensity.current.density
@@ -105,6 +106,7 @@ fun PuppetStudioCanvas(
             val instance = state.activeActor() ?: return@remember emptyList()
             val definition = state.actorDefinition(true) ?: return@remember emptyList()
             val instanceMatrix = instance.transform.toMatrix()
+            val poseHandles = com.donnclab.kinetiframe.actors.rig.math.PoseHandles.ids(definition.sceneGraph)
             ForwardKinematicsSolver.resolveWorldStates(definition.sceneGraph).values.flatMap { bone ->
                 if (state.actor.takeMoveCharacter &&
                     state.actor.takePhase in listOf(
@@ -128,6 +130,12 @@ fun PuppetStudioCanvas(
                     return@flatMap listOf(
                         RigJointTarget("origin:${bone.id}", Point2(start[0], start[1])),
                     )
+                }
+                // While animating, only chain tips are handles: dragging a hand bends the arm.
+                if (state.scene.studioMode == com.donnclab.kinetiframe.studio.StudioMode.ANIMATE_IK &&
+                    bone.id !in poseHandles && bone.id !in definition.sceneGraph.rootBoneIds
+                ) {
+                    return@flatMap emptyList()
                 }
                 val point = floatArrayOf(bone.endPoint.x, bone.endPoint.y)
                 instanceMatrix.mapPoints(point)

@@ -30,7 +30,7 @@ class CuratedLibraryMigration(private val files: DocumentFileStore) {
                 castIds.all {
                     files.actorDirectory(it).isDirectory
                 },
-            ) { "The four-view Tavi actor must be installed before cleanup" }
+            ) { "The bundled Tavi actors must be installed before cleanup" }
             val library = when (val listed = LibraryRepository(files).list()) {
                 is StoreResult.Value -> listed.value
                 is StoreResult.Failure -> error(listed.message)
@@ -93,6 +93,6 @@ class CuratedLibraryMigration(private val files: DocumentFileStore) {
 
     companion object {
         private val lock = Any()
-        val castIds = setOf("ls-tavi-all-views-v3")
+        val castIds = setOf("ls-tavi-all-views-v3", BundledActorSampleInstaller.DRAWN_TAVI_ID)
     }
 }

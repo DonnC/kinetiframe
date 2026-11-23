@@ -187,8 +187,8 @@ class ActorPerformanceRecorder(
 
     fun selectArtwork(intent: StudioIntent.Actor.SelectArtwork) {
         if (getState().actor.takePhase == PerformanceTakePhase.REVIEW) return
-        val bone = getState().actorDefinition()?.sceneGraph?.bones?.get(intent.partId) ?: return
-        if (intent.variantId.isNotEmpty() && intent.variantId !in bone.artworkVariants) return
+        val graph = getState().actorDefinition()?.sceneGraph ?: return
+        if (!ActorArtwork.hasVariant(graph, intent.partId, intent.variantId)) return
         begin()
         tick()
         val time = getState().actor.previewTimeMicros

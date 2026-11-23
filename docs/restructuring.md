@@ -17,6 +17,41 @@ Work collects on one milestone branch per milestone, with a commit per chunk and
 into `develop` when the milestone is done. The module restructuring is finished (#54 to #88), and
 #89 prepared version 0.1.0: the release checklist passed up to signing. #91 cleaned up the
 repository. #90 merged `develop` into `main` before #91, so `main` doesn't have the cleanup yet.
+#92 shipped the natural-hands copy of `Tavi presents`.
+
+**Natural actors.** `milestone/natural-actors` reworks actors so they look drawn and are easy to
+pose. The plan and the decisions behind it are in `notes/actor-redesign.md` (local). So far:
+
+- Four new scene backgrounds, and the Gemini copies removed from `docs/images`.
+- Drawn actors. `SceneGraph.figure` holds curves instead of image cutouts. One base serves every
+  kind of thing, with nothing human-specific in the model or renderer:
+  - parts: rigid drawings on one bone, with variants;
+  - tubes: inked tubes along bone chains, which can taper, bend at every joint and have cuffs;
+  - surfaces: drawings that bend with the nearest bones.
+- Drawn figures render through the same plan as cutouts, in the editor, export, thumbnails and
+  Actor Studio.
+- *Tavi · Drawn* is bundled beside the cutout Tavi, with front view only for now.
+- Animate mode shows handles only at the tips of chains, and dragging one bends the chain through
+  IK. Every joint stays editable in Setup.
+- Skeleton templates are one registry (`SkeletonTemplate`). Two legs, Four legs and Start from
+  scratch are entries in it. A new kind of actor, such as a bird or a car, is one class that
+  lists its bones, and gets posing, keys, recording, presets and saving from the shared base.
+  Saved template IDs no longer need to be in a fixed list.
+- The studio's tool dock fits the tools a mode shows, instead of keeping a fixed height with
+  empty space where tools were hidden.
+- Animate mode's hint describes posing pose to pose. Recording a take stays as an option, and its
+  hint shows only while a take runs.
+- Actor Studio, checked on a Galaxy A73:
+  - The mode switch reads "Setup | Animate" in words.
+  - The duplicate bone buttons in the top bar and dock are gone.
+  - The actor is framed large in every mode, in the area the panels leave clear.
+  - The selected part's tools sit in the part rail instead of floating over the actor.
+  - The part chips use theme colours and count drawn pieces as artwork.
+  - Drawn actors don't show the continuous-drawing toggle, and get a Setup hint about their build.
+  - Animate offers a drawn part's variants, such as Tavi's hand poses, from a labelled chip on
+    the stage's edge.
+
+Next, in a follow-up milestone: setup sliders for proportions, then side views by mirroring.
 
 **Tavi presents with natural hands.** `milestone/tavi-hands` ships a copy of `Tavi presents`
 beside the unchanged original:
@@ -252,6 +287,10 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
   app never does. Coil 3 without its network module would drop it. The resolved release libraries
   are Apache-2.0, apart from the Lucide icon set, whose artwork is ISC. Keep its notice with
   releases.
+- [File formats](file-formats.md) promises that unknown JSON fields are ignored on read, but
+  the actor, performance and preset repositories use `ignoreUnknownKeys = false`. An older app
+  therefore rejects a revision that has a new field, such as a drawn actor's `figure`, instead of
+  loading what it understands. Either relax the readers or correct the promise.
 
 - **Project storage depends on actors.** One Room database holds the actor, performance, library,
   export and project tables. One file store, named `ActorFileStore` until 4a, serves every

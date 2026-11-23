@@ -203,6 +203,10 @@
     <!-- Actor Studio workflow hint: the next thing to do at each step -->
     <string name="actor_hint_needs_skeleton">Add a reference skeleton to start this actor</string>
     <string name="actor_hint_record">Record · move a part · stop and replay</string>
+    <!-- Setup hint for a drawn actor: joints change its build, there is no art to line up. -->
+    <string name="actor_hint_drawn_setup">Drag a joint to change the build · switch to Animate to pose</string>
+    <!-- Animate mode's default hint: pose to pose with the handle rings. -->
+    <string name="actor_hint_pose_keys">Drag a ring to pose · move to another frame · pose again</string>
     <string name="actor_hint_drag_artwork">Drag the artwork · joints stay fixed</string>
     <string name="actor_hint_drag_attachment">Drag the highlighted attachment joint</string>
     <string name="actor_hint_fit_sketch">Fit joints to your sketch · drawing menu to edit lines and colour</string>
@@ -255,7 +259,7 @@
     <string name="home_archive_actor_title">Archive %1$s?</string>
     <string name="home_archive_actor_message">Archived actors can be recovered. Actors used by a project or library item are protected and cannot be archived.</string>
     <string name="home_cleanup_title">Clean the trial library?</string>
-    <string name="home_cleanup_message">Keep both Tavi presents samples, the Tavi actor, the five curated packs and scene backgrounds. All other existing projects, actors and library items move to a recoverable archive. New work created after cleanup is kept.</string>
+    <string name="home_cleanup_message">Keep both Tavi presents samples, both Tavi actors, the five curated packs and scene backgrounds. All other existing projects, actors and library items move to a recoverable archive. New work created after cleanup is kept.</string>
     <string name="home_cleanup_not_now">Not now</string>
     <string name="home_cleanup_confirm">Clean up</string>
     <string name="home_cleanup_done">Trial library archived. Your curated library is ready.</string>
@@ -526,7 +530,6 @@
     <!-- Actor Studio: rigging and performance -->
     <string name="puppet_back">Back from Actor Studio</string>
     <string name="puppet_performance">Performance</string>
-    <string name="puppet_edit_joints">Edit skeleton joints</string>
     <string name="puppet_undo">Undo actor edit</string>
     <string name="puppet_redo">Redo actor edit</string>
     <string name="puppet_motion_presets">Motion presets</string>
@@ -536,8 +539,8 @@
     <string name="puppet_more_tools">More actor tools</string>
     <string name="puppet_skeleton_overlay">Skeleton overlay</string>
     <string name="puppet_fit_canvas">Fit puppet canvas</string>
-    <string name="studio_mode_rig">Rig Fabricator</string>
-    <string name="studio_mode_performance">Performance Stage</string>
+    <string name="studio_mode_rig">Setup</string>
+    <string name="studio_mode_performance">Animate</string>
     <string name="actor_rename_title">Rename Actor</string>
     <string name="take_record">Record movement</string>
     <string name="take_armed_move_handle">Drag the move handle to start</string>
@@ -565,6 +568,8 @@
         <item quantity="one">Frame %1$d · %2$d key</item>
         <item quantity="other">Frame %1$d · %2$d keys</item>
     </plurals>
+    <!-- The current frame while a motion preset, not keys, moves the actor. -->
+    <string name="pose_timeline_preset">Frame %1$d · motion preset</string>
     <string name="pose_previous_key">Previous pose key</string>
     <string name="pose_next_key">Next pose key</string>
     <string name="pose_play_pause">Play or pause actor preview</string>

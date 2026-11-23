@@ -4,15 +4,18 @@ package com.donnclab.kinetiframe.presentation.studio.editor
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.donnclab.kinetiframe.core.document.PuppetDefinition
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.rigging.PartRail
 import com.donnclab.kinetiframe.presentation.actors.sketch.ActorDrawingModeButton
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.ActorArtworkControls
@@ -40,7 +43,10 @@ internal fun BoxScope.ActorAuthoringOverlay(
     // hand, so it stays while drawing as well as in Rig Setup. Only posing hides it.
     if (host.isActorStudioSession && mode != StudioMode.ANIMATE_IK) {
         val definition = state.actorDefinition()
-        if (panels.toolbarVisible && definition != null && !state.actor.isPerformanceAuthoring) {
+        // Continuous drawing is for imported art; a drawn actor has no use for the toggle.
+        if (panels.toolbarVisible && definition != null && definition.sceneGraph.figure == null &&
+            !state.actor.isPerformanceAuthoring
+        ) {
             Box(
                 Modifier.align(
                     Alignment.TopStart,
@@ -55,9 +61,10 @@ internal fun BoxScope.ActorAuthoringOverlay(
             }
         }
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-            Column(
+            // The selected part's tools share the rail's band instead of floating over the actor.
+            Row(
                 modifier = Modifier.fillMaxWidth().padding(bottom = Dimens.spaceL),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 SelectedPartControls(state, definition, ui.artwork, commands)
                 if (definition != null) {
@@ -65,6 +72,7 @@ internal fun BoxScope.ActorAuthoringOverlay(
                         graph = definition.sceneGraph,
                         selectedPartId = state.scene.selectedBoneId,
                         onPartSelected = { partId -> commands.onIntent(StudioIntent.Rigging.SelectBone(partId)) },
+                        modifier = Modifier.weight(1f),
                     )
                 }
             }
@@ -72,12 +80,20 @@ internal fun BoxScope.ActorAuthoringOverlay(
     }
 
     if (panels.toolbarVisible && host.isActorStudioSession && mode == StudioMode.ANIMATE_IK) {
-        state.actorDefinition()?.sceneGraph?.bones?.get(state.scene.selectedBoneId)
-            ?.takeIf { it.artworkVariants.isNotEmpty() }?.let { part ->
-                Box(Modifier.align(Alignment.BottomCenter).padding(bottom = Dimens.spaceS)) {
-                    ActorArtworkMenu(part, commands.onIntent)
-                }
+        val graph = state.actorDefinition()?.sceneGraph
+        val selected = state.scene.selectedBoneId
+        val defaultName = stringResource(R.string.part_artwork_default)
+        val choices = if (graph != null && selected != null) {
+            com.donnclab.kinetiframe.actors.rig.model.ActorArtwork.choices(graph, selected, defaultName)
+        } else {
+            emptyList()
+        }
+        if (selected != null && choices.isNotEmpty()) {
+            // On the stage's right edge: clear of the timeline and frame strip below.
+            Box(Modifier.align(Alignment.CenterEnd).padding(end = Dimens.spaceL)) {
+                ActorArtworkMenu(selected, choices, commands.onIntent)
             }
+        }
     }
 
     if (panels.showPartPicker) {
@@ -133,7 +149,7 @@ private fun SelectedPartControls(
             editTarget = state.actor.editTarget,
             canCaptureSketch = state.currentBitmap != null,
             onIntent = onIntent,
-            modifier = Modifier.padding(bottom = Dimens.spaceSPlus),
+            modifier = Modifier.padding(horizontal = Dimens.spaceS),
             onChooseArtwork = { artwork.choose(false, state, onIntent) },
             onEditArtwork = edit,
             onReplaceArtwork = replace,

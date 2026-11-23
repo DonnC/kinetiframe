@@ -12,6 +12,10 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
   drawn rather than pasted: his sleeves bend at the elbow, his hands come out of the cuffs and
   turn with his forearms, and his arms move in arcs. Existing
   installs get it on their next launch.
+- Four scene backgrounds: Bedroom, Library, Bus stop bench and Old village.
+- Drawn actors: characters drawn with curves on their bones instead of pictures, so arms, legs
+  and tails bend smoothly in any pose. They work for any kind of thing, not only people.
+  *Tavi · Drawn* ships beside the cutout Tavi.
 
 ## 0.1.0 - not yet tagged
 

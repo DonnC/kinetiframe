@@ -22,6 +22,10 @@ names are shown in `monospace` where they differ from the word used in the app.
 - **Bone**: One segment of a rig. Each bone has a length, a pivot point and a rotation relative to its parent.
 - **Inverse kinematics (IK)**: Posing by moving the end of a limb and letting the joints above it follow, like dragging a hand and having the elbow and shoulder bend. KinetiFrame uses FABRIK and analytic two-bone solvers.
 - **Cutout artwork**: Separate pictures attached to individual bones, like a paper puppet.
+- **Drawn actor** (`DrawnFigure`): An actor drawn with curves on its bones instead of pictures, so it bends smoothly in any pose. It can be anything with a skeleton: a person, an animal, a flag or an object. It is made of three kinds of piece:
+  - a **part**, a rigid drawing on one bone, with variants such as hand poses;
+  - a **tube**, an inked tube along a chain of bones, such as an arm, leg or tail;
+  - a **surface**, a drawing that bends with several nearby bones, such as flag cloth or a wing.
 - **Continuous drawing** (skinning): One whole drawing bound to several bones so it bends smoothly at the joints instead of showing separate pieces.
 - **View**: A separately drawn direction of the same actor: front, back, profile or three-quarter. Switching views swaps artwork; it is not automatic 3D rotation.
 - **Artwork variant**: An alternative picture for one part, such as an open hand or a fist, that can be switched during a performance.
@@ -48,5 +52,5 @@ names are shown in `monospace` where they differ from the word used in the app.
 - **Studio**: The main editing screen. Much of its state still lives in classes named `Timeline*`, such as `StudioViewModel`, `StudioState` and `StudioIntent`, which cover the whole editor, not only the timeline strip.
 - **Actor Studio**: The editor for building rigs, attaching artwork and recording performances.
 - **MVI**: Model-View-Intent. Screens send *intents* (user actions) to a ViewModel, which publishes an immutable *state* and one-off *effects*. See [architecture](architecture/README.md).
-- **Loose Signal**: The name of the bundled sample art set: the Tavi actor, the shared expression, eye, mouth and studio packs, and the two `Tavi presents` samples. It ships in `app/src/main/assets`. See the [asset guide](assets.md).
+- **Loose Signal**: The name of the bundled sample art set: the cutout and drawn Tavi actors, the shared expression, eye, mouth and studio packs, and the two `Tavi presents` samples. It ships in `app/src/main/assets`. See the [asset guide](assets.md).
 - **Legacy baseline**: The list in `.architecture/legacy-baseline.properties` of older code that breaks the size or parameter rules. It can only shrink. See [code guidelines](code-guidelines.md).

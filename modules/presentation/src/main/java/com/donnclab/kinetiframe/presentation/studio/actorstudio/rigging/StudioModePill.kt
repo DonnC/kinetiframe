@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -7,7 +8,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -31,10 +34,7 @@ import com.donnclab.kinetiframe.studio.StudioMode
  * while already in it is a no-op -- the pill only ever needs to move the *phase*, not the
  * finer-grained tool within it (that stays [com.donnclab.kinetiframe.presentation.studio.dock.ToolDock]'s job).
  *
- * Icon-only, matching the rest of Actor Studio's controls: Bone is already this
- * app's established rigging symbol (the skeleton-overlay toggle and ToolDock's Rig button both use
- * it), and Drama reads clearly as "performance" without competing with the literal Play button on
- * the preview timeline below it.
+ * Each segment shows its name beside its icon, so the two modes read as words, not puzzles.
  */
 @Composable
 fun StudioModePill(current: StudioMode, onSelect: (StudioMode) -> Unit, modifier: Modifier = Modifier) {
@@ -75,15 +75,18 @@ private fun ModeSegment(
         color = if (selected) MaterialTheme.colorScheme.surface else Color.Transparent,
         shadowElevation = if (selected) ActorStudioTokens.pillSelectedElevation else 0.dp,
     ) {
-        Icon(
-            icon,
-            contentDescription,
+        val tint = if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
+        Row(
             modifier = Modifier.padding(
                 horizontal = ActorStudioTokens.pillIconPadding,
                 vertical = ActorStudioTokens.pillIconPadding,
-            ).size(EditorTokens.icon),
-            tint = if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+            ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs),
+        ) {
+            Icon(icon, null, modifier = Modifier.size(EditorTokens.icon), tint = tint)
+            Text(contentDescription, style = MaterialTheme.typography.labelLarge, color = tint)
+        }
     }
 }
 

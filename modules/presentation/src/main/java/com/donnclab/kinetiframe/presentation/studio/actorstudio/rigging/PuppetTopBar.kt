@@ -91,19 +91,6 @@ fun PuppetTopBar(
                         ActorPackAttachmentButton(choose, enabled = hasSelectedPart)
                     }
                 }
-                if (!performanceOnly &&
-                    !compact
-                ) {
-                    ActorToolButton(
-                        Lucide.Bone,
-                        stringResource(R.string.puppet_edit_joints),
-                        selected =
-                        studioMode == StudioMode.RIG_SETUP,
-                    ) {
-                        onIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
-                        onIntent(StudioIntent.Actor.SetEditTarget(ActorEditTarget.JOINT_END))
-                    }
-                }
                 if (!compact) {
                     ActorToolButton(Icons.AutoMirrored.Filled.Undo, stringResource(R.string.puppet_undo), canUndo) {
                         onIntent(StudioIntent.Actor.Undo)
@@ -136,15 +123,6 @@ fun PuppetTopBar(
                         { more = false },
                         buildList {
                             if (compact) {
-                                if (!performanceOnly) {
-                                    add(
-                                        ContextIconAction(Lucide.Bone, stringResource(R.string.puppet_edit_joints), {
-                                            onIntent(StudioIntent.Rigging.SetStudioMode(StudioMode.RIG_SETUP))
-                                            onIntent(StudioIntent.Actor.SetEditTarget(ActorEditTarget.JOINT_END))
-                                            more = false
-                                        }),
-                                    )
-                                }
                                 add(
                                     ContextIconAction(
                                         Icons.AutoMirrored.Filled.Undo,

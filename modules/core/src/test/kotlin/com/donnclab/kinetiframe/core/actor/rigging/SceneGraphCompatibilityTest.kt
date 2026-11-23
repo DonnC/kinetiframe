@@ -41,12 +41,15 @@ class SceneGraphCompatibilityTest {
         assertEquals("com.kinetiframe.engine.rigging.model.SceneGraph", SceneGraph.serializer().descriptor.serialName)
     }
 
-    @Test fun `empty and explicit defaults retain original three fields`() {
+    @Test fun `empty and explicit defaults retain the original fields plus the optional figure`() {
         assertEquals(SceneGraph(), Json.decodeFromString<SceneGraph>("{}"))
         assertEquals("{}", Json.encodeToString(SceneGraph()))
         val defaults = Json { encodeDefaults = true }
         val encoded = defaults.encodeToString(SceneGraph())
-        assertEquals(setOf("rootBoneIds", "bones", "drawing"), Json.parseToJsonElement(encoded).jsonObject.keys)
+        assertEquals(
+            setOf("rootBoneIds", "bones", "drawing", "figure"),
+            Json.parseToJsonElement(encoded).jsonObject.keys,
+        )
         assertEquals(SceneGraph(), Json.decodeFromString<SceneGraph>(encoded))
     }
 

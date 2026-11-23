@@ -37,9 +37,7 @@ internal fun performancePoseThumbnail(state: StudioState, assets: RigAssetManage
             synchronized(assets) {
                 val commands = PuppetRenderPlan.create(evaluated, instance)
                 val bounds = commands.flatMap { command ->
-                    assets.getAsset(command.assetId)?.let {
-                        PuppetArtworkRenderer.outline(command, it.width, it.height).toList()
-                    }.orEmpty()
+                    PuppetArtworkRenderer.outline(command) { assets.getAsset(it) }?.toList().orEmpty()
                 }
                 if (bounds.isEmpty()) return@synchronized null
                 val xs = bounds.filterIndexed { index, _ -> index % 2 == 0 }
@@ -57,9 +55,7 @@ internal fun performancePoseThumbnail(state: StudioState, assets: RigAssetManage
                     canvas.translate(-left, -top)
                     val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
                     commands.forEach { command ->
-                        assets.getAsset(command.assetId)?.let {
-                            PuppetArtworkRenderer.draw(canvas, command, it, paint)
-                        }
+                        PuppetArtworkRenderer.draw(canvas, command, paint) { assets.getAsset(it) }
                     }
                 }
             }

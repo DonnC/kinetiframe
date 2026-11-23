@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -150,9 +150,12 @@ fun ToolDock(
                 )
 
                 LazyColumn(
+                    // The rail fits the tools the current mode shows, so hiding tools never leaves
+                    // an empty stretch of dock; the token height is only the most it may grow to.
                     modifier = Modifier
                         .width(EditorTokens.dockRailWidth)
-                        .height(
+                        .heightIn(
+                            max =
                             if (isPuppetStudio) {
                                 EditorTokens.dockRailHeightPuppetStudio
                             } else if (state.actorDefinition() !=
@@ -170,7 +173,9 @@ fun ToolDock(
                     // Bone sits beside Pen for any document with a rig -- creating an actor
                     // ("Puppet layer") only ever happens inside the standalone Actor Studio (see
                     // LayerPanel), so this can never surface in a plain FxF project.
-                    if (!performanceOnly && state.actorDefinition() != null) {
+                    // In Actor Studio the mode switch in the top bar opens Setup, so the dock
+                    // doesn't repeat it.
+                    if (!performanceOnly && !isPuppetStudio && state.actorDefinition() != null) {
                         item {
                             ToolButton(
                                 Lucide.Bone,

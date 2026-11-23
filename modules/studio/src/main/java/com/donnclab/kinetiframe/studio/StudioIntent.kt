@@ -231,6 +231,19 @@ sealed class StudioIntent : ViewIntent {
         data class UpdateRulerGuide(val guide: RulerGuide) : View()
         data class UpdateCanvasTransform(val matrix: Matrix) : View()
         object ResetCanvasTransform : View()
+
+        /**
+         * Zooms and pans so a stage rectangle, such as an actor's bounds, fills [fill] of the canvas
+         * above [bottomInset], the share of its height that panels cover at the bottom.
+         */
+        data class FrameStageRect(
+            val left: Float,
+            val top: Float,
+            val right: Float,
+            val bottom: Float,
+            val fill: Float,
+            val bottomInset: Float = 0f,
+        ) : View()
         object ToggleSafeFrame : View()
         data class SetViewportSize(val width: Int, val height: Int) : View()
         data class UpdateTransform(
