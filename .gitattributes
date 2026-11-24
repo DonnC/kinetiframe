@@ -1,6 +1,9 @@
 # Store text files with LF line endings in the repository.
 * text=auto
 
+# Shell scripts keep LF, so they run in Git Bash and on Unix.
+*.sh text eol=lf
+
 # Windows scripts keep CRLF.
 *.bat text eol=crlf
 *.cmd text eol=crlf
