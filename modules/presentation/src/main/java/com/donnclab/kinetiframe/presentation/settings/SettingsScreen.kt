@@ -51,8 +51,8 @@ fun SettingsScreen(
     onShareDiagnostics: () -> Unit = {},
 ) {
     BackHandler(onBack = onBack)
-    // A root screen: the same app bar as Home and Library, the page title as the first heading,
-    // and no back arrow (the bottom bar and system Back move between root screens).
+    // A root screen: the same app bar as Home and Library, no extra title (the bottom bar shows
+    // where you are) and no back arrow.
     Scaffold(topBar = {
         com.donnclab.kinetiframe.presentation.common.AppBrandBar()
     }, bottomBar = {
@@ -68,7 +68,6 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState()).padding(Dimens.spaceXl),
             verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
         ) {
-            Text(stringResource(R.string.settings_title), style = MaterialTheme.typography.headlineSmall)
             if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
             state.error?.let { Text(it.asString(), color = MaterialTheme.colorScheme.error) }
             Text(stringResource(R.string.settings_appearance), style = MaterialTheme.typography.titleSmall)
@@ -88,6 +87,12 @@ fun SettingsScreen(
             )
             HorizontalDivider()
             Text(stringResource(R.string.settings_studio), style = MaterialTheme.typography.titleSmall)
+            PreferenceSwitch(
+                stringResource(R.string.settings_autosave),
+                stringResource(R.string.settings_autosave_hint),
+                state.preferences.autosave,
+                !state.loading,
+            ) { onIntent(SettingsIntent.Autosave(it)) }
             PreferenceSwitch(
                 stringResource(R.string.settings_menu_labels),
                 stringResource(R.string.settings_menu_labels_hint),

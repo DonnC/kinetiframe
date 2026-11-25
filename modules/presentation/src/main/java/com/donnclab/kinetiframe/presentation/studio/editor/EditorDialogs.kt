@@ -74,9 +74,16 @@ internal fun EditorDialogs(
     }
     if (panels.showLibraryPicker) {
         LibraryPickerDialog(
-            allowedKinds = EditorLibraryKinds,
+            allowedKinds = if (panels.libraryPickerBackgroundsOnly) {
+                setOf(com.donnclab.kinetiframe.core.actor.document.LibraryItemKind.BACKGROUND_IMAGE)
+            } else {
+                EditorLibraryKinds
+            },
             projectId = state.project.id,
-            onDismiss = { panels.showLibraryPicker = false },
+            onDismiss = {
+                panels.showLibraryPicker = false
+                panels.libraryPickerBackgroundsOnly = false
+            },
             onOpenPack = { manifest -> ui.tray.manifest = manifest },
             onPick = onLibraryPick,
         )

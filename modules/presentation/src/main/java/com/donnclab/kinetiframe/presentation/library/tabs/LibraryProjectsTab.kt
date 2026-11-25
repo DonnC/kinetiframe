@@ -11,46 +11,55 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.AssetKind
 import com.donnclab.kinetiframe.presentation.common.AssetSummary
 import com.donnclab.kinetiframe.presentation.library.LibraryIntent
 import com.donnclab.kinetiframe.presentation.library.catalog.AssetGridCard
 import com.donnclab.kinetiframe.presentation.library.catalog.FilterChipRow
 import com.donnclab.kinetiframe.presentation.library.preview.PreviewCatalog
 
-private val filters = listOf(
+/** Library's Projects tab: the user's saved projects, nothing else. */
+@Composable
+fun LibraryProjectsTab(items: List<AssetSummary>, onIntent: (LibraryIntent) -> Unit) {
+    AssetGrid(items.filter { it.details.kind == AssetKind.PROJECT }, onIntent)
+}
+
+private val imageFilters = listOf(
     R.string.filter_all,
-    R.string.library_filter_full_projects,
-    R.string.library_filter_background_images,
-    R.string.library_filter_static_overlays,
+    R.string.library_filter_backgrounds,
+    R.string.library_filter_overlays,
 )
 
-/** Library's "Projects & Scenes" tab -- the user's own full projects, background images and
- * static overlays, narrowed by [selectedFilter]. Cards carry fps/canvas-size chips and a duration,
- * never an author or like count -- there is no community metadata for local assets. */
+/** Library's Images tab: background images and static overlays, narrowed by [selectedFilter]. */
 @Composable
-fun LibraryProjectsTab(projects: List<AssetSummary>, selectedFilter: Int, onIntent: (LibraryIntent) -> Unit) {
-    val kind = when (selectedFilter) {
-        1 -> com.donnclab.kinetiframe.presentation.common.AssetKind.PROJECT
-        2 -> com.donnclab.kinetiframe.presentation.common.AssetKind.BACKGROUND_IMAGE
-        3 -> com.donnclab.kinetiframe.presentation.common.AssetKind.FRAME
-        else -> null
+fun LibraryImagesTab(items: List<AssetSummary>, selectedFilter: Int, onIntent: (LibraryIntent) -> Unit) {
+    val wanted = when (selectedFilter) {
+        1 -> setOf(AssetKind.BACKGROUND_IMAGE)
+        2 -> setOf(AssetKind.FRAME)
+        else -> setOf(AssetKind.BACKGROUND_IMAGE, AssetKind.FRAME)
     }
-    val filtered = projects.filter { kind == null || it.details.kind == kind }
     Column {
-        FilterChipRow(filters, selectedFilter, onSelect = { onIntent(LibraryIntent.SelectFilter(it)) })
-        if (filtered.isEmpty()) {
-            com.donnclab.kinetiframe.presentation.library.LibraryEmptyState()
-            return@Column
-        }
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(Dimens.gridColumns),
-            contentPadding = PaddingValues(horizontal = Dimens.spaceXl, vertical = Dimens.spaceS),
-            horizontalArrangement = Arrangement.spacedBy(Dimens.gridColumnGap),
-            verticalArrangement = Arrangement.spacedBy(Dimens.gridColumnGap),
-        ) {
-            items(filtered, key = {
-                it.id
-            }) { project -> AssetGridCard(project, onClick = { onIntent(LibraryIntent.OpenDetails(project.details)) }) }
+        FilterChipRow(imageFilters, selectedFilter, onSelect = { onIntent(LibraryIntent.SelectFilter(it)) })
+        AssetGrid(items.filter { it.details.kind in wanted }, onIntent)
+    }
+}
+
+/** Cards carry fps/canvas-size chips and a duration, never an author or like count: there is no
+ * community metadata for local assets. */
+@Composable
+private fun AssetGrid(items: List<AssetSummary>, onIntent: (LibraryIntent) -> Unit) {
+    if (items.isEmpty()) {
+        com.donnclab.kinetiframe.presentation.library.LibraryEmptyState()
+        return
+    }
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(Dimens.gridColumns),
+        contentPadding = PaddingValues(horizontal = Dimens.spaceXl, vertical = Dimens.spaceS),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.gridColumnGap),
+        verticalArrangement = Arrangement.spacedBy(Dimens.gridColumnGap),
+    ) {
+        items(items, key = { it.id }) { item ->
+            AssetGridCard(item, onClick = { onIntent(LibraryIntent.OpenDetails(item.details)) })
         }
     }
 }
@@ -58,5 +67,5 @@ fun LibraryProjectsTab(projects: List<AssetSummary>, selectedFilter: Int, onInte
 @Preview(showBackground = true)
 @Composable
 private fun LibraryProjectsTabPreview() {
-    KinetiFrameTheme { LibraryProjectsTab(PreviewCatalog.libraryProjects(), selectedFilter = 0, onIntent = {}) }
+    KinetiFrameTheme { LibraryProjectsTab(PreviewCatalog.libraryProjects(), onIntent = {}) }
 }

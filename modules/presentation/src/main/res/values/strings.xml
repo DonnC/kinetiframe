@@ -294,7 +294,14 @@
     <string name="add_project_summary">%1$s · %2$d × %3$d · %4$d fps</string>
     <string name="canvas_size_title">Canvas Size</string>
     <!-- The canvas preset whose size the animator sets, for a project kept on this device. -->
-    <string name="canvas_preset_local">Local</string>
+    <string name="canvas_preset_custom">Custom</string>
+    <string name="canvas_preset_landscape">Landscape</string>
+    <string name="canvas_preset_portrait">Portrait</string>
+    <string name="canvas_preset_square">Square</string>
+    <string name="add_project_more_sizes">More sizes</string>
+    <string name="fps_chip">%1$d fps</string>
+    <string name="fps_preview_description">A ball bouncing at %1$d frames per second</string>
+    <string name="fps_hint">More frames per second move more smoothly, but each second needs more drawings.</string>
     <string name="canvas_size_width">Width</string>
     <string name="canvas_size_height">Height</string>
     <string name="canvas_size_px">px</string>
@@ -761,6 +768,28 @@
     <string name="editor_background_image">Background image</string>
     <string name="editor_save_project">Save Project</string>
     <string name="editor_export_video">Export video</string>
+    <string name="settings_autosave">Autosave</string>
+    <string name="home_collections_all">All collections</string>
+    <string name="home_collections_empty">No collections yet. Long-press a project and drop it on another to group them, such as the episodes of a series.</string>
+    <string name="home_collections_show_all">Show all projects</string>
+    <string name="home_collection_new">New collection</string>
+    <string name="home_collection_name">Collection name</string>
+    <string name="home_collection_default_name">My series</string>
+    <string name="home_collection_create">Create</string>
+    <plurals name="home_collection_count">
+        <item quantity="one">%d project</item>
+        <item quantity="other">%d projects</item>
+    </plurals>
+    <string name="pack_size_preview">Each item is drawn on a %1$d × %1$d canvas.</string>
+    <string name="editor_background_from_library">Background from Library</string>
+    <string name="editor_background_from_files">Background from files</string>
+    <string name="editor_frame_rate">Frame rate</string>
+    <string name="editor_frame_rate_note">This is the project\'s frame rate. Every drawing stays; the animation plays faster or slower.</string>
+    <string name="library_tab_images">Images</string>
+    <string name="library_tab_colours">Colours</string>
+    <string name="library_filter_backgrounds">Backgrounds</string>
+    <string name="library_filter_overlays">Overlays</string>
+    <string name="settings_autosave_hint">Save projects as you work and when you leave. Off: you\'re asked before leaving.</string>
     <string name="editor_saving_project">Saving project…</string>
     <string name="editor_project_saved">Project saved</string>
     <string name="editor_project_not_saved">Project was not saved</string>

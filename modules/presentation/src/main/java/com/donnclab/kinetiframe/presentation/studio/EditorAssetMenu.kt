@@ -21,11 +21,14 @@ import com.donnclab.kinetiframe.presentation.common.IconContextMenu
 
 /** What [EditorAssetMenu]'s items do. A null save action hides its item. */
 data class BackgroundMenuActions(
+    /** Picks a background image from the phone's files. */
     val onChoose: () -> Unit,
     val onRemove: () -> Unit,
     val onSaveBackground: (() -> Unit)? = null,
     val onSaveFrame: (() -> Unit)? = null,
     val onToggleBackground: () -> Unit = {},
+    /** Picks a background image saved in the Library; null hides the choice. */
+    val onChooseFromLibrary: (() -> Unit)? = null,
 )
 
 /** Persistent background actions belong together, not mixed with canvas display preferences. */
@@ -37,19 +40,28 @@ fun EditorAssetMenu(
     menuActions: BackgroundMenuActions,
     backgroundVisible: Boolean = true,
 ) {
-    val (onChoose, onRemove, onSaveBackground, onSaveFrame, onToggleBackground) = menuActions
+    val (onChoose, onRemove, onSaveBackground, onSaveFrame, onToggleBackground, onChooseFromLibrary) = menuActions
     val actions = buildList {
-        add(
-            ContextIconAction(
-                Icons.Filled.Image,
-                stringResource(
-                    if (hasBackground) R.string.editor_background_replace else R.string.editor_background_add,
+        // Where the background comes from is the first choice: the Library or the phone's files.
+        onChooseFromLibrary?.let { fromLibrary ->
+            add(
+                ContextIconAction(
+                    Icons.Filled.CollectionsBookmark,
+                    stringResource(
+                        R.string.editor_background_from_library,
+                    ),
+                    {
+                        onDismiss()
+                        fromLibrary()
+                    },
                 ),
-                {
-                    onDismiss()
-                    onChoose()
-                },
-            ),
+            )
+        }
+        add(
+            ContextIconAction(Icons.Filled.Image, stringResource(R.string.editor_background_from_files), {
+                onDismiss()
+                onChoose()
+            }),
         )
         if (hasBackground) {
             add(

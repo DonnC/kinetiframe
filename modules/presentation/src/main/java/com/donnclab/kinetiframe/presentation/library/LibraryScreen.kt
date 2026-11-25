@@ -57,13 +57,17 @@ fun LibraryScreen(
     onNavigate: (BottomNavDestination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showPalettes by remember { mutableStateOf(false) }
-    var previewColor by remember { mutableStateOf(androidx.compose.ui.graphics.Color.Black) }
     Box(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            // The app bar stays the same on every root screen.
-            com.donnclab.kinetiframe.presentation.common.AppBrandBar()
-            LibraryTopBar(state.query, onIntent, { showPalettes = true })
+            // The shared app bar, with Library's search in it: the tab bar already says where you are.
+            com.donnclab.kinetiframe.presentation.common.AppBrandBar(
+                middle = { LibrarySearch(state.query, onIntent) },
+                actions = {
+                    IconButton(onClick = { onIntent(LibraryIntent.Reload) }) {
+                        Icon(Icons.Filled.Refresh, stringResource(R.string.library_refresh))
+                    }
+                },
+            )
             TopTabRow(TopTabs.all, state.selectedTab, onSelect = { onIntent(LibraryIntent.SelectTab(it)) })
             Box(Modifier.weight(1f)) {
                 LibraryTabContent(state, onIntent)
@@ -81,15 +85,6 @@ fun LibraryScreen(
                 onRetry = { onIntent(LibraryIntent.OpenPackContents(pack)) },
                 onEdit = { onIntent(LibraryIntent.EditOpenPack) },
             )
-        }
-    }
-
-    if (showPalettes) {
-        ModalBottomSheet(onDismissRequest = { showPalettes = false }) {
-            Column(Modifier.padding(Dimens.spaceXl)) {
-                Text(stringResource(R.string.library_palettes), style = MaterialTheme.typography.titleMedium)
-                com.donnclab.kinetiframe.presentation.studio.color.PaletteBrowser(previewColor, { previewColor = it })
-            }
         }
     }
 
@@ -112,40 +107,15 @@ fun LibraryScreen(
 }
 
 @Composable
-private fun LibraryTopBar(query: String, onIntent: (LibraryIntent) -> Unit, onPalettes: () -> Unit) {
-    Column {
-        Row(
-            Modifier.padding(horizontal = Dimens.spaceXl, vertical = Dimens.spaceM),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(stringResource(R.string.library_title), style = MaterialTheme.typography.headlineSmall)
-            Row {
-                IconButton(onClick = onPalettes) {
-                    Icon(Icons.Filled.Palette, stringResource(R.string.library_palettes))
-                }
-                IconButton(onClick = {
-                    onIntent(LibraryIntent.Reload)
-                }) { Icon(Icons.Filled.Refresh, stringResource(R.string.library_refresh)) }
-            }
-        }
-        CompactTextField(
-            value = query,
-            onValueChange = { onIntent(LibraryIntent.Search(it)) },
-            placeholder = {
-                Text(stringResource(R.string.library_search))
-            },
-            singleLine = true,
-            leadingIcon = { Icon(Icons.Filled.Search, null) },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = Dimens.spaceXl),
-        )
-        Text(
-            stringResource(R.string.library_subtitle),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = Dimens.spaceXl).padding(bottom = Dimens.spaceS),
-        )
-    }
+private fun LibrarySearch(query: String, onIntent: (LibraryIntent) -> Unit) {
+    CompactTextField(
+        value = query,
+        onValueChange = { onIntent(LibraryIntent.Search(it)) },
+        placeholder = { Text(stringResource(R.string.library_search)) },
+        singleLine = true,
+        leadingIcon = { Icon(Icons.Filled.Search, null) },
+        modifier = Modifier.fillMaxWidth(),
+    )
 }
 
 @Composable
@@ -158,13 +128,15 @@ private fun LibraryTabContent(state: LibraryState, onIntent: (LibraryIntent) -> 
     }
     val query = state.query.trim()
     when (state.selectedTab) {
-        TopTabs.PROJECTS -> LibraryProjectsTab(
-            state.projects.filter {
-                it.title.contains(query, true)
-            },
+        TopTabs.PROJECTS -> LibraryProjectsTab(state.projects.filter { it.title.contains(query, true) }, onIntent)
+
+        TopTabs.IMAGES -> com.donnclab.kinetiframe.presentation.library.tabs.LibraryImagesTab(
+            state.projects.filter { it.title.contains(query, true) },
             state.selectedFilter,
             onIntent,
         )
+
+        TopTabs.COLOURS -> com.donnclab.kinetiframe.presentation.library.tabs.LibraryColoursTab()
 
         TopTabs.ACTORS -> LibraryActorsTab(
             state.actors.filter {

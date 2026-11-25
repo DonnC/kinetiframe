@@ -27,6 +27,7 @@ sealed interface SettingsIntent : ViewIntent {
     data class SystemBars(val hidden: Boolean) : SettingsIntent
     data class PlaybackTools(val hidden: Boolean) : SettingsIntent
     data class MenuLabels(val shown: Boolean) : SettingsIntent
+    data class Autosave(val on: Boolean) : SettingsIntent
 }
 sealed interface SettingsEffect : ViewEffect
 
@@ -69,6 +70,8 @@ class SettingsViewModel(private val store: AppPreferencesStore) :
                     )
 
                     is SettingsIntent.MenuLabels -> currentState.preferences.copy(showMenuLabels = intent.shown)
+
+                    is SettingsIntent.Autosave -> currentState.preferences.copy(autosave = intent.on)
                 }
                 try {
                     store.save(next)

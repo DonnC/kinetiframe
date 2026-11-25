@@ -79,10 +79,50 @@ fun AddPackScreen(state: AddPackFormState, callbacks: AddPackCallbacks, modifier
                     )
                 }
             }
+            PackSizePreview(state.dimension, Modifier.padding(top = Dimens.spaceXl))
             Spacer(Modifier.height(Dimens.spaceXlPlus))
         }
     }
 }
+
+/**
+ * How big each pack item is drawn, against the largest size: the chosen square sits inside a
+ * dashed 1024 outline, with a sample sticker, so Small, Medium and Large mean something.
+ */
+@Composable
+private fun PackSizePreview(dimension: Int, modifier: Modifier = Modifier) {
+    val largest = PACK_SIZES.maxOf { it.first }.toFloat()
+    val outline = MaterialTheme.colorScheme.outline
+    val fill = MaterialTheme.colorScheme.primaryContainer
+    val ink = MaterialTheme.colorScheme.primary
+    Column(modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        androidx.compose.foundation.Canvas(Modifier.fillMaxWidth(PREVIEW_WIDTH).aspectRatio(1f)) {
+            val dash = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(DASH, DASH))
+            drawRect(outline, style = androidx.compose.ui.graphics.drawscope.Stroke(STROKE, pathEffect = dash))
+            val side = size.width * (dimension / largest)
+            val topLeft = androidx.compose.ui.geometry.Offset((size.width - side) / 2, (size.height - side) / 2)
+            drawRect(fill, topLeft, androidx.compose.ui.geometry.Size(side, side))
+            // A sample sticker: a round face, so the scale reads as "how big a drawing is".
+            val centre = androidx.compose.ui.geometry.Offset(size.width / 2, size.height / 2)
+            drawCircle(ink, side * FACE, centre, style = androidx.compose.ui.graphics.drawscope.Stroke(STROKE))
+            drawCircle(ink, side * EYE, centre + androidx.compose.ui.geometry.Offset(-side * EYE_GAP, -side * EYE_GAP))
+            drawCircle(ink, side * EYE, centre + androidx.compose.ui.geometry.Offset(side * EYE_GAP, -side * EYE_GAP))
+        }
+        Text(
+            stringResource(R.string.pack_size_preview, dimension),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = Dimens.spaceS),
+        )
+    }
+}
+
+private const val PREVIEW_WIDTH = 0.6f
+private const val DASH = 12f
+private const val STROKE = 3f
+private const val FACE = 0.3f
+private const val EYE = 0.035f
+private const val EYE_GAP = 0.1f
 
 /** The three square sizes New Pack offers, each paired with its S/M/L shorthand. */
 private val PACK_SIZES =

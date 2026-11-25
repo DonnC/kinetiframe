@@ -13,22 +13,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 
-/** Consistent browse/create branding; tools remain contextual to the destination. */
+/**
+ * The app bar every root screen shares. With no [middle], it shows the logo and the KinetiFrame
+ * wordmark. A screen with its own job in the bar, such as Library's search box, passes [middle]:
+ * the bar then shows the logo only, then that content, so the screen never needs a second header.
+ * [actions] sit at the end.
+ */
 @Composable
-fun AppBrandBar(actions: @Composable RowScope.() -> Unit = {}) {
+fun AppBrandBar(middle: (@Composable RowScope.() -> Unit)? = null, actions: @Composable RowScope.() -> Unit = {}) {
     Row(
         Modifier.fillMaxWidth().padding(horizontal = Dimens.spaceL, vertical = Dimens.spaceSPlus),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(Dimens.spaceSPlus),
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceSPlus),
-        ) {
-            BrandBadge(Modifier.size(Dimens.brandBadge))
+        BrandBadge(Modifier.size(Dimens.brandBadge))
+        if (middle != null) {
+            Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, content = middle)
+        } else {
             BrandWordmark(Modifier.size(Dimens.brandWordmarkWidth, Dimens.brandWordmarkHeight))
+            Row(Modifier.weight(1f)) {}
         }
-        Row(content = actions)
+        Row(verticalAlignment = Alignment.CenterVertically, content = actions)
     }
 }
 

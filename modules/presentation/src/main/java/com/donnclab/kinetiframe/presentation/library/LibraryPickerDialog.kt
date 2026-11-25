@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -119,13 +120,14 @@ fun LibraryPickerDialog(
         }
     }
 
-    Dialog(onDismissRequest = onDismiss) {
-        Surface(
-            shape = MaterialTheme.shapes.large,
-            tonalElevation = Dimens.elevationRaised,
-            modifier = Modifier.fillMaxWidth(0.95f).fillMaxHeight(0.85f),
-        ) {
-            Column(Modifier.fillMaxSize().padding(Dimens.spaceL)) {
+    // An expandable sheet over the canvas: it opens at half height and drags taller or closed.
+    androidx.compose.material3.ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = androidx.compose.material3.rememberModalBottomSheetState(),
+        modifier = Modifier.fillMaxHeight(),
+    ) {
+        Box(Modifier.fillMaxSize()) {
+            Column(Modifier.fillMaxSize().navigationBarsPadding().padding(horizontal = Dimens.spaceL)) {
                 Text(stringResource(R.string.library_picker_title), style = MaterialTheme.typography.titleMedium)
                 if (projectId != null) {
                     Spacer(Modifier.height(Dimens.spaceS))
@@ -144,15 +146,11 @@ fun LibraryPickerDialog(
                 }
                 Spacer(Modifier.height(Dimens.spaceS))
                 if (filterableKinds.size > 1) {
+                    // Chips toggle, as in Library: none selected shows everything.
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXsPlus)) {
-                        item {
-                            FilterChip(selected = kindFilter == null, onClick = {
-                                model.handleIntent(LibraryPickerIntent.Filter(null))
-                            }, label = { Text(stringResource(R.string.filter_all)) })
-                        }
                         items(filterableKinds) { kind ->
                             FilterChip(selected = kindFilter == kind, onClick = {
-                                model.handleIntent(LibraryPickerIntent.Filter(kind))
+                                model.handleIntent(LibraryPickerIntent.Filter(kind.takeIf { kindFilter != it }))
                             }, label = { Text(stringResource(kind.labelRes())) })
                         }
                     }
@@ -207,9 +205,6 @@ fun LibraryPickerDialog(
                     }
                 }
                 Spacer(Modifier.height(Dimens.spaceS))
-                TextButton(onClick = onDismiss, modifier = Modifier.align(Alignment.End)) {
-                    Text(stringResource(R.string.action_cancel))
-                }
             }
         }
     }

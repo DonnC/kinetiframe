@@ -24,7 +24,9 @@ import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.library.model.AssetOrganization
+import com.donnclab.kinetiframe.library.model.BrowseMode
 import com.donnclab.kinetiframe.library.model.BrowserPosition
+import com.donnclab.kinetiframe.library.model.DEFAULT_COLLECTION
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
@@ -51,8 +53,28 @@ internal fun ProjectsTabContent(
     var renameCandidate by remember { mutableStateOf<ProjectManifest?>(null) }
     var deleteCandidate by remember { mutableStateOf<ProjectManifest?>(null) }
     var organiseCandidate by remember { mutableStateOf<ProjectManifest?>(null) }
+    // A project dropped onto one that isn't in a collection yet: both go into a new, named one.
+    var newCollectionFor by remember { mutableStateOf<Pair<String, String>?>(null) }
     val organization = hierarchy.organization
     val position = organization.browsers["projects"] ?: BrowserPosition()
+    fun collectionOf(key: String) = organization.items[key]?.collection ?: DEFAULT_COLLECTION
+    fun moveTo(key: String, collection: String) = onHierarchyIntent(
+        HierarchyBrowserIntent.Organise(
+            key,
+            (organization.items[key] ?: AssetOrganization()).copy(collection = collection),
+        ),
+    )
+    fun dropOnProject(dragged: String, target: String) {
+        val collection = collectionOf(target)
+        if (collection == DEFAULT_COLLECTION) newCollectionFor = dragged to target else moveTo(dragged, collection)
+    }
+    val collections = remember(state.projects, organization) {
+        state.projects.groupBy { collectionOf("project:${it.projectId}") }
+            .filterKeys { it != DEFAULT_COLLECTION }
+            .map { (name, projects) -> ProjectCollection(name, projects.sortedByDescending { it.updatedAtEpochMs }) }
+            .sortedBy { it.name.lowercase() }
+    }
+    val showingCollections = position.mode == BrowseMode.COLLECTIONS && position.collection == null
     val filtered = remember(state.projects, query, organization, position) {
         HierarchyBrowserIndex.filter(
             state.projects,
@@ -69,7 +91,13 @@ internal fun ProjectsTabContent(
                 "project:${it.projectId}"
             }, organization),
             { onHierarchyIntent(HierarchyBrowserIntent.Browse("projects", it)) },
+            showCollectionMenu = false,
         )
+        position.collection?.takeIf { position.mode == BrowseMode.COLLECTIONS }?.let { name ->
+            OpenCollectionHeader(name) {
+                onHierarchyIntent(HierarchyBrowserIntent.Browse("projects", position.copy(collection = null)))
+            }
+        }
         hierarchy.error?.let { Text(it.asString(), style = MaterialTheme.typography.labelSmall) }
         Box(Modifier.weight(1f)) {
             val error = state.error
@@ -84,6 +112,19 @@ internal fun ProjectsTabContent(
                     stringResource(R.string.home_projects_empty),
                     stringResource(R.string.home_new_project),
                     onRequestCreate,
+                )
+
+                showingCollections && collections.isEmpty() -> ActorManagerMessage(
+                    stringResource(R.string.home_collections_empty),
+                    stringResource(R.string.home_collections_show_all),
+                ) { onHierarchyIntent(HierarchyBrowserIntent.Browse("projects", position.copy(mode = BrowseMode.ALL))) }
+
+                showingCollections -> CollectionGrid(
+                    collections,
+                    onOpen = {
+                        onHierarchyIntent(HierarchyBrowserIntent.Browse("projects", position.copy(collection = it)))
+                    },
+                    onDropProject = ::moveTo,
                 )
 
                 filtered.isEmpty() -> EmptySearchMessage()
@@ -113,11 +154,25 @@ internal fun ProjectsTabContent(
                                 onHierarchyIntent(HierarchyBrowserIntent.Favourite("project:${project.projectId}"))
                             },
                             onOrganise = { organiseCandidate = project },
+                            // Long-press and drag onto another project or a collection to group them.
+                            modifier = Modifier.projectDragAndDrop("project:${project.projectId}") { dragged ->
+                                dropOnProject(dragged, "project:${project.projectId}")
+                            },
                         )
                     }
                 }
             }
         }
+    }
+    newCollectionFor?.let { (dragged, target) ->
+        NewCollectionDialog(
+            onCreate = { name ->
+                moveTo(target, name)
+                moveTo(dragged, name)
+                newCollectionFor = null
+            },
+            onDismiss = { newCollectionFor = null },
+        )
     }
     organiseCandidate?.let { project ->
         CollectionAssignmentDialog(

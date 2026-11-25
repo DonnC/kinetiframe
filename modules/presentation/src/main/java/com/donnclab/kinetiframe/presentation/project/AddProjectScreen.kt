@@ -1,5 +1,8 @@
 package com.donnclab.kinetiframe.presentation.project
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,39 +10,40 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.composables.icons.lucide.ChevronRight
-import com.composables.icons.lucide.Lucide
+import androidx.compose.ui.unit.Dp
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AddFlowBottomBar
 import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
-import com.donnclab.kinetiframe.presentation.common.StandardSlider
+import com.donnclab.kinetiframe.presentation.common.FrameRatePicker
 
 /**
- * Home's "New Project" flow: a name, the canvas size chosen on [CanvasSizeSheet] (a
- * fixed FlipaClip-style export-preset list, never derived from this device's own screen), and an
- * FPS slider. [state] and [callbacks] are bundled per project convention so this composable
- * takes two values rather than a handful of separate lambdas.
+ * Home's "New Project" flow: a name, a canvas shape picked from picture cards (Landscape, Portrait,
+ * Square or Custom, with every platform size one tap away in [CanvasSizeSheet]), and a frame rate
+ * with a live preview. [state] and [callbacks] are bundled per project convention.
  */
 @Composable
 fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks, modifier: Modifier = Modifier) {
-    val resources = LocalResources.current
     Scaffold(
         modifier = modifier,
         topBar = { AddFlowTopBar(title = stringResource(R.string.add_project_title), onBack = callbacks.onBack) },
@@ -61,72 +65,97 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
         },
     ) { padding ->
         Column(
-            Modifier.fillMaxSize().padding(
-                padding,
-            ).verticalScroll(rememberScrollState()).padding(horizontal = Dimens.spaceXl),
+            Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState())
+                .padding(horizontal = Dimens.spaceXl),
         ) {
             CompactTextField(
                 value = state.name,
-                onValueChange = {
-                    callbacks.onStateChange(state.copy(name = it))
-                },
+                onValueChange = { callbacks.onStateChange(state.copy(name = it)) },
                 label = { Text(stringResource(R.string.add_project_name)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(top = Dimens.spaceXl),
             )
-
-            Text(
-                stringResource(R.string.add_project_canvas_size),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = Dimens.spaceXlPlus, bottom = Dimens.spaceS),
-            )
-            CanvasSizeRow(selection = state.canvasSelection, onClick = callbacks.onOpenCanvasSize)
-
-            StandardSlider(
-                value = state.fps.toFloat(),
-                onValueChange = { callbacks.onStateChange(state.copy(fps = it.toInt())) },
-                range = 1f..30f,
-                steps = 28,
-                label = stringResource(R.string.add_project_frame_rate),
-                valueDisplay = { resources.getString(R.string.add_project_fps_value, it.toInt()) },
-                modifier = Modifier.padding(top = Dimens.spaceXxl),
-            )
+            SectionLabel(stringResource(R.string.add_project_canvas_size))
+            CanvasShapeCards(state.canvasSelection) { preset ->
+                callbacks.onStateChange(state.copy(canvasSelection = state.canvasSelection.copy(preset = preset)))
+                // Custom opens the sheet, where its width and height are typed.
+                if (preset.isCustom) callbacks.onOpenCanvasSize()
+            }
+            TextButton(onClick = callbacks.onOpenCanvasSize) { Text(stringResource(R.string.add_project_more_sizes)) }
+            SectionLabel(stringResource(R.string.add_project_frame_rate))
+            FrameRatePicker(state.fps, { callbacks.onStateChange(state.copy(fps = it)) })
             Spacer(Modifier.height(Dimens.spaceXlPlus))
         }
     }
 }
 
-/** The single nav row that opens [CanvasSizeSheet], showing the current choice
- *  ("Local · 1920 × 1080") the same way FlipaClip's own project-setup screen does. */
 @Composable
-private fun CanvasSizeRow(selection: CanvasSizeSelection, onClick: () -> Unit) {
-    Surface(
-        onClick = onClick,
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = Dimens.spaceL, vertical = Dimens.spaceMPlus),
-        ) {
-            Column(Modifier.weight(1f)) {
-                Text(selection.preset.displayName(), style = MaterialTheme.typography.titleSmall)
-                Text(
-                    stringResource(
-                        R.string.canvas_size_dimensions,
-                        selection.dimensions.width,
-                        selection.dimensions.height,
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+private fun SectionLabel(text: String) {
+    Text(
+        text,
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(top = Dimens.spaceXl, bottom = Dimens.spaceS),
+    )
+}
+
+/** Landscape, Portrait, Square and Custom, each drawn at its real shape. A platform size picked from
+ *  the sheet highlights none of them and shows its own name in the summary below. */
+@Composable
+private fun CanvasShapeCards(selection: CanvasSizeSelection, onPick: (CanvasPreset) -> Unit) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
+        CanvasPresets.shapes.forEach { preset ->
+            val selected = preset == selection.preset
+            val size = if (preset.isCustom) selection.customDimensions else preset.dimensions
+            Surface(
+                onClick = { onPick(preset) },
+                shape = RoundedCornerShape(Dimens.radiusM),
+                color = if (selected) {
+                    MaterialTheme.colorScheme.secondaryContainer
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                },
+                border = if (selected) BorderStroke(Dimens.borderMedium, MaterialTheme.colorScheme.primary) else null,
+                modifier = Modifier.weight(1f).semantics {
+                    role = Role.RadioButton
+                    this.selected = selected
+                },
+            ) {
+                Column(
+                    Modifier.padding(vertical = Dimens.spaceS),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs),
+                ) {
+                    Box(Modifier.size(Dimens.canvasShapeCard), contentAlignment = Alignment.Center) {
+                        ShapeOutline(size.width, size.height, Dimens.canvasShapeMax, selected)
+                    }
+                    Text(preset.displayName(), style = MaterialTheme.typography.labelMedium, maxLines = 1)
+                    Text(
+                        stringResource(R.string.canvas_size_dimensions, size.width, size.height),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
-            Icon(Lucide.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
-    HorizontalDivider(Modifier.padding(top = 0.dp))
+}
+
+/** A rectangle with the canvas's proportions, fitted inside [max] on its longer side. */
+@Composable
+private fun ShapeOutline(width: Int, height: Int, max: Dp, selected: Boolean) {
+    val longest = maxOf(width, height).coerceAtLeast(1).toFloat()
+    Surface(
+        shape = RoundedCornerShape(Dimens.radiusXs),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(
+            Dimens.borderMedium,
+            if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+        ),
+        modifier = Modifier.size(max * (width / longest), max * (height / longest)),
+    ) {}
 }
 
 @Preview

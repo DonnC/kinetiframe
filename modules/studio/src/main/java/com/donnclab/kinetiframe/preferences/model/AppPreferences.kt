@@ -13,4 +13,7 @@ import kotlinx.serialization.Serializable
     val hideSystemBars: Boolean = false,
     val hideToolsDuringPlayback: Boolean = true,
     val showMenuLabels: Boolean = true,
+    /** Save gallery projects on their own: after a pause in editing, when the app goes to the
+     *  background, and when leaving the editor. Settings saved before this field existed load as on. */
+    val autosave: Boolean = true,
 )

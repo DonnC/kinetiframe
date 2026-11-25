@@ -3,7 +3,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,6 +46,7 @@ import com.composables.icons.lucide.ClipboardPaste
 import com.composables.icons.lucide.Copy
 import com.composables.icons.lucide.EllipsisVertical
 import com.composables.icons.lucide.Eye
+import com.composables.icons.lucide.Frame
 import com.composables.icons.lucide.Ghost
 import com.composables.icons.lucide.Grid2x2
 import com.composables.icons.lucide.Lucide
@@ -114,6 +117,8 @@ fun EditorTopBar(
     onAttachActorArtwork: ((Boolean) -> Unit)? = null,
     /** Opens export for this project, saving first; null where there is no project to export. */
     onExportClick: (() -> Unit)? = null,
+    /** Opens the Library picker for background images. */
+    onBackgroundFromLibraryClick: (() -> Unit)? = null,
 ) {
     val (onHomeClick, onStudioClick, onGridSettingsClick, onOnionSettingsClick) = actions
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -133,6 +138,8 @@ fun EditorTopBar(
                 .fillMaxSize()
                 .padding(horizontal = Dimens.spaceXs),
             verticalAlignment = Alignment.CenterVertically,
+            // The drawing bar spreads its tools evenly; Actor Studio packs its own controls from the start.
+            horizontalArrangement = if (isActorStudio) Arrangement.Start else Arrangement.SpaceEvenly,
         ) {
             if (isActorStudio) {
                 onHomeClick?.let { home ->
@@ -144,18 +151,13 @@ fun EditorTopBar(
                     modifier = Modifier.padding(end = Dimens.spaceS),
                 )
             }
-            Row(
-                modifier = Modifier.weight(1f, fill = false).horizontalScroll(rememberScrollState()),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                if (!isActorStudio) {
-                    onHomeClick?.let { home ->
-                        ContextIconButton(
-                            ContextIconAction(Icons.Filled.Home, stringResource(R.string.editor_home), home),
-                        )
-                    }
-                }
-                if (isActorStudio) {
+            if (!isActorStudio) {
+                DrawingBarTools(state, onIntent, onHomeClick)
+            } else {
+                Row(
+                    modifier = Modifier.weight(1f, fill = false).horizontalScroll(rememberScrollState()),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     // Setup is reached from the mode switch beside this row; no second bone button.
                     com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(
                         Lucide.Undo,
@@ -169,13 +171,6 @@ fun EditorTopBar(
                     ) {
                         onIntent(StudioIntent.Draw.Redo)
                     }
-                } else {
-                    IconButton(onClick = {
-                        onIntent(StudioIntent.Draw.Undo)
-                    }) { Icon(Lucide.Undo, stringResource(R.string.editor_undo), tint = EditorTokens.dark) }
-                    IconButton(onClick = {
-                        onIntent(StudioIntent.Draw.Redo)
-                    }) { Icon(Lucide.Redo, stringResource(R.string.editor_redo), tint = EditorTokens.muted) }
                 }
             }
 
@@ -196,7 +191,8 @@ fun EditorTopBar(
                     )
                 }
             }
-            (onSavePackClick ?: onSaveProjectClick)?.let { save ->
+            // Projects autosave, so their Save lives in the menu; Pack Creator saves only on request.
+            onSavePackClick?.let { save ->
                 IconButton(onClick = save) {
                     Icon(Lucide.Save, stringResource(R.string.action_save), tint = EditorTokens.dark)
                 }
@@ -209,15 +205,6 @@ fun EditorTopBar(
             onEditPackItem?.let { edit ->
                 ContextIconButton(
                     ContextIconAction(Icons.Filled.EditNote, stringResource(R.string.editor_pack_item_details), edit),
-                )
-            }
-            onFocusCanvas?.takeIf { !isActorStudio }?.let { focus ->
-                ContextIconButton(
-                    ContextIconAction(
-                        com.composables.icons.lucide.Lucide.Eye,
-                        stringResource(R.string.timeline_focus_canvas),
-                        focus,
-                    ),
                 )
             }
             Box {
@@ -252,18 +239,22 @@ fun EditorTopBar(
                                 }),
                             )
                         }
-                        add(
-                            ContextIconAction(Lucide.Copy, stringResource(R.string.editor_copy), {
-                                onOverflowMenuToggle(false)
-                                onIntent(StudioIntent.Selection.Copy)
-                            }),
-                        )
-                        add(
-                            ContextIconAction(Lucide.ClipboardPaste, stringResource(R.string.editor_paste), {
-                                onOverflowMenuToggle(false)
-                                onIntent(StudioIntent.Selection.Paste)
-                            }),
-                        )
+                        onSaveProjectClick?.let { save ->
+                            add(
+                                ContextIconAction(Lucide.Save, stringResource(R.string.editor_save_project), {
+                                    onOverflowMenuToggle(false)
+                                    save()
+                                }),
+                            )
+                        }
+                        onFocusCanvas?.takeIf { !isActorStudio }?.let { focus ->
+                            add(
+                                ContextIconAction(Lucide.Eye, stringResource(R.string.timeline_focus_canvas), {
+                                    onOverflowMenuToggle(false)
+                                    focus()
+                                }),
+                            )
+                        }
                         add(
                             ContextIconAction(Lucide.Clapperboard, stringResource(R.string.library_kind_frames), {
                                 onOverflowMenuToggle(false)
@@ -286,7 +277,7 @@ fun EditorTopBar(
                             }),
                         )
                         add(
-                            ContextIconAction(Icons.Filled.Speed, stringResource(R.string.preset_speed), {
+                            ContextIconAction(Icons.Filled.Speed, stringResource(R.string.editor_frame_rate), {
                                 onOverflowMenuToggle(false)
                                 speedOpen = true
                             }),
@@ -299,12 +290,6 @@ fun EditorTopBar(
                                 }, selected = state.scene.skeletonOverlayVisible),
                             )
                         }
-                        add(
-                            ContextIconAction(Lucide.Maximize, stringResource(R.string.editor_safe_frame), {
-                                onIntent(StudioIntent.View.ToggleSafeFrame)
-                                onOverflowMenuToggle(false)
-                            }, selected = state.canvas.showSafeFrame),
-                        )
                         add(
                             ContextIconAction(Lucide.Grid2x2, stringResource(R.string.grid_title), {
                                 onOverflowMenuToggle(false)
@@ -343,6 +328,7 @@ fun EditorTopBar(
                         onSaveBackground = onAddBackgroundToLibraryClick,
                         onSaveFrame = onAddCurrentFrameToLibraryClick,
                         onToggleBackground = { onIntent(StudioIntent.Background.ToggleVisibility) },
+                        onChooseFromLibrary = onBackgroundFromLibraryClick,
                     ),
                     state.canvas.backgroundVisible,
                 )
@@ -352,9 +338,15 @@ fun EditorTopBar(
     if (speedOpen) {
         androidx.compose.material3.AlertDialog(
             onDismissRequest = { speedOpen = false },
-            title = { Text(stringResource(R.string.playback_fps)) },
+            title = { Text(stringResource(R.string.editor_frame_rate)) },
             text = {
-                com.donnclab.kinetiframe.presentation.studio.timeline.TimelineFpsSlider(state.animation.fps, onIntent)
+                Column(verticalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
+                    Text(stringResource(R.string.editor_frame_rate_note), style = MaterialTheme.typography.bodySmall)
+                    com.donnclab.kinetiframe.presentation.common.FrameRatePicker(
+                        state.animation.fps,
+                        { onIntent(StudioIntent.Playback.SetFps(it)) },
+                    )
+                }
             },
             confirmButton = {
                 ContextIconButton(
@@ -366,6 +358,39 @@ fun EditorTopBar(
             },
         )
     }
+}
+
+/**
+ * The drawing studio's everyday tools, laid straight into the evenly spaced bar: Home, Undo, Redo,
+ * Copy, Paste and the safe-frame guide. Less frequent actions, such as Save and Focus, are in the menu.
+ */
+@Composable
+private fun DrawingBarTools(state: StudioState, onIntent: (StudioIntent) -> Unit, onHomeClick: (() -> Unit)?) {
+    onHomeClick?.let { home ->
+        ContextIconButton(ContextIconAction(Icons.Filled.Home, stringResource(R.string.editor_home), home))
+    }
+    IconButton(onClick = { onIntent(StudioIntent.Draw.Undo) }) {
+        Icon(Lucide.Undo, stringResource(R.string.editor_undo), tint = EditorTokens.dark)
+    }
+    IconButton(onClick = { onIntent(StudioIntent.Draw.Redo) }) {
+        Icon(Lucide.Redo, stringResource(R.string.editor_redo), tint = EditorTokens.muted)
+    }
+    ContextIconButton(
+        ContextIconAction(Lucide.Copy, stringResource(R.string.editor_copy), { onIntent(StudioIntent.Selection.Copy) }),
+    )
+    ContextIconButton(
+        ContextIconAction(Lucide.ClipboardPaste, stringResource(R.string.editor_paste), {
+            onIntent(StudioIntent.Selection.Paste)
+        }),
+    )
+    ContextIconButton(
+        ContextIconAction(
+            Lucide.Frame,
+            stringResource(R.string.editor_safe_frame),
+            { onIntent(StudioIntent.View.ToggleSafeFrame) },
+            selected = state.canvas.showSafeFrame,
+        ),
+    )
 }
 
 @Preview(showBackground = true, widthDp = 400)

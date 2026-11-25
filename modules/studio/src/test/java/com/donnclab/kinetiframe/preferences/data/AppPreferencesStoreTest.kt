@@ -30,6 +30,14 @@ class AppPreferencesStoreTest {
         assertEquals(listOf("settings.json"), root.listFiles()!!.map { it.name })
     }
 
+    @Test fun `settings saved before autosave existed load with autosave on`() = runBlocking {
+        val file = File(root, "settings.json")
+        file.writeText("""{"theme":"DARK","orientation":"DEVICE","hideSystemBars":false,"showMenuLabels":true}""")
+        val settings = AppPreferencesStore(file).load()
+        assertEquals(AppTheme.DARK, settings.theme)
+        assertTrue(settings.autosave)
+    }
+
     @Test fun `corrupt settings are not silently overwritten`() = runBlocking {
         val file = File(root, "settings.json")
         file.writeText("broken")
