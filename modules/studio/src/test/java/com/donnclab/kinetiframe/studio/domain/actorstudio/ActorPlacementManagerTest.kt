@@ -25,6 +25,29 @@ class ActorPlacementManagerTest {
         assertEquals(82, state.animation.totalFrames)
     }
 
+    @Test fun `undoing a placement gives back the frames it added`() {
+        val before = state.animation.totalFrames
+        manager.add(ActorPlacementReference("grow", "wave", "actor", "revision", "Wave", 0, 24))
+        assertEquals(24, state.animation.totalFrames)
+        manager.undoAdd("grow", before)
+        assertEquals(before, state.animation.totalFrames)
+        assertTrue(state.project.actorPlacements.isEmpty())
+    }
+
+    @Test fun `undoing a placement keeps frames that hold drawings or other clips`() {
+        manager.add(ActorPlacementReference("other", "walk", "actor", "revision", "Walk", 0, 10))
+        manager.add(ActorPlacementReference("grow", "wave", "actor", "revision", "Wave", 0, 24))
+        val drawn =
+            listOf(
+                com.donnclab.kinetiframe.core.document.Layer(name = "Main", id = "main", populatedFrames = setOf(15)),
+            )
+        state =
+            state.copy(layers = state.layers.copy(layers = drawn), animation = state.animation.copy(currentFrame = 20))
+        manager.undoAdd("grow", 1)
+        assertEquals(16, state.animation.totalFrames)
+        assertEquals(15, state.animation.currentFrame)
+    }
+
     @Test fun `moving duplicating and switching clips extend their visible frame range`() {
         manager.add(ActorPlacementReference("grow", "wave", "actor", "revision", "Wave", 0, 24))
         manager.move("grow", 40)

@@ -35,6 +35,7 @@ internal data class EditorHost(
     val onActorSavePreparationFailed: (() -> Unit)?,
     val onHomeClick: (() -> Unit)?,
     val onBackClick: (() -> Unit)?,
+    val onExport: (() -> Unit)? = null,
 ) {
     /** Actor Studio is the only caller that seeds [initialEditorState]. */
     val isActorStudioSession: Boolean get() = initialEditorState != null

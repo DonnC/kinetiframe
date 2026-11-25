@@ -51,6 +51,7 @@ import com.composables.icons.lucide.Maximize
 import com.composables.icons.lucide.Menu
 import com.composables.icons.lucide.Redo
 import com.composables.icons.lucide.Save
+import com.composables.icons.lucide.Share
 import com.composables.icons.lucide.Spline
 import com.composables.icons.lucide.Undo
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
@@ -111,6 +112,8 @@ fun EditorTopBar(
     onEditPackItem: (() -> Unit)? = null,
     actorViews: (@Composable () -> Unit)? = null,
     onAttachActorArtwork: ((Boolean) -> Unit)? = null,
+    /** Opens export for this project, saving first; null where there is no project to export. */
+    onExportClick: (() -> Unit)? = null,
 ) {
     val (onHomeClick, onStudioClick, onGridSettingsClick, onOnionSettingsClick) = actions
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -240,6 +243,15 @@ fun EditorTopBar(
                     showOverflowMenu,
                     { onOverflowMenuToggle(false) },
                     buildList {
+                        // Finishing an animation ends here, so export leads the menu.
+                        onExportClick?.let { export ->
+                            add(
+                                ContextIconAction(Lucide.Share, stringResource(R.string.editor_export_video), {
+                                    onOverflowMenuToggle(false)
+                                    export()
+                                }),
+                            )
+                        }
                         add(
                             ContextIconAction(Lucide.Copy, stringResource(R.string.editor_copy), {
                                 onOverflowMenuToggle(false)

@@ -85,7 +85,7 @@ with the contribution. Do not copy artwork, voices, music, screenshots or brushe
 application without compatible permission and attribution. For generated content, record the
 tool and process honestly; do not invent an upstream artist or license.
 
-For actor kits, verify all authored views and motion extremes. Parts must overlap correctly at
+For actor kits, verify every angle and the motion extremes. Parts must overlap correctly at
 neck, shoulders, waist, wrists and ankles, with matching pivots and registration. Check native
 renders as well as thumbnails. Keep transparent cutouts free of background fringes.
 

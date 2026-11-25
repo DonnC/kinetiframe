@@ -266,6 +266,7 @@ class MainActivity : ComponentActivity() {
                                             onBackClick = goBack,
                                             onSettingsClick = { backStack.add(SettingsKey) },
                                             onHomeClick = goHome,
+                                            onExport = key.projectId?.let { id -> { backStack.add(ExportKey(id)) } },
                                             onReturnedPerformanceConsumed = { returnedPerformance = null },
                                             onCreatePerformance = { actorId, projectId ->
                                                 backStack.add(ActorStudioKey(actorId, projectId))

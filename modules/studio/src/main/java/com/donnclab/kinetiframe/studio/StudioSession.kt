@@ -88,25 +88,40 @@ class StudioSession(
         return frameOperationMutex.withLock {
             // Accepted drawing/selection jobs have already baked their pixels. Rebuilding
             // an untouched layer here creates blank artwork and can rebind an actor skin.
-            val state = store.state
-            val stacks = state.layers.frameLayers + (state.animation.currentFrame to state.layers.layers)
-            val document = com.donnclab.kinetiframe.core.document.ProjectSaveDocument(
-                project = state.project.copy(
-                    layers = stacks[0] ?: state.layers.layers,
-                    nodes = state.scene.nodes.mapValues {
-                        it.value.copyWithSelection(false)
-                    },
-                    nodeDensity = nodeDensity,
-                ),
-                frameLayers = stacks,
-                totalFrames = state.animation.totalFrames,
-                activeLayerIndex = state.layers.activeLayerIndex,
-                linkedCels = cacheManager.exposures().filterKeys { id -> state.layers.layers.any { it.id == id } },
+            val document = saveDocument(nodeDensity)
+            unsavedChanges.preparing(document)
+            cacheManager.persistAllToDisk(
+                document.frameLayers.values.flatten().map {
+                    it.id
+                }.distinct(),
+                document.totalFrames,
             )
-            cacheManager.persistAllToDisk(stacks.values.flatten().map { it.id }.distinct(), document.totalFrames)
             document
         }
     }
+
+    /** The document a save would write now, without touching the disk. */
+    private fun saveDocument(nodeDensity: Float): com.donnclab.kinetiframe.core.document.ProjectSaveDocument {
+        val state = store.state
+        val stacks = state.layers.frameLayers + (state.animation.currentFrame to state.layers.layers)
+        return com.donnclab.kinetiframe.core.document.ProjectSaveDocument(
+            project = state.project.copy(
+                layers = stacks[0] ?: state.layers.layers,
+                nodes = state.scene.nodes.mapValues { it.value.copyWithSelection(false) },
+                nodeDensity = nodeDensity,
+            ),
+            frameLayers = stacks,
+            totalFrames = state.animation.totalFrames,
+            activeLayerIndex = state.layers.activeLayerIndex,
+            linkedCels = cacheManager.exposures().filterKeys { id -> state.layers.layers.any { it.id == id } },
+        )
+    }
+
+    /** Whether the open project differs from its last save. */
+    val unsavedChanges = UnsavedChanges(
+        snapshot = { saveDocument(store.state.project.nodeDensity) },
+        pixelEdits = { cacheManager.pixelEdits },
+    )
 
     internal val bitmapPool = com.donnclab.kinetiframe.studio.render.BitmapPool()
 
@@ -154,7 +169,9 @@ class StudioSession(
             // Local JVM tests intentionally construct this ViewModel without Android's
             // bitmap runtime. Frame state transitions remain testable without invoking
             // Bitmap.createBitmap from the android.jar stub.
-            finalizeFrame = { if (shouldInitialize && history.isNotEmpty()) drawingManager.rebuildCurrentBitmap() },
+            finalizeFrame = {
+                if (shouldInitialize && history.isNotEmpty()) drawingManager.rebuildCurrentBitmap(refreshOnly = true)
+            },
             clearHistory = {
                 history.clear()
                 redoHistory.clear()
@@ -358,7 +375,8 @@ class StudioSession(
 
     suspend fun loadFrameInternal(index: Int) {
         if (history.isNotEmpty()) {
-            drawingManager.rebuildCurrentBitmap()
+            // Each stroke already baked this frame; this only settles it before switching.
+            drawingManager.rebuildCurrentBitmap(refreshOnly = true)
         }
         cacheManager.resetEditScope()
         store.update {

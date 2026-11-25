@@ -19,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Colorize
 import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
@@ -89,7 +91,10 @@ fun ColorPicker(color: Color, onColorChanged: (Color) -> Unit) {
 @Composable
 fun ColorPickerPanel(color: Color, onColorChanged: (Color) -> Unit, onDismiss: () -> Unit = {}) {
     var palettes by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
-    val controller = androidx.compose.runtime.key(palettes) { rememberColorPickerController() }
+    // A colour picked from a swatch or hex restarts the wheel there, so the sliders adjust it
+    // rather than the wheel's previous colour.
+    var wheelRestarts by remember { androidx.compose.runtime.mutableIntStateOf(0) }
+    val controller = androidx.compose.runtime.key(palettes, wheelRestarts) { rememberColorPickerController() }
     val configuration = androidx.compose.ui.platform.LocalConfiguration.current
     val isLandscape = configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
     val pickerSize = if (isLandscape) EditorTokens.colorWheelLandscape else EditorTokens.colorWheel
@@ -103,7 +108,7 @@ fun ColorPickerPanel(color: Color, onColorChanged: (Color) -> Unit, onDismiss: (
     ) {
         Row {
             ContextIconButton(
-                ContextIconAction(Icons.Filled.Colorize, stringResource(R.string.color_custom), {
+                ContextIconAction(Icons.Filled.Tune, stringResource(R.string.color_custom), {
                     palettes = false
                 }, selected = !palettes),
             )
@@ -119,7 +124,7 @@ fun ColorPickerPanel(color: Color, onColorChanged: (Color) -> Unit, onDismiss: (
             HsvColorPicker(
                 modifier = Modifier.size(pickerSize).clip(RoundedCornerShape(Dimens.radiusS)),
                 controller = controller,
-                initialColor = color,
+                initialColor = remember(palettes, wheelRestarts) { color.forWheel() },
                 onColorChanged = { envelope: ColorEnvelope -> if (envelope.fromUser) onColorChanged(envelope.color) },
             )
             AlphaSlider(
@@ -130,6 +135,10 @@ fun ColorPickerPanel(color: Color, onColorChanged: (Color) -> Unit, onDismiss: (
                 modifier = Modifier.width(pickerSize).height(EditorTokens.colorSliderHeight),
                 controller = controller,
             )
+            com.donnclab.kinetiframe.presentation.studio.color.QuickSwatches(color) { picked ->
+                onColorChanged(picked)
+                wheelRestarts++
+            }
         }
         Row {
             Box(
@@ -148,6 +157,19 @@ fun ColorPickerPanel(color: Color, onColorChanged: (Color) -> Unit, onDismiss: (
         }
     }
 }
+
+/**
+ * The colour the wheel starts from. A colour too dark to show a hue, such as the default black
+ * pen, starts at full brightness, so the first hue tapped is the colour drawn rather than black.
+ */
+internal fun Color.forWheel(): Color {
+    val hsv = FloatArray(3)
+    android.graphics.Color.colorToHSV(toArgb(), hsv)
+    if (hsv[2] >= MIN_WHEEL_BRIGHTNESS) return this
+    return Color(android.graphics.Color.HSVToColor((alpha * 255).toInt(), floatArrayOf(hsv[0], hsv[1], 1f)))
+}
+
+private const val MIN_WHEEL_BRIGHTNESS = 0.2f
 
 @Preview(showBackground = true, widthDp = 180, heightDp = 240)
 @Composable

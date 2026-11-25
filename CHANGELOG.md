@@ -16,6 +16,11 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - Drawn actors: characters drawn with curves on their bones instead of pictures, so arms, legs
   and tails bend smoothly in any pose. They work for any kind of thing, not only people.
   *Tavi · Drawn* ships beside the cutout Tavi.
+- Your own colours. Tap + in the colour picker to save the current colour to My colours, make
+  palettes of your own, and long-press a colour to remove it. The picker also shows your recent
+  colours and takes hex codes. The current colour sits on the tool rail, one tap away.
+- Layer lock, and an eye on every layer. Tap a layer's opacity to set it with a slider.
+- Export video from the editor's menu. It saves your work first.
 
 ### Changed
 
@@ -28,6 +33,23 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - KinetiFrame follows your phone's orientation. The studios no longer turn the screen to
   landscape by default, and browsing is no longer locked to portrait. Settings can still lock the
   studio to one orientation.
+- A held drawing, such as a background, stays held on frames you add inside it or after its end.
+- Actors' views are now called angles.
+- Asset tracks open as a half-height sheet in portrait that you can drag taller or close, and the
+  canvas sizes for a new project are a scrollable sheet.
+- The bottom bar's tabs stay in the same place on every screen, and Home's New button says what
+  it makes. Home, Library and Settings share one app bar.
+- Library's filters are toggles: with none chosen you see everything, so there's no All chip.
+
+### Fixed
+
+- Leaving the editor only asks to save when something changed. Saving shows a short notice
+  instead of a dialog you have to dismiss.
+- Adding an actor performance that makes the scene longer tells you, with Undo.
+- Back during a lasso move keeps the move.
+- Picking a colour from black no longer gives black: the wheel starts at full brightness.
+- A fresh install no longer opens on a "Clean the trial library?" prompt.
+- The canvas no longer jumps when playback starts.
 
 ## 0.1.0 - not yet tagged
 

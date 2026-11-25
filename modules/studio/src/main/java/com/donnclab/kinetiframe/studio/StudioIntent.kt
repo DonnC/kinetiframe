@@ -124,6 +124,9 @@ sealed class StudioIntent : ViewIntent {
         data class Add(val reference: ActorPlacementReference) : ActorPlacement()
         data class Duplicate(val placementId: String) : ActorPlacement()
         data class Remove(val placementId: String) : ActorPlacement()
+
+        /** Takes back an [Add] that lengthened the scene: removes the clip and the frames it added. */
+        data class UndoAdd(val placementId: String, val previousTotalFrames: Int) : ActorPlacement()
         data class UpdateTransform(val placementId: String, val transform: Transform) : ActorPlacement()
 
         /** FxF can only change a placement's scene ordering; rig edits belong to Actor Studio. */

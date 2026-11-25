@@ -205,6 +205,7 @@ fun LayerPanel(
                         onOpacityChange = { value: Float ->
                             onIntent(StudioIntent.Layer.SetLayerOpacity(actualIndex, value))
                         },
+                        onLockClick = { onIntent(StudioIntent.Layer.ToggleLayerLock(actualIndex)) },
                     )
                 }
             }

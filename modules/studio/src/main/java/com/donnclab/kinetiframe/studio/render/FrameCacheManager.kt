@@ -40,6 +40,10 @@ class FrameCacheManager(
     private val pendingWrites = PendingJobs()
     private val versions = java.util.concurrent.ConcurrentHashMap<String, Long>()
 
+    /** Counts every frame bitmap written, so the studio can tell whether pixels changed since a save. */
+    private val pixelWrites = java.util.concurrent.atomic.AtomicLong()
+    val pixelEdits: Long get() = pixelWrites.get()
+
     @Volatile private var linkedCels: Map<String, Map<Int, String>> = emptyMap()
 
     // Scope is deliberately transient and addressed to one exposure, never a global switch.
@@ -179,7 +183,8 @@ class FrameCacheManager(
 
     fun putFrame(frameIndex: Int, bitmap: Bitmap) = putFrame(defaultLayerId, frameIndex, bitmap)
 
-    fun putFrame(layerId: String, frameIndex: Int, bitmap: Bitmap) {
+    /** [countAsEdit] is false when re-storing pixels that were already stored, such as a re-bake. */
+    fun putFrame(layerId: String, frameIndex: Int, bitmap: Bitmap, countAsEdit: Boolean = true) {
         // Default copy-on-write preserves ordinary frame-local editing. All-linked editing is
         // opt-in for this exact layer/frame; the drawing managers always supply a fresh bitmap.
         if (linkedCels[layerId]?.containsKey(frameIndex) == true && sharedEditTarget != (layerId to frameIndex)) {
@@ -187,6 +192,7 @@ class FrameCacheManager(
         }
         val cacheKey = cacheKey(layerId, frameIndex)
         versions.merge(cacheKey, 1L, Long::plus)
+        if (countAsEdit) pixelWrites.incrementAndGet()
         ramCache.put(cacheKey, bitmap)
         // Keep the last committed PNG until its replacement is ready. Deleting it asynchronously
         // raced with Save and could delete the PNG that Save had just written.
@@ -317,9 +323,10 @@ class FrameCacheManager(
         for (i in totalFrames - 1 downTo index) {
             moveFrame(layerId, i, i + 1)
         }
-        linkedCels = linkedCels + (layerId to CelExposureIndex.insert(linkedCels[layerId].orEmpty(), index))
+        val exposures = CelExposureIndex.insertContinuingHold(linkedCels[layerId].orEmpty(), index, totalFrames)
+        linkedCels = linkedCels + (layerId to exposures)
         sharedEditTarget = null
-        // The frame at 'index' is now empty in both RAM and disk
+        // The frame at 'index' is now empty in RAM and on disk, unless it continues a held drawing.
     }
 
     private suspend fun moveFrame(layerId: String, fromIndex: Int, toIndex: Int) {

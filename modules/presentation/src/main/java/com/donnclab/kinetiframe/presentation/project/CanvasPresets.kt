@@ -12,7 +12,7 @@ import com.donnclab.kinetiframe.presentation.R
  * landscape YouTube project as a landscape tablet is, so nothing here reads display metrics.
  *
  * [CanvasPresets.Local] is the odd one out: it is the only preset whose dimensions the animator
- * can edit directly on the canvas-size screen (see AddProjectCanvasSizeScreen), for a project
+ * can edit directly on the canvas-size sheet (see CanvasSizeSheet), for a project
  * meant to stay on this device rather than target one specific platform's upload spec.
  *
  * [platform] is a product name ("YouTube (1080p)") and stays as written in every language. It is
@@ -46,7 +46,7 @@ object CanvasPresets {
 }
 
 /** The New Project screen's whole canvas-size choice, bundled into one value so
- *  AddProjectScreen/AddProjectCanvasSizeScreen never need more than one parameter to pass it
+ *  AddProjectScreen/CanvasSizeSheet never need more than one parameter to pass it
  *  around. [dimensions] is what actually gets passed to [com.donnclab.kinetiframe.presentation.project.ProjectManagerIntent.Create] --
  *  the edited [localDimensions] when [CanvasPreset.isLocal], the preset's own fixed size
  *  otherwise. */

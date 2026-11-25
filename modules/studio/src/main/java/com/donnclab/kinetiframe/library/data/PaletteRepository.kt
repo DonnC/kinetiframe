@@ -55,6 +55,30 @@ class PaletteRepository(
         }
     }
 
+    /**
+     * Saves [palette] over the palette with the same ID, or as a new one. The payload is rewritten
+     * atomically in place, so an interrupted write keeps the previous palette.
+     */
+    fun update(palette: PaletteDocument): PaletteDocument = synchronized(lock) {
+        palette.validate()
+        val existing = value(library.list()).firstOrNull {
+            it.kind == LibraryItemKind.PALETTE && it.libraryItemId == palette.id
+        }
+        if (existing == null) {
+            save(palette, setOf("colours", MINE_TAG))
+        } else {
+            val file = value(library.assetFile(existing))
+            DurableFile.write(file) { it.write(json.encodeToString(palette).toByteArray(Charsets.UTF_8)) }
+        }
+        palette
+    }
+
+    /** Deletes a palette the user made. Starter palettes can't be deleted. */
+    fun delete(id: String) = synchronized(lock) {
+        require(!isStarter(id)) { "Starter palettes can't be deleted" }
+        value(library.delete(id))
+    }
+
     fun load(item: LibraryItemManifest): PaletteDocument {
         require(item.kind == LibraryItemKind.PALETTE)
         val file = value(library.assetFile(item))
@@ -71,5 +95,13 @@ class PaletteRepository(
     }
     companion object {
         private val lock = Any()
+
+        /** Tag on palettes the user made, which they can edit and delete. */
+        const val MINE_TAG = "mine"
+
+        /** The palette that collects colours the user saves with "+". */
+        const val MY_COLOURS_ID = "my-colours"
+
+        fun isStarter(id: String) = BundledPalettes.entries.any { it.id == id }
     }
 }

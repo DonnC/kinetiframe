@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,8 +39,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.composables.icons.lucide.Eye
 import com.composables.icons.lucide.EyeOff
 import com.composables.icons.lucide.GripVertical
+import com.composables.icons.lucide.Lock
+import com.composables.icons.lucide.LockOpen
 import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
@@ -61,6 +65,7 @@ fun LayerItem(
     onClick: () -> Unit = {},
     onVisibilityClick: () -> Unit = {},
     onOpacityChange: (Float) -> Unit = {},
+    onLockClick: () -> Unit = {},
 ) {
     Row(
         modifier = modifier
@@ -81,21 +86,26 @@ fun LayerItem(
                 .padding(end = Dimens.spaceXs),
         )
 
-        // [Eye Icon (only shows when hidden)]
-        Box(modifier = Modifier.width(EditorTokens.iconSmall)) {
-            if (!layer.isVisible) {
-                Icon(
-                    Lucide.EyeOff,
-                    contentDescription = stringResource(R.string.layer_hidden),
-                    tint = EditorTokens.accent,
-                    modifier = Modifier
-                        .size(EditorTokens.iconSmall)
-                        .clickable { onVisibilityClick() },
-                )
-            }
-        }
+        // Visibility and lock are always shown, so they can be found before they're needed.
+        LayerToggle(
+            on = layer.isVisible,
+            onIcon = Lucide.Eye,
+            offIcon = Lucide.EyeOff,
+            description = stringResource(if (layer.isVisible) R.string.layer_hide else R.string.layer_show, layer.name),
+            onClick = onVisibilityClick,
+        )
+        LayerToggle(
+            on = !layer.isLocked,
+            onIcon = Lucide.LockOpen,
+            offIcon = Lucide.Lock,
+            description = stringResource(
+                if (layer.isLocked) R.string.layer_unlock else R.string.layer_lock,
+                layer.name,
+            ),
+            onClick = onLockClick,
+        )
 
-        Spacer(Modifier.width(Dimens.spaceS))
+        Spacer(Modifier.width(Dimens.spaceXs))
 
         // [Preview]
         Box(
@@ -212,8 +222,26 @@ fun LayerItem(
         OpacityDrag(
             opacity = layer.opacity,
             onOpacityChange = onOpacityChange,
-            onVisibilityToggle = onVisibilityClick,
             isVisible = layer.isVisible,
+        )
+    }
+}
+
+/** An eye or lock: [onIcon] while [on], [offIcon] otherwise, tinted so the "off" state stands out. */
+@Composable
+private fun LayerToggle(
+    on: Boolean,
+    onIcon: androidx.compose.ui.graphics.vector.ImageVector,
+    offIcon: androidx.compose.ui.graphics.vector.ImageVector,
+    description: String,
+    onClick: () -> Unit,
+) {
+    IconButton(onClick = onClick, modifier = Modifier.size(TimelineTokens.layerToggle)) {
+        Icon(
+            if (on) onIcon else offIcon,
+            contentDescription = description,
+            tint = if (on) EditorTokens.inactive else EditorTokens.accent,
+            modifier = Modifier.size(EditorTokens.iconSmall),
         )
     }
 }

@@ -18,6 +18,28 @@ class ActorPlacementManager(
     fun remove(placementId: String) = updateState { state ->
         state.copy(project = state.project.copy(actorPlacements = state.project.actorPlacements - placementId))
     }
+
+    /**
+     * Takes back an [add] that lengthened the scene. The added frames go too, but never below a
+     * frame that something now uses: a drawing, a hold, another clip or a video.
+     */
+    fun undoAdd(placementId: String, previousTotalFrames: Int) = updateState { state ->
+        val placements = state.project.actorPlacements - placementId
+        val used = buildList {
+            placements.values.forEach { add(endFrame(it)) }
+            state.project.videoClips.values.forEach { add(it.timelineEndFrame) }
+            state.layers.layers.forEach { layer -> layer.populatedFrames.maxOrNull()?.let { add(it + 1) } }
+            state.layers.linkedCels.values.forEach { cels -> cels.keys.maxOrNull()?.let { add(it + 1) } }
+        }.maxOrNull() ?: 0
+        val total = maxOf(previousTotalFrames, used, 1).coerceAtMost(state.animation.totalFrames)
+        state.copy(
+            project = state.project.copy(actorPlacements = placements),
+            animation = state.animation.copy(
+                totalFrames = total,
+                currentFrame = state.animation.currentFrame.coerceAtMost(total - 1),
+            ),
+        )
+    }
     fun duplicate(placementId: String) {
         val original = getState().project.actorPlacements[placementId] ?: return
         val copy = original.copy(placementId = "placement-${UUID.randomUUID()}", startFrame = endFrame(original))
@@ -167,6 +189,8 @@ class ActorPlacementManager(
             is StudioIntent.ActorPlacement.Duplicate -> duplicate(intent.placementId)
 
             is StudioIntent.ActorPlacement.Remove -> remove(intent.placementId)
+
+            is StudioIntent.ActorPlacement.UndoAdd -> undoAdd(intent.placementId, intent.previousTotalFrames)
 
             is StudioIntent.ActorPlacement.UpdateTransform -> updateTransform(intent.placementId, intent.transform)
 

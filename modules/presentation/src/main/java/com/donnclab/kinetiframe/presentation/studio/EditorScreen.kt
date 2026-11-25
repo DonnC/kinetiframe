@@ -80,6 +80,8 @@ fun EditorScreen(
     onSettingsClick: (() -> Unit)? = null,
     onHomeClick: (() -> Unit)? = null,
     onBackClick: (() -> Unit)? = null,
+    /** Opens the export screen for [projectId]; the editor saves first when there are unsaved changes. */
+    onExport: (() -> Unit)? = null,
 ) {
     val host = EditorHost(
         projectId = projectId,
@@ -100,6 +102,7 @@ fun EditorScreen(
         onActorSavePreparationFailed = onActorSavePreparationFailed,
         onHomeClick = onHomeClick,
         onBackClick = onBackClick,
+        onExport = onExport,
     )
     val context = LocalContext.current
     val storage: EditorStorageViewModel = appViewModel()
@@ -137,10 +140,15 @@ fun EditorScreen(
     var projectLoadError by remember(projectId) { mutableStateOf<UiText?>(null) }
     var loadedProjectDocument by remember(projectId) { mutableStateOf<ProjectSaveDocument?>(null) }
 
+    // A draft kept from before the app was closed may hold unsaved work, so only a fresh open
+    // starts with nothing to save.
+    var openedFromSave by remember(projectId) { mutableStateOf(false) }
+
     LaunchedEffect(projectId) {
         if (projectId == null || initialEditorState != null) return@LaunchedEffect
         // A gallery project draws on a draft copy of its frames until it is saved.
         val draftFrames = editorCacheDir.takeIf { projectDraft?.state?.value?.ready == false }
+        openedFromSave = projectDraft?.state?.value?.ready != true
         val result = storage.openProject(projectId, draftFrames)
         when (result) {
             is StoreResult.Value -> {
@@ -197,6 +205,7 @@ fun EditorScreen(
                 filesDir = editorFilesDir,
                 initialEditorState = effectiveInitialState?.copy(packTags = packCreatorConfig?.tags.orEmpty()),
                 runtimeRigAssetManager = runtimeRigAssetManager,
+                openedFromSave = openedFromSave && loadedProjectDocument != null,
             ),
         )
     }

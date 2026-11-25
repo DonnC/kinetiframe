@@ -96,6 +96,6 @@ fun appViewModelFactory(container: AppContainer): ViewModelProvider.Factory = vi
             loadActorPresets = container.actorPresets::load,
             initialEditorState = arguments.initialEditorState,
             runtimeRigAssetManager = arguments.runtimeRigAssetManager,
-        )
+        ).also { if (arguments.openedFromSave) it.markOpenedFromSave() }
     }
 }

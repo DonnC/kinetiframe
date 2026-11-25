@@ -65,6 +65,27 @@ class CuratedLibraryMigrationTest {
         assertTrue(future.exists())
     }
 
+    @Test fun `a fresh install is never offered cleanup, even after making its own work`() {
+        val files = DocumentFileStore(root)
+        CuratedLibraryMigration.castIds.forEach { files.actorDirectory(it).mkdirs() }
+        files.projectDirectory(BundledDemoInstaller.TAVI_PRESENTATION_ID).mkdirs()
+        // The app installs library items of its own, such as palettes.
+        files.libraryDirectory("palette-soft-pastels").mkdirs()
+        assertFalse(CuratedLibraryMigration(files).pending())
+        files.projectDirectory("my-first-animation").mkdirs()
+        assertFalse(CuratedLibraryMigration(files).pending())
+        assertEquals(StoreResult.Value(0), CuratedLibraryMigration(files).migrate())
+        assertTrue(files.projectDirectory("my-first-animation").exists())
+    }
+
+    @Test fun `cleanup is offered only when there is trial content`() {
+        val files = DocumentFileStore(root)
+        files.projectDirectory(BundledDemoInstaller.TAVI_PRESENTATION_ID).mkdirs()
+        files.projectDirectory("trial-project").mkdirs()
+        assertTrue(CuratedLibraryMigration(files).pending())
+        assertTrue(CuratedLibraryMigration(files).pending())
+    }
+
     @Test fun `missing replacements do not remove trials`() {
         val files = DocumentFileStore(root)
         val trial = files.projectDirectory("trial-project").apply { mkdirs() }

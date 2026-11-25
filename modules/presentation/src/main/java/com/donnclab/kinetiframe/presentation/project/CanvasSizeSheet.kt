@@ -2,24 +2,28 @@ package com.donnclab.kinetiframe.presentation.project
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,45 +32,39 @@ import com.composables.icons.lucide.Lucide
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
-import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.studio.dialogs.SelectionDot
 
 /**
- * The full named-preset list behind New Project's "Canvas size" row: the exact FlipaClip export
- * targets (see [CanvasPresets]), plus the editable [CanvasPresets.Local] size at the top. Tapping
- * a preset selects it immediately (no separate confirm step) -- the back arrow is the only way
- * out, matching how the rest of this screen family works.
+ * New Project's canvas sizes in a scrollable bottom sheet: the editable [CanvasPresets.Local] size
+ * at the top, then the named presets (see [CanvasPresets]). Picking a named preset selects it and
+ * closes the sheet; the editable size keeps it open while the width and height are typed.
  */
 @Composable
-fun AddProjectCanvasSizeScreen(
-    selection: CanvasSizeSelection,
-    onChange: (CanvasSizeSelection) -> Unit,
-    onBack: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Scaffold(modifier = modifier, topBar = {
-        AddFlowTopBar(title = stringResource(R.string.canvas_size_title), onBack = onBack)
-    }) { padding ->
-        Column(
-            Modifier.fillMaxSize().padding(
-                padding,
-            ).verticalScroll(rememberScrollState()).padding(horizontal = Dimens.spaceXl),
-        ) {
-            LocalDimensionsRow(
-                dimensions = selection.dimensions,
-                editable = selection.preset.isLocal,
-                onChange = { onChange(selection.copy(localDimensions = it)) },
-            )
-            HorizontalDivider(Modifier.padding(top = Dimens.spaceS, bottom = Dimens.spaceXs))
-            CanvasPresets.all.forEach { preset ->
+@OptIn(ExperimentalMaterial3Api::class)
+fun CanvasSizeSheet(selection: CanvasSizeSelection, onChange: (CanvasSizeSelection) -> Unit, onDismiss: () -> Unit) {
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState()) {
+        LazyColumn(Modifier.fillMaxWidth().imePadding(), contentPadding = PaddingValues(horizontal = Dimens.spaceXl)) {
+            item {
+                Text(stringResource(R.string.canvas_size_title), style = MaterialTheme.typography.titleLarge)
+                LocalDimensionsRow(
+                    dimensions = selection.dimensions,
+                    editable = selection.preset.isLocal,
+                    onChange = { onChange(selection.copy(localDimensions = it)) },
+                )
+                HorizontalDivider(Modifier.padding(top = Dimens.spaceS, bottom = Dimens.spaceXs))
+            }
+            items(CanvasPresets.all) { preset ->
                 CanvasPresetRow(
                     preset = preset,
                     selected = preset == selection.preset,
-                    onClick = { onChange(selection.copy(preset = preset)) },
+                    onClick = {
+                        onChange(selection.copy(preset = preset))
+                        if (!preset.isLocal) onDismiss()
+                    },
                 )
             }
-            Spacer(Modifier.height(Dimens.spaceXlPlus))
+            item { Spacer(Modifier.height(Dimens.spaceXlPlus)) }
         }
     }
 }
@@ -116,7 +114,7 @@ private fun LocalDimensionsRow(dimensions: StageDimensions, editable: Boolean, o
  *  selection indicator. */
 @Composable
 private fun CanvasPresetRow(preset: CanvasPreset, selected: Boolean, onClick: () -> Unit) {
-    Surface(onClick = onClick, color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxWidth()) {
+    Surface(onClick = onClick, color = Color.Transparent, modifier = Modifier.fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = Dimens.spaceMPlus)) {
             Column(Modifier.weight(1f)) {
                 Text(preset.displayName(), style = MaterialTheme.typography.titleSmall)
@@ -141,6 +139,4 @@ private fun CanvasPresetRow(preset: CanvasPreset, selected: Boolean, onClick: ()
 
 @Preview
 @Composable
-private fun AddProjectCanvasSizeScreenPreview() =
-    AddProjectCanvasSizeScreen(selection = CanvasSizeSelection(), onChange = {
-    }, onBack = {})
+private fun CanvasSizeSheetPreview() = CanvasSizeSheet(selection = CanvasSizeSelection(), onChange = {}, onDismiss = {})

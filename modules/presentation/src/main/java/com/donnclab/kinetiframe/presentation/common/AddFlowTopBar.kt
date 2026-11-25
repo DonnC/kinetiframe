@@ -19,12 +19,10 @@ import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 
 /** Shared header for the Home "Add" flows (New Project, New Pack, New Actor): a back button and
- *  a title, matching each other exactly since these screens are presented back-to-back off the
- *  same "+" action. */
+ *  a title. These are focused tasks, so the brand bar stays on Home rather than repeating here. */
 @Composable
 fun AddFlowTopBar(title: String, onBack: () -> Unit, modifier: Modifier = Modifier) {
     Column(modifier.fillMaxWidth()) {
-        AppBrandBar()
         Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier.fillMaxWidth().padding(Dimens.spaceS)) {
             IconButton(onClick = onBack) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))

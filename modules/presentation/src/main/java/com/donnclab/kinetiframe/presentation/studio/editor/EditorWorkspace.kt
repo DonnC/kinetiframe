@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -73,13 +77,32 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
     val storage: EditorStorageViewModel = appViewModel()
     val placementPreparation = storage.actorRendering.placements
 
+    val snackbar = remember { SnackbarHostState() }
+
     fun placeActor(reference: ActorPlacementReference) {
         val project = state.project
         scope.launch {
             runCatching { withContext(Dispatchers.IO) { placementPreparation.prepare(reference, project) } }
-                .onSuccess {
+                .onSuccess { placement ->
                     if (viewModel.state.value.project.id == project.id) {
-                        viewModel.handleIntent(StudioIntent.ActorPlacement.Add(it))
+                        val before = viewModel.state.value.animation.totalFrames
+                        viewModel.handleIntent(StudioIntent.ActorPlacement.Add(placement))
+                        val after = viewModel.state.value.animation.totalFrames
+                        // Never change the scene's length silently: say so, and offer to take it back.
+                        if (after > before) {
+                            scope.launch {
+                                val result = snackbar.showSnackbar(
+                                    resources.getString(R.string.editor_scene_extended, before, after, placement.label),
+                                    actionLabel = resources.getString(R.string.editor_undo),
+                                    duration = SnackbarDuration.Long,
+                                )
+                                if (result == SnackbarResult.ActionPerformed) {
+                                    viewModel.handleIntent(
+                                        StudioIntent.ActorPlacement.UndoAdd(placement.placementId, before),
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
                 .onFailure {
@@ -278,6 +301,7 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
         Scaffold(
             topBar = { EditorTopBarSlot(state, host, ui, commands) },
             bottomBar = { EditorBottomBarSlot(viewModel, state, host, ui, storage, commands) },
+            snackbarHost = { SnackbarHost(snackbar) },
             contentWindowInsets = WindowInsets(0.dp),
         ) { innerPadding ->
             Box(

@@ -27,7 +27,7 @@ names are shown in `monospace` where they differ from the word used in the app.
   - a **tube**, an inked tube along a chain of bones, such as an arm, leg or tail;
   - a **surface**, a drawing that bends with several nearby bones, such as flag cloth or a wing.
 - **Continuous drawing** (skinning): One whole drawing bound to several bones so it bends smoothly at the joints instead of showing separate pieces.
-- **View**: A separately drawn direction of the same actor: front, back, profile or three-quarter. Switching views swaps artwork; it is not automatic 3D rotation.
+- **Angle**: A separately drawn direction of the same actor: front, back, profile or three-quarter. Switching angles swaps artwork; it is not automatic 3D rotation. The code calls these views.
 - **Artwork variant**: An alternative picture for one part, such as an open hand or a fist, that can be switched during a performance.
 - **Revision**: A saved version of an actor. Projects pin the exact revision they were made with, so editing an actor later never breaks an older scene.
 
@@ -38,7 +38,7 @@ names are shown in `monospace` where they differ from the word used in the app.
 - **Root motion**: Movement of the whole character across the stage, such as walking from left to right, as opposed to movement of its limbs.
 - **Motion preset**: A ready-made movement that can be applied to an actor and then adjusted, instead of recording it by hand.
 - **Placement** (`ActorPlacement`): One appearance of an actor in a project: which actor and revision, which performance, and where and when it appears on the timeline.
-- **Cast view**: A preview showing an actor from all its authored views at once, used to check that the views match.
+- **Cast view**: A preview showing an actor from all its angles at once, used to check that the angles match.
 
 ## Scene and output
 
