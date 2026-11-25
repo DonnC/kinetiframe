@@ -11,7 +11,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -19,8 +18,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.ClipboardPlus
 import com.composables.icons.lucide.Lucide
-import com.composables.icons.lucide.Music
-import com.composables.icons.lucide.Square
 import com.composables.icons.lucide.SquarePlus
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
@@ -91,24 +88,7 @@ fun AssetDetailsSheet(
 private fun AssetPreviewArea(details: AssetDetails) {
     Box(Modifier.fillMaxWidth().aspectRatio(1.7f)) {
         AssetThumbnailBox(thumbnail = details.thumbnail, modifier = Modifier.aspectRatio(1.7f))
-        // Motion assets remain static until an actual motion preview renderer is connected.
-        val badge = previewBadgeFor(PreviewKind.STATIC_SCREENSHOT)
-        PreviewBadge(
-            stringResource(badge.first),
-            modifier = Modifier.align(Alignment.TopStart).padding(Dimens.spaceS),
-            icon = badge.second,
-        )
     }
-}
-
-private fun previewBadgeFor(kind: PreviewKind) = when (kind) {
-    PreviewKind.STATIC_SCREENSHOT -> R.string.asset_preview_static to Lucide.Square
-
-    PreviewKind.LIVE_MOTION, PreviewKind.LIVE_COLLAGE ->
-        R.string.asset_preview_live_loops to
-            Lucide.ClipboardPlus
-
-    PreviewKind.AUDIO_PLAYER -> R.string.asset_preview_audio to Lucide.Music
 }
 
 @Preview(showBackground = true)

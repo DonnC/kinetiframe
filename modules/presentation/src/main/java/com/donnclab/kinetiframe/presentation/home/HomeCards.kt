@@ -2,11 +2,7 @@ package com.donnclab.kinetiframe.presentation.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -23,10 +19,8 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -38,6 +32,7 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.MediaBadge
@@ -72,12 +67,14 @@ fun HomeProjectCard(
     favourite: Boolean = false,
     onFavourite: () -> Unit = {},
     onOrganise: () -> Unit = {},
+    dragModifier: Modifier = Modifier,
 ) {
     MediaCard(
         title = project.displayName,
         subtitle = formatDuration(project.totalFrames, project.fps),
         onClick = onOpen,
         modifier = modifier,
+        contentModifier = dragModifier,
         media = {
             if (project.thumbnailPath != null) {
                 AsyncImage(
@@ -128,27 +125,6 @@ fun HomeProjectCard(
     )
 }
 
-@Composable
-private fun PackPreviewCell(file: File?, modifier: Modifier = Modifier) {
-    Box(modifier.background(Color.White.copy(alpha = .12f))) {
-        if (file != null && file.isFile) {
-            AsyncImage(
-                model = file,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize(),
-            )
-        }
-    }
-}
-
-private val PackTints = HomeTokens.placeholderTints
-
-private fun pastelFor(seed: String): Color {
-    val index = (seed.hashCode().let { if (it == Int.MIN_VALUE) 0 else kotlin.math.abs(it) }) % PackTints.size
-    return PackTints[index]
-}
-
 /** The actions a saved-pack card offers, grouped so [HomePackCard] doesn't take a lambda per
  *  menu row. */
 data class PackCardActions(
@@ -161,41 +137,40 @@ data class PackCardActions(
     val favourite: Boolean = false,
 )
 
-/** A 2x2 collage of a pack's first four drawings, or a tinted tile with a stack glyph when none is readable. */
+/**
+ * A pack's first drawing on light paper, as in Library. Pack drawings are dark lines on clear
+ * paper, so they need a light page in every theme or black line art disappears in dark mode.
+ */
 @Composable
-private fun PackCollage(packId: String, previewFiles: List<File>) {
-    val tint = remember(packId) { pastelFor(packId) }
-    Box(Modifier.fillMaxSize().background(tint), contentAlignment = Alignment.Center) {
-        if (previewFiles.isEmpty()) {
+private fun PackCover(previewFiles: List<File>) {
+    val cover = previewFiles.firstOrNull { it.isFile }
+    Box(Modifier.fillMaxSize().background(LibraryTokens.stampWell), contentAlignment = Alignment.Center) {
+        if (cover == null) {
             Icon(
                 Lucide.Layers,
                 null,
-                tint = Color.White.copy(alpha = .85f),
+                tint = LibraryTokens.stampPlaceholder,
                 modifier = Modifier.size(HomeTokens.placeholderIcon),
             )
         } else {
-            Column(Modifier.fillMaxSize()) {
-                Row(Modifier.weight(1f).fillMaxWidth()) {
-                    PackPreviewCell(previewFiles.getOrNull(0), Modifier.weight(1f).fillMaxHeight())
-                    PackPreviewCell(previewFiles.getOrNull(1), Modifier.weight(1f).fillMaxHeight())
-                }
-                Row(Modifier.weight(1f).fillMaxWidth()) {
-                    PackPreviewCell(previewFiles.getOrNull(2), Modifier.weight(1f).fillMaxHeight())
-                    PackPreviewCell(previewFiles.getOrNull(3), Modifier.weight(1f).fillMaxHeight())
-                }
-            }
+            AsyncImage(
+                model = cover,
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.fillMaxSize().padding(Dimens.spaceM),
+            )
         }
     }
 }
 
-/** One saved-pack card: a collage of its drawings, with the item count under the name. */
+/** One saved-pack card: its first drawing on light paper, with the item count under the name. */
 @Composable
 fun HomePackCard(pack: LibraryItemManifest, itemCount: Int, previewFiles: List<File>, actions: PackCardActions) {
     MediaCard(
         title = pack.displayName,
         subtitle = pluralStringResource(R.plurals.home_chip_items, itemCount, itemCount),
         onClick = actions.onOpen,
-        media = { PackCollage(pack.libraryItemId, previewFiles) },
+        media = { PackCover(previewFiles) },
         menu = { MediaCardMenu(stringResource(R.string.pack_actions), packMenuActions(actions)) },
     )
 }

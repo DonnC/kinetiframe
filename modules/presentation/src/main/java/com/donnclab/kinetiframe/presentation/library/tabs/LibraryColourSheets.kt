@@ -6,9 +6,12 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +29,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -44,6 +48,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
@@ -57,14 +63,19 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 
 /**
- * Picks one colour to keep, on a wheel or by hex, and saves it with [onSave]. With [askName] it
- * also asks for a name, for a new palette that starts with this colour.
+ * Picks a colour on a wheel or by hex and saves it with [onSave]. With [askName] it makes a new
+ * palette instead: a name, then "Add this colour" for each colour it should hold, then Create.
  */
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-internal fun ColourPickSheet(askName: Boolean, onDismiss: () -> Unit, onSave: (name: String, argb: Long) -> Unit) {
+internal fun ColourPickSheet(
+    askName: Boolean,
+    onDismiss: () -> Unit,
+    onSave: (name: String, colours: List<Long>) -> Unit,
+) {
     var argb by remember { mutableLongStateOf(START_COLOUR) }
     var name by remember { mutableStateOf("") }
+    var chosen by remember { mutableStateOf(emptyList<Long>()) }
     // A typed hex restarts the wheel there, so the slider then adjusts the typed colour.
     var wheelRestarts by remember { mutableIntStateOf(0) }
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(true)) {
@@ -82,8 +93,9 @@ internal fun ColourPickSheet(askName: Boolean, onDismiss: () -> Unit, onSave: (n
             if (askName) {
                 OutlinedTextField(
                     value = name,
-                    onValueChange = { name = it.take(MAX_NAME) },
+                    onValueChange = { name = it.take(PaletteEdits.MAX_NAME) },
                     label = { Text(stringResource(R.string.palette_name)) },
+                    placeholder = { Text(stringResource(R.string.palette_name_placeholder)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -109,13 +121,75 @@ internal fun ColourPickSheet(askName: Boolean, onDismiss: () -> Unit, onSave: (n
                     wheelRestarts++
                 }
             }
+            if (askName) {
+                ChosenColours(chosen, onAdd = {
+                    if (argb !in chosen && chosen.size < PaletteEdits.MAX_SWATCHES) chosen = chosen + argb
+                }, onRemove = { gone -> chosen = chosen - gone })
+            }
             Button(
-                onClick = { onSave(name.trim(), argb) },
+                // A palette made without pressing "Add this colour" keeps the colour on the wheel.
+                onClick = { onSave(name.trim(), if (askName) chosen.ifEmpty { listOf(argb) } else listOf(argb)) },
                 enabled = !askName || name.isNotBlank(),
                 modifier = Modifier.fillMaxWidth().padding(bottom = Dimens.spaceL),
             ) { Text(stringResource(if (askName) R.string.palette_create else R.string.colours_save)) }
         }
     }
+}
+
+/** A new palette's colours so far, with "Add this colour" for the one on the wheel. */
+@Composable
+@OptIn(ExperimentalLayoutApi::class)
+private fun ChosenColours(chosen: List<Long>, onAdd: () -> Unit, onRemove: (Long) -> Unit) {
+    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
+        OutlinedButton(onClick = onAdd, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.colours_add_this))
+        }
+        if (chosen.isNotEmpty()) {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
+                verticalArrangement = Arrangement.spacedBy(Dimens.spaceS),
+            ) {
+                chosen.forEach { argb ->
+                    val hex = PaletteEdits.hex(argb)
+                    ColourTile(
+                        argb,
+                        Modifier.size(LibraryTokens.colourSwatch)
+                            .semantics { contentDescription = hex }
+                            .clickable { onRemove(argb) },
+                    )
+                }
+            }
+            Text(
+                stringResource(R.string.colours_tap_to_take_out),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+/** Renames one of the user's palettes. */
+@Composable
+internal fun RenamePaletteDialog(current: String, onRename: (String) -> Unit, onDismiss: () -> Unit) {
+    var name by remember { mutableStateOf(current) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.palette_rename_title)) },
+        text = {
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it.take(PaletteEdits.MAX_NAME) },
+                label = { Text(stringResource(R.string.palette_name)) },
+                singleLine = true,
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = { onRename(name.trim()) }, enabled = name.isNotBlank()) {
+                Text(stringResource(R.string.palette_rename))
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
+    )
 }
 
 /** The colour as hex; typing a valid hex and pressing Done picks it. */
@@ -197,5 +271,4 @@ private fun Context.copyText(text: String) {
 /** A mid red, so the wheel opens on a hue instead of black. */
 private const val START_COLOUR = 0xFFE53935L
 private const val ARGB_MASK = 0xFFFFFFFFL
-private const val MAX_NAME = 60
 private const val HEX_LENGTH = 9

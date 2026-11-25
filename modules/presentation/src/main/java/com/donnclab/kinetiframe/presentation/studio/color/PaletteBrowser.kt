@@ -105,7 +105,7 @@ fun PaletteBrowserContent(
                     NewPaletteDialog(
                         onCreate = { name ->
                             naming = false
-                            onIntent(PaletteIntent.Create(name, color.toArgb().toLong() and 0xFFFFFFFFL))
+                            onIntent(PaletteIntent.Create(name, listOf(color.toArgb().toLong() and 0xFFFFFFFFL)))
                         },
                         onDismiss = { naming = false },
                     )

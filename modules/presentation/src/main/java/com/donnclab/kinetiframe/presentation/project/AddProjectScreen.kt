@@ -38,9 +38,10 @@ import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.common.FrameRatePicker
 
 /**
- * Home's "New Project" flow: a name, a canvas shape picked from picture cards (Landscape, Portrait,
- * Square or Custom, with every platform size one tap away in [CanvasSizeSheet]), and a frame rate
- * with a live preview. [state] and [callbacks] are bundled per project convention.
+ * Home's "New Project" flow: a name, a canvas size picked from picture cards for the places
+ * animators post most (TikTok, Instagram, YouTube, Facebook; Custom and every other size are in
+ * [CanvasSizeSheet]), and a frame rate with a live preview. [state] and [callbacks] are bundled per
+ * project convention.
  */
 @Composable
 fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks, modifier: Modifier = Modifier) {
@@ -110,8 +111,9 @@ private fun SectionLabel(text: String, action: (@Composable () -> Unit)? = null)
     }
 }
 
-/** Landscape, Portrait, Square and Custom, each drawn at its real shape. A platform size picked from
- *  the sheet highlights none of them and shows its own name in the summary below. */
+/** TikTok, Instagram, YouTube and Facebook, each drawn at its real shape. A size picked from the
+ *  sheet (Custom, a plain shape or another platform) highlights none of them and shows its own name
+ *  in the summary below. */
 @Composable
 private fun CanvasShapeCards(selection: CanvasSizeSelection, onPick: (CanvasPreset) -> Unit) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
@@ -141,8 +143,9 @@ private fun CanvasShapeCards(selection: CanvasSizeSelection, onPick: (CanvasPres
                         ShapeOutline(size.width, size.height, Dimens.canvasShapeMax, selected)
                     }
                     Text(preset.displayName(), style = MaterialTheme.typography.labelMedium, maxLines = 1)
+                    // The ratio says the shape; the exact size is in the summary above Create.
                     Text(
-                        stringResource(R.string.canvas_size_dimensions, size.width, size.height),
+                        size.ratioLabel(),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,

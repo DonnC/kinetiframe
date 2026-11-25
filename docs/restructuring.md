@@ -248,10 +248,11 @@ fixed after the module work, unless one blocks testing.
 - Library picker cards show empty selection boxes that do nothing.
 - Library's project cards fit the picture with light bands above and below, while Home's crop it
   to fill. Crop project pictures in Library too, keeping Fit for actors and pack drawings.
-- In dark mode, packs of dark or black line art disappear on their cards, because the drawings
-  are dark marks on transparent paper shown over a dark surface. Show pack drawings on a light
-  paper well (`LibraryTokens.stampWell`) in every theme, as the stamp preview already does,
-  everywhere a pack's drawings appear: cards, pack contents, the tray and the picker.
+- In dark mode, pack drawings (dark marks on transparent paper) need a light paper well
+  (`LibraryTokens.stampWell`) in every theme. Home's and Library's pack cards now have one; pack
+  contents, the tray and the picker still need checking.
+- A collection made by dropping one project on another shows as a plain card. Show it as a stack
+  of its projects' pictures, so it reads as a group at a glance.
 - The frame strip doesn't follow the playhead during playback.
 - Frames could not be reordered by dragging in the frame manager in a scripted test; check by
   hand. There is no one-tap duplicate and no hold count per frame in the strip.

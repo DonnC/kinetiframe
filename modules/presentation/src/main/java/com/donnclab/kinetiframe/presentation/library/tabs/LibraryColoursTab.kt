@@ -2,26 +2,19 @@
 package com.donnclab.kinetiframe.presentation.library.tabs
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -29,21 +22,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.lucide.Lucide
@@ -55,10 +41,7 @@ import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.library.model.BundledPalettes
 import com.donnclab.kinetiframe.library.model.ColorSwatch
 import com.donnclab.kinetiframe.library.model.PaletteDocument
-import com.donnclab.kinetiframe.library.model.PaletteEdits
 import com.donnclab.kinetiframe.presentation.R
-import com.donnclab.kinetiframe.presentation.common.ContextIconAction
-import com.donnclab.kinetiframe.presentation.common.MediaCardMenu
 import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.studio.color.PaletteIntent
 import com.donnclab.kinetiframe.presentation.studio.color.PaletteState
@@ -66,9 +49,10 @@ import com.donnclab.kinetiframe.presentation.studio.color.PaletteViewModel
 import com.donnclab.kinetiframe.ui.appViewModel
 
 /**
- * Library's Colours tab, for keeping colours rather than drawing with them: My colours as a grid
- * with an add tile, then every palette as a card with a strip of its colours. Tapping a palette opens
- * it; tapping a colour shows its hex. It shares its palettes with the studio's colour picker.
+ * Library's Colours tab, for keeping colours rather than drawing with them. My colours are the
+ * quick colours under the studio's colour wheel. Palettes are named sets, such as one per character:
+ * a New palette card starts one, and each palette opens to show, add, rename or remove its colours.
+ * It shares its palettes with the studio's colour picker.
  */
 @Composable
 fun LibraryColoursTab() {
@@ -106,49 +90,38 @@ internal fun LibraryColoursContent(state: PaletteState, onIntent: (PaletteIntent
             ),
             verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
         ) {
-            item { SectionTitle(stringResource(R.string.palette_my_colours)) }
+            item { Section(stringResource(R.string.palette_my_colours), stringResource(R.string.colours_mine_hint)) }
             item {
                 val mine = state.myColours
-                if (mine == null || mine.swatches.isEmpty()) {
-                    Text(
-                        stringResource(R.string.colours_mine_hint),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
                 SwatchGrid(mine?.swatches.orEmpty(), { mine?.let { p -> shown = ShownColour(p, it, true) } }) {
                     sheet = ColourSheet.AddTo(null)
                 }
             }
             item {
-                SectionTitle(stringResource(R.string.color_palettes)) {
-                    TextButton(onClick = { sheet = ColourSheet.NewPalette }) {
-                        Icon(Lucide.Plus, null, Modifier.size(Dimens.iconS))
-                        Text(stringResource(R.string.palette_new))
-                    }
-                }
+                Section(stringResource(R.string.color_palettes), stringResource(R.string.colours_palettes_hint))
             }
-            val palettes = state.palettes.filterNot { state.isMyColours(it) }
-            if (palettes.isEmpty()) item { Text(stringResource(R.string.palette_empty)) }
-            items(palettes, key = { it.id }) { palette ->
+            item { NewPaletteCard { sheet = ColourSheet.NewPalette } }
+            items(state.palettes.filterNot { state.isMyColours(it) }, key = { it.id }) { palette ->
                 val editable = state.canEdit(palette)
                 PaletteCard(
-                    palette = palette,
-                    editable = editable,
-                    onDelete = { onIntent(PaletteIntent.Delete(palette.id)) },
-                    onColour = { shown = ShownColour(palette, it, editable) },
-                    onAdd = { sheet = ColourSheet.AddTo(palette.id) },
+                    palette,
+                    PaletteCardActions(
+                        editable = editable,
+                        onIntent = onIntent,
+                        onColour = { shown = ShownColour(palette, it, editable) },
+                        onAdd = { sheet = ColourSheet.AddTo(palette.id) },
+                    ),
                 )
             }
         }
     }
     sheet?.let { request ->
-        ColourPickSheet(askName = request == ColourSheet.NewPalette, onDismiss = { sheet = null }) { name, argb ->
+        ColourPickSheet(askName = request == ColourSheet.NewPalette, onDismiss = { sheet = null }) { name, colours ->
             sheet = null
             onIntent(
                 when (request) {
-                    ColourSheet.NewPalette -> PaletteIntent.Create(name, argb)
-                    is ColourSheet.AddTo -> PaletteIntent.Add(argb, request.paletteId)
+                    ColourSheet.NewPalette -> PaletteIntent.Create(name, colours)
+                    is ColourSheet.AddTo -> PaletteIntent.Add(colours.first(), request.paletteId)
                 },
             )
         }
@@ -174,126 +147,50 @@ private sealed interface ColourSheet {
 
 private data class ShownColour(val palette: PaletteDocument, val swatch: ColorSwatch, val editable: Boolean)
 
+/** A section's title and one line saying what it is for. */
 @Composable
-private fun SectionTitle(text: String, action: (@Composable () -> Unit)? = null) {
-    Row(Modifier.fillMaxWidth().padding(top = Dimens.spaceS), verticalAlignment = Alignment.CenterVertically) {
-        Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-        action?.invoke()
+private fun Section(title: String, hint: String) {
+    Column(Modifier.fillMaxWidth().padding(top = Dimens.spaceS)) {
+        Text(title, style = MaterialTheme.typography.titleMedium)
+        Text(hint, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
-/** Colours as large, easy-to-tap tiles, ending with an add tile when [onAdd] is given. */
+/** Starts a palette, in the same outlined style as the add tile, so it reads as "make one here". */
 @Composable
-@OptIn(ExperimentalLayoutApi::class)
-private fun SwatchGrid(swatches: List<ColorSwatch>, onColour: (ColorSwatch) -> Unit, onAdd: (() -> Unit)?) {
-    val shape = RoundedCornerShape(Dimens.radiusS)
-    FlowRow(
-        Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
-        verticalArrangement = Arrangement.spacedBy(Dimens.spaceS),
+private fun NewPaletteCard(onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(HomeTokens.cardCorner),
+        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+        border = BorderStroke(Dimens.borderThin, MaterialTheme.colorScheme.outline),
+        modifier = Modifier.fillMaxWidth(),
     ) {
-        swatches.forEach { swatch ->
-            val hex = PaletteEdits.hex(swatch.argb)
-            Box(
-                Modifier.size(LibraryTokens.colourSwatch)
-                    .clip(shape)
-                    .background(Color(swatch.argb.toInt()))
-                    .border(Dimens.borderThin, MaterialTheme.colorScheme.outlineVariant, shape)
-                    .semantics { contentDescription = hex }
-                    .clickable { onColour(swatch) },
-            )
-        }
-        onAdd?.let {
+        Row(
+            Modifier.padding(Dimens.spaceM),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+        ) {
             Surface(
-                onClick = it,
-                shape = shape,
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                border = BorderStroke(Dimens.borderThin, MaterialTheme.colorScheme.outline),
+                shape = RoundedCornerShape(Dimens.radiusS),
+                color = MaterialTheme.colorScheme.primaryContainer,
                 modifier = Modifier.size(LibraryTokens.colourSwatch),
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(Lucide.Plus, stringResource(R.string.colours_add))
+                    Icon(Lucide.Plus, null, tint = MaterialTheme.colorScheme.onPrimaryContainer)
                 }
+            }
+            Column {
+                Text(stringResource(R.string.palette_new), style = MaterialTheme.typography.titleSmall)
+                Text(
+                    stringResource(R.string.palette_new_card_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }
 }
-
-/** One palette: its name and size, a strip of its colours, and all of them once opened. */
-@Composable
-private fun PaletteCard(
-    palette: PaletteDocument,
-    editable: Boolean,
-    onDelete: () -> Unit,
-    onColour: (ColorSwatch) -> Unit,
-    onAdd: () -> Unit,
-) {
-    var confirmDelete by remember { mutableStateOf(false) }
-    var open by rememberSaveable(palette.id) { mutableStateOf(false) }
-    Surface(
-        onClick = { open = !open },
-        shape = RoundedCornerShape(HomeTokens.cardCorner),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        border = BorderStroke(Dimens.borderThin, MaterialTheme.colorScheme.outlineVariant),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(Modifier.padding(start = Dimens.spaceM, bottom = Dimens.spaceM, end = Dimens.spaceXs)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f).padding(vertical = Dimens.spaceS)) {
-                    Text(palette.name, style = MaterialTheme.typography.titleSmall, maxLines = 1)
-                    val count = palette.swatches.size
-                    val detail = pluralStringResource(R.plurals.colours_count, count, count)
-                    Text(
-                        if (editable) detail else "$detail · ${stringResource(R.string.colours_starter)}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                if (editable) {
-                    MediaCardMenu(
-                        stringResource(R.string.colours_palette_actions),
-                        listOf(
-                            ContextIconAction(Lucide.Plus, stringResource(R.string.colours_add), onAdd),
-                            ContextIconAction(Icons.Default.Delete, stringResource(R.string.palette_delete), {
-                                confirmDelete = true
-                            }),
-                        ),
-                    )
-                }
-            }
-            Box(Modifier.padding(end = Dimens.spaceS)) {
-                if (open) {
-                    SwatchGrid(palette.swatches, onColour, if (editable) onAdd else null)
-                } else {
-                    SwatchStrip(palette.swatches)
-                }
-            }
-        }
-    }
-    if (confirmDelete) {
-        DeletePaletteDialog(
-            onConfirm = {
-                confirmDelete = false
-                onDelete()
-            },
-            onDismiss = { confirmDelete = false },
-        )
-    }
-}
-
-/** A palette at a glance: its colours side by side in one rounded bar. */
-@Composable
-private fun SwatchStrip(swatches: List<ColorSwatch>) {
-    Row(
-        Modifier.fillMaxWidth().height(LibraryTokens.colourStripHeight).clip(RoundedCornerShape(Dimens.radiusS)),
-    ) {
-        swatches.take(MAX_STRIP).forEach { swatch ->
-            Box(Modifier.weight(1f).height(LibraryTokens.colourStripHeight).background(Color(swatch.argb.toInt())))
-        }
-    }
-}
-
-private const val MAX_STRIP = 16
 
 @Preview(showBackground = true, heightDp = 640)
 @Composable

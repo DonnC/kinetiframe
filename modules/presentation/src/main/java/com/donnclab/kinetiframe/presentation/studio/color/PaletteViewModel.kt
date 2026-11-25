@@ -44,7 +44,13 @@ sealed interface PaletteIntent : ViewIntent {
     /** Saves [argb] into [paletteId], or into My colours when it's null. */
     data class Add(val argb: Long, val paletteId: String? = null) : PaletteIntent
     data class Remove(val paletteId: String, val swatchName: String) : PaletteIntent
-    data class Create(val name: String, val argb: Long) : PaletteIntent
+
+    /** Makes a palette of the user's own named [name], holding [colours] in order. */
+    data class Create(val name: String, val colours: List<Long>) : PaletteIntent
+    data class Rename(val paletteId: String, val name: String) : PaletteIntent
+
+    /** Copies a palette, such as one that comes with the app, into one the user can edit. */
+    data class Duplicate(val paletteId: String, val name: String) : PaletteIntent
     data class Delete(val paletteId: String) : PaletteIntent
 }
 
@@ -86,7 +92,17 @@ class PaletteViewModel(
             }
 
             is PaletteIntent.Create -> edit(R.string.palette_save_failed) {
-                repository.update(PaletteEdits.create(intent.name, intent.argb)).id
+                repository.update(PaletteEdits.create(intent.name, intent.colours)).id
+            }
+
+            is PaletteIntent.Rename -> edit(R.string.palette_save_failed) {
+                val palette = currentState.palettes.firstOrNull { it.id == intent.paletteId } ?: return@edit null
+                repository.update(PaletteEdits.rename(palette, intent.name)).id
+            }
+
+            is PaletteIntent.Duplicate -> edit(R.string.palette_save_failed) {
+                val palette = currentState.palettes.firstOrNull { it.id == intent.paletteId } ?: return@edit null
+                repository.update(PaletteEdits.duplicate(palette, intent.name)).id
             }
 
             is PaletteIntent.Delete -> edit(R.string.palette_save_failed) {

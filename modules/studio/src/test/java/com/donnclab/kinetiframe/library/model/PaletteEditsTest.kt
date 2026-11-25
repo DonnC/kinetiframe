@@ -28,6 +28,22 @@ class PaletteEditsTest {
         assertThrows<IllegalArgumentException> { PaletteEdits.add(palette, red) }
     }
 
+    @Test fun `a new palette keeps several colours in order without repeats`() {
+        val palette = PaletteEdits.create("Night", listOf(red, 0xFF000000L, red), id = "night")
+        assertEquals(listOf("#C9372C", "#000000"), palette.swatches.map { it.name })
+        assertThrows<IllegalArgumentException> { PaletteEdits.create("Empty", emptyList(), id = "empty") }
+    }
+
+    @Test fun `renaming and duplicating keep the colours`() {
+        val palette = PaletteEdits.add(PaletteEdits.create("Tavi", red, id = "tavi"), 0xFF000000L)
+        val renamed = PaletteEdits.rename(palette, "  Tavi skin  ")
+        assertEquals("Tavi skin", renamed.name)
+        assertEquals(palette.swatches, renamed.swatches)
+        val copy = PaletteEdits.duplicate(palette, "Tavi copy", id = "tavi-copy")
+        assertEquals("tavi-copy", copy.id)
+        assertEquals(palette.swatches, copy.swatches)
+    }
+
     @Test fun `hex reads short long and alpha forms`() {
         assertEquals(0xFFFF0000L, PaletteEdits.parseHex("#f00"))
         assertEquals(red, PaletteEdits.parseHex("C9372C"))

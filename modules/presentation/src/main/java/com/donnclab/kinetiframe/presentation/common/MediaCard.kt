@@ -45,6 +45,9 @@ private const val MEDIA_ASPECT = 4f / 3f
  * The picture sits on top with optional [badges] (short facts such as fps or size) in its corners;
  * the title and a [subtitle] sit below it on a solid caption, so they read on any artwork, light or
  * dark. A [menu] sits at the caption's end.
+ *
+ * [contentModifier] goes inside the card's tap handling, so a gesture there, such as long-press to
+ * drag, sees the touch before the tap does.
  */
 @Composable
 fun MediaCard(
@@ -55,6 +58,7 @@ fun MediaCard(
     modifier: Modifier = Modifier,
     badges: (@Composable RowScope.() -> Unit)? = null,
     menu: (@Composable () -> Unit)? = null,
+    contentModifier: Modifier = Modifier,
 ) {
     val shape = RoundedCornerShape(HomeTokens.cardCorner)
     Surface(
@@ -64,7 +68,7 @@ fun MediaCard(
         border = BorderStroke(Dimens.borderThin, MaterialTheme.colorScheme.outlineVariant),
         modifier = modifier.fillMaxWidth(),
     ) {
-        Column {
+        Column(contentModifier) {
             Box(
                 Modifier.fillMaxWidth().aspectRatio(MEDIA_ASPECT)
                     .clip(RoundedCornerShape(topStart = HomeTokens.cardCorner, topEnd = HomeTokens.cardCorner)),

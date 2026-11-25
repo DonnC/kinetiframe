@@ -57,11 +57,6 @@ private const val PROJECT_DRAG_LABEL = "kinetiframe-project"
 /** One collection on Home: its name and its projects, newest first. */
 internal data class ProjectCollection(val name: String, val projects: List<ProjectManifest>)
 
-/** A project card that can be long-pressed and dragged, carrying [key], and that accepts a dropped project. */
-@Composable
-internal fun Modifier.projectDragAndDrop(key: String, onDrop: (draggedKey: String) -> Unit): Modifier =
-    projectDragSource(key).projectDropTarget(key, onDrop)
-
 /** Long-pressing starts dragging the project with organisation [key]. */
 @OptIn(ExperimentalFoundationApi::class)
 internal fun Modifier.projectDragSource(key: String): Modifier = dragAndDropSource { _ ->

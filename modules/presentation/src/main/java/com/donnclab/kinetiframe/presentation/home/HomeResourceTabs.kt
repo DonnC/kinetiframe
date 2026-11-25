@@ -157,9 +157,11 @@ internal fun ProjectsTabContent(
                             },
                             onOrganise = { organiseCandidate = project },
                             // Long-press and drag onto another project or a collection to group them.
-                            modifier = Modifier.projectDragAndDrop("project:${project.projectId}") { dragged ->
+                            // The drag starts inside the card's tap handling, so the tap can't swallow it.
+                            modifier = Modifier.projectDropTarget("project:${project.projectId}") { dragged ->
                                 dropOnProject(dragged, "project:${project.projectId}")
                             },
+                            dragModifier = Modifier.projectDragSource("project:${project.projectId}"),
                         )
                     }
                 }

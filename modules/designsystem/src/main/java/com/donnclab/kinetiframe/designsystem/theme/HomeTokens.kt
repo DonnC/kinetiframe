@@ -17,14 +17,4 @@ object HomeTokens {
 
     // The create sheet's option tiles.
     val createOptionTile = 46.dp
-
-    /** Backgrounds for cards without a thumbnail; a card picks one from its ID. */
-    val placeholderTints = listOf(
-        Color(0xFFFFB199),
-        Color(0xFF9FCBEF),
-        Color(0xFF8FCB8A),
-        Color(0xFFB77FE0),
-        Color(0xFFE8C24C),
-        Color(0xFFF2879F),
-    )
 }
