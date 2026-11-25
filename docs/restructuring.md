@@ -62,7 +62,7 @@ one drawn from the animator's desk. The reasons are in [the brand](assets.md#the
 - The mark is a bouncing ball in three frames on one diagonal: round, stretched as it falls, and
   squashed on the ground, in carmine and graphite on a paper tile. It reads at 16 px and as a
   themed icon.
-- The interface and the wordmark use Nunito, bundled as one variable font under the OFL. The
+- The interface and the wordmark use Nunito, bundled as five static weights under the OFL. The
   wordmark is Nunito ExtraBold with carmine balls for the i dots.
 - One brand colour: the logo's carmine is the primary, and every other interface colour is a
   tone of it from its Material HCT palette, over the logo's graphite and paper neutrals. The
@@ -74,6 +74,28 @@ one drawn from the animator's desk. The reasons are in [the brand](assets.md#the
   the only colour outside the brand, and only on the canvas.
 - Checked on a Galaxy A73 in the dark theme: splash, Home and the editor. The light theme and the
   launcher icon on a home screen aren't checked on a phone yet.
+
+**Studio essentials.** `milestone/studio-essentials` fixes what the first UX review round found.
+The six-persona panel that ran it is in [tools/ux-review](../tools/ux-review/README.md).
+
+- Trust: leaving only asks to save when something changed since the last save, and a
+  successful save is a short notice instead of a dialog. Adding an actor performance that
+  lengthens the scene says so and offers Undo. Back during a lasso move applies the move. A fresh
+  install no longer opens on the trial-library cleanup. The canvas no longer jumps when playback
+  starts.
+- Colour: the current colour is a dot on the tool rail, the wheel starts at full brightness
+  from a dark colour, and the picker has recent colours, My colours with a + to save the current
+  colour, and hex entry. Palettes you make can be added to, trimmed by long-press and deleted;
+  starter palettes stay read-only.
+- Layers: every layer shows its eye and lock, and its opacity opens a slider. A held drawing
+  continues onto frames added inside it or after its end, so a background held to the end stays
+  held as the scene grows.
+- Words and layout: actor views are called angles. Asset tracks open as a half-height sheet in
+  portrait that can be dragged taller or closed, and New Project's canvas sizes are a scrollable
+  sheet. The bottom bar has three equal tabs on every screen, with a labelled New button above it
+  on Home. Home, Library and Settings share the same app bar, with no back arrow on Settings, and
+  Library's filter chips toggle instead of starting with All. Export video is in the editor's
+  menu and saves first.
 
 **Tavi presents with natural hands.** `milestone/tavi-hands` ships a copy of `Tavi presents`
 beside the unchanged original:
@@ -177,10 +199,17 @@ fixed after the module work, unless one blocks testing.
 - In the brush panel, the brush name ("Pen") is white text on the white preview card.
 - The export screen has no back button.
 - In portrait, Actor Studio's hint banner runs into the gold asset button.
-- The asset tracks panel covers the whole stage and says only "No clips yet".
-- "Save before leaving?" appears even right after saving with nothing changed. In that dialog,
-  Discard looks like the safe buttons although it throws work away.
-- A successful save opens a blocking dialog that needs OK. A short message would do.
+- The asset tracks sheet says only "No clips yet" when empty, with no hint of what to add.
+- In "Save before leaving?", Discard looks like the safe buttons although it throws work away.
+- "Menu labels" only labels context menus. The top bar, frame menu and selection menu stay
+  icon-only, and long labels such as "Edit asset tracks" need a layout that fits seven icons.
+- The frame strip doesn't follow the playhead during playback.
+- Frames could not be reordered by dragging in the frame manager in a scripted test; check by
+  hand. There is no one-tap duplicate and no hold count per frame in the strip.
+- Fill and lasso need a confirm tap every time. Consider applying on the next action.
+- "Playback FPS" changes the project's frame rate, not only the preview.
+- In portrait the canvas fills about a quarter of the screen, and Focus hides the controls
+  without enlarging it.
 - Unlabelled top bar icons: the document and eye icons, and the round gold button on the right.
 - The tool dock's grip doesn't read as draggable.
 - Frame thumbnails are dark grey while the canvas is white, so strokes are barely visible in them.
@@ -194,19 +223,19 @@ fixed after the module work, unless one blocks testing.
 
 **Home and actors**
 
-- A fresh install opens on "Clean the trial library?", although there is nothing to clean yet.
-
 - Project thumbnails are transparent PNGs. A black drawing shows as an empty dark card. Draw
   thumbnails on the stage's white paper.
 - A one-frame project shows a duration of "0:00".
 - Card badges (fps, size) have no scrim over light artwork.
-- Actor cards have no visible surface, the "4 views" chip floats above them and repeats "All four
-  views" in the title, and the last card sits under the + button.
-- Actor views are listed alphabetically; Front should come first.
+- Actor cards have no visible surface, and the "4 angles" chip floats above them and repeats "All
+  four views" in the title.
+- Actor angles are listed alphabetically; Front should come first.
+- Home and Library both list projects, packs and actors, so it isn't clear what Library is for.
+- Pack items do nothing when tapped, and their names look like file names ("ls-eyes-neutral").
+- Putting a character in a scene takes four or five steps through Asset tracks.
 - Leaving Actor Studio returns to the Projects tab, not the Actors tab it was opened from.
 - On a fresh install the Library's Audio tab says "No matching items. Try another filter or
   search." with no filter or search applied.
-- Settings is a bottom bar tab but shows a back arrow and a second header under the brand bar.
 - Sharing the 34 MB demo project took about three and a half minutes on an A73, with no sign
   that anything was happening after the menu closed. Show progress, and look at why the
   archive is slow.
@@ -301,8 +330,6 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Discoveries
 
-- Leaving the editor asks to save a project that wasn't changed. Opening a project and pressing
-  Home shows "Save before leaving?" with no edits made.
 - The 17 fonts in `app/src/main/assets/fonts` are Google Fonts, most under the SIL Open Font
   License, which `THIRD_PARTY_NOTICES.md` doesn't list. Add each font's license before a release.
 - Mira was the only bundled actor drawn as one continuous piece with skinned bones. With her gone,
