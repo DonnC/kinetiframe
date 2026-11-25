@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.presentation.studio.timeline
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,6 +19,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,7 +29,12 @@ import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.studio.StudioIntent
 
-/** An explicit editing workspace: opening lanes must never remeasure the drawing viewport. */
+/**
+ * An explicit editing workspace: opening lanes must never remeasure the drawing viewport.
+ *
+ * In portrait it opens at half height over the canvas, with a handle to drag it taller, shorter or
+ * closed. In landscape, where height is scarce, it opens full height.
+ */
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun TracksWorkspaceDialog(
@@ -36,12 +44,13 @@ fun TracksWorkspaceDialog(
     assetPicker: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
+    val portrait = LocalConfiguration.current.orientation != Configuration.ORIENTATION_LANDSCAPE
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = !portrait),
         modifier = Modifier.fillMaxSize(),
         sheetMaxWidth = androidx.compose.ui.unit.Dp.Unspecified,
-        dragHandle = null,
+        dragHandle = if (portrait) ({ BottomSheetDefaults.DragHandle() }) else null,
         contentWindowInsets = { WindowInsets.safeDrawing },
     ) {
         Column(Modifier.fillMaxSize()) {

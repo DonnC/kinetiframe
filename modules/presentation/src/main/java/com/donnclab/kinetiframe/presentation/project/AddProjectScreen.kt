@@ -32,7 +32,7 @@ import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.common.StandardSlider
 
 /**
- * Home's "New Project" flow: a name, the canvas size chosen on [AddProjectCanvasSizeScreen] (a
+ * Home's "New Project" flow: a name, the canvas size chosen on [CanvasSizeSheet] (a
  * fixed FlipaClip-style export-preset list, never derived from this device's own screen), and an
  * FPS slider. [state] and [callbacks] are bundled per project convention so this composable
  * takes two values rather than a handful of separate lambdas.
@@ -97,7 +97,7 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
     }
 }
 
-/** The single nav row that opens [AddProjectCanvasSizeScreen], showing the current choice
+/** The single nav row that opens [CanvasSizeSheet], showing the current choice
  *  ("Local · 1920 × 1080") the same way FlipaClip's own project-setup screen does. */
 @Composable
 private fun CanvasSizeRow(selection: CanvasSizeSelection, onClick: () -> Unit) {

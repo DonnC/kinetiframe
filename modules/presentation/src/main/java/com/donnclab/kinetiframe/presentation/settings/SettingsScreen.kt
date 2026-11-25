@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.presentation.settings
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,21 +12,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,15 +50,11 @@ fun SettingsScreen(
     onNavigate: ((com.donnclab.kinetiframe.presentation.common.BottomNavDestination) -> Unit)? = null,
     onShareDiagnostics: () -> Unit = {},
 ) {
+    BackHandler(onBack = onBack)
+    // A root screen: the same app bar as Home and Library, the page title as the first heading,
+    // and no back arrow (the bottom bar and system Back move between root screens).
     Scaffold(topBar = {
-        Column {
-            com.donnclab.kinetiframe.presentation.common.AppBrandBar()
-            TopAppBar(title = { Text(stringResource(R.string.settings_title)) }, navigationIcon = {
-                IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.action_back))
-                }
-            })
-        }
+        com.donnclab.kinetiframe.presentation.common.AppBrandBar()
     }, bottomBar = {
         onNavigate?.let {
             com.donnclab.kinetiframe.presentation.common.AppBottomNavBar(
@@ -75,6 +68,7 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState()).padding(Dimens.spaceXl),
             verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
         ) {
+            Text(stringResource(R.string.settings_title), style = MaterialTheme.typography.headlineSmall)
             if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
             state.error?.let { Text(it.asString(), color = MaterialTheme.colorScheme.error) }
             Text(stringResource(R.string.settings_appearance), style = MaterialTheme.typography.titleSmall)

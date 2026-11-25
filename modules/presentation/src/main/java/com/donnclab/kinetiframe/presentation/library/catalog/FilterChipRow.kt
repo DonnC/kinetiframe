@@ -22,6 +22,9 @@ import com.donnclab.kinetiframe.presentation.R
  * The secondary filter row shown under the top tabs (e.g. "Full Projects / Background Images /
  * Static Overlays") on every top tab except Packs, which stays one flat list so packs are quick
  * to scan.
+ *
+ * [filters] starts with the unfiltered entry ("All"), which has no chip of its own: with no chip
+ * selected everything shows. Tapping a chip filters by it, and tapping it again clears the filter.
  */
 @Composable
 fun FilterChipRow(filters: List<Int>, selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier) {
@@ -30,10 +33,14 @@ fun FilterChipRow(filters: List<Int>, selectedIndex: Int, onSelect: (Int) -> Uni
         horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
     ) {
         filters.forEachIndexed { index, label ->
-            FilterChip(stringResource(label), active = index == selectedIndex, onClick = { onSelect(index) })
+            if (index == UNFILTERED) return@forEachIndexed
+            val active = index == selectedIndex
+            FilterChip(stringResource(label), active, onClick = { onSelect(if (active) UNFILTERED else index) })
         }
     }
 }
+
+private const val UNFILTERED = 0
 
 @Composable
 private fun FilterChip(label: String, active: Boolean, onClick: () -> Unit) {
@@ -60,6 +67,7 @@ private fun FilterChipRowPreview() {
     KinetiFrameTheme {
         FilterChipRow(
             filters = listOf(
+                R.string.filter_all,
                 R.string.library_filter_full_projects,
                 R.string.library_filter_background_images,
                 R.string.library_filter_static_overlays,

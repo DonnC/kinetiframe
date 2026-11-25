@@ -8,11 +8,9 @@ object HomeTokens {
     val chipCorner = 8.dp
     val chipBg = Color(0x8C141210)
     val cardScrim = Color(0xB8141210)
-    val fabSize = 60.dp
-    val fabRing = 4.dp
 
-    /** Room under the last card for the + button. */
-    val listBottomReserve = 104.dp
+    /** Room under the last card for the bottom bar and the New button above it. */
+    val listBottomReserve = 160.dp
 
     // Card overlays.
     val badgePaddingHorizontal = 7.dp

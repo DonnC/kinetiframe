@@ -39,11 +39,9 @@ enum class BottomNavDestination(val icon: ImageVector, @StringRes val label: Int
 }
 
 /**
- * Shared bottom navigation bar: Home / Library / [center FAB gap] / Settings. Used by every
- * top-level destination so the chrome stays the same when switching screens.
- *
- * On Home the gap leaves room for the centered create button. Settings then takes the whole right
- * half so the gap stays centered.
+ * Shared bottom navigation bar: Home / Library / Settings, three equal slots on every top-level
+ * screen, so each item stays in the same place when switching. Creating is a separate floating
+ * button above the bar, not a slot in it.
  */
 @Composable
 fun AppBottomNavBar(
@@ -57,16 +55,9 @@ fun AppBottomNavBar(
         tonalElevation = Dimens.elevationS,
     ) {
         Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-            AppBottomNavItem(BottomNavDestination.HOME, active, onNavigate, Modifier.weight(1f))
-            AppBottomNavItem(BottomNavDestination.LIBRARY, active, onNavigate, Modifier.weight(1f))
-            val showsCreateGap = active == BottomNavDestination.HOME
-            if (showsCreateGap) Spacer(Modifier.weight(1f))
-            AppBottomNavItem(
-                BottomNavDestination.SETTINGS,
-                active,
-                onNavigate,
-                Modifier.weight(if (showsCreateGap) 2f else 1f),
-            )
+            BottomNavDestination.entries.forEach { destination ->
+                AppBottomNavItem(destination, active, onNavigate, Modifier.weight(1f))
+            }
         }
     }
 }

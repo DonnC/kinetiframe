@@ -61,6 +61,7 @@ fun LibraryScreen(
     var previewColor by remember { mutableStateOf(androidx.compose.ui.graphics.Color.Black) }
     Box(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
+            // The app bar stays the same on every root screen.
             com.donnclab.kinetiframe.presentation.common.AppBrandBar()
             LibraryTopBar(state.query, onIntent, { showPalettes = true })
             TopTabRow(TopTabs.all, state.selectedTab, onSelect = { onIntent(LibraryIntent.SelectTab(it)) })

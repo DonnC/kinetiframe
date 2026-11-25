@@ -1,6 +1,5 @@
 package com.donnclab.kinetiframe.presentation.home
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,10 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -22,6 +19,7 @@ import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -235,10 +233,16 @@ fun HomeScreen(
                 }
             },
         )
-        HomeFab(
-            modifier = Modifier.align(Alignment.BottomCenter).offset(y = (-39).dp),
-            contentDescription = fabDescription,
+        // Above the bar at the bottom end, labelled with what it makes on this tab.
+        ExtendedFloatingActionButton(
             onClick = onFabClick,
+            icon = { Icon(Icons.Filled.Add, contentDescription = null) },
+            text = { Text(fabDescription) },
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = Dimens.spaceL, bottom = Dimens.bottomNavHeight + Dimens.spaceL),
         )
     }
 
@@ -339,23 +343,6 @@ internal fun EmptySearchMessage() {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(Dimens.spaceXlPlus),
         )
-    }
-}
-
-@Composable
-private fun HomeFab(modifier: Modifier = Modifier, contentDescription: String, onClick: () -> Unit) {
-    Surface(
-        modifier = modifier.size(HomeTokens.fabSize),
-        shape = CircleShape,
-        color = MaterialTheme.colorScheme.primary,
-        tonalElevation = Dimens.elevationFloating,
-        shadowElevation = Dimens.elevationM,
-        border = BorderStroke(HomeTokens.fabRing, MaterialTheme.colorScheme.surface),
-        onClick = onClick,
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(Icons.Filled.Add, contentDescription, tint = Color.White, modifier = Modifier.size(Dimens.iconL))
-        }
     }
 }
 

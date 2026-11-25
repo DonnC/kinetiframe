@@ -79,9 +79,9 @@ object Dimens {
     val sliderTrackHeight = 2.dp
 
     // The brand bar's badge and wordmark.
-    val brandBadge = 40.dp
-    val brandWordmarkWidth = 160.dp
-    val brandWordmarkHeight = 28.dp
+    val brandBadge = 32.dp
+    val brandWordmarkWidth = 140.dp
+    val brandWordmarkHeight = 20.dp
 
     // Surface elevation.
     val elevationFlat = 2.dp

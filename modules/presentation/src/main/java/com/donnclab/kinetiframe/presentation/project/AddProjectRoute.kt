@@ -10,8 +10,8 @@ import com.donnclab.kinetiframe.presentation.common.FullScreenDialog
 
 /**
  * Hosts Home's "New Project" flow as its own full screen: [AddProjectFormState] lives here for
- * the flow's lifetime, and [showCanvasSize] swaps in [AddProjectCanvasSizeScreen] for the size
- * picker without adding a NavKey destination for what is really one short-lived overlay off Home.
+ * the flow's lifetime, and [showCanvasSize] opens [CanvasSizeSheet] over the form, so the form
+ * stays in view while a size is picked.
  */
 @Composable
 fun AddProjectRoute(
@@ -23,23 +23,21 @@ fun AddProjectRoute(
     var showCanvasSize by remember { mutableStateOf(false) }
 
     FullScreenDialog(onDismiss = onDismiss) {
+        AddProjectScreen(
+            state = formState,
+            callbacks = AddProjectCallbacks(
+                onStateChange = { formState = it },
+                onOpenCanvasSize = { showCanvasSize = true },
+                onBack = onDismiss,
+                onCreate = { onCreate(formState.name, formState.canvasSelection, formState.fps) },
+            ),
+            modifier = modifier,
+        )
         if (showCanvasSize) {
-            AddProjectCanvasSizeScreen(
+            CanvasSizeSheet(
                 selection = formState.canvasSelection,
                 onChange = { formState = formState.copy(canvasSelection = it) },
-                onBack = { showCanvasSize = false },
-                modifier = modifier,
-            )
-        } else {
-            AddProjectScreen(
-                state = formState,
-                callbacks = AddProjectCallbacks(
-                    onStateChange = { formState = it },
-                    onOpenCanvasSize = { showCanvasSize = true },
-                    onBack = onDismiss,
-                    onCreate = { onCreate(formState.name, formState.canvasSelection, formState.fps) },
-                ),
-                modifier = modifier,
+                onDismiss = { showCanvasSize = false },
             )
         }
     }
