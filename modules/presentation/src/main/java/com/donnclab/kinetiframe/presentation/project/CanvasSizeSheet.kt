@@ -36,7 +36,7 @@ import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.studio.dialogs.SelectionDot
 
 /**
- * New Project's canvas sizes in a scrollable bottom sheet: the editable [CanvasPresets.Local] size
+ * New Project's canvas sizes in a scrollable bottom sheet: the editable [CanvasPresets.Custom] size
  * at the top, then the named presets (see [CanvasPresets]). Picking a named preset selects it and
  * closes the sheet; the editable size keeps it open while the width and height are typed.
  */
@@ -49,8 +49,8 @@ fun CanvasSizeSheet(selection: CanvasSizeSelection, onChange: (CanvasSizeSelecti
                 Text(stringResource(R.string.canvas_size_title), style = MaterialTheme.typography.titleLarge)
                 LocalDimensionsRow(
                     dimensions = selection.dimensions,
-                    editable = selection.preset.isLocal,
-                    onChange = { onChange(selection.copy(localDimensions = it)) },
+                    editable = selection.preset.isCustom,
+                    onChange = { onChange(selection.copy(customDimensions = it)) },
                 )
                 HorizontalDivider(Modifier.padding(top = Dimens.spaceS, bottom = Dimens.spaceXs))
             }
@@ -60,7 +60,7 @@ fun CanvasSizeSheet(selection: CanvasSizeSelection, onChange: (CanvasSizeSelecti
                     selected = preset == selection.preset,
                     onClick = {
                         onChange(selection.copy(preset = preset))
-                        if (!preset.isLocal) onDismiss()
+                        if (!preset.isCustom) onDismiss()
                     },
                 )
             }
@@ -72,7 +72,7 @@ fun CanvasSizeSheet(selection: CanvasSizeSelection, onChange: (CanvasSizeSelecti
 /** The width/height pair at the top, with a link glyph standing in for FlipaClip's aspect-lock
  *  affordance -- purely illustrative here (this screen doesn't yet re-derive one field from the
  *  other), since the width/height values themselves matter far more than that convenience. Only
- *  editable while [editable] (i.e. the [CanvasPresets.Local] preset is selected); every named
+ *  editable while [editable] (i.e. the [CanvasPresets.Custom] preset is selected); every named
  *  preset's size is fixed. */
 @Composable
 private fun LocalDimensionsRow(dimensions: StageDimensions, editable: Boolean, onChange: (StageDimensions) -> Unit) {
@@ -119,7 +119,7 @@ private fun CanvasPresetRow(preset: CanvasPreset, selected: Boolean, onClick: ()
             Column(Modifier.weight(1f)) {
                 Text(preset.displayName(), style = MaterialTheme.typography.titleSmall)
                 Text(
-                    if (preset.isLocal) {
+                    if (preset.isCustom) {
                         stringResource(R.string.canvas_size_editable, preset.dimensions.width, preset.dimensions.height)
                     } else {
                         stringResource(

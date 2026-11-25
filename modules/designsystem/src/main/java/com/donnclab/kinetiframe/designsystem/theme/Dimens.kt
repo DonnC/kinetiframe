@@ -83,6 +83,11 @@ object Dimens {
     val brandWordmarkWidth = 140.dp
     val brandWordmarkHeight = 20.dp
 
+    /** The bouncing-ball frame-rate preview and New Project's canvas shape cards. */
+    val fpsPreviewHeight = 96.dp
+    val canvasShapeCard = 76.dp
+    val canvasShapeMax = 44.dp
+
     // Surface elevation.
     val elevationFlat = 2.dp
     val elevationS = 3.dp

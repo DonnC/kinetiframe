@@ -1,37 +1,44 @@
 package com.donnclab.kinetiframe.presentation.project
 
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.presentation.R
 
 /**
- * A named canvas size a new project can start from. Deliberately a fixed table of real-world
- * export targets (matching the sizes FlipaClip itself ships) rather than anything derived from
- * the device's own screen or orientation -- a portrait phone should be just as able to start a
- * landscape YouTube project as a landscape tablet is, so nothing here reads display metrics.
+ * A canvas size a new project can start from. Sizes are a fixed table of real-world shapes and
+ * export targets, never derived from this device's screen: a portrait phone can start a landscape
+ * YouTube project as easily as a tablet can.
  *
- * [CanvasPresets.Local] is the odd one out: it is the only preset whose dimensions the animator
- * can edit directly on the canvas-size sheet (see CanvasSizeSheet), for a project
- * meant to stay on this device rather than target one specific platform's upload spec.
- *
- * [platform] is a product name ("YouTube (1080p)") and stays as written in every language. It is
- * null for [CanvasPresets.Local], whose name comes from string resources; see [displayName].
+ * [platform] is a product name ("YouTube (1080p)") and stays as written in every language. The
+ * shape presets and [CanvasPresets.Custom] take their names from string resources ([nameRes]).
+ * Only [isCustom] has editable dimensions.
  */
-data class CanvasPreset(val platform: String?, val dimensions: StageDimensions) {
-    val isLocal: Boolean get() = platform == null
-}
+data class CanvasPreset(
+    val platform: String?,
+    val dimensions: StageDimensions,
+    @StringRes val nameRes: Int? = null,
+    val isCustom: Boolean = false,
+)
 
 @Composable
-fun CanvasPreset.displayName(): String = platform ?: stringResource(R.string.canvas_preset_local)
+fun CanvasPreset.displayName(): String = platform ?: stringResource(requireNotNull(nameRes))
 
 object CanvasPresets {
-    /** Default local export target -- same pixel size as YouTube's 1080p preset, since that is
-     *  the most broadly compatible landscape HD size a locally-kept file could want. */
-    val Local = CanvasPreset(platform = null, StageDimensions(1920, 1080))
+    val Landscape = CanvasPreset(null, StageDimensions(1920, 1080), R.string.canvas_preset_landscape)
+    val Portrait = CanvasPreset(null, StageDimensions(1080, 1920), R.string.canvas_preset_portrait)
+    val Square = CanvasPreset(null, StageDimensions(1080, 1080), R.string.canvas_preset_square)
 
+    /** A size the animator types in, starting from full HD landscape. */
+    val Custom = CanvasPreset(null, StageDimensions(1920, 1080), R.string.canvas_preset_custom, isCustom = true)
+
+    /** The picture cards on New Project: the three common shapes and Custom. */
+    val shapes: List<CanvasPreset> = listOf(Landscape, Portrait, Square, Custom)
+
+    /** The full list in the More sizes sheet: Custom, then each platform's upload size. */
     val all: List<CanvasPreset> = listOf(
-        Local,
+        Custom,
         CanvasPreset("YouTube (1080p)", StageDimensions(1920, 1080)),
         CanvasPreset("YouTube (720p)", StageDimensions(1280, 720)),
         CanvasPreset("Instagram (16:9)", StageDimensions(1280, 720)),
@@ -48,11 +55,11 @@ object CanvasPresets {
 /** The New Project screen's whole canvas-size choice, bundled into one value so
  *  AddProjectScreen/CanvasSizeSheet never need more than one parameter to pass it
  *  around. [dimensions] is what actually gets passed to [com.donnclab.kinetiframe.presentation.project.ProjectManagerIntent.Create] --
- *  the edited [localDimensions] when [CanvasPreset.isLocal], the preset's own fixed size
+ *  the edited [customDimensions] when [CanvasPreset.isCustom], the preset's own fixed size
  *  otherwise. */
 data class CanvasSizeSelection(
-    val preset: CanvasPreset = CanvasPresets.Local,
-    val localDimensions: StageDimensions = CanvasPresets.Local.dimensions,
+    val preset: CanvasPreset = CanvasPresets.Landscape,
+    val customDimensions: StageDimensions = CanvasPresets.Custom.dimensions,
 ) {
-    val dimensions: StageDimensions get() = if (preset.isLocal) localDimensions else preset.dimensions
+    val dimensions: StageDimensions get() = if (preset.isCustom) customDimensions else preset.dimensions
 }
