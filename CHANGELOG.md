@@ -21,6 +21,12 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
   colours and takes hex codes. The current colour sits on the tool rail, one tap away.
 - Layer lock, and an eye on every layer. Tap a layer's opacity to set it with a slider.
 - Export video from the editor's menu. It saves your work first.
+- Autosave: projects save as you work and when you leave the editor. Turn it off in Settings.
+- Collections: long-press a project and drop it on another to group them, such as the episodes of
+  a series, or drop it on a collection to add it.
+- New projects show a live preview of the frame rate you pick, and canvas shapes as picture cards.
+  The same frame-rate picker changes a project's frame rate from the editor menu.
+- Backgrounds can come from your Library as well as your files.
 
 ### Changed
 
@@ -40,6 +46,8 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - The bottom bar's tabs stay in the same place on every screen, and Home's New button says what
   it makes. Home, Library and Settings share one app bar.
 - Library's filters are toggles: with none chosen you see everything, so there's no All chip.
+- Library has a tab for each kind of item, including Images and Colours, and its search sits in the
+  app bar. The editor's toolbar spreads its tools evenly and adds Copy, Paste and Safe frame.
 
 ### Fixed
 

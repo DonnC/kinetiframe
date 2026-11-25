@@ -97,6 +97,27 @@ The six-persona panel that ran it is in [tools/ux-review](../tools/ux-review/REA
   Library's filter chips toggle instead of starting with All. Export video is in the editor's
   menu and saves first.
 
+**UX round 2.** `milestone/ux-round-2` acts on the maintainer's own review after Studio essentials.
+
+- Autosave is on by default: gallery projects save a few seconds after editing pauses, when the
+  app goes to the background and when leaving the editor, so leaving no longer asks. A Settings
+  switch turns it off. Save is in the editor's menu, and Pack Creator and Actor Studio keep their
+  explicit saves.
+- The drawing bar spreads Home, Undo, Redo, Copy, Paste, Safe frame and Asset tracks evenly, with
+  Focus and Save in the menu. Speed is now Frame rate, with the same picker as New Project and a
+  note that drawings stay while speed changes. Background asks Library or files.
+- Root screens share one app bar with no title under it. Library's bar holds the logo, its search
+  and refresh; Library has tabs per kind (Projects, Actors, Packs, Images, Audio, Colours), and
+  Colours reuses the studio's colour panel, so the palette icon is gone.
+- New Project picks the canvas from picture cards (Landscape, Portrait, Square, Custom; Local is
+  now Custom) with every platform size in More sizes, and the frame rate from chips with a live
+  bouncing-ball preview. New Pack shows each size against the largest. Add flows have a proper app
+  bar.
+- Collections show as cards. Long-press a project and drop it on another to start a named
+  collection, or on a collection to add it; Move to collection stays in the project menu.
+- The Library picker used by the editor and asset tracks is a draggable bottom sheet, with toggle
+  chips like Library's.
+
 **Tavi presents with natural hands.** `milestone/tavi-hands` ships a copy of `Tavi presents`
 beside the unchanged original:
 
@@ -203,6 +224,8 @@ fixed after the module work, unless one blocks testing.
 - In "Save before leaving?", Discard looks like the safe buttons although it throws work away.
 - "Menu labels" only labels context menus. The top bar, frame menu and selection menu stay
   icon-only, and long labels such as "Edit asset tracks" need a layout that fits seven icons.
+- Library's Colours tab shows the eyedropper (pick from screen), which only makes sense in the
+  studio. Library picker cards show empty selection boxes that do nothing.
 - The frame strip doesn't follow the playhead during playback.
 - Frames could not be reordered by dragging in the frame manager in a scripted test; check by
   hand. There is no one-tap duplicate and no hold count per frame in the strip.
