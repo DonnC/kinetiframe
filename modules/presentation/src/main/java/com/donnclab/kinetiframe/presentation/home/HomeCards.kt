@@ -110,10 +110,11 @@ fun HomeProjectCard(
     favourite: Boolean = false,
     onFavourite: () -> Unit = {},
     onOrganise: () -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
     var menuOpen by remember { mutableStateOf(false) }
     Box(
-        Modifier
+        modifier
             .fillMaxWidth()
             .aspectRatio(3f / 4f)
             .clip(RoundedCornerShape(HomeTokens.cardCorner))
