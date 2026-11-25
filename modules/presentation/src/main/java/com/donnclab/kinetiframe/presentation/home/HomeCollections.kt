@@ -3,7 +3,6 @@ package com.donnclab.kinetiframe.presentation.home
 
 import android.content.ClipData
 import android.content.ClipDescription
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,10 +10,8 @@ import androidx.compose.foundation.draganddrop.dragAndDropSource
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -44,7 +40,6 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.DragAndDropTransferData
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -54,6 +49,7 @@ import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.MediaCard
 
 /** Drag label for a project being dragged onto another project or a collection. */
 private const val PROJECT_DRAG_LABEL = "kinetiframe-project"
@@ -147,46 +143,26 @@ internal fun CollectionGrid(
 
 @Composable
 private fun CollectionCard(collection: ProjectCollection, onOpen: () -> Unit, onDrop: (String) -> Unit) {
-    Surface(
+    val count = collection.projects.size
+    MediaCard(
+        title = collection.name,
+        subtitle = pluralStringResource(R.plurals.home_collection_count, count, count),
         onClick = onOpen,
-        shape = RoundedCornerShape(HomeTokens.cardCorner),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        border = BorderStroke(Dimens.borderThin, MaterialTheme.colorScheme.outlineVariant),
-        modifier = Modifier.fillMaxWidth().projectDropTarget("collection:${collection.name}") { onDrop(it) },
-    ) {
-        Column {
-            Box(Modifier.fillMaxWidth().aspectRatio(4f / 3f).clip(RoundedCornerShape(HomeTokens.cardCorner))) {
-                val cover = collection.projects.firstOrNull()?.thumbnailPath
-                if (cover != null) {
-                    AsyncImage(
-                        model = cover,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                } else {
-                    Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface))
-                }
-            }
-            Column(Modifier.padding(Dimens.spaceSPlus)) {
-                Text(
-                    collection.name,
-                    style = MaterialTheme.typography.titleSmall,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+        modifier = Modifier.projectDropTarget("collection:${collection.name}") { onDrop(it) },
+        media = {
+            val cover = collection.projects.firstOrNull()?.thumbnailPath
+            if (cover != null) {
+                AsyncImage(
+                    model = cover,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
                 )
-                Text(
-                    pluralStringResource(
-                        R.plurals.home_collection_count,
-                        collection.projects.size,
-                        collection.projects.size,
-                    ),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            } else {
+                Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant))
             }
-        }
-    }
+        },
+    )
 }
 
 /** The row above an open collection's projects: back to all collections, and its name. */

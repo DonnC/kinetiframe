@@ -148,7 +148,9 @@ internal fun ProjectsTabContent(
                                 onIntent(ProjectManagerIntent.Open(project.projectId))
                             },
                             { renameCandidate = project }, { deleteCandidate = project },
-                            { onShare(project) }, { onSaveToLibrary(project) }, { onExportVideo(project) },
+                            onShare = { onShare(project) },
+                            onSaveToLibrary = { onSaveToLibrary(project) },
+                            onExportVideo = { onExportVideo(project) },
                             favourite = organization.items["project:${project.projectId}"]?.favourite == true,
                             onFavourite = {
                                 onHierarchyIntent(HierarchyBrowserIntent.Favourite("project:${project.projectId}"))

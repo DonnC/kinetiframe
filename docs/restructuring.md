@@ -103,12 +103,19 @@ The six-persona panel that ran it is in [tools/ux-review](../tools/ux-review/REA
   app goes to the background and when leaving the editor, so leaving no longer asks. A Settings
   switch turns it off. Save is in the editor's menu, and Pack Creator and Actor Studio keep their
   explicit saves.
-- The drawing bar spreads Home, Undo, Redo, Copy, Paste, Safe frame and Asset tracks evenly, with
-  Focus and Save in the menu. Speed is now Frame rate, with the same picker as New Project and a
+- The drawing bar spreads Home, Undo, Redo, Copy, Paste, Reset view and Asset tracks evenly, with
+  Safe frame, Focus and Save in the menu. Reset view brings back the zoom, pan and tilt and is
+  greyed out when the canvas is already reset. Speed is now Frame rate, with the same picker as New Project and a
   note that drawings stay while speed changes. Background asks Library or files.
 - Root screens share one app bar with no title under it. Library's bar holds the logo, its search
-  and refresh; Library has tabs per kind (Projects, Actors, Packs, Images, Audio, Colours), and
-  Colours reuses the studio's colour panel, so the palette icon is gone.
+  and refresh; Library has tabs per kind (Projects, Actors, Packs, Images, Audio, Colours), so the
+  palette icon is gone. Colours is its own full-width page: My colours as large tiles with an add
+  tile (wheel and hex in a sheet), then each palette as a card with a strip of its colours that
+  opens to show them all. A colour shows its hex to copy, with Remove in your own palettes. It has
+  no eyedropper.
+- Every grid card (Home's projects, actors, packs and collections; Library's projects, actors,
+  packs and images) is the same `MediaCard`: a 4:3 picture with short facts as badges, and the name,
+  a detail line and the ⋮ menu on a solid caption below, readable on any art.
 - New Project picks the canvas from picture cards (Landscape, Portrait, Square, Custom; Local is
   now Custom) with every platform size in More sizes, and the frame rate from chips with a live
   bouncing-ball preview. New Pack shows each size against the largest. Add flows have a proper app
@@ -116,7 +123,7 @@ The six-persona panel that ran it is in [tools/ux-review](../tools/ux-review/REA
 - Collections show as cards. Long-press a project and drop it on another to start a named
   collection, or on a collection to add it; Move to collection stays in the project menu.
 - The Library picker used by the editor and asset tracks is a draggable bottom sheet, with toggle
-  chips like Library's.
+  chips like Library's. In portrait it opens at least 45% of the screen tall.
 
 **Tavi presents with natural hands.** `milestone/tavi-hands` ships a copy of `Tavi presents`
 beside the unchanged original:
@@ -134,12 +141,26 @@ beside the unchanged original:
 
 ## Next
 
-1. **First release.** A maintainer merges `develop` into `main`, signs a release build and tags
+1. **Packs in the studio.** `milestone/studio-packs`, the next milestone after UX round 2. The
+   personas could not find how to use a pack while drawing: today it takes the Library picker, a
+   tap on a pack, then a drag out of the floating tray. Using a pack is a drawing action, not a
+   timeline one, so it goes on the tool rail rather than in Asset tracks.
+   - A Packs button on the tool rail opens the tray on the last pack used. With none, it opens a
+     small chooser with recent packs first and All packs below.
+   - A chip at the top of the tray names the pack and swaps to another without closing.
+   - Tapping a drawing places it in the middle of the canvas, selected so it can be moved and
+     scaled. Dragging still drops it under the finger.
+   - The tray shrinks to a small tab to give back drawing space, and opens again with one tap.
+   - Opening a pack from the Library picker stays as a second route.
+   - Show pack drawings on a light paper well in every theme (see UX fixes).
+   - Check: unit tests for the last-used pack and tap-to-place, then the expert and rigger
+     personas use it to lip-sync a few frames on the test phone.
+2. **First release.** A maintainer merges `develop` into `main`, signs a release build and tags
    `v0.1.0`, following steps 5 to 8 of the [release checklist](releases.md#release-checklist).
    The font licences must be added first (see Discoveries).
-2. **UX fixes.** Decide whether the bundled Tavi actor gets the same hand treatment (see UX
+3. **UX fixes.** Decide whether the bundled Tavi actor gets the same hand treatment (see UX
    fixes), then the Actor Studio and editor items.
-3. **Old device test failures.** Fix or delete the 13 failing `presentation` device tests as the
+4. **Old device test failures.** Fix or delete the 13 failing `presentation` device tests as the
    code they cover changes (see Later).
 
 ## Later
@@ -224,8 +245,13 @@ fixed after the module work, unless one blocks testing.
 - In "Save before leaving?", Discard looks like the safe buttons although it throws work away.
 - "Menu labels" only labels context menus. The top bar, frame menu and selection menu stay
   icon-only, and long labels such as "Edit asset tracks" need a layout that fits seven icons.
-- Library's Colours tab shows the eyedropper (pick from screen), which only makes sense in the
-  studio. Library picker cards show empty selection boxes that do nothing.
+- Library picker cards show empty selection boxes that do nothing.
+- Library's project cards fit the picture with light bands above and below, while Home's crop it
+  to fill. Crop project pictures in Library too, keeping Fit for actors and pack drawings.
+- In dark mode, packs of dark or black line art disappear on their cards, because the drawings
+  are dark marks on transparent paper shown over a dark surface. Show pack drawings on a light
+  paper well (`LibraryTokens.stampWell`) in every theme, as the stamp preview already does,
+  everywhere a pack's drawings appear: cards, pack contents, the tray and the picker.
 - The frame strip doesn't follow the playhead during playback.
 - Frames could not be reordered by dragging in the frame manager in a scripted test; check by
   hand. There is no one-tap duplicate and no hold count per frame in the strip.

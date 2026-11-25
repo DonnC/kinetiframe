@@ -62,7 +62,6 @@ object Dimens {
     val chipHeight = 22.dp
     val gridCardThumbHeight = 150.dp
     val gridCardThumbHeightCompact = 132.dp
-    val packCollageThumbHeight = 110.dp
     val playButtonSize = 42.dp
     val bottomSheetHandleWidth = 40.dp
     val bottomSheetHandleHeight = 4.dp

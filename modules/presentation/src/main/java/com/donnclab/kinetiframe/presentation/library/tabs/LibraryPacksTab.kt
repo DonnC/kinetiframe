@@ -12,8 +12,8 @@ import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.common.AssetSummary
 import com.donnclab.kinetiframe.presentation.library.LibraryIntent
+import com.donnclab.kinetiframe.presentation.library.catalog.AssetGridCard
 import com.donnclab.kinetiframe.presentation.library.catalog.FlatListNote
-import com.donnclab.kinetiframe.presentation.library.catalog.PackGridCard
 import com.donnclab.kinetiframe.presentation.library.preview.PreviewCatalog
 
 /** Library's "Component Packs" tab -- deliberately flat, one continuous scroll of every pack the
@@ -33,7 +33,7 @@ fun LibraryPacksTab(packs: List<AssetSummary>, onIntent: (LibraryIntent) -> Unit
         ) {
             items(packs, key = {
                 it.id
-            }) { pack -> PackGridCard(pack, onClick = { onIntent(LibraryIntent.OpenPackContents(pack)) }) }
+            }) { pack -> AssetGridCard(pack, onClick = { onIntent(LibraryIntent.OpenPackContents(pack)) }) }
         }
     }
 }

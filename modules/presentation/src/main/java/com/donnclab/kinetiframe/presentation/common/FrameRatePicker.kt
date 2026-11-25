@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -32,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.R
-import kotlinx.coroutines.delay
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.sin
@@ -84,10 +84,11 @@ private fun BouncePreview(fps: Int) {
     var frame by remember { mutableIntStateOf(0) }
     val rate = fps.coerceIn(1, 60)
     LaunchedEffect(rate) {
-        frame = 0
+        // The frame comes from the clock, not from adding up waits, so the ball keeps the exact rate:
+        // a wait plus the screen's next refresh would run slow (24 fps played at about 20).
+        val start = withFrameNanos { it }
         while (true) {
-            delay(1000L / rate)
-            frame = (frame + 1) % rate
+            withFrameNanos { now -> frame = (((now - start) * rate / NANOS_PER_SECOND) % rate).toInt() }
         }
     }
     val ball = MaterialTheme.colorScheme.primary
@@ -114,6 +115,8 @@ private fun BouncePreview(fps: Int) {
         )
     }
 }
+
+private const val NANOS_PER_SECOND = 1_000_000_000L
 
 @Preview(showBackground = true)
 @Composable

@@ -47,9 +47,19 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
   it makes. Home, Library and Settings share one app bar.
 - Library's filters are toggles: with none chosen you see everything, so there's no All chip.
 - Library has a tab for each kind of item, including Images and Colours, and its search sits in the
-  app bar. The editor's toolbar spreads its tools evenly and adds Copy, Paste and Safe frame.
+  app bar. The editor's toolbar spreads its tools evenly and adds Copy, Paste and Reset view, which
+  brings back the zoom and tilt. Safe frame moved to the menu.
+- Every card in Home and Library looks the same: the picture on top and the name underneath, easy
+  to read on any artwork.
+- Library's Colours tab is a page of its own: your colours as large tiles with a + to add one, and
+  your palettes and the app's as cards you open to see every colour. Tap a colour to copy its hex.
+- The Library picker opens at least 45% of the screen tall in portrait.
+- New Project suggests a name, and More sizes sits beside the Canvas size label.
 
 ### Fixed
+
+- The frame-rate preview plays at the exact rate chosen. It used to run slow, so 24 fps looked
+  like about 20.
 
 - Leaving the editor only asks to save when something changed. Saving shows a short notice
   instead of a dialog you have to dismiss.

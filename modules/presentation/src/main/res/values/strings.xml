@@ -287,6 +287,7 @@
     <string name="add_project_title">New Project</string>
     <string name="add_project_create">Create Project</string>
     <string name="add_project_name">Project name</string>
+    <string name="add_project_name_placeholder">My awesome animation</string>
     <string name="add_project_canvas_size">Canvas size</string>
     <string name="add_project_frame_rate">Frame rate</string>
     <string name="add_project_fps_value">%1$d FPS</string>
@@ -300,7 +301,7 @@
     <string name="canvas_preset_square">Square</string>
     <string name="add_project_more_sizes">More sizes</string>
     <string name="fps_chip">%1$d fps</string>
-    <string name="fps_preview_description">A ball bouncing at %1$d frames per second</string>
+    <string name="fps_preview_description">A bouncing ball played at %1$d fps</string>
     <string name="fps_hint">More frames per second move more smoothly, but each second needs more drawings.</string>
     <string name="canvas_size_width">Width</string>
     <string name="canvas_size_height">Height</string>
@@ -752,7 +753,7 @@
     <!-- Editor -->
     <string name="editor_home">Home</string>
     <string name="editor_undo">Undo</string>
-    <string name="editor_scene_extended">Scene extended from %1$d to %2$d frames to fit %3$s</string>
+    <string name="editor_scene_extended">Scene length: %1$d → %2$d, to fit %3$s</string>
     <string name="editor_redo">Redo</string>
     <string name="editor_asset_tracks">Edit asset tracks</string>
     <string name="editor_pack_item_details">Edit pack item details</string>
@@ -780,7 +781,7 @@
         <item quantity="one">%d project</item>
         <item quantity="other">%d projects</item>
     </plurals>
-    <string name="pack_size_preview">Each item is drawn on a %1$d × %1$d canvas.</string>
+    <string name="pack_size_preview">Each item is drawn on a square canvas: %1$d × %1$d.</string>
     <string name="editor_background_from_library">Background from Library</string>
     <string name="editor_background_from_files">Background from files</string>
     <string name="editor_frame_rate">Frame rate</string>
@@ -901,6 +902,16 @@
     <string name="palette_delete">Delete palette</string>
     <string name="palette_delete_title">Delete this palette?</string>
     <string name="palette_edit_hint">Long-press a colour to remove it.</string>
+    <string name="colours_mine_hint">Save colours you use often. They show under the colour wheel when you draw.</string>
+    <string name="colours_add">Add colour</string>
+    <string name="colours_starter">Comes with the app</string>
+    <string name="colours_copy_hex">Copy hex</string>
+    <string name="colours_save">Save</string>
+    <string name="colours_palette_actions">Palette actions</string>
+    <plurals name="colours_count">
+        <item quantity="one">%d colour</item>
+        <item quantity="other">%d colours</item>
+    </plurals>
     <string name="color_capture_memory">Not enough memory to capture the screen.</string>
     <string name="color_capture_failed">Could not sample this screen. Close the picker and try again.</string>
     <string name="audio_preview_play">Play audio</string>

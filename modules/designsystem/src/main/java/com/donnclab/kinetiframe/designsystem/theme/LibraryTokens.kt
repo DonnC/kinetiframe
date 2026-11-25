@@ -27,6 +27,12 @@ object LibraryTokens {
     val packItemCell = 100.dp
     val tagListMaxHeight = 240.dp
 
+    // The Colours tab.
+    val colourSwatch = 48.dp
+    val colourStripHeight = 28.dp
+    val colourWheel = 240.dp
+    val colourPreview = 96.dp
+
     // A stamp's preview dialog.
     val stampPreviewMaxHeight = 360.dp
     val stampPreviewHeight = 200.dp

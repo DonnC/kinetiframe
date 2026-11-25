@@ -261,14 +261,12 @@ fun EditorTopBar(
                                 onStudioClick()
                             }),
                         )
-                        if (state.isCanvasTransformed) {
-                            add(
-                                ContextIconAction(Lucide.Maximize, stringResource(R.string.editor_reset_view), {
-                                    onOverflowMenuToggle(false)
-                                    onIntent(StudioIntent.View.ResetCanvasTransform)
-                                }),
-                            )
-                        }
+                        add(
+                            ContextIconAction(Lucide.Frame, stringResource(R.string.editor_safe_frame), {
+                                onIntent(StudioIntent.View.ToggleSafeFrame)
+                                onOverflowMenuToggle(false)
+                            }, selected = state.canvas.showSafeFrame),
+                        )
                         add(
                             ContextIconAction(Icons.Filled.Image, stringResource(R.string.editor_background), {
                                 onOverflowMenuToggle(false)
@@ -362,7 +360,8 @@ fun EditorTopBar(
 
 /**
  * The drawing studio's everyday tools, laid straight into the evenly spaced bar: Home, Undo, Redo,
- * Copy, Paste and the safe-frame guide. Less frequent actions, such as Save and Focus, are in the menu.
+ * Copy, Paste and Reset view, which undoes zoom, pan and rotation. Less frequent actions, such as Save,
+ * Focus and the safe frame, are in the menu.
  */
 @Composable
 private fun DrawingBarTools(state: StudioState, onIntent: (StudioIntent) -> Unit, onHomeClick: (() -> Unit)?) {
@@ -383,12 +382,13 @@ private fun DrawingBarTools(state: StudioState, onIntent: (StudioIntent) -> Unit
             onIntent(StudioIntent.Selection.Paste)
         }),
     )
+    // Dimmed until the canvas has been zoomed, panned or rotated, so it is always in the same place.
     ContextIconButton(
         ContextIconAction(
-            Lucide.Frame,
-            stringResource(R.string.editor_safe_frame),
-            { onIntent(StudioIntent.View.ToggleSafeFrame) },
-            selected = state.canvas.showSafeFrame,
+            Lucide.Maximize,
+            stringResource(R.string.editor_reset_view),
+            { onIntent(StudioIntent.View.ResetCanvasTransform) },
+            enabled = state.isCanvasTransformed,
         ),
     )
 }

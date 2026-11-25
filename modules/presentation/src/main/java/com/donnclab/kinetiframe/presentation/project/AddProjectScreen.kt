@@ -72,16 +72,20 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
                 value = state.name,
                 onValueChange = { callbacks.onStateChange(state.copy(name = it)) },
                 label = { Text(stringResource(R.string.add_project_name)) },
+                placeholder = { Text(stringResource(R.string.add_project_name_placeholder)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(top = Dimens.spaceXl),
             )
-            SectionLabel(stringResource(R.string.add_project_canvas_size))
+            SectionLabel(stringResource(R.string.add_project_canvas_size)) {
+                TextButton(onClick = callbacks.onOpenCanvasSize) {
+                    Text(stringResource(R.string.add_project_more_sizes))
+                }
+            }
             CanvasShapeCards(state.canvasSelection) { preset ->
                 callbacks.onStateChange(state.copy(canvasSelection = state.canvasSelection.copy(preset = preset)))
                 // Custom opens the sheet, where its width and height are typed.
                 if (preset.isCustom) callbacks.onOpenCanvasSize()
             }
-            TextButton(onClick = callbacks.onOpenCanvasSize) { Text(stringResource(R.string.add_project_more_sizes)) }
             SectionLabel(stringResource(R.string.add_project_frame_rate))
             FrameRatePicker(state.fps, { callbacks.onStateChange(state.copy(fps = it)) })
             Spacer(Modifier.height(Dimens.spaceXlPlus))
@@ -89,14 +93,21 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
     }
 }
 
+/** A section's label, with an optional [action] such as "More sizes" at the end of the same row. */
 @Composable
-private fun SectionLabel(text: String) {
-    Text(
-        text,
-        style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(top = Dimens.spaceXl, bottom = Dimens.spaceS),
-    )
+private fun SectionLabel(text: String, action: (@Composable () -> Unit)? = null) {
+    Row(
+        Modifier.fillMaxWidth().padding(top = Dimens.spaceXl, bottom = Dimens.spaceS),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        action?.invoke()
+    }
 }
 
 /** Landscape, Portrait, Square and Custom, each drawn at its real shape. A platform size picked from
