@@ -27,8 +27,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.composables.icons.lucide.Drama
 import com.composables.icons.lucide.Folder
 import com.composables.icons.lucide.Grid2x2
+import com.composables.icons.lucide.Image
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Music
+import com.composables.icons.lucide.Palette
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.R
@@ -37,19 +39,23 @@ import com.donnclab.kinetiframe.presentation.R
  *  its own, so the row above decides which index is active. */
 data class TopTabDef(val icon: ImageVector, @StringRes val label: Int)
 
-/** The four top-level category tabs the Library uses (Projects / Actors / Packs /
- *  Audio), sharing one definition so the two screens can never drift out of sync with each other. */
+/** The Library's tabs, one per kind of thing it holds: Projects, Actors, Packs, Images (backgrounds
+ *  and overlays), Audio and Colours (palettes). */
 object TopTabs {
     val all = listOf(
         TopTabDef(Lucide.Folder, R.string.library_tab_projects),
         TopTabDef(Lucide.Drama, R.string.library_tab_actors),
         TopTabDef(Lucide.Grid2x2, R.string.library_tab_packs),
+        TopTabDef(Lucide.Image, R.string.library_tab_images),
         TopTabDef(Lucide.Music, R.string.library_tab_audio),
+        TopTabDef(Lucide.Palette, R.string.library_tab_colours),
     )
     const val PROJECTS = 0
     const val ACTORS = 1
     const val PACKS = 2
-    const val AUDIO = 3
+    const val IMAGES = 3
+    const val AUDIO = 4
+    const val COLOURS = 5
 }
 
 /** Icon-over-label row of top category tabs, with a colored underline on the selected one. */

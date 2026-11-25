@@ -34,6 +34,8 @@ fun CollectionBrowserControls(
     collections: List<String>,
     onChange: (BrowserPosition) -> Unit,
     showCategories: Boolean = false,
+    /** False where collections open as cards instead of a menu, as on Home's Projects tab. */
+    showCollectionMenu: Boolean = true,
 ) {
     val names = collections.distinct().sorted()
     val allCollections = stringResource(R.string.library_all_collections)
@@ -74,9 +76,10 @@ fun CollectionBrowserControls(
                 }
             }
         }
-        if (position.mode == BrowseMode.COLLECTIONS || showCategories) {
+        val collectionMenu = showCollectionMenu && position.mode == BrowseMode.COLLECTIONS
+        if (collectionMenu || showCategories) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
-                if (position.mode == BrowseMode.COLLECTIONS) {
+                if (collectionMenu) {
                     BrowserFilterMenu(
                         label = position.collection?.let { collectionLabel(it) } ?: allCollections,
                         icon = Icons.Default.FolderOpen,
