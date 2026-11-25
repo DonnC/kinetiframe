@@ -61,6 +61,10 @@ class DrawingManager(
     private val selectionHistoryBudget = minOf(24L * 1024 * 1024, Runtime.getRuntime().maxMemory() / 12)
     private val painter = HistoryItemPainter()
 
+    // The history top and size at the last bake counted as an edit.
+    private var bakedTop: HistoryItem? = null
+    private var bakedSize = -1
+
     // Raster commands are meaningful only for the layer and frame they were created on. Sharing
     // this session across auto-selected body-part layers rebuilt torso/leg commands into the next
     // body part, then made every bound texture animate at once.
@@ -309,6 +313,8 @@ class DrawingManager(
         targetLayerId: String = sessionLayerId ?: activeLayerId(),
         targetFrameIndex: Int = sessionFrameIndex ?: getState().animation.currentFrame,
         completedStrokeSeed: Long? = null,
+        /** True when re-baking a frame whose history was already baked, as on leaving it. */
+        refreshOnly: Boolean = false,
     ) = withContext(dispatcher) {
         bakeMutex.withLock {
             val stage = getState().project.stage
@@ -325,7 +331,14 @@ class DrawingManager(
 
             painter.paintAll(Canvas(resultBitmap), history, resultBitmap)
 
-            cacheManager.putFrame(targetLayerId, targetFrameIndex, resultBitmap)
+            // A refresh only repaints what was already baked, unless history moved since then.
+            val historyMoved = history.lastOrNull() !== bakedTop || history.size != bakedSize
+            val countAsEdit = !refreshOnly || historyMoved
+            if (countAsEdit) {
+                bakedTop = history.lastOrNull()
+                bakedSize = history.size
+            }
+            cacheManager.putFrame(targetLayerId, targetFrameIndex, resultBitmap, countAsEdit)
             val compositeBitmap = composeFrame(targetFrameIndex, targetLayerId, resultBitmap)
             withContext(Dispatchers.Main) {
                 onFrameBaked(targetLayerId, resultBitmap)

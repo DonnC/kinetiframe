@@ -1,7 +1,17 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.presentation.studio.editor
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import com.donnclab.kinetiframe.presentation.common.LocalAppPreferences
 import com.donnclab.kinetiframe.presentation.studio.EditorTopBar
 import com.donnclab.kinetiframe.presentation.studio.EditorTopBarActions
@@ -45,7 +55,21 @@ internal fun EditorTopBarSlot(state: StudioState, host: EditorHost, ui: EditorUi
         return
     }
     val playbackHidesTools = LocalAppPreferences.current.hideToolsDuringPlayback
-    if (!panels.toolbarVisible || (state.animation.isPlaying && playbackHidesTools)) return
+    if (!panels.toolbarVisible) return
+    // Keep the bar's height while playback hides it, so the canvas doesn't jump when play starts.
+    var barHeight by remember { mutableIntStateOf(0) }
+    if (state.animation.isPlaying && playbackHidesTools) {
+        Spacer(Modifier.height(with(LocalDensity.current) { barHeight.toDp() }))
+        return
+    }
+    Box(Modifier.onSizeChanged { barHeight = it.height }) { DrawingTopBar(state, host, ui, commands) }
+}
+
+@Composable
+private fun DrawingTopBar(state: StudioState, host: EditorHost, ui: EditorUiState, commands: EditorCommands) {
+    val panels = ui.panels
+    val onIntent = commands.onIntent
+    val chooseArtwork: (Boolean) -> Unit = { asVariant -> ui.artwork.choose(asVariant, state, onIntent) }
     val isActorStudio = host.isActorStudioSession
     EditorTopBar(
         onFocusCanvas = { panels.toolbarVisible = false },
@@ -77,5 +101,6 @@ internal fun EditorTopBarSlot(state: StudioState, host: EditorHost, ui: EditorUi
         // Pack Creator reads frames back through its own FrameCacheManager, and a frame drawn in
         // this session can still be in memory only. Preparing the save writes it to disk first.
         onSavePackClick = host.packCreatorConfig?.onSavePack?.let { { commands.saves.savePack() } },
+        onExportClick = host.onExport?.let { export -> { commands.saves.saveThen(export) } },
     )
 }

@@ -66,9 +66,33 @@ internal class EditorSaveActions(
         }
     }
 
+    /**
+     * Saves when anything changed, then opens [destination], which reads the saved project, such
+     * as export. Nothing to save opens it straight away.
+     */
+    fun saveThen(destination: () -> Unit) {
+        val save = saveProject ?: return destination()
+        scope.launch {
+            if (viewModel.hasUnsavedChanges()) {
+                exit.destination = destination
+                exit.returnHomeAfterSave = true
+                save()
+            } else {
+                destination()
+            }
+        }
+    }
+
+    /** Leaves straight away when nothing changed since the last save; otherwise asks first. */
     fun confirmExit(destination: () -> Unit) {
-        exit.destination = destination
-        exit.showConfirmation = true
+        scope.launch {
+            if (viewModel.hasUnsavedChanges()) {
+                exit.destination = destination
+                exit.showConfirmation = true
+            } else {
+                destination()
+            }
+        }
     }
 
     private fun writeProject(target: ProjectSaveTarget) {
@@ -92,19 +116,21 @@ internal class EditorSaveActions(
                 time,
                 viewModel.cacheManager,
             )
-            messages.projectSaveMessage = when (result) {
+            when (result) {
                 is StoreResult.Value -> {
+                    viewModel.markSaved(document)
                     viewModel.frameReferences.clear()
                     if (leaveWhenSaved) {
                         exit.returnHomeAfterSave = false
                         exit.destination?.invoke()
                     }
-                    UiText.Resource(R.string.editor_project_saved)
+                    // Success is a brief notice; only a failure needs the animator to respond.
+                    messages.notice = UiText.Resource(R.string.editor_project_saved)
                 }
 
                 is StoreResult.Failure -> {
                     if (leaveWhenSaved) exit.returnHomeAfterSave = false
-                    result.toUiText()
+                    messages.projectSaveMessage = result.toUiText()
                 }
             }
         }

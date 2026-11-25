@@ -9,7 +9,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -75,7 +74,8 @@ class HeldDrawingPersistenceTest {
             cache.putFrame(0, pixels(Color.RED))
             cache.holdDrawing("main", 0, 2, 3)
             cache.insertFrame("main", 1, 3)
-            assertNull(cache.getFrame(1))
+            // A frame inserted inside a hold continues it.
+            assertEquals(Color.RED, color(cache, 1))
             assertEquals(Color.RED, color(cache, 3))
             cache.deleteFrame("main", 0, 4) // Delete the original exposure, not the canonical cel.
             assertEquals(Color.RED, color(cache, 1))

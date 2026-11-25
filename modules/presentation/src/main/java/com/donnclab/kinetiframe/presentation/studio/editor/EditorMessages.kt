@@ -1,14 +1,17 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.donnclab.kinetiframe.presentation.studio.editor
 
+import android.widget.Toast
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.UiText
@@ -23,6 +26,9 @@ internal class EditorMessages {
     var backgroundImageError by mutableStateOf<UiText?>(null)
     var timelineError by mutableStateOf<UiText?>(null)
     var projectSaveMessage by mutableStateOf<UiText?>(null)
+
+    /** A short confirmation, such as "Project saved", shown briefly without blocking the canvas. */
+    var notice by mutableStateOf<UiText?>(null)
     var audioError by mutableStateOf<UiText?>(null)
     var videoError by mutableStateOf<UiText?>(null)
     var libraryError by mutableStateOf<UiText?>(null)
@@ -45,6 +51,14 @@ internal fun EditorMessageDialogs(messages: EditorMessages) {
         }
     }
     TimelineErrorDialog(messages)
+    messages.notice?.let { notice ->
+        val text = notice.asString()
+        val context = LocalContext.current
+        LaunchedEffect(notice) {
+            Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+            messages.notice = null
+        }
+    }
     messages.projectSaveMessage?.let {
         MessageDialog(stringResource(R.string.editor_save_project), it.asString()) {
             messages.projectSaveMessage =

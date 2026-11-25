@@ -1,5 +1,6 @@
 package com.donnclab.kinetiframe.presentation.studio.dock
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,6 +49,8 @@ import kotlin.math.roundToInt
 @Composable
 fun SelectionDock(modifier: Modifier = Modifier, state: StudioState, onIntent: (StudioIntent) -> Unit) {
     var optionsVisible by remember { mutableStateOf(false) }
+    // Back applies the move, like the check button, rather than leaving or dropping it.
+    BackHandler(enabled = !optionsVisible) { onIntent(StudioIntent.Selection.SetActive(false)) }
     FloatingDock(
         modifier = modifier,
         initialOffset = state.canvas.selectionDockOffset.toOffset(),

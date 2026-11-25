@@ -58,6 +58,8 @@ class StudioViewModel(
         val filesDir: File,
         val initialEditorState: StudioState?,
         val runtimeRigAssetManager: RigAssetManager?,
+        /** True when the editor opens straight from the saved project, with nothing unsaved. */
+        val openedFromSave: Boolean = false,
     )
 
     companion object {
@@ -99,6 +101,22 @@ class StudioViewModel(
     /** Commit floating selection and await accepted raster/frame edits before publishing a save. */
     suspend fun prepareProjectSave(nodeDensity: Float = currentState.project.nodeDensity) =
         session.prepareProjectSave(nodeDensity)
+
+    /**
+     * Whether leaving would lose work: true until the project is known to match a save. Waits for
+     * edits still being applied, and counts a floating selection as unsaved.
+     */
+    suspend fun hasUnsavedChanges(): Boolean {
+        session.pendingOperations.awaitIdle()
+        return currentState.selection.selectedContent != null || session.unsavedChanges.hasChanges()
+    }
+
+    /** The editor opened straight from the saved project, so nothing is unsaved yet. */
+    fun markOpenedFromSave() = session.unsavedChanges.markSaved()
+
+    /** [document] was written successfully. */
+    fun markSaved(document: com.donnclab.kinetiframe.core.document.ProjectSaveDocument) =
+        session.unsavedChanges.saved(document)
 
     override fun handleIntent(intent: StudioIntent) {
         if (intent.invalidatesSceneEffects()) session.sceneEffects.clear()

@@ -56,7 +56,9 @@ class HomeActionsViewModelTest {
     }
 
     @Test fun `failed installs show one message and the trial cleanup is offered`() = runTest(dispatcher) {
-        val model = model(DocumentFileStore(root))
+        // Cleanup is only offered when there is trial work to archive.
+        val files = DocumentFileStore(root).also { it.projectDirectory("trial-project").mkdirs() }
+        val model = model(files)
         advanceUntilIdle()
 
         val effect = model.effect.first()

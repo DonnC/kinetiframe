@@ -272,8 +272,8 @@
         <item quantity="other">%d items</item>
     </plurals>
     <plurals name="home_chip_views">
-        <item quantity="one">%d view</item>
-        <item quantity="other">%d views</item>
+        <item quantity="one">%d angle</item>
+        <item quantity="other">%d angles</item>
     </plurals>
     <string name="project_actions">Project actions</string>
     <string name="actor_actions">Actor actions</string>
@@ -457,6 +457,11 @@
     <string name="layers_drawing_layer">Drawing layer</string>
     <string name="layers_empty">No layers</string>
     <string name="layer_hidden">Hidden</string>
+    <string name="layer_hide">Hide %1$s</string>
+    <string name="layer_show">Show %1$s</string>
+    <string name="layer_lock">Lock %1$s</string>
+    <string name="layer_unlock">Unlock %1$s</string>
+    <string name="layer_opacity">Opacity %1$d%%</string>
     <string name="onion_title">Onion Skin</string>
     <string name="onion_reset">Reset onion skin</string>
     <string name="onion_opacity">Opacity</string>
@@ -503,8 +508,8 @@
     <!-- Suggested name for a duplicated performance. -->
     <string name="actor_performance_copy">%1$s copy</string>
     <string name="actor_save_artwork_failed">Could not save actor artwork</string>
-    <string name="actor_save_before_view_change">Save your edits before changing views.</string>
-    <string name="actor_views_in_rig_setup">Edit actor views in rig setup. Existing performances keep their authored view.</string>
+    <string name="actor_save_before_view_change">Save your edits before changing angles.</string>
+    <string name="actor_views_in_rig_setup">Edit actor angles in rig setup. Existing performances keep the angle they were made for.</string>
     <string name="actor_performance_incompatible">Incompatible performance</string>
     <string name="actor_performance_needs_project">Open Actor Studio from a project to save a performance.</string>
     <string name="actor_restore_artwork_failed">Could not restore actor artwork</string>
@@ -665,10 +670,10 @@
     <string name="actor_card_revision">Actor · revision %1$s</string>
     <string name="actor_save_and_return">Save &amp; Return</string>
     <string name="actor_performance_name">Performance name</string>
-    <!-- Describes the view menu button, naming the current view. -->
-    <string name="actor_views_current">Actor views: %1$s</string>
-    <string name="actor_new_view">New authored view</string>
-    <string name="actor_add_view">Add view</string>
+    <!-- Describes the angle menu button, naming the current angle. -->
+    <string name="actor_views_current">Actor angles: %1$s</string>
+    <string name="actor_new_view">New angle</string>
+    <string name="actor_add_view">Add angle</string>
     <string name="actor_create">Create Actor</string>
     <string name="actor_name">Actor name</string>
     <string name="actor_starting_structure">Starting structure</string>
@@ -680,26 +685,26 @@
     <string name="actor_view_profile">Profile</string>
     <string name="actor_view_three_quarter">Three quarter</string>
     <string name="actor_view_back">Back</string>
-    <string name="actor_template_two_legs_description">Paired limbs for figures. Choose the drawing view in Actor Studio.</string>
+    <string name="actor_template_two_legs_description">Paired limbs for figures. Choose the drawing angle in Actor Studio.</string>
     <string name="actor_template_four_supports_description">A horizontal body with four linked supports and a tail.</string>
     <string name="actor_template_empty_root_description">One root. Add branches, joints and endpoints yourself.</string>
     <string name="actor_template_coming_soon_title">Bird, insect &amp; more</string>
     <string name="actor_template_coming_soon_description">Additional skeleton templates are on the way.</string>
-    <!-- An actor's view count, then its performance count, such as "4 views · 2 performances". -->
+    <!-- An actor's angle count, then its performance count, such as "4 angles · 2 performances". -->
     <string name="actor_details_summary">%1$s · %2$s</string>
     <plurals name="actor_performance_count">
         <item quantity="one">%d performance</item>
         <item quantity="other">%d performances</item>
     </plurals>
-    <string name="actor_tab_views">Views · %1$d</string>
+    <string name="actor_tab_views">Angles · %1$d</string>
     <string name="actor_tab_performances">Performances · %1$d</string>
-    <!-- Describes the edit button for one of the actor's views, naming the view. -->
+    <!-- Describes the edit button for one of the actor's angles, naming the angle. -->
     <string name="actor_edit_view">Edit %1$s</string>
     <string name="actor_no_performances">No saved performances</string>
     <string name="actor_open_project">Open owning project</string>
-    <!-- A saved performance: its view · length in seconds, then the project it belongs to. -->
+    <!-- A saved performance: its angle · length in seconds, then the project it belongs to. -->
     <string name="actor_performance_details">%1$s · %2$.1f s\n%3$s</string>
-    <string name="actor_saved_view">Saved view</string>
+    <string name="actor_saved_view">Saved angle</string>
     <string name="actor_saved_project">Saved project</string>
     <!-- %1$s is the actor part the artwork attaches to. -->
     <string name="artwork_attach_to">Attach to %1$s</string>
@@ -740,6 +745,7 @@
     <!-- Editor -->
     <string name="editor_home">Home</string>
     <string name="editor_undo">Undo</string>
+    <string name="editor_scene_extended">Scene extended from %1$d to %2$d frames to fit %3$s</string>
     <string name="editor_redo">Redo</string>
     <string name="editor_asset_tracks">Edit asset tracks</string>
     <string name="editor_pack_item_details">Edit pack item details</string>
@@ -754,6 +760,7 @@
     <string name="editor_actor_library">Actor library</string>
     <string name="editor_background_image">Background image</string>
     <string name="editor_save_project">Save Project</string>
+    <string name="editor_export_video">Export video</string>
     <string name="editor_saving_project">Saving project…</string>
     <string name="editor_project_saved">Project saved</string>
     <string name="editor_project_not_saved">Project was not saved</string>
@@ -852,6 +859,19 @@
     <string name="palette_retry">Retry palettes</string>
     <string name="palette_empty">No palettes</string>
     <string name="palette_load_failed">Could not load palettes</string>
+    <string name="palette_save_failed">Could not save the palette</string>
+    <string name="palette_recent">Recent</string>
+    <string name="palette_my_colours">My colours</string>
+    <string name="palette_save_colour">Save colour</string>
+    <string name="palette_remove_colour">Remove colour</string>
+    <string name="palette_hex">Hex</string>
+    <string name="palette_new">New palette</string>
+    <string name="palette_name">Palette name</string>
+    <string name="palette_new_hint">Starts with the current colour</string>
+    <string name="palette_create">Create</string>
+    <string name="palette_delete">Delete palette</string>
+    <string name="palette_delete_title">Delete this palette?</string>
+    <string name="palette_edit_hint">Long-press a colour to remove it.</string>
     <string name="color_capture_memory">Not enough memory to capture the screen.</string>
     <string name="color_capture_failed">Could not sample this screen. Close the picker and try again.</string>
     <string name="audio_preview_play">Play audio</string>
@@ -946,7 +966,7 @@
     <string name="studio_error_recording_too_late">Move the playhead earlier to record. Performances can be up to two minutes.</string>
     <string name="studio_error_apply_preset_first">Apply the preset before recording a take.</string>
     <string name="studio_error_remove_preset_first">Remove the motion preset before recording manual poses.</string>
-    <string name="studio_error_preset_other_view">This preset was authored for another view. Use a performance authored for this view.</string>
+    <string name="studio_error_preset_other_view">This preset was made for another angle. Use a performance made for this angle.</string>
     <!-- %1$s lists the actor parts the preset needs, such as "head, neck". -->
     <string name="studio_error_preset_missing_parts">This preset needs these parts: %1$s</string>
     <string name="studio_error_select_part_for_cutout">Select a named part in the inspector before extracting its artwork.</string>
