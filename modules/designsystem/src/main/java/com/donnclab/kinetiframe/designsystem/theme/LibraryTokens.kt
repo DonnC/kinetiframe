@@ -7,6 +7,9 @@ import androidx.compose.ui.unit.dp
 object LibraryTokens {
     /** Behind a pack's stamp drawings, which are dark marks on transparent paper. */
     val stampWell = Color(0xFFF1F1F1)
+
+    /** The stack glyph on a pack card with no readable drawing, grey on the light well. */
+    val stampPlaceholder = Color(0xFF9A9A9A)
     val trayWell = Color(0x11000000)
 
     // A local image's gradient while it loads.
@@ -26,6 +29,12 @@ object LibraryTokens {
     val pickerCell = 140.dp
     val packItemCell = 100.dp
     val tagListMaxHeight = 240.dp
+
+    // The Colours tab.
+    val colourSwatch = 48.dp
+    val colourStripHeight = 28.dp
+    val colourWheel = 240.dp
+    val colourPreview = 96.dp
 
     // A stamp's preview dialog.
     val stampPreviewMaxHeight = 360.dp

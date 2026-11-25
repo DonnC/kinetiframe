@@ -1,15 +1,10 @@
 package com.donnclab.kinetiframe.presentation.library.catalog
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
@@ -19,28 +14,34 @@ import com.donnclab.kinetiframe.presentation.common.AssetKind
 import com.donnclab.kinetiframe.presentation.common.AssetSummary
 import com.donnclab.kinetiframe.presentation.common.CardChips
 import com.donnclab.kinetiframe.presentation.common.CardThumbnail
+import com.donnclab.kinetiframe.presentation.common.MediaBadge
+import com.donnclab.kinetiframe.presentation.common.MediaCard
 import com.donnclab.kinetiframe.presentation.common.PreviewKind
 import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.presentation.common.asString
 
 /**
- * "Overlay" style grid card -- the thumbnail fills the whole card, spec chips float in its top
- * corners, and a bottom scrim carries the title and subtitle. Used by the Projects and Actors grids.
+ * A Library grid card for any kind of item (projects, actors, packs, images), in the same
+ * picture-on-top, caption-below style as Home's cards. Spec chips sit on the picture's top corners.
  */
 @Composable
 fun AssetGridCard(item: AssetSummary, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Card(
+    val chips = item.chips
+    MediaCard(
+        title = item.title,
+        subtitle = item.scrimSubtitle.asString().takeIf { it.isNotBlank() },
         onClick = onClick,
-        modifier = modifier.aspectRatio(1f),
-        shape = RoundedCornerShape(Dimens.radiusL),
-        colors = CardDefaults.cardColors(),
-    ) {
-        AssetThumbnailBox(thumbnail = item.thumbnail, modifier = Modifier.aspectRatio(1f)) {
-            item.chips.topStart?.let { SpecChip(it, Modifier.align(Alignment.TopStart).padding(Dimens.spaceS)) }
-            item.chips.topEnd?.let { SpecChip(it, Modifier.align(Alignment.TopEnd).padding(Dimens.spaceS)) }
-            CardBottomScrim(title = item.title, subtitle = item.scrimSubtitle.asString())
-        }
-    }
+        modifier = modifier,
+        media = { AssetThumbnailBox(thumbnail = item.thumbnail) },
+        badges = if (chips.topStart == null && chips.topEnd == null) {
+            null
+        } else {
+            {
+                chips.topStart?.let { MediaBadge(it, Modifier.weight(1f, fill = false)) } ?: Spacer(Modifier)
+                chips.topEnd?.let { MediaBadge(it, Modifier.weight(1f, fill = false)) }
+            }
+        },
+    )
 }
 
 private fun previewSample() = AssetSummary(

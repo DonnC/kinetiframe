@@ -33,23 +33,45 @@ object CanvasPresets {
     /** A size the animator types in, starting from full HD landscape. */
     val Custom = CanvasPreset(null, StageDimensions(1920, 1080), R.string.canvas_preset_custom, isCustom = true)
 
-    /** The picture cards on New Project: the three common shapes and Custom. */
-    val shapes: List<CanvasPreset> = listOf(Landscape, Portrait, Square, Custom)
+    // Where short animations are posted most, by each platform's recommended upload size (2026).
+    // 9:16 also suits Instagram Reels and YouTube Shorts; 4:5 also suits Facebook's feed.
+    val TikTok = CanvasPreset("TikTok", StageDimensions(1080, 1920))
+    val InstagramPost = CanvasPreset("Instagram", StageDimensions(1080, 1350))
+    val YouTube = CanvasPreset("YouTube", StageDimensions(1920, 1080))
+    val Facebook = CanvasPreset("Facebook", StageDimensions(1080, 1080))
 
-    /** The full list in the More sizes sheet: Custom, then each platform's upload size. */
+    /** The picture cards on New Project: the four places animators post most. Custom is in More sizes. */
+    val shapes: List<CanvasPreset> = listOf(TikTok, InstagramPost, YouTube, Facebook)
+
+    /** The full list in the More sizes sheet: Custom, the plain shapes, then each platform's sizes. */
     val all: List<CanvasPreset> = listOf(
         Custom,
-        CanvasPreset("YouTube (1080p)", StageDimensions(1920, 1080)),
-        CanvasPreset("YouTube (720p)", StageDimensions(1280, 720)),
-        CanvasPreset("Instagram (16:9)", StageDimensions(1280, 720)),
-        CanvasPreset("Instagram (1:1)", StageDimensions(720, 720)),
+        Landscape,
+        Portrait,
+        Square,
         CanvasPreset("TikTok (1080p)", StageDimensions(1080, 1920)),
         CanvasPreset("TikTok (720p)", StageDimensions(720, 1280)),
+        CanvasPreset("Instagram Reels and Stories", StageDimensions(1080, 1920)),
+        CanvasPreset("Instagram post (4:5)", StageDimensions(1080, 1350)),
+        CanvasPreset("Instagram grid (3:4)", StageDimensions(1080, 1440)),
+        CanvasPreset("Instagram square (1:1)", StageDimensions(1080, 1080)),
+        CanvasPreset("YouTube (1080p)", StageDimensions(1920, 1080)),
+        CanvasPreset("YouTube (720p)", StageDimensions(1280, 720)),
+        CanvasPreset("YouTube Shorts", StageDimensions(1080, 1920)),
+        CanvasPreset("Facebook Reels", StageDimensions(1080, 1920)),
+        CanvasPreset("Facebook feed (4:5)", StageDimensions(1080, 1350)),
+        CanvasPreset("Facebook square (1:1)", StageDimensions(1080, 1080)),
         CanvasPreset("Vimeo (1080p)", StageDimensions(1920, 1080)),
-        CanvasPreset("Facebook (720p)", StageDimensions(1280, 720)),
         CanvasPreset("Tumblr (16:9)", StageDimensions(540, 304)),
         CanvasPreset("Tumblr (4:3)", StageDimensions(540, 405)),
     )
+}
+
+/** The shape as a ratio such as "9:16" or "4:5". */
+fun StageDimensions.ratioLabel(): String {
+    tailrec fun gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b)
+    val divisor = gcd(width, height).coerceAtLeast(1)
+    return "${width / divisor}:${height / divisor}"
 }
 
 /** The New Project screen's whole canvas-size choice, bundled into one value so
@@ -58,7 +80,8 @@ object CanvasPresets {
  *  the edited [customDimensions] when [CanvasPreset.isCustom], the preset's own fixed size
  *  otherwise. */
 data class CanvasSizeSelection(
-    val preset: CanvasPreset = CanvasPresets.Landscape,
+    // Vertical video is what most phone animators post, so a new project starts there.
+    val preset: CanvasPreset = CanvasPresets.TikTok,
     val customDimensions: StageDimensions = CanvasPresets.Custom.dimensions,
 ) {
     val dimensions: StageDimensions get() = if (preset.isCustom) customDimensions else preset.dimensions

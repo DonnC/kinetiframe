@@ -2,7 +2,7 @@
 #   export KF_DEVICE=<adb serial> KF_UX_OUT=notes/ux-review/<date>/<persona>
 #   source tools/ux-review/phone.sh
 # KF_PACKAGE defaults to the debug build.
-: "${KF_DEVICE:?Set KF_DEVICE to the test phone's adb serial}"
+: "${KF_DEVICE:?Set KF_DEVICE to the adb serial of the phone to test}"
 KF_PACKAGE="${KF_PACKAGE:-com.donnclab.kinetiframe.dev}"
 KF_UX_OUT="${KF_UX_OUT:-notes/ux-review/scratch}"
 A="adb -s $KF_DEVICE"

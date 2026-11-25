@@ -3,18 +3,16 @@ package com.donnclab.kinetiframe.presentation.home
 
 import android.content.ClipData
 import android.content.ClipDescription
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.draganddrop.dragAndDropSource
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,7 +27,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -44,7 +41,6 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.DragAndDropTransferData
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -53,7 +49,9 @@ import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.MediaCard
 
 /** Drag label for a project being dragged onto another project or a collection. */
 private const val PROJECT_DRAG_LABEL = "kinetiframe-project"
@@ -61,18 +59,25 @@ private const val PROJECT_DRAG_LABEL = "kinetiframe-project"
 /** One collection on Home: its name and its projects, newest first. */
 internal data class ProjectCollection(val name: String, val projects: List<ProjectManifest>)
 
-/** A project card that can be long-pressed and dragged, carrying [key], and that accepts a dropped project. */
-@Composable
-internal fun Modifier.projectDragAndDrop(key: String, onDrop: (draggedKey: String) -> Unit): Modifier =
-    projectDragSource(key).projectDropTarget(key, onDrop)
-
-/** Long-pressing starts dragging the project with organisation [key]. */
+/**
+ * A project card's touch: a tap calls [onTap] (opens it) and a long-press starts dragging the
+ * project with organisation [key]. One detector handles both, because a separate drag detector and
+ * the card's own click each swallowed the other's gesture (checked on a Galaxy A56).
+ */
 @OptIn(ExperimentalFoundationApi::class)
-internal fun Modifier.projectDragSource(key: String): Modifier = dragAndDropSource { _ ->
-    DragAndDropTransferData(
-        ClipData(PROJECT_DRAG_LABEL, arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), ClipData.Item(key)),
+@Suppress("DEPRECATION") // The gesture-block form is the only one that also reports a plain tap.
+internal fun Modifier.projectDragSource(key: String, onTap: () -> Unit): Modifier = dragAndDropSource(block = {
+    detectTapGestures(
+        onTap = { onTap() },
+        onLongPress = {
+            startTransfer(
+                DragAndDropTransferData(
+                    ClipData(PROJECT_DRAG_LABEL, arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), ClipData.Item(key)),
+                ),
+            )
+        },
     )
-}
+})
 
 /** Accepts a dragged project, calling [onDrop] with its key; outlined while one hovers. [key] is this target's own. */
 @Composable
@@ -147,46 +152,26 @@ internal fun CollectionGrid(
 
 @Composable
 private fun CollectionCard(collection: ProjectCollection, onOpen: () -> Unit, onDrop: (String) -> Unit) {
-    Surface(
+    val count = collection.projects.size
+    MediaCard(
+        title = collection.name,
+        subtitle = pluralStringResource(R.plurals.home_collection_count, count, count),
         onClick = onOpen,
-        shape = RoundedCornerShape(HomeTokens.cardCorner),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        border = BorderStroke(Dimens.borderThin, MaterialTheme.colorScheme.outlineVariant),
-        modifier = Modifier.fillMaxWidth().projectDropTarget("collection:${collection.name}") { onDrop(it) },
-    ) {
-        Column {
-            Box(Modifier.fillMaxWidth().aspectRatio(4f / 3f).clip(RoundedCornerShape(HomeTokens.cardCorner))) {
-                val cover = collection.projects.firstOrNull()?.thumbnailPath
-                if (cover != null) {
+        modifier = Modifier.projectDropTarget("collection:${collection.name}") { onDrop(it) },
+        media = {
+            // The newest project's whole canvas on light paper, like a project card.
+            Box(Modifier.fillMaxSize().background(LibraryTokens.stampWell)) {
+                collection.projects.firstOrNull()?.thumbnailPath?.let { cover ->
                     AsyncImage(
                         model = cover,
                         contentDescription = null,
-                        contentScale = ContentScale.Crop,
+                        contentScale = ContentScale.Fit,
                         modifier = Modifier.fillMaxSize(),
                     )
-                } else {
-                    Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface))
                 }
             }
-            Column(Modifier.padding(Dimens.spaceSPlus)) {
-                Text(
-                    collection.name,
-                    style = MaterialTheme.typography.titleSmall,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Text(
-                    pluralStringResource(
-                        R.plurals.home_collection_count,
-                        collection.projects.size,
-                        collection.projects.size,
-                    ),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
+        },
+    )
 }
 
 /** The row above an open collection's projects: back to all collections, and its name. */

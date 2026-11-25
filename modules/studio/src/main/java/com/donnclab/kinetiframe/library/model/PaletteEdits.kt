@@ -8,9 +8,31 @@ import java.util.UUID
 object PaletteEdits {
     const val MAX_SWATCHES = 128
 
+    const val MAX_NAME = 60
+
     /** A new palette holding [argb], named [name]. */
-    fun create(name: String, argb: Long, id: String = "palette-${UUID.randomUUID()}") =
-        PaletteDocument(id, name.trim().take(60), listOf(swatch(argb, emptyList()))).validate()
+    fun create(name: String, argb: Long, id: String = newId()) = create(name, listOf(argb), id)
+
+    /**
+     * A new palette named [name] holding [colours] in order, without repeats and at most
+     * [MAX_SWATCHES] of them. [colours] must not be empty.
+     */
+    fun create(name: String, colours: List<Long>, id: String = newId()): PaletteDocument {
+        require(colours.isNotEmpty()) { "A palette needs a colour" }
+        val swatches = colours.distinct().take(MAX_SWATCHES)
+            .fold(emptyList<ColorSwatch>()) { made, argb -> made + swatch(argb, made) }
+        return PaletteDocument(id, name.trim().take(MAX_NAME), swatches).validate()
+    }
+
+    /** [palette] named [name] instead. */
+    fun rename(palette: PaletteDocument, name: String): PaletteDocument =
+        palette.copy(name = name.trim().take(MAX_NAME)).validate()
+
+    /** A new palette of the user's own with [palette]'s colours, named [name]. */
+    fun duplicate(palette: PaletteDocument, name: String, id: String = newId()): PaletteDocument =
+        PaletteDocument(id, name.trim().take(MAX_NAME), palette.swatches).validate()
+
+    private fun newId() = "palette-${UUID.randomUUID()}"
 
     /** [palette] with [argb] added at the end, unless it already holds that exact colour. */
     fun add(palette: PaletteDocument, argb: Long): PaletteDocument {

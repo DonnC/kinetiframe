@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -120,13 +121,18 @@ fun LibraryPickerDialog(
         }
     }
 
-    // An expandable sheet over the canvas: it opens at half height and drags taller or closed.
+    // An expandable sheet over the canvas: it opens at half height, never below 45% of the screen,
+    // and drags taller or closed.
+    val windowHeight = androidx.compose.ui.platform.LocalWindowInfo.current.containerSize.height
+    val minimumHeight = with(androidx.compose.ui.platform.LocalDensity.current) {
+        (windowHeight * MIN_SHEET_HEIGHT).toDp()
+    }
     androidx.compose.material3.ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = androidx.compose.material3.rememberModalBottomSheetState(),
         modifier = Modifier.fillMaxHeight(),
     ) {
-        Box(Modifier.fillMaxSize()) {
+        Box(Modifier.fillMaxSize().heightIn(min = minimumHeight)) {
             Column(Modifier.fillMaxSize().navigationBarsPadding().padding(horizontal = Dimens.spaceL)) {
                 Text(stringResource(R.string.library_picker_title), style = MaterialTheme.typography.titleMedium)
                 if (projectId != null) {
@@ -290,3 +296,6 @@ private fun iconFor(kind: LibraryItemKind): ImageVector = when (kind) {
     LibraryItemKind.PACK -> Lucide.Shapes
     LibraryItemKind.PALETTE -> Lucide.Shapes
 }
+
+/** The share of the screen height the Library sheet opens at, at least. */
+private const val MIN_SHEET_HEIGHT = 0.45f

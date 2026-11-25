@@ -38,9 +38,10 @@ import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.common.FrameRatePicker
 
 /**
- * Home's "New Project" flow: a name, a canvas shape picked from picture cards (Landscape, Portrait,
- * Square or Custom, with every platform size one tap away in [CanvasSizeSheet]), and a frame rate
- * with a live preview. [state] and [callbacks] are bundled per project convention.
+ * Home's "New Project" flow: a name, a canvas size picked from picture cards for the places
+ * animators post most (TikTok, Instagram, YouTube, Facebook; Custom and every other size are in
+ * [CanvasSizeSheet]), and a frame rate with a live preview. [state] and [callbacks] are bundled per
+ * project convention.
  */
 @Composable
 fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks, modifier: Modifier = Modifier) {
@@ -72,16 +73,20 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
                 value = state.name,
                 onValueChange = { callbacks.onStateChange(state.copy(name = it)) },
                 label = { Text(stringResource(R.string.add_project_name)) },
+                placeholder = { Text(stringResource(R.string.add_project_name_placeholder)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(top = Dimens.spaceXl),
             )
-            SectionLabel(stringResource(R.string.add_project_canvas_size))
+            SectionLabel(stringResource(R.string.add_project_canvas_size)) {
+                TextButton(onClick = callbacks.onOpenCanvasSize) {
+                    Text(stringResource(R.string.add_project_more_sizes))
+                }
+            }
             CanvasShapeCards(state.canvasSelection) { preset ->
                 callbacks.onStateChange(state.copy(canvasSelection = state.canvasSelection.copy(preset = preset)))
                 // Custom opens the sheet, where its width and height are typed.
                 if (preset.isCustom) callbacks.onOpenCanvasSize()
             }
-            TextButton(onClick = callbacks.onOpenCanvasSize) { Text(stringResource(R.string.add_project_more_sizes)) }
             SectionLabel(stringResource(R.string.add_project_frame_rate))
             FrameRatePicker(state.fps, { callbacks.onStateChange(state.copy(fps = it)) })
             Spacer(Modifier.height(Dimens.spaceXlPlus))
@@ -89,18 +94,26 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
     }
 }
 
+/** A section's label, with an optional [action] such as "More sizes" at the end of the same row. */
 @Composable
-private fun SectionLabel(text: String) {
-    Text(
-        text,
-        style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(top = Dimens.spaceXl, bottom = Dimens.spaceS),
-    )
+private fun SectionLabel(text: String, action: (@Composable () -> Unit)? = null) {
+    Row(
+        Modifier.fillMaxWidth().padding(top = Dimens.spaceXl, bottom = Dimens.spaceS),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        action?.invoke()
+    }
 }
 
-/** Landscape, Portrait, Square and Custom, each drawn at its real shape. A platform size picked from
- *  the sheet highlights none of them and shows its own name in the summary below. */
+/** TikTok, Instagram, YouTube and Facebook, each drawn at its real shape. A size picked from the
+ *  sheet (Custom, a plain shape or another platform) highlights none of them and shows its own name
+ *  in the summary below. */
 @Composable
 private fun CanvasShapeCards(selection: CanvasSizeSelection, onPick: (CanvasPreset) -> Unit) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
@@ -130,8 +143,9 @@ private fun CanvasShapeCards(selection: CanvasSizeSelection, onPick: (CanvasPres
                         ShapeOutline(size.width, size.height, Dimens.canvasShapeMax, selected)
                     }
                     Text(preset.displayName(), style = MaterialTheme.typography.labelMedium, maxLines = 1)
+                    // The ratio says the shape; the exact size is in the summary above Create.
                     Text(
-                        stringResource(R.string.canvas_size_dimensions, size.width, size.height),
+                        size.ratioLabel(),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,

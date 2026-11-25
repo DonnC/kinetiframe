@@ -77,6 +77,8 @@ class LocalLibraryCatalog(val source: LibraryCatalog) {
                 AssetKind.ACTOR_RIG,
                 template ?: UiText.Verbatim(actor.templateId),
                 actor.thumbnailPath,
+                // A skeleton template's name ("Empty root") means nothing on a card.
+                subtitle = NO_SUBTITLE,
             )
         }
         contents.items.forEach { entry ->
@@ -98,7 +100,10 @@ class LocalLibraryCatalog(val source: LibraryCatalog) {
             val info =
                 entry.drawingCount?.let { UiText.Plural(R.plurals.library_info_drawings, it, listOf(it, location)) }
                     ?: location
-            val summary = card(entry.id, item.displayName, kind, info, entry.imagePath)
+            // The card shows only a useful count; where it is saved stays in the details sheet.
+            val subtitle = entry.drawingCount?.let { UiText.Plural(R.plurals.library_card_drawings, it, listOf(it)) }
+                ?: NO_SUBTITLE
+            val summary = card(entry.id, item.displayName, kind, info, entry.imagePath, subtitle)
             when (kind) {
                 AssetKind.PROJECT, AssetKind.BACKGROUND_IMAGE, AssetKind.FRAME -> projects += summary
 
@@ -136,7 +141,15 @@ class LocalLibraryCatalog(val source: LibraryCatalog) {
         StampAsset(drawing.fileName, drawing.name, Icons.Filled.Folder, Color.Gray, drawing.path)
     }
 
-    private fun card(id: String, name: String, kind: AssetKind, info: UiText, image: String? = null): AssetSummary {
+    /** A card whose [subtitle] (by default [info]) shows under its name; [info] also heads its details. */
+    private fun card(
+        id: String,
+        name: String,
+        kind: AssetKind,
+        info: UiText,
+        image: String? = null,
+        subtitle: UiText = info,
+    ): AssetSummary {
         val thumbnail = image?.let { CardThumbnail.LocalImage(it) }
             ?: CardThumbnail.IconOnGradient(
                 LibraryTokens.itemCardStart,
@@ -153,6 +166,10 @@ class LocalLibraryCatalog(val source: LibraryCatalog) {
             )
         // Real local entries never claim the sample UI's automatic live/audio preview.
         val details = AssetDetails(id, kind, PreviewKind.STATIC_SCREENSHOT, name, info, thumbnail)
-        return AssetSummary(id, name, info, thumbnail, details = details)
+        return AssetSummary(id, name, subtitle, thumbnail, details = details)
+    }
+
+    private companion object {
+        val NO_SUBTITLE = UiText.Verbatim("")
     }
 }

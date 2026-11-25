@@ -47,9 +47,31 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
   it makes. Home, Library and Settings share one app bar.
 - Library's filters are toggles: with none chosen you see everything, so there's no All chip.
 - Library has a tab for each kind of item, including Images and Colours, and its search sits in the
-  app bar. The editor's toolbar spreads its tools evenly and adds Copy, Paste and Safe frame.
+  app bar. The editor's toolbar spreads its tools evenly and adds Copy, Paste and Reset view, which
+  brings back the zoom and tilt. Safe frame moved to the menu.
+- Every card in Home and Library looks the same: the picture on top and the name underneath, easy
+  to read on any artwork.
+- Library's Colours tab is a page of its own. My colours are the quick colours under the colour
+  wheel, as large tiles with a + to add one. Palettes start from a New palette card, where you
+  name one and add as many colours as it needs (up to 128). Each palette opens with a chevron to
+  show its colours, add or remove them, rename it or delete it; a palette that comes with the app
+  can be copied to edit. Tap a colour to copy its hex.
+- The Library picker opens at least 45% of the screen tall in portrait.
+- New Project suggests a name and starts with the sizes animators post to most: TikTok (9:16, also
+  Reels and Shorts), Instagram (4:5), YouTube (16:9) and Facebook (1:1). New projects start
+  vertical. Custom and every other size, including Instagram's 3:4 grid, are under Custom and more.
+- The frame-rate preview bounces a ball straight up and down with faint copies of its last few
+  frames, so the gaps show how smooth each rate is.
+- Home's pack cards show a pack's drawing on light paper, as Library does, so dark line art
+  reads in dark mode.
+- Library cards drop wording that said nothing ("Empty root", "Personal Library"), and image
+  previews lose their "Static preview" label.
 
 ### Fixed
+
+- The frame-rate preview plays at the exact rate chosen. It used to run slow, so 24 fps looked
+  like about 20.
+- Dragging a project onto another to start a collection could be swallowed by the card's tap.
 
 - Leaving the editor only asks to save when something changed. Saving shows a short notice
   instead of a dialog you have to dismiss.

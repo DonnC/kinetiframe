@@ -142,22 +142,28 @@ internal fun ProjectsTabContent(
                     verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
                 ) {
                     items(filtered, key = { it.projectId }) { project ->
+                        val open = {
+                            onHierarchyIntent(HierarchyBrowserIntent.Used("project:${project.projectId}"))
+                            onIntent(ProjectManagerIntent.Open(project.projectId))
+                        }
                         HomeProjectCard(
-                            project, {
-                                onHierarchyIntent(HierarchyBrowserIntent.Used("project:${project.projectId}"))
-                                onIntent(ProjectManagerIntent.Open(project.projectId))
-                            },
+                            project,
+                            open,
                             { renameCandidate = project }, { deleteCandidate = project },
-                            { onShare(project) }, { onSaveToLibrary(project) }, { onExportVideo(project) },
+                            onShare = { onShare(project) },
+                            onSaveToLibrary = { onSaveToLibrary(project) },
+                            onExportVideo = { onExportVideo(project) },
                             favourite = organization.items["project:${project.projectId}"]?.favourite == true,
                             onFavourite = {
                                 onHierarchyIntent(HierarchyBrowserIntent.Favourite("project:${project.projectId}"))
                             },
                             onOrganise = { organiseCandidate = project },
                             // Long-press and drag onto another project or a collection to group them.
-                            modifier = Modifier.projectDragAndDrop("project:${project.projectId}") { dragged ->
+                            // One detector inside the card handles tap-to-open and long-press-to-drag.
+                            modifier = Modifier.projectDropTarget("project:${project.projectId}") { dragged ->
                                 dropOnProject(dragged, "project:${project.projectId}")
                             },
+                            dragModifier = Modifier.projectDragSource("project:${project.projectId}", open),
                         )
                     }
                 }

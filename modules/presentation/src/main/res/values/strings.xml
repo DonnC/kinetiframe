@@ -94,9 +94,6 @@
     <string name="library_filter_sound_effects">Sound Effects</string>
     <string name="library_filter_music_tracks">Music Tracks</string>
     <string name="library_filter_voice_clips">Voice Clips</string>
-    <string name="asset_preview_live_loops">Live preview — loops</string>
-    <string name="asset_preview_static">Static preview</string>
-    <string name="asset_preview_audio">Preview</string>
     <string name="pack_add_to_library">Add pack to Library</string>
     <string name="pack_edit_pack">Edit Pack</string>
     <plurals name="pack_contents_item_count">
@@ -163,6 +160,10 @@
     <plurals name="library_info_drawings">
         <item quantity="one">%1$d drawing · %2$s</item>
         <item quantity="other">%1$d drawings · %2$s</item>
+    </plurals>
+    <plurals name="library_card_drawings">
+        <item quantity="one">%d drawing</item>
+        <item quantity="other">%d drawings</item>
     </plurals>
     <string name="library_starter_assets_failed">Some starter assets could not be added to Library; they will retry next launch.</string>
     <string name="library_filters_save_failed">Could not remember filters</string>
@@ -271,6 +272,10 @@
         <item quantity="one">%d item</item>
         <item quantity="other">%d items</item>
     </plurals>
+    <plurals name="home_card_frames">
+        <item quantity="one">%d frame</item>
+        <item quantity="other">%d frames</item>
+    </plurals>
     <plurals name="home_chip_views">
         <item quantity="one">%d angle</item>
         <item quantity="other">%d angles</item>
@@ -287,6 +292,7 @@
     <string name="add_project_title">New Project</string>
     <string name="add_project_create">Create Project</string>
     <string name="add_project_name">Project name</string>
+    <string name="add_project_name_placeholder">My awesome animation</string>
     <string name="add_project_canvas_size">Canvas size</string>
     <string name="add_project_frame_rate">Frame rate</string>
     <string name="add_project_fps_value">%1$d FPS</string>
@@ -298,9 +304,9 @@
     <string name="canvas_preset_landscape">Landscape</string>
     <string name="canvas_preset_portrait">Portrait</string>
     <string name="canvas_preset_square">Square</string>
-    <string name="add_project_more_sizes">More sizes</string>
+    <string name="add_project_more_sizes">Custom and more</string>
     <string name="fps_chip">%1$d fps</string>
-    <string name="fps_preview_description">A ball bouncing at %1$d frames per second</string>
+    <string name="fps_preview_description">A bouncing ball played at %1$d fps</string>
     <string name="fps_hint">More frames per second move more smoothly, but each second needs more drawings.</string>
     <string name="canvas_size_width">Width</string>
     <string name="canvas_size_height">Height</string>
@@ -752,7 +758,7 @@
     <!-- Editor -->
     <string name="editor_home">Home</string>
     <string name="editor_undo">Undo</string>
-    <string name="editor_scene_extended">Scene extended from %1$d to %2$d frames to fit %3$s</string>
+    <string name="editor_scene_extended">Scene length: %1$d → %2$d, to fit %3$s</string>
     <string name="editor_redo">Redo</string>
     <string name="editor_asset_tracks">Edit asset tracks</string>
     <string name="editor_pack_item_details">Edit pack item details</string>
@@ -780,7 +786,7 @@
         <item quantity="one">%d project</item>
         <item quantity="other">%d projects</item>
     </plurals>
-    <string name="pack_size_preview">Each item is drawn on a %1$d × %1$d canvas.</string>
+    <string name="pack_size_preview">Each item is drawn on a square canvas: %1$d × %1$d.</string>
     <string name="editor_background_from_library">Background from Library</string>
     <string name="editor_background_from_files">Background from files</string>
     <string name="editor_frame_rate">Frame rate</string>
@@ -901,6 +907,22 @@
     <string name="palette_delete">Delete palette</string>
     <string name="palette_delete_title">Delete this palette?</string>
     <string name="palette_edit_hint">Long-press a colour to remove it.</string>
+    <string name="colours_mine_hint">Quick colours that sit under the colour wheel while you draw.</string>
+    <string name="colours_palettes_hint">Named sets of colours, such as one for each character. Tap one to see and edit its colours.</string>
+    <string name="colours_add">Add colour</string>
+    <string name="colours_add_this">Add this colour</string>
+    <string name="colours_tap_to_take_out">Tap a colour to take it out.</string>
+    <string name="colours_copy_hex">Copy hex</string>
+    <string name="colours_save">Save</string>
+    <string name="palette_new_card_hint">Name it, then pick its colours</string>
+    <string name="palette_name_placeholder">Tavi\'s skin and clothes</string>
+    <string name="palette_rename">Rename</string>
+    <string name="palette_rename_title">Rename palette</string>
+    <string name="palette_duplicate">Copy to edit</string>
+    <string name="palette_copy_name">%1$s copy</string>
+    <string name="palette_full">This palette is full: it holds up to %1$d colours.</string>
+    <string name="palette_open_state">Open</string>
+    <string name="palette_closed_state">Closed, tap to see its colours</string>
     <string name="color_capture_memory">Not enough memory to capture the screen.</string>
     <string name="color_capture_failed">Could not sample this screen. Close the picker and try again.</string>
     <string name="audio_preview_play">Play audio</string>

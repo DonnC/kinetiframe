@@ -62,7 +62,6 @@ object Dimens {
     val chipHeight = 22.dp
     val gridCardThumbHeight = 150.dp
     val gridCardThumbHeightCompact = 132.dp
-    val packCollageThumbHeight = 110.dp
     val playButtonSize = 42.dp
     val bottomSheetHandleWidth = 40.dp
     val bottomSheetHandleHeight = 4.dp
@@ -84,7 +83,7 @@ object Dimens {
     val brandWordmarkHeight = 20.dp
 
     /** The bouncing-ball frame-rate preview and New Project's canvas shape cards. */
-    val fpsPreviewHeight = 96.dp
+    val fpsPreviewHeight = 140.dp
     val canvasShapeCard = 76.dp
     val canvasShapeMax = 44.dp
 
