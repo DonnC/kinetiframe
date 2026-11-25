@@ -45,12 +45,14 @@ import java.io.File
  * with short facts as badges, and the name, a detail line and the ⋮ menu on a solid caption below.
  */
 
-private fun formatDuration(totalFrames: Int, fps: Int): String {
-    if (fps <= 0 || totalFrames <= 0) return "0:00"
+/** The project's length as "m:ss", or its frame count when it is under a second, never a bare "0:00". */
+@Composable
+private fun projectLength(totalFrames: Int, fps: Int): String {
+    if (fps <= 0 || totalFrames < fps) {
+        return pluralStringResource(R.plurals.home_card_frames, totalFrames, totalFrames)
+    }
     val totalSeconds = totalFrames / fps
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
-    return "%d:%02d".format(minutes, seconds)
+    return "%d:%02d".format(totalSeconds / 60, totalSeconds % 60)
 }
 
 /** A project card: fps and canvas size on the picture, the duration under the name. */
@@ -71,20 +73,22 @@ fun HomeProjectCard(
 ) {
     MediaCard(
         title = project.displayName,
-        subtitle = formatDuration(project.totalFrames, project.fps),
+        subtitle = projectLength(project.totalFrames, project.fps),
         onClick = onOpen,
         modifier = modifier,
         contentModifier = dragModifier,
         media = {
-            if (project.thumbnailPath != null) {
-                AsyncImage(
-                    model = project.thumbnailPath,
-                    contentDescription = project.displayName,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            } else {
-                Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant))
+            // The whole canvas on light paper, as in Library: a portrait drawing cropped to the card
+            // could show nothing, and clear paper on a dark card hides dark lines.
+            Box(Modifier.fillMaxSize().background(LibraryTokens.stampWell)) {
+                project.thumbnailPath?.let { path ->
+                    AsyncImage(
+                        model = path,
+                        contentDescription = project.displayName,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
             }
         },
         badges = {

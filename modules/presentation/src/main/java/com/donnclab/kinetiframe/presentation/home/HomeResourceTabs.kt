@@ -142,11 +142,13 @@ internal fun ProjectsTabContent(
                     verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
                 ) {
                     items(filtered, key = { it.projectId }) { project ->
+                        val open = {
+                            onHierarchyIntent(HierarchyBrowserIntent.Used("project:${project.projectId}"))
+                            onIntent(ProjectManagerIntent.Open(project.projectId))
+                        }
                         HomeProjectCard(
-                            project, {
-                                onHierarchyIntent(HierarchyBrowserIntent.Used("project:${project.projectId}"))
-                                onIntent(ProjectManagerIntent.Open(project.projectId))
-                            },
+                            project,
+                            open,
                             { renameCandidate = project }, { deleteCandidate = project },
                             onShare = { onShare(project) },
                             onSaveToLibrary = { onSaveToLibrary(project) },
@@ -157,11 +159,11 @@ internal fun ProjectsTabContent(
                             },
                             onOrganise = { organiseCandidate = project },
                             // Long-press and drag onto another project or a collection to group them.
-                            // The drag starts inside the card's tap handling, so the tap can't swallow it.
+                            // One detector inside the card handles tap-to-open and long-press-to-drag.
                             modifier = Modifier.projectDropTarget("project:${project.projectId}") { dragged ->
                                 dropOnProject(dragged, "project:${project.projectId}")
                             },
-                            dragModifier = Modifier.projectDragSource("project:${project.projectId}"),
+                            dragModifier = Modifier.projectDragSource("project:${project.projectId}", open),
                         )
                     }
                 }

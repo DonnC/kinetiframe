@@ -272,6 +272,10 @@
         <item quantity="one">%d item</item>
         <item quantity="other">%d items</item>
     </plurals>
+    <plurals name="home_card_frames">
+        <item quantity="one">%d frame</item>
+        <item quantity="other">%d frames</item>
+    </plurals>
     <plurals name="home_chip_views">
         <item quantity="one">%d angle</item>
         <item quantity="other">%d angles</item>

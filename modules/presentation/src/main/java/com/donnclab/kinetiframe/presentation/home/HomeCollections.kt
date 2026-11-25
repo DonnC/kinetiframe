@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.draganddrop.dragAndDropSource
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -48,6 +49,7 @@ import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.core.document.ProjectManifest
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.MediaCard
 
@@ -57,13 +59,25 @@ private const val PROJECT_DRAG_LABEL = "kinetiframe-project"
 /** One collection on Home: its name and its projects, newest first. */
 internal data class ProjectCollection(val name: String, val projects: List<ProjectManifest>)
 
-/** Long-pressing starts dragging the project with organisation [key]. */
+/**
+ * A project card's touch: a tap calls [onTap] (opens it) and a long-press starts dragging the
+ * project with organisation [key]. One detector handles both, because a separate drag detector and
+ * the card's own click each swallowed the other's gesture (checked on a Galaxy A56).
+ */
 @OptIn(ExperimentalFoundationApi::class)
-internal fun Modifier.projectDragSource(key: String): Modifier = dragAndDropSource { _ ->
-    DragAndDropTransferData(
-        ClipData(PROJECT_DRAG_LABEL, arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), ClipData.Item(key)),
+@Suppress("DEPRECATION") // The gesture-block form is the only one that also reports a plain tap.
+internal fun Modifier.projectDragSource(key: String, onTap: () -> Unit): Modifier = dragAndDropSource(block = {
+    detectTapGestures(
+        onTap = { onTap() },
+        onLongPress = {
+            startTransfer(
+                DragAndDropTransferData(
+                    ClipData(PROJECT_DRAG_LABEL, arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), ClipData.Item(key)),
+                ),
+            )
+        },
     )
-}
+})
 
 /** Accepts a dragged project, calling [onDrop] with its key; outlined while one hovers. [key] is this target's own. */
 @Composable
@@ -145,16 +159,16 @@ private fun CollectionCard(collection: ProjectCollection, onOpen: () -> Unit, on
         onClick = onOpen,
         modifier = Modifier.projectDropTarget("collection:${collection.name}") { onDrop(it) },
         media = {
-            val cover = collection.projects.firstOrNull()?.thumbnailPath
-            if (cover != null) {
-                AsyncImage(
-                    model = cover,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            } else {
-                Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant))
+            // The newest project's whole canvas on light paper, like a project card.
+            Box(Modifier.fillMaxSize().background(LibraryTokens.stampWell)) {
+                collection.projects.firstOrNull()?.thumbnailPath?.let { cover ->
+                    AsyncImage(
+                        model = cover,
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
             }
         },
     )
