@@ -25,6 +25,9 @@ internal class EditorPanels {
     var showPartPicker by mutableStateOf(false)
     var showPresetLibrary by mutableStateOf(false)
     var showLibraryPicker by mutableStateOf(false)
+
+    /** The Library picker was opened to choose a background, so it shows background images only. */
+    var libraryPickerBackgroundsOnly by mutableStateOf(false)
     var showRecordAudioDialog by mutableStateOf(false)
 
     /** Stage position for a new text node. */

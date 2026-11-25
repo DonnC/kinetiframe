@@ -34,6 +34,7 @@ import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.library.domain.LibraryPick
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.LocalAppPreferences
 import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.common.toUiText
@@ -178,9 +179,22 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
         onDispose { host.onActorSaveActionAvailable?.invoke(null) }
     }
 
+    // Gallery projects autosave unless the animator turned it off; Pack Creator and Actor Studio
+    // keep their own explicit saves.
+    val autosaves = LocalAppPreferences.current.autosave && projectSave != null &&
+        !host.isPackCreator && !host.isActorStudioSession
+    EditorAutosave(viewModel, saves, autosaves)
+
     fun requestExit(destination: () -> Unit) {
         viewModel.handleIntent(StudioIntent.Playback.Pause)
-        if (host.isActorStudioSession) actorSaves.exit() else saves.confirmExit(destination)
+        when {
+            host.isActorStudioSession -> actorSaves.exit()
+
+            // Leaving saves instead of asking.
+            autosaves -> saves.saveThen(destination)
+
+            else -> saves.confirmExit(destination)
+        }
     }
     EditorExitDialogs(ui.exit, saves, host.isPackCreator)
     val back = host.onBackClick ?: host.onHomeClick ?: host.onExitActorStudio
@@ -221,6 +235,7 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
     /** Places a picked library item where its kind belongs. */
     fun applyLibraryPick(manifest: LibraryItemManifest) {
         panels.showLibraryPicker = false
+        panels.libraryPickerBackgroundsOnly = false
         scope.launch {
             storage.pickFromLibrary(manifest, state.project.id, System.currentTimeMillis(), media.audioDirectory).fold(
                 onSuccess = { pick ->

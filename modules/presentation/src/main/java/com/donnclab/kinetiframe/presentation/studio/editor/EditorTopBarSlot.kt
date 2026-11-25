@@ -102,5 +102,9 @@ private fun DrawingTopBar(state: StudioState, host: EditorHost, ui: EditorUiStat
         // this session can still be in memory only. Preparing the save writes it to disk first.
         onSavePackClick = host.packCreatorConfig?.onSavePack?.let { { commands.saves.savePack() } },
         onExportClick = host.onExport?.let { export -> { commands.saves.saveThen(export) } },
+        onBackgroundFromLibraryClick = {
+            panels.libraryPickerBackgroundsOnly = true
+            panels.showLibraryPicker = true
+        },
     )
 }

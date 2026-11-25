@@ -47,7 +47,7 @@ internal class EditorSaveActions(
     private val messages: EditorMessages,
     private val exit: EditorExitState,
     private val scope: CoroutineScope,
-    project: ProjectSaveTarget?,
+    private val project: ProjectSaveTarget?,
 ) {
     /** Null when the editor has no gallery project to save into. */
     val saveProject: (() -> Unit)? = project?.let { target -> { writeProject(target) } }
@@ -95,10 +95,23 @@ internal class EditorSaveActions(
         }
     }
 
-    private fun writeProject(target: ProjectSaveTarget) {
+    /**
+     * Autosave: saves quietly when something changed. It never leaves the editor, shows no
+     * notice and keeps temporary frame references. It stands aside while a save to leave is
+     * underway.
+     */
+    fun autosave() {
+        val target = project ?: return
+        if (exit.returnHomeAfterSave) return
+        scope.launch {
+            if (!exit.returnHomeAfterSave && viewModel.hasUnsavedChanges()) writeProject(target, quiet = true)
+        }
+    }
+
+    private fun writeProject(target: ProjectSaveTarget, quiet: Boolean = false) {
         // Capture intent before queuing behind another save. An earlier toolbar save
         // must not satisfy a later Home request with an older document snapshot.
-        val leaveWhenSaved = exit.returnHomeAfterSave
+        val leaveWhenSaved = !quiet && exit.returnHomeAfterSave
         viewModel.launchSave {
             val time = System.currentTimeMillis()
             val document = try {
@@ -119,6 +132,7 @@ internal class EditorSaveActions(
             when (result) {
                 is StoreResult.Value -> {
                     viewModel.markSaved(document)
+                    if (quiet) return@launchSave
                     viewModel.frameReferences.clear()
                     if (leaveWhenSaved) {
                         exit.returnHomeAfterSave = false
