@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.presentation.studio.color
 import androidx.lifecycle.viewModelScope
 import com.donnclab.kinetiframe.library.data.PaletteRepository
 import com.donnclab.kinetiframe.library.model.PaletteDocument
+import com.donnclab.kinetiframe.library.model.PaletteEdits
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.presentation.common.toUiText
@@ -20,11 +21,33 @@ data class PaletteState(
     val palettes: List<PaletteDocument> = emptyList(),
     val selectedId: String? = null,
     val error: UiText? = null,
-) : ViewState
+    /** Colours used most recently, newest first. Kept while the app runs. */
+    val recent: List<Long> = emptyList(),
+) : ViewState {
+    /** The palette the "+" in the colour picker saves into, once it has a colour. */
+    val myColours: PaletteDocument? get() = palettes.firstOrNull { it.id == PaletteRepository.MY_COLOURS_ID }
+
+    /** Whether the user made [palette], so they can add to it, remove from it and delete it. */
+    fun canEdit(palette: PaletteDocument) = !PaletteRepository.isStarter(palette.id)
+
+    /** Whether [palette] is My colours, which shows its name in the user's language. */
+    fun isMyColours(palette: PaletteDocument) = palette.id == PaletteRepository.MY_COLOURS_ID
+}
+
 sealed interface PaletteIntent : ViewIntent {
     data object Load : PaletteIntent
     data class Select(val id: String) : PaletteIntent
+
+    /** A colour was drawn with, so it joins the recent colours. */
+    data class Used(val argb: Long) : PaletteIntent
+
+    /** Saves [argb] into [paletteId], or into My colours when it's null. */
+    data class Add(val argb: Long, val paletteId: String? = null) : PaletteIntent
+    data class Remove(val paletteId: String, val swatchName: String) : PaletteIntent
+    data class Create(val name: String, val argb: Long) : PaletteIntent
+    data class Delete(val paletteId: String) : PaletteIntent
 }
+
 sealed interface PaletteEffect : ViewEffect
 
 class PaletteViewModel(
@@ -34,39 +57,89 @@ class PaletteViewModel(
     init {
         handleIntent(PaletteIntent.Load)
     }
+
     override fun handleIntent(intent: PaletteIntent) {
         when (intent) {
             is PaletteIntent.Select -> updateState { it.copy(selectedId = intent.id) }
 
-            PaletteIntent.Load -> viewModelScope.launch {
-                updateState { it.copy(loading = true, error = null) }
-                try {
-                    val palettes = withContext(ioDispatcher) {
-                        repository.installStarters()
-                        repository.list()
-                    }
-                    updateState {
-                        it.copy(
-                            loading = false,
-                            palettes = palettes,
-                            selectedId =
-                            it.selectedId?.takeIf { id -> palettes.any { p -> p.id == id } }
-                                ?: palettes.firstOrNull()?.id,
-                        )
-                    }
-                } catch (
-                    cancelled: kotlinx.coroutines.CancellationException,
-                ) {
-                    throw cancelled
-                } catch (error: Exception) {
-                    updateState {
-                        it.copy(
-                            loading = false,
-                            error = error.toUiText(R.string.palette_load_failed),
-                        )
-                    }
-                }
+            PaletteIntent.Load -> load()
+
+            is PaletteIntent.Used -> updateState {
+                it.copy(recent = (listOf(intent.argb) + it.recent.filterNot { c -> c == intent.argb }).take(RECENT))
+            }
+
+            is PaletteIntent.Add -> edit(R.string.palette_save_failed) {
+                val id = intent.paletteId ?: PaletteRepository.MY_COLOURS_ID
+                val palette = currentState.palettes.firstOrNull { it.id == id }
+                repository.update(
+                    palette?.let { PaletteEdits.add(it, intent.argb) }
+                        ?: PaletteEdits.create(MY_COLOURS_NAME, intent.argb, id),
+                )
+                id
+            }
+
+            is PaletteIntent.Remove -> edit(R.string.palette_save_failed) {
+                val palette = currentState.palettes.firstOrNull { it.id == intent.paletteId } ?: return@edit null
+                val left = PaletteEdits.remove(palette, intent.swatchName)
+                if (left == null) repository.delete(palette.id) else repository.update(left)
+                left?.id
+            }
+
+            is PaletteIntent.Create -> edit(R.string.palette_save_failed) {
+                repository.update(PaletteEdits.create(intent.name, intent.argb)).id
+            }
+
+            is PaletteIntent.Delete -> edit(R.string.palette_save_failed) {
+                repository.delete(intent.paletteId)
+                null
             }
         }
+    }
+
+    /** Runs a palette change on IO, then reloads, selecting the palette [change] returns. */
+    private fun edit(failure: Int, change: () -> String?) {
+        viewModelScope.launch {
+            try {
+                val selected = withContext(ioDispatcher) { change() }
+                selected?.let { id -> updateState { it.copy(selectedId = id) } }
+                load()
+            } catch (cancelled: kotlinx.coroutines.CancellationException) {
+                throw cancelled
+            } catch (error: Exception) {
+                updateState { it.copy(error = error.toUiText(failure)) }
+            }
+        }
+    }
+
+    private fun load() {
+        viewModelScope.launch {
+            updateState { it.copy(loading = it.palettes.isEmpty(), error = null) }
+            try {
+                val palettes = withContext(ioDispatcher) {
+                    repository.installStarters()
+                    // The user's own palettes come first, My colours at the top.
+                    repository.list().sortedWith(
+                        compareBy({ PaletteRepository.isStarter(it.id) }, { it.id != PaletteRepository.MY_COLOURS_ID }),
+                    )
+                }
+                updateState {
+                    it.copy(
+                        loading = false,
+                        palettes = palettes,
+                        selectedId = it.selectedId?.takeIf { id -> palettes.any { p -> p.id == id } }
+                            ?: palettes.firstOrNull()?.id,
+                    )
+                }
+            } catch (cancelled: kotlinx.coroutines.CancellationException) {
+                throw cancelled
+            } catch (error: Exception) {
+                updateState { it.copy(loading = false, error = error.toUiText(R.string.palette_load_failed)) }
+            }
+        }
+    }
+
+    private companion object {
+        const val RECENT = 8
+        const val MY_COLOURS_NAME = "My colours"
     }
 }

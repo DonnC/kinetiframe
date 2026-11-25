@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -72,6 +73,7 @@ import com.donnclab.kinetiframe.studio.CanvasState
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
+import com.donnclab.kinetiframe.studio.ToolConfig
 import com.donnclab.kinetiframe.studio.actorDefinition
 import kotlin.math.roundToInt
 
@@ -148,6 +150,18 @@ fun ToolDock(
                         },
                     ),
                 )
+                // The current colour is always one tap away while drawing, not inside a tool's options.
+                if (!isPuppetStudio) {
+                    val colourTool = state.tool.activeTool.takeIf { it == DrawingTool.COLOR_FILL } ?: DrawingTool.BRUSH
+                    val colour = (state.tool.configs[colourTool] ?: ToolConfig()).color
+                    Box(Modifier.padding(bottom = Dimens.spaceXs)) {
+                        ColorPicker(Color(colour)) {
+                            // Picking a colour means drawing with it: from the eraser or lasso, switch to the pen.
+                            if (state.tool.activeTool != colourTool) onIntent(StudioIntent.Draw.SelectTool(colourTool))
+                            onIntent(StudioIntent.Draw.SetBrushColor(it.toArgb()))
+                        }
+                    }
+                }
 
                 LazyColumn(
                     // The rail fits the tools the current mode shows, so hiding tools never leaves

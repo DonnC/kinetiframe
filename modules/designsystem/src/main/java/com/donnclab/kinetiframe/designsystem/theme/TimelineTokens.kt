@@ -49,6 +49,10 @@ object TimelineTokens {
     val onionPreviewInset = 24.dp
     val opacityChipWidth = 44.dp
     val opacityChipHeight = 28.dp
+    val opacitySliderWidth = 220.dp
+
+    /** A layer's eye and lock: a full-height touch target in the 54 dp row. */
+    val layerToggle = 40.dp
     val chipCorner = 6.dp
 
     // Asset tracks.

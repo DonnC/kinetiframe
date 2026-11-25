@@ -1,8 +1,9 @@
 package com.donnclab.kinetiframe.presentation.studio.color
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
@@ -22,10 +24,20 @@ import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.model.BundledPalettes
+import com.donnclab.kinetiframe.library.model.ColorSwatch
 import com.donnclab.kinetiframe.library.model.PaletteDocument
+import com.donnclab.kinetiframe.presentation.R
 
+/** A palette's colours in rows of four. With [onRemove], long-pressing a colour removes it. */
 @Composable
-fun PaletteSwatches(palette: PaletteDocument, selectedColor: Color, onPick: (Color) -> Unit) {
+@OptIn(ExperimentalFoundationApi::class)
+fun PaletteSwatches(
+    palette: PaletteDocument,
+    selectedColor: Color,
+    onPick: (Color) -> Unit,
+    onRemove: ((ColorSwatch) -> Unit)? = null,
+) {
+    val removeLabel = stringResource(R.string.palette_remove_colour)
     Column(verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
         palette.swatches.chunked(4).forEach { row ->
             Row(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
@@ -48,7 +60,11 @@ fun PaletteSwatches(palette: PaletteDocument, selectedColor: Color, onPick: (Col
                                 contentDescription = "${swatch.name} #$hex"
                                 selected = isSelected
                             }
-                            .clickable { onPick(color) },
+                            .combinedClickable(
+                                onClick = { onPick(color) },
+                                onLongClickLabel = onRemove?.let { removeLabel },
+                                onLongClick = onRemove?.let { { it(swatch) } },
+                            ),
                     )
                 }
             }
