@@ -26,6 +26,7 @@ import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
 import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.browseGridCells
 import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserControls
 import com.donnclab.kinetiframe.presentation.library.packs.PackBrowserIndex
 import com.donnclab.kinetiframe.presentation.library.packs.PackDetailsScreen
@@ -86,7 +87,7 @@ internal fun PacksTabContent(
                 filtered.isEmpty() -> EmptySearchMessage()
 
                 else -> LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                    columns = browseGridCells(),
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(
                         start = Dimens.spaceL,

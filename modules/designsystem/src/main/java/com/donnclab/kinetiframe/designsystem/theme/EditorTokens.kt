@@ -96,6 +96,9 @@ object EditorTokens {
 
     /** The layers panel's width. Its height follows its layers, so a short stack covers less (R3-28). */
     val layerPopupWidth = 340.dp
+
+    /** A panel docked beside the canvas on wider windows, such as layers. */
+    val sidePanelWidth = 400.dp
     val popupHeight = 330.dp
     val popupNarrowWidth = 260.dp
     val popupMediumWidth = 280.dp
@@ -116,6 +119,12 @@ object EditorTokens {
     // The frame studio grid.
     val frameStudioCorner = 22.dp
     val frameStudioCell = 150.dp
+
+    /** The tallest a Frames tile gets for a portrait canvas, width to height, so phones stay usable. */
+    const val FRAME_TILE_TALLEST = 0.75f
+
+    /** The widest a Frames tile gets for a landscape canvas. */
+    const val FRAME_TILE_WIDEST = 16f / 9f
     val frameStudioCardThumb = 150.dp
     val frameStudioArrow = 10.dp
 }

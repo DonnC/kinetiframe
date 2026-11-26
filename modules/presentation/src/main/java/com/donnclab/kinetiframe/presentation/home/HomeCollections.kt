@@ -52,6 +52,7 @@ import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.MediaCard
+import com.donnclab.kinetiframe.presentation.common.browseGridCells
 import com.donnclab.kinetiframe.presentation.common.unusedName
 
 /** Drag label for a project being dragged onto another project or a collection. */
@@ -132,7 +133,7 @@ internal fun CollectionGrid(
     onDropProject: (draggedKey: String, collection: String) -> Unit,
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = browseGridCells(),
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(
             start = Dimens.spaceL,

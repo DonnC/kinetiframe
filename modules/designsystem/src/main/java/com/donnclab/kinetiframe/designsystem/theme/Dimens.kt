@@ -113,4 +113,14 @@ object Dimens {
     // Grid layout.
     val gridColumnGap = 14.dp
     val gridColumns = 2
+
+    /** A browsing card's least width on screens wider than a phone, where columns follow the room. */
+    val gridCellWide = 240.dp
+
+    // Material window width breakpoints: medium from 600 dp, expanded from 840 dp.
+    val windowMediumFrom = 600.dp
+    val windowExpandedFrom = 840.dp
+
+    /** The navigation rail that replaces the bottom bar on wider screens. */
+    val navRailWidth = 88.dp
 }

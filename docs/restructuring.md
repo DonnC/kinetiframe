@@ -180,6 +180,10 @@ beside the unchanged original:
   card's name is dark on its light well in every theme.
 - R3-7: Export has a back arrow and a Watch button that plays the finished video in the
   phone's player. A preview before exporting is still to come.
+- Tablet layouts, first pass: `WindowWidthClass` (Material 600/840 dp breakpoints) drives an
+  `AppRootFrame` rail for Home, Library and Settings, `browseGridCells()` for the browsing grids,
+  layers docked beside the canvas (`EditorSidePanel`), a grouped drawing bar, and Frames tiles
+  shaped like the canvas.
 - `presentation`'s device tests compile again: `ActorArtworkControlsTest` still used the old
   `ActorArtworkMenu(BoneNode)` signature, so no device test in the module could run.
 

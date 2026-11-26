@@ -3,7 +3,9 @@ package com.donnclab.kinetiframe.presentation.studio.editor
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ModalDrawerSheet
@@ -38,6 +40,7 @@ import com.donnclab.kinetiframe.presentation.common.LocalAppPreferences
 import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.common.toUiText
+import com.donnclab.kinetiframe.presentation.common.windowWidthClass
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.hasActorStudioChanges
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.sketch.ActorSketchEditor
@@ -320,17 +323,30 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
             snackbarHost = { SnackbarHost(snackbar) },
             contentWindowInsets = WindowInsets(0.dp),
         ) { innerPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    // Pack drags are measured against this Box. The canvas and the pack tray
-                    // both fill it, so a drag's window position minus this one is canvas-local.
-                    .onGloballyPositioned { coordinates ->
-                        ui.tray.canvasRootPositionInWindow = coordinates.positionInWindow()
-                    },
-            ) {
-                EditorCanvasStack(viewModel, state, host, ui, storage.actorRendering, commands)
+            // On wider windows layers dock beside the canvas instead of covering it.
+            val docksLayers = !windowWidthClass().isCompact && ui.panels.layerSheetVisible
+            Row(Modifier.fillMaxSize().padding(innerPadding)) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        // Pack drags are measured against this Box. The canvas and the pack tray
+                        // both fill it, so a drag's window position minus this one is canvas-local.
+                        .onGloballyPositioned { coordinates ->
+                            ui.tray.canvasRootPositionInWindow = coordinates.positionInWindow()
+                        },
+                ) {
+                    EditorCanvasStack(viewModel, state, host, ui, storage.actorRendering, commands)
+                }
+                if (docksLayers) {
+                    EditorSidePanel {
+                        LayerPanel(
+                            state = state,
+                            onIntent = viewModel::handleIntent,
+                            cacheManager = viewModel.cacheManager,
+                        )
+                    }
+                }
             }
         }
     }

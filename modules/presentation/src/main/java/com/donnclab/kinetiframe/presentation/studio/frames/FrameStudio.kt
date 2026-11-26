@@ -81,6 +81,10 @@ fun FrameStudio(
     val previews = remember { mutableStateMapOf<Int, Bitmap>() }
     val gridState = rememberLazyGridState()
     val drag = remember(gridState) { FrameGridDragState(gridState) }
+    // Tiles take the canvas's shape (within limits) so a frame fills its tile instead of sitting in
+    // bands of empty card; the grid then fits as many as the window has room for.
+    val tileAspect = state.project.stage.let { it.width.toFloat() / it.height.coerceAtLeast(1) }
+        .coerceIn(EditorTokens.FRAME_TILE_TALLEST, EditorTokens.FRAME_TILE_WIDEST)
 
     val thumbnailEditBitmap = state.currentBitmap.takeUnless { state.animation.isPlaying }
     LaunchedEffect(state.project, state.animation.totalFrames, state.layers, thumbnailEditBitmap) {
@@ -165,6 +169,7 @@ fun FrameStudio(
                                 bitmap = previews[index],
                                 // While dragging, the frame under the finger shows where it lands.
                                 selected = index in selected || (drag.dragging != null && drag.target == index),
+                                aspect = tileAspect,
                                 modifier = with(drag) { Modifier.animateItem().lifted(index) }
                                     .frameDrag(drag, index) { from, to ->
                                         onIntent(StudioIntent.Frame.MoveFrame(from, to))

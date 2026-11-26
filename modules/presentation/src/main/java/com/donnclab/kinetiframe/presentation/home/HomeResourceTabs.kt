@@ -33,6 +33,7 @@ import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerState
 import com.donnclab.kinetiframe.presentation.actors.ActorNameDialog
 import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.browseGridCells
 import com.donnclab.kinetiframe.presentation.library.BrowserView
 import com.donnclab.kinetiframe.presentation.library.CollectionAssignmentDialog
 import com.donnclab.kinetiframe.presentation.library.CollectionBrowserControls
@@ -138,7 +139,7 @@ internal fun ProjectsTabContent(
                 filtered.isEmpty() -> EmptySearchMessage()
 
                 else -> LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                    columns = browseGridCells(),
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(
                         start = Dimens.spaceL,
@@ -283,7 +284,7 @@ internal fun ActorsTabContent(
                 filtered.isEmpty() -> EmptySearchMessage()
 
                 else -> LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                    columns = browseGridCells(),
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(
                         start = Dimens.spaceL,
