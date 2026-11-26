@@ -56,7 +56,7 @@ internal fun ProjectsTabContent(
     // A project dropped onto one that isn't in a collection yet: both go into a new, named one.
     var newCollectionFor by remember { mutableStateOf<Pair<String, String>?>(null) }
     val organization = hierarchy.organization
-    val position = organization.browsers["projects"] ?: BrowserPosition()
+    val position = organization.browsers[HOME_PROJECTS_BROWSER] ?: BrowserPosition()
     fun collectionOf(key: String) = organization.items[key]?.collection ?: DEFAULT_COLLECTION
     fun moveTo(key: String, collection: String) = onHierarchyIntent(
         HierarchyBrowserIntent.Organise(
@@ -90,12 +90,14 @@ internal fun ProjectsTabContent(
             HierarchyBrowserIndex.collections(state.projects, {
                 "project:${it.projectId}"
             }, organization),
-            { onHierarchyIntent(HierarchyBrowserIntent.Browse("projects", it)) },
+            { onHierarchyIntent(HierarchyBrowserIntent.Browse(HOME_PROJECTS_BROWSER, it)) },
             showCollectionMenu = false,
         )
         position.collection?.takeIf { position.mode == BrowseMode.COLLECTIONS }?.let { name ->
             OpenCollectionHeader(name) {
-                onHierarchyIntent(HierarchyBrowserIntent.Browse("projects", position.copy(collection = null)))
+                onHierarchyIntent(
+                    HierarchyBrowserIntent.Browse(HOME_PROJECTS_BROWSER, position.copy(collection = null)),
+                )
             }
         }
         hierarchy.error?.let { Text(it.asString(), style = MaterialTheme.typography.labelSmall) }
@@ -117,12 +119,18 @@ internal fun ProjectsTabContent(
                 showingCollections && collections.isEmpty() -> ActorManagerMessage(
                     stringResource(R.string.home_collections_empty),
                     stringResource(R.string.home_collections_show_all),
-                ) { onHierarchyIntent(HierarchyBrowserIntent.Browse("projects", position.copy(mode = BrowseMode.ALL))) }
+                ) {
+                    onHierarchyIntent(
+                        HierarchyBrowserIntent.Browse(HOME_PROJECTS_BROWSER, position.copy(mode = BrowseMode.ALL)),
+                    )
+                }
 
                 showingCollections -> CollectionGrid(
                     collections,
                     onOpen = {
-                        onHierarchyIntent(HierarchyBrowserIntent.Browse("projects", position.copy(collection = it)))
+                        onHierarchyIntent(
+                            HierarchyBrowserIntent.Browse(HOME_PROJECTS_BROWSER, position.copy(collection = it)),
+                        )
                     },
                     onDropProject = ::moveTo,
                 )
@@ -172,6 +180,7 @@ internal fun ProjectsTabContent(
     }
     newCollectionFor?.let { (dragged, target) ->
         NewCollectionDialog(
+            taken = collections.mapTo(mutableSetOf()) { it.name },
             onCreate = { name ->
                 moveTo(target, name)
                 moveTo(dragged, name)
@@ -360,3 +369,6 @@ internal fun ActorsTabContent(
         )
     }
 }
+
+/** The organisation key for where Home's Projects tab is browsing. */
+internal const val HOME_PROJECTS_BROWSER = "projects"

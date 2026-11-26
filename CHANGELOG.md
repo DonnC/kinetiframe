@@ -81,6 +81,11 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
   can't be deleted, and long-pressing a colour shows its hex with Remove, as in Library, rather
   than removing it at once. A screen reader says a saved colour's hex once, not twice.
 - Making a palette no longer grows the sheet under your finger when you add its first colour.
+- New Project says why Create is greyed out until the project has a name, and Custom size starts
+  from the size you had chosen, so its fields and label agree.
+- Home opens on Recent when the app starts, every project card shows its length as time and
+  frames ("0:02 · 48 frames"), and a new collection suggests a name not already in use.
+- Library's project sheet and the canvas size list stay clear of the navigation bar.
 - Timeline and Frames thumbnails show the whole canvas on white paper, in the canvas's shape. A
   tall canvas used to be cropped to a square on a dark tile, so frames looked empty.
 - The frame-rate preview plays at the exact rate chosen. It used to run slow, so 24 fps looked

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -44,7 +45,11 @@ import com.donnclab.kinetiframe.presentation.studio.dialogs.SelectionDot
 @OptIn(ExperimentalMaterial3Api::class)
 fun CanvasSizeSheet(selection: CanvasSizeSelection, onChange: (CanvasSizeSelection) -> Unit, onDismiss: () -> Unit) {
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState()) {
-        LazyColumn(Modifier.fillMaxWidth().imePadding(), contentPadding = PaddingValues(horizontal = Dimens.spaceXl)) {
+        // Clear of the navigation bar, so the last sizes aren't under it (R3-33).
+        LazyColumn(
+            Modifier.fillMaxWidth().imePadding().navigationBarsPadding(),
+            contentPadding = PaddingValues(horizontal = Dimens.spaceXl),
+        ) {
             item {
                 Text(stringResource(R.string.canvas_size_title), style = MaterialTheme.typography.titleLarge)
                 LocalDimensionsRow(
@@ -58,8 +63,10 @@ fun CanvasSizeSheet(selection: CanvasSizeSelection, onChange: (CanvasSizeSelecti
                 CanvasPresetRow(
                     preset = preset,
                     selected = preset == selection.preset,
+                    // Custom's row shows the size it would use: the one in the fields above.
+                    shown = if (preset.isCustom) selection.dimensions else preset.dimensions,
                     onClick = {
-                        onChange(selection.copy(preset = preset))
+                        onChange(selection.choose(preset))
                         if (!preset.isCustom) onDismiss()
                     },
                 )
@@ -113,20 +120,16 @@ private fun LocalDimensionsRow(dimensions: StageDimensions, editable: Boolean, o
 /** One row in the preset list: name, its fixed pixel size (or "editable" for Local), and a
  *  selection indicator. */
 @Composable
-private fun CanvasPresetRow(preset: CanvasPreset, selected: Boolean, onClick: () -> Unit) {
+private fun CanvasPresetRow(preset: CanvasPreset, selected: Boolean, shown: StageDimensions, onClick: () -> Unit) {
     Surface(onClick = onClick, color = Color.Transparent, modifier = Modifier.fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = Dimens.spaceMPlus)) {
             Column(Modifier.weight(1f)) {
                 Text(preset.displayName(), style = MaterialTheme.typography.titleSmall)
                 Text(
                     if (preset.isCustom) {
-                        stringResource(R.string.canvas_size_editable, preset.dimensions.width, preset.dimensions.height)
+                        stringResource(R.string.canvas_size_editable, shown.width, shown.height)
                     } else {
-                        stringResource(
-                            R.string.canvas_size_dimensions,
-                            preset.dimensions.width,
-                            preset.dimensions.height,
-                        )
+                        stringResource(R.string.canvas_size_dimensions, shown.width, shown.height)
                     },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

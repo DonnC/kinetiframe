@@ -272,6 +272,7 @@
         <item quantity="one">%d item</item>
         <item quantity="other">%d items</item>
     </plurals>
+    <string name="home_card_length">%1$s · %2$s</string>
     <plurals name="home_card_frames">
         <item quantity="one">%d frame</item>
         <item quantity="other">%d frames</item>

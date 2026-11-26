@@ -85,4 +85,14 @@ data class CanvasSizeSelection(
     val customDimensions: StageDimensions = CanvasPresets.Custom.dimensions,
 ) {
     val dimensions: StageDimensions get() = if (preset.isCustom) customDimensions else preset.dimensions
+
+    /**
+     * Selects [next]. Custom starts from the size already chosen, so switching from TikTok keeps
+     * 1080 × 1920 to edit rather than jumping to Custom's 1920 × 1080 (R3-33).
+     */
+    fun choose(next: CanvasPreset): CanvasSizeSelection = if (next.isCustom && !preset.isCustom) {
+        copy(preset = next, customDimensions = dimensions)
+    } else {
+        copy(preset = next)
+    }
 }

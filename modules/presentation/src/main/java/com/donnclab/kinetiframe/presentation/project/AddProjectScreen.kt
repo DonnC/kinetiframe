@@ -87,7 +87,7 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
                 }
             }
             CanvasShapeCards(state.canvasSelection) { preset ->
-                callbacks.onStateChange(state.copy(canvasSelection = state.canvasSelection.copy(preset = preset)))
+                callbacks.onStateChange(state.copy(canvasSelection = state.canvasSelection.choose(preset)))
                 // Custom opens the sheet, where its width and height are typed.
                 if (preset.isCustom) callbacks.onOpenCanvasSize()
             }

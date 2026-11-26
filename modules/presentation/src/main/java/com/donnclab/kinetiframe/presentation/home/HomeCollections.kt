@@ -185,11 +185,14 @@ internal fun OpenCollectionHeader(name: String, onBack: () -> Unit) {
     }
 }
 
-/** Names the collection made by dropping one project onto another. */
+/**
+ * Names the collection made by dropping one project onto another. It suggests a name not already in
+ * [taken] ("My series", then "My series 2"…), since reusing one would merge the two (R3-10).
+ */
 @Composable
-internal fun NewCollectionDialog(onCreate: (String) -> Unit, onDismiss: () -> Unit) {
-    val defaultName = stringResource(R.string.home_collection_default_name)
-    var name by remember { mutableStateOf(defaultName) }
+internal fun NewCollectionDialog(taken: Set<String>, onCreate: (String) -> Unit, onDismiss: () -> Unit) {
+    val base = stringResource(R.string.home_collection_default_name)
+    var name by remember { mutableStateOf(unusedCollectionName(base, taken)) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.home_collection_new)) },
@@ -211,3 +214,10 @@ internal fun NewCollectionDialog(onCreate: (String) -> Unit, onDismiss: () -> Un
 }
 
 private const val MAX_COLLECTION_NAME = 60
+
+/** [base], or [base] followed by the first number that makes it unused, ignoring case. */
+internal fun unusedCollectionName(base: String, taken: Set<String>): String {
+    val used = taken.mapTo(mutableSetOf()) { it.trim().lowercase() }
+    if (base.lowercase() !in used) return base
+    return generateSequence(2) { it + 1 }.map { "$base $it" }.first { it.lowercase() !in used }
+}
