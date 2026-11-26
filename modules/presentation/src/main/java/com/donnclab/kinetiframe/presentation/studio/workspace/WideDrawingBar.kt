@@ -64,8 +64,8 @@ data class WideBarActions(
 
 /**
  * The drawing studio's top bar on a wide window: everyday actions in groups with labels, the
- * view toggles that live in the menu on a phone (Frames, Onion skin, Grid, Safe frame, frame
- * rate, Tracks) out on the bar, and Save and Export at the end. A phone keeps the compact bar.
+ * view toggles that live in the menu on a phone (Frames, Onion skin, Grid, Safe frame,
+ * Tracks) out on the bar, and Save and Export at the end. A phone keeps the compact bar.
  */
 @Composable
 internal fun RowScope.WideDrawingBar(state: StudioState, onIntent: (StudioIntent) -> Unit, actions: WideBarActions) {
