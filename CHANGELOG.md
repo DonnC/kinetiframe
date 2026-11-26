@@ -34,6 +34,7 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
   frames it covers. Phones keep the compact strip.
 - On a tablet the asset tracks open under the canvas, between the tools and layers, so the tool
   panel keeps its full height and nothing in it is cut off.
+- The tablet top bar names the frame Reference and Camera buttons, like the rest of the bar.
 - Export shows what you are about to make: a preview shaped like the video, the project's length,
   frame rate and output size, and video sizes as cards with their shape and dimensions. Progress
   shows over the preview, and a finished video can be watched from the preview, saved to Gallery

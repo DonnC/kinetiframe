@@ -863,6 +863,10 @@
     <string name="workspace_focus">Focus</string>
     <string name="workspace_export">Export</string>
     <string name="workspace_frame_image">Frame image</string>
+    <string name="workspace_reference">Reference</string>
+    <string name="workspace_camera">Camera</string>
+    <string name="workspace_camera_preview">Preview</string>
+    <string name="workspace_camera_draw">Draw</string>
     <string name="tool_eraser">Eraser</string>
     <string name="tool_select_actor_part">Select actor part</string>
     <string name="tool_lasso">Lasso</string>

@@ -30,9 +30,10 @@ internal fun CameraControls(
     cameraPreview: MutableState<Boolean>,
     onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,
+    labelled: Boolean = false,
 ) {
     var preview by cameraPreview
-    CameraWorkspaceControls(state, preview, { preview = it }, onIntent, modifier) { pose, shot, frame ->
+    CameraWorkspaceControls(state, preview, { preview = it }, onIntent, modifier, labelled) { pose, shot, frame ->
         val previewState = if (shot == null || frame == null) {
             state
         } else {

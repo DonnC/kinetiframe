@@ -32,9 +32,10 @@ internal fun WorkspaceViewControls(
                 stage.width,
                 stage.height,
                 description = stringResource(R.string.reference_frame_description, state.animation.currentFrame + 1),
+                label = stringResource(R.string.workspace_reference),
                 onReplace = { image -> viewModel.frameReferences.replace(reference, image, stage.width, stage.height) },
             )
         }
     }
-    CameraControls(viewModel, state, actorRendering, ui.panels.cameraPreview, onIntent)
+    CameraControls(viewModel, state, actorRendering, ui.panels.cameraPreview, onIntent, labelled = true)
 }

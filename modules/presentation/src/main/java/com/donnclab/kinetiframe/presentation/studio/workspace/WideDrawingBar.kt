@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import com.composables.icons.lucide.Clapperboard
 import com.composables.icons.lucide.ClipboardPaste
@@ -69,59 +71,66 @@ data class WideBarActions(
  */
 @Composable
 internal fun RowScope.WideDrawingBar(state: StudioState, onIntent: (StudioIntent) -> Unit, actions: WideBarActions) {
-    actions.onHome?.let { BarAction(Icons.Filled.Home, stringResource(R.string.editor_home), onClick = it) }
-    BarAction(Lucide.Undo, stringResource(R.string.editor_undo)) { onIntent(StudioIntent.Draw.Undo) }
-    BarAction(Lucide.Redo, stringResource(R.string.editor_redo)) { onIntent(StudioIntent.Draw.Redo) }
+    actions.onHome?.let { WideBarButton(Icons.Filled.Home, stringResource(R.string.editor_home), onClick = it) }
+    WideBarButton(Lucide.Undo, stringResource(R.string.editor_undo)) { onIntent(StudioIntent.Draw.Undo) }
+    WideBarButton(Lucide.Redo, stringResource(R.string.editor_redo)) { onIntent(StudioIntent.Draw.Redo) }
     BarDivider()
-    BarAction(Lucide.Copy, stringResource(R.string.editor_copy)) { onIntent(StudioIntent.Selection.Copy) }
-    BarAction(Lucide.ClipboardPaste, stringResource(R.string.editor_paste)) { onIntent(StudioIntent.Selection.Paste) }
-    BarAction(Lucide.Maximize, stringResource(R.string.editor_reset_view), enabled = state.isCanvasTransformed) {
+    WideBarButton(Lucide.Copy, stringResource(R.string.editor_copy)) { onIntent(StudioIntent.Selection.Copy) }
+    WideBarButton(Lucide.ClipboardPaste, stringResource(R.string.editor_paste)) {
+        onIntent(StudioIntent.Selection.Paste)
+    }
+    WideBarButton(Lucide.Maximize, stringResource(R.string.editor_reset_view), enabled = state.isCanvasTransformed) {
         onIntent(StudioIntent.View.ResetCanvasTransform)
     }
     Spacer(Modifier.weight(1f))
-    BarAction(Lucide.Clapperboard, stringResource(R.string.workspace_frames), onClick = actions.onFrames)
+    WideBarButton(Lucide.Clapperboard, stringResource(R.string.workspace_frames), onClick = actions.onFrames)
     // Opens onion skin's settings, which hold its on/off switch, so nothing repeats in a menu.
-    BarAction(
+    WideBarButton(
         Lucide.Ghost,
         stringResource(R.string.editor_onion_skin),
         selected = state.onionSkin.enabled,
         onClick = actions.onOnionSettings,
     )
-    BarAction(
+    WideBarButton(
         Lucide.Grid2x2,
         stringResource(R.string.grid_title),
         selected = state.canvas.gridEnabled,
         onClick = actions.onGridSettings,
     )
-    BarAction(Lucide.Frame, stringResource(R.string.editor_safe_frame), selected = state.canvas.showSafeFrame) {
+    WideBarButton(Lucide.Frame, stringResource(R.string.editor_safe_frame), selected = state.canvas.showSafeFrame) {
         onIntent(StudioIntent.View.ToggleSafeFrame)
     }
-    actions.onTracks?.let { BarAction(Lucide.ListVideo, stringResource(R.string.workspace_tracks), onClick = it) }
-    BarAction(Lucide.Image, stringResource(R.string.editor_background), onClick = actions.onBackground)
+    actions.onTracks?.let { WideBarButton(Lucide.ListVideo, stringResource(R.string.workspace_tracks), onClick = it) }
+    WideBarButton(Lucide.Image, stringResource(R.string.editor_background), onClick = actions.onBackground)
     actions.onFrameImage?.let {
-        BarAction(Lucide.ImagePlus, stringResource(R.string.workspace_frame_image), onClick = it)
+        WideBarButton(Lucide.ImagePlus, stringResource(R.string.workspace_frame_image), onClick = it)
     }
-    actions.onFocus?.let { BarAction(Lucide.Eye, stringResource(R.string.workspace_focus), onClick = it) }
+    actions.onFocus?.let { WideBarButton(Lucide.Eye, stringResource(R.string.workspace_focus), onClick = it) }
     actions.viewControls?.let { controls ->
         BarDivider()
         controls()
     }
     Spacer(Modifier.weight(1f))
-    actions.onSave?.let { BarAction(Lucide.Save, stringResource(R.string.action_save), onClick = it) }
+    actions.onSave?.let { WideBarButton(Lucide.Save, stringResource(R.string.action_save), onClick = it) }
     // Export is a bar action like the rest, in the accent colour, so the bar fits a tablet's width.
     actions.onExport?.let {
-        BarAction(Lucide.Share, stringResource(R.string.workspace_export), accent = true, onClick = it)
+        WideBarButton(Lucide.Share, stringResource(R.string.workspace_export), accent = true, onClick = it)
     }
 }
 
-/** An icon with its name under it; lit while [selected]. */
+/**
+ * An icon with its name under it; lit while [selected]. Controls placed on the wide bar from
+ * elsewhere (the frame reference and camera buttons) use it too, so the bar reads as one row.
+ * A [description] replaces the label for screen readers when it says more.
+ */
 @Composable
-private fun BarAction(
+internal fun WideBarButton(
     icon: ImageVector,
     label: String,
     selected: Boolean = false,
     enabled: Boolean = true,
     accent: Boolean = false,
+    description: String? = null,
     onClick: () -> Unit,
 ) {
     val tint = when {
@@ -131,6 +140,7 @@ private fun BarAction(
     }
     Surface(
         onClick = onClick,
+        modifier = if (description == null) Modifier else Modifier.semantics { contentDescription = description },
         enabled = enabled,
         shape = RoundedCornerShape(Dimens.radiusM),
         color = if (selected) EditorTokens.accent.copy(alpha = 0.12f) else Color.Transparent,

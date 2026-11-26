@@ -43,6 +43,7 @@ import com.donnclab.kinetiframe.core.document.camera.CameraShot
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.engine.camera.SceneCamera
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.studio.workspace.WideBarButton
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.camera.BuiltInCameraPreset
@@ -87,6 +88,8 @@ fun CameraWorkspaceControls(
     onPreview: (Boolean) -> Unit,
     onIntent: (StudioIntent) -> Unit,
     modifier: Modifier = Modifier,
+    /** Names under the icons, for the tablet workspace's labelled top bar. */
+    labelled: Boolean = false,
     content: @Composable (CameraPose, CameraShot?, Int?) -> Unit,
 ) {
     var menu by remember { mutableStateOf(false) }
@@ -100,13 +103,24 @@ fun CameraWorkspaceControls(
     LaunchedEffect(store) { recipes = store.load() }
     Box(modifier) {
         Row {
-            IconButton(onClick = { menu = true }) { Icon(Lucide.Camera, stringResource(R.string.camera_effects)) }
+            val effects = stringResource(R.string.camera_effects)
+            val previewIcon = if (preview) Lucide.Pen else Lucide.Play
+            val previewText = stringResource(if (preview) R.string.camera_edit_artwork else R.string.camera_preview)
+            if (labelled) {
+                WideBarButton(Lucide.Camera, stringResource(R.string.workspace_camera), description = effects) {
+                    menu = true
+                }
+            } else {
+                IconButton(onClick = { menu = true }) { Icon(Lucide.Camera, effects) }
+            }
             if (state.project.cameraShots.isNotEmpty()) {
-                IconButton(onClick = { onPreview(!preview) }) {
-                    Icon(
-                        if (preview) Lucide.Pen else Lucide.Play,
-                        stringResource(if (preview) R.string.camera_edit_artwork else R.string.camera_preview),
-                    )
+                if (labelled) {
+                    val short = if (preview) R.string.workspace_camera_draw else R.string.workspace_camera_preview
+                    WideBarButton(previewIcon, stringResource(short), description = previewText) {
+                        onPreview(!preview)
+                    }
+                } else {
+                    IconButton(onClick = { onPreview(!preview) }) { Icon(previewIcon, previewText) }
                 }
             }
         }
