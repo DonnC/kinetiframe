@@ -27,6 +27,10 @@ import kotlin.math.sin
 /** How long one loop of a camera icon's preview takes. */
 private const val LOOP_MS = 1600
 
+// Names for the animation inspector.
+private const val TRANSITION_LABEL = "camera-icon"
+private const val TIME_LABEL = "camera-icon-time"
+
 /**
  * A camera move drawn as what it does to the picture (R3 tablet feedback): the frame pushing in or
  * pulling out, a sweep, a shake, a fade. No icon set has these, so they are drawn here. With
@@ -35,11 +39,11 @@ private const val LOOP_MS = 1600
 @Composable
 fun CameraActionIcon(action: CameraAction, colour: Color, playing: Boolean, modifier: Modifier = Modifier) {
     val t = if (playing) {
-        val loop by rememberInfiniteTransition(label = "camera-icon").animateFloat(
+        val loop by rememberInfiniteTransition(label = TRANSITION_LABEL).animateFloat(
             initialValue = 0f,
             targetValue = 1f,
             animationSpec = infiniteRepeatable(tween(LOOP_MS, easing = LinearEasing), RepeatMode.Restart),
-            label = "camera-icon-time",
+            label = TIME_LABEL,
         )
         loop
     } else {
