@@ -178,6 +178,8 @@ beside the unchanged original:
   The opacity slider is still a small dropdown under the % chip.
 - R3-30: Line, Rectangle and Ellipse construction shapes (Line is the default), and the brush
   card's name is dark on its light well in every theme.
+- R3-7: Export has a back arrow and a Watch button that plays the finished video in the
+  phone's player. A preview before exporting is still to come.
 - `presentation`'s device tests compile again: `ActorArtworkControlsTest` still used the old
   `ActorArtworkMenu(BoneNode)` signature, so no device test in the module could run.
 

@@ -104,6 +104,7 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
   as tall as its layers, so it covers less of the canvas.
 - Shapes has Line, Rectangle and Ellipse beside the construction guides, and starts on Line. The
   brush name on its card is readable in dark mode.
+- Export has a back arrow, and a finished export can be watched before you save or share it.
 - Timeline and Frames thumbnails show the whole canvas on white paper, in the canvas's shape. A
   tall canvas used to be cropped to a square on a dark tile, so frames looked empty.
 - The frame-rate preview plays at the exact rate chosen. It used to run slow, so 24 fps looked
