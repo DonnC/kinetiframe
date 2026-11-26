@@ -220,7 +220,9 @@ sealed class StudioIntent : ViewIntent {
         data class MoveFrame(val from: Int, val to: Int) : Frame()
         data class DeleteFrames(val indices: List<Int>) : Frame()
         data class AddFrameAt(val index: Int) : Frame()
-        data class HoldDrawing(val first: Int, val last: Int) : Frame()
+
+        /** Holds the drawing at [source] over [first]..[last]; [source] may be anywhere in the range. */
+        data class HoldDrawing(val first: Int, val last: Int, val source: Int = first) : Frame()
         data class EditDrawingScope(val index: Int, val allLinked: Boolean) : Frame()
         data class UnlinkDrawing(val index: Int) : Frame()
     }

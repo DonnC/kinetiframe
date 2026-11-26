@@ -428,9 +428,9 @@
     <string name="clip_position_move">Move</string>
     <string name="hold_drawing_title">Hold drawing</string>
     <!-- The first frame of the range being held, followed by the last-frame field. -->
-    <string name="hold_drawing_from_frame">Frame %1$d →</string>
-    <string name="hold_drawing_last_frame">Last frame</string>
     <string name="hold_drawing_note">Replaces this layer’s drawings in the range. Other layers stay unchanged.</string>
+    <string name="hold_range_title">Hold frames %1$d–%2$d</string>
+    <string name="hold_range_hint">Tap frames before or after to set the range</string>
     <string name="hold_drawing_confirm">Hold range</string>
     <plurals name="linked_drawing_title">
         <item quantity="one">Drawing · %d linked frame</item>

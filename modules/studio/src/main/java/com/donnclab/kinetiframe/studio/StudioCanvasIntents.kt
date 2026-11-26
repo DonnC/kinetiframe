@@ -72,7 +72,7 @@ class StudioCanvasIntents(private val store: StudioStore, private val session: S
 
     fun handleFrameIntent(intent: StudioIntent.Frame) {
         when (intent) {
-            is StudioIntent.Frame.HoldDrawing -> session.celHoldManager.hold(intent.first, intent.last)
+            is StudioIntent.Frame.HoldDrawing -> session.celHoldManager.hold(intent.first, intent.last, intent.source)
             is StudioIntent.Frame.EditDrawingScope -> session.celHoldManager.editScope(intent.index, intent.allLinked)
             is StudioIntent.Frame.UnlinkDrawing -> session.celHoldManager.unlink(intent.index)
             else -> session.frameManager.handle(intent)

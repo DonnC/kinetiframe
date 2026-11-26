@@ -61,10 +61,12 @@ class FrameCacheManager(
     }
 
     /** Caller serialises authoring operations. Replacing a range is explicit, never implicit
-     * inheritance. One canonical cache key stores the held pixels regardless of range length. */
-    suspend fun holdDrawing(layerId: String, first: Int, last: Int, totalFrames: Int) {
-        require(first in 0 until totalFrames && last in first until totalFrames)
-        val source = requireNotNull(getFrame(layerId, first)) { "This layer has no drawing to hold" }
+     * inheritance. One canonical cache key stores the held pixels regardless of range length.
+     * [sourceFrame] is the drawing held; it may be anywhere in the range, so a hold can reach back
+     * as well as forward (R3-24). */
+    suspend fun holdDrawing(layerId: String, first: Int, last: Int, totalFrames: Int, sourceFrame: Int = first) {
+        require(first in 0 until totalFrames && last in first until totalFrames && sourceFrame in first..last)
+        val source = requireNotNull(getFrame(layerId, sourceFrame)) { "This layer has no drawing to hold" }
         val cel = "cel-${java.util.UUID.randomUUID()}"
         val key = linkedKey(layerId, cel)
         // Keep an independent snapshot so cached rendering clients cannot mutate linked pixels.

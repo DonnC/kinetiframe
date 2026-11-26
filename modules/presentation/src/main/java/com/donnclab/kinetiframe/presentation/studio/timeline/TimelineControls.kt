@@ -122,7 +122,7 @@ fun TimelineControls(
 ) {
     val thumbnails = remember { mutableStateMapOf<Int, Bitmap>() }
     var contextFrameIndex by remember { mutableStateOf<Int?>(null) }
-    var holdFrame by remember { mutableStateOf<Int?>(null) }
+    var holdPick by remember { mutableStateOf<HoldRangePick?>(null) }
     var scopeFrame by remember { mutableStateOf<Int?>(null) }
     val activeLayer = state.layers.layers.getOrNull(state.layers.activeLayerIndex)
     fun linkedCount(frame: Int): Int {
@@ -130,12 +130,7 @@ fun TimelineControls(
         val cel = exposures[frame] ?: return 0
         return exposures.values.count { it == cel }
     }
-    holdFrame?.let { frame ->
-        HoldDrawingDialog(frame, state.animation.totalFrames, { holdFrame = null }, { last ->
-            holdFrame = null
-            onIntent(StudioIntent.Frame.HoldDrawing(frame, last))
-        })
-    }
+
     scopeFrame?.let { frame ->
         LinkedDrawingScopeDialog(
             linkedCount(frame),
@@ -150,7 +145,7 @@ fun TimelineControls(
             },
             {
                 scopeFrame = null
-                holdFrame = frame
+                holdPick = HoldRangePick(frame, frame)
             },
         )
     }
@@ -207,7 +202,13 @@ fun TimelineControls(
                     ) {
                         (
                             {
-                                if (linkedCount(frameIndex) > 0) scopeFrame = frameIndex else holdFrame = frameIndex
+                                if (linkedCount(frameIndex) >
+                                    0
+                                ) {
+                                    scopeFrame = frameIndex
+                                } else {
+                                    holdPick = HoldRangePick(frameIndex, frameIndex)
+                                }
                             }
                             )
                     } else {
@@ -216,6 +217,20 @@ fun TimelineControls(
                     modifier = Modifier
                         .padding(bottom = Dimens.spaceS)
                         .width(IntrinsicSize.Min),
+                )
+            }
+        }
+
+        holdPick?.let { pick ->
+            Popup(alignment = Alignment.TopCenter, offset = contextMenuOffset) {
+                HoldRangeBar(
+                    pick,
+                    onConfirm = {
+                        holdPick = null
+                        onIntent(StudioIntent.Frame.HoldDrawing(pick.range.first, pick.range.last, pick.source))
+                    },
+                    onCancel = { holdPick = null },
+                    modifier = Modifier.padding(bottom = Dimens.spaceS),
                 )
             }
         }
@@ -266,6 +281,8 @@ fun TimelineControls(
                         onContextDismissed = { contextFrameIndex = null },
                         modifier = Modifier.fillMaxWidth().height(Dimens.touchTarget),
                         onAddFrame = onAddPackItem,
+                        holdRange = holdPick?.range,
+                        onHoldPick = holdPick?.let { pick -> { frame -> holdPick = pick.copy(other = frame) } },
                     )
                 }
                 IconButton(onClick = onLayerPanelToggle, modifier = Modifier.size(Dimens.touchTarget)) {

@@ -171,6 +171,8 @@ beside the unchanged original:
 - Studio, with the maintainer's calls: R3-31 (fill at once), R3-26 (onion skin switch on the
   drawing bar; settings stay in ⋮), R3-23 (onion skin shows every visible layer, "Active layer
   only" in its panel), and R1-25 (rail tall enough for its tools).
+- R3-24 (the maintainer's call): holds are picked on the timeline by tapping frames on either
+  side, and can reach back from the drawing (`HoldDrawing.source`). The typed-frame dialog is gone.
 - `presentation`'s device tests compile again: `ActorArtworkControlsTest` still used the old
   `ActorArtworkMenu(BoneNode)` signature, so no device test in the module could run.
 

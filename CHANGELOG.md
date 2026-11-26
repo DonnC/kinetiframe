@@ -96,6 +96,9 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - Onion skin has a switch on the drawing bar that shows whether it is on, and shows every visible
   layer, with "Active layer only" in its panel.
 - The tool rail is tall enough for all its tools, so Fill is no longer cut off.
+- Holding a drawing is picked on the timeline: choose Held drawing, then tap frames before or
+  after to set the range. A hold can now reach back as well as forward, and there's no frame
+  number to type.
 - Timeline and Frames thumbnails show the whole canvas on white paper, in the canvas's shape. A
   tall canvas used to be cropped to a square on a dark tile, so frames looked empty.
 - The frame-rate preview plays at the exact rate chosen. It used to run slow, so 24 fps looked

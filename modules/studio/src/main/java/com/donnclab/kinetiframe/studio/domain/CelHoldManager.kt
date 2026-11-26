@@ -28,7 +28,9 @@ class CelHoldManager(
     private val clearHistory: () -> Unit = hooks.clearHistory
     private val loadFrame: suspend (Int) -> Unit = hooks.loadFrame
 
-    fun hold(first: Int, last: Int) = operate(first) { layer, total -> cache.holdDrawing(layer, first, last, total) }
+    fun hold(first: Int, last: Int, source: Int = first) = operate(source) { layer, total ->
+        cache.holdDrawing(layer, first, last, total, source)
+    }
     fun unlink(frame: Int) = operate(frame) { layer, _ -> cache.detachDrawing(layer, frame) }
     fun editScope(frame: Int, allLinked: Boolean) = operate(frame, allLinked) { layer, _ ->
         if (!allLinked) cache.detachDrawing(layer, frame)

@@ -115,6 +115,17 @@ class FrameStructureDrawingTest {
         }
     }
 
+    @Test fun aHoldCanReachBackFromTheDrawing() = runTest {
+        withEditor(listOf(Color.BLUE, Color.RED, Color.GREEN), currentFrame = 2) { editor ->
+            editor.handleIntent(StudioIntent.Frame.HoldDrawing(first = 0, last = 2, source = 2))
+            editor.prepareProjectSave()
+
+            val colours = (0..2).map { editor.cacheManager.getFrame("main", it)!!.getPixel(0, 0) }
+            assertEquals(listOf(Color.GREEN, Color.GREEN, Color.GREEN), colours)
+            assertEquals(setOf(0, 1, 2), editor.cacheManager.exposures().getValue("main").keys)
+        }
+    }
+
     /** A short mark in the far corner, so pixel (0, 0) still shows the frame's fill colour. */
     private fun stroke() = listOf(TouchPoint(12f, 12f, timestamp = 1), TouchPoint(14f, 14f, timestamp = 2))
 
