@@ -53,14 +53,19 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
                 buttonLabel = stringResource(R.string.add_project_create),
                 enabled = state.name.isNotBlank(),
                 onClick = callbacks.onCreate,
-                subtitle = with(state.canvasSelection) {
-                    stringResource(
-                        R.string.add_project_summary,
-                        preset.displayName(),
-                        dimensions.width,
-                        dimensions.height,
-                        state.fps,
-                    )
+                // Create stays disabled until there is a name; say so instead of leaving it unexplained (R3-9).
+                subtitle = if (state.name.isBlank()) {
+                    stringResource(R.string.add_project_name_needed)
+                } else {
+                    with(state.canvasSelection) {
+                        stringResource(
+                            R.string.add_project_summary,
+                            preset.displayName(),
+                            dimensions.width,
+                            dimensions.height,
+                            state.fps,
+                        )
+                    }
                 },
             )
         },
@@ -73,7 +78,6 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
                 value = state.name,
                 onValueChange = { callbacks.onStateChange(state.copy(name = it)) },
                 label = { Text(stringResource(R.string.add_project_name)) },
-                placeholder = { Text(stringResource(R.string.add_project_name_placeholder)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(top = Dimens.spaceXl),
             )

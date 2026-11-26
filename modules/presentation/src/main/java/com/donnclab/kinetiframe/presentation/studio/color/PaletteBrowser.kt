@@ -2,16 +2,14 @@ package com.donnclab.kinetiframe.presentation.studio.color
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -68,26 +66,13 @@ fun PaletteBrowserContent(
 
             else -> {
                 var naming by remember { mutableStateOf(false) }
-                // Wraps instead of scrolling: the panel is narrow and a scrolling row cut the last
-                // palette's chip off with no sign that more followed (R3-6).
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
-                    run {
-                        AssistChip(
-                            onClick = { naming = true },
-                            label = {
-                                Text(stringResource(R.string.palette_new), style = MaterialTheme.typography.labelSmall)
-                            },
-                            leadingIcon = { Icon(Lucide.Plus, null, Modifier.size(Dimens.iconS)) },
-                        )
-                    }
-                    state.palettes.forEach { palette ->
-                        FilterChip(
-                            selected = state.selectedId == palette.id,
-                            onClick = { onIntent(PaletteIntent.Select(palette.id)) },
-                            label = { Text(palette.displayName(state), style = MaterialTheme.typography.labelSmall) },
-                        )
-                    }
-                }
+                PaletteDropdown(
+                    state.palettes.map { PaletteChoice(it.id, it.displayName(state)) },
+                    state.selectedId,
+                    onSelect = { onIntent(PaletteIntent.Select(it)) },
+                    onNewPalette = { naming = true },
+                    modifier = Modifier.fillMaxWidth(),
+                )
                 state.palettes.firstOrNull { it.id == state.selectedId }?.let { palette ->
                     val editable = state.canEdit(palette)
                     PaletteSwatches(

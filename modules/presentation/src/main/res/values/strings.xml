@@ -292,7 +292,7 @@
     <string name="add_project_title">New Project</string>
     <string name="add_project_create">Create Project</string>
     <string name="add_project_name">Project name</string>
-    <string name="add_project_name_placeholder">My awesome animation</string>
+    <string name="add_project_name_needed">Name your project to create it</string>
     <string name="add_project_canvas_size">Canvas size</string>
     <string name="add_project_frame_rate">Frame rate</string>
     <string name="add_project_fps_value">%1$d FPS</string>
@@ -901,6 +901,7 @@
     <string name="palette_remove_colour">Remove colour</string>
     <string name="palette_hex">Hex</string>
     <string name="palette_new">New palette</string>
+    <string name="palette_choose">Choose palette</string>
     <string name="palette_name">Palette name</string>
     <string name="palette_new_hint">Starts with the current colour</string>
     <string name="palette_create">Create</string>

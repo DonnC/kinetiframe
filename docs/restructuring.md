@@ -156,7 +156,8 @@ beside the unchanged original:
   that paints (size, opacity and brush stay per tool), Paste in place, the last colour picked
   remembered in the app preferences (`penColor`, null in older settings), and frame-rate chips
   that wrap.
-- Colours: R3-5, R3-6, R3-15 and the Delete half of R3-34. R3-4 (Library search taking focus
+- Colours: R3-5, R3-6, R3-15 and the Delete half of R3-34. Palettes are chosen from a dropdown
+  (`PaletteDropdown`), the maintainer's call: chips for a growing list crowd the phone panel. R3-4 (Library search taking focus
   after New palette) didn't reproduce on the emulator; the sheet now releases the keyboard and
   the screen clears focus when it closes. Check it on the A56. The wheel handle on black stays on
   white at full brightness on purpose (R1-03).

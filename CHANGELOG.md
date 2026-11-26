@@ -76,7 +76,8 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - Paste puts a drawing exactly where it was copied from, so it carries to the next frame
   without moving. It used to land a little down and to the right.
 - The editor's frame-rate chips wrap onto a second line instead of hiding 24 and 30.
-- Colours: the editor's palette list wraps instead of cutting the last palette off, My colours
+- Colours: the editor's colour picker chooses palettes from a dropdown instead of a row of chips
+  that cut the last palette off, My colours
   can't be deleted, and long-pressing a colour shows its hex with Remove, as in Library, rather
   than removing it at once. A screen reader says a saved colour's hex once, not twice.
 - Making a palette no longer grows the sheet under your finger when you add its first colour.
