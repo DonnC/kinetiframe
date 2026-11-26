@@ -205,6 +205,10 @@ sealed class StudioIntent : ViewIntent {
         data class ToggleLayerLock(val index: Int) : Layer()
         data class SetLayerOpacity(val index: Int, val opacity: Float) : Layer()
         data class RenameLayer(val index: Int, val name: String) : Layer()
+        data class DuplicateLayer(val index: Int) : Layer()
+
+        /** Merges the layer at [index] into the one below it, on every frame. */
+        data class MergeLayerDown(val index: Int) : Layer()
     }
 
     sealed class Frame : StudioIntent() {

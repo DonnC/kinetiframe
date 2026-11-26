@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.presentation.studio
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -35,7 +36,7 @@ fun LayerPanelPopup(
         properties = PopupProperties(focusable = true),
     ) {
         Surface(
-            modifier = Modifier.width(EditorTokens.popupWidth).height(EditorTokens.popupHeight),
+            modifier = Modifier.width(EditorTokens.layerPopupWidth).heightIn(max = EditorTokens.popupHeight),
             color = MaterialTheme.colorScheme.surface,
             shape = RoundedCornerShape(Dimens.radiusM),
             tonalElevation = Dimens.elevationRaised,

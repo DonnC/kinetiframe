@@ -90,6 +90,9 @@ object EditorTokens {
     // Editor shell, popups and hints.
     val topBarHeight = 48.dp
     val popupWidth = 340.dp
+
+    /** The layers panel's width. Its height follows its layers, so a short stack covers less (R3-28). */
+    val layerPopupWidth = 340.dp
     val popupHeight = 330.dp
     val popupNarrowWidth = 260.dp
     val popupMediumWidth = 280.dp

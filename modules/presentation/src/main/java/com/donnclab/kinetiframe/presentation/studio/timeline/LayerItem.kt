@@ -66,6 +66,7 @@ fun LayerItem(
     onVisibilityClick: () -> Unit = {},
     onOpacityChange: (Float) -> Unit = {},
     onLockClick: () -> Unit = {},
+    menu: @Composable () -> Unit = {},
 ) {
     Row(
         modifier = modifier
@@ -157,10 +158,8 @@ fun LayerItem(
                 .weight(1f)
                 .then(
                     if (!editing) {
-                        Modifier.clickable {
-                            onClick()
-                            onEdit()
-                        }
+                        // A tap selects; renaming is in the layer's menu (R3-27).
+                        Modifier.clickable(onClick = onClick)
                     } else {
                         Modifier
                     },
@@ -224,6 +223,7 @@ fun LayerItem(
             onOpacityChange = onOpacityChange,
             isVisible = layer.isVisible,
         )
+        menu()
     }
 }
 

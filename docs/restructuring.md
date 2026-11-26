@@ -173,6 +173,9 @@ beside the unchanged original:
   only" in its panel), and R1-25 (rail tall enough for its tools).
 - R3-24 (the maintainer's call): holds are picked on the timeline by tapping frames on either
   side, and can reach back from the drawing (`HoldDrawing.source`). The typed-frame dialog is gone.
+- Layers: R3-27 (a ⋮ menu per layer; `LayerContentManager` duplicates a layer and merges it down
+  on every frame) and R3-28 (the panel wraps its layers). R1-27's one-option add menu is gone.
+  The opacity slider is still a small dropdown under the % chip.
 - `presentation`'s device tests compile again: `ActorArtworkControlsTest` still used the old
   `ActorArtworkMenu(BoneNode)` signature, so no device test in the module could run.
 

@@ -13,6 +13,8 @@ import com.donnclab.kinetiframe.studio.domain.DrawingManager
 import com.donnclab.kinetiframe.studio.domain.FrameHooks
 import com.donnclab.kinetiframe.studio.domain.FrameManager
 import com.donnclab.kinetiframe.studio.domain.HistoryItem
+import com.donnclab.kinetiframe.studio.domain.LayerContentHooks
+import com.donnclab.kinetiframe.studio.domain.LayerContentManager
 import com.donnclab.kinetiframe.studio.domain.LayerManager
 import com.donnclab.kinetiframe.studio.domain.PendingOperations
 import com.donnclab.kinetiframe.studio.domain.PlaybackHooks
@@ -213,6 +215,20 @@ class StudioSession(
         // A missing PNG means a transparent layer. Eager blank initialization wasted RAM and
         // could overwrite a first stroke if its queued job completed after the user's drawing.
         refreshComposite = { refreshComposite() },
+    )
+
+    val layerContent = LayerContentManager(
+        managerRuntime,
+        cacheManager,
+        frameOperationMutex,
+        LayerContentHooks(
+            settleDrawing = {
+                if (history.isNotEmpty()) drawingManager.rebuildCurrentBitmap(refreshOnly = true)
+                history.clear()
+                redoHistory.clear()
+            },
+            loadFrame = { loadFrameInternal(it) },
+        ),
     )
 
     val celHoldManager = CelHoldManager(

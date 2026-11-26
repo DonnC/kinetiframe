@@ -468,8 +468,12 @@
     <string name="playback_fps_short">FPS</string>
     <string name="layers_title">Layers</string>
     <string name="layers_add">Add Layer</string>
-    <string name="layers_drawing_layer">Drawing layer</string>
     <string name="layers_empty">No layers</string>
+    <string name="layers_menu">Layer actions</string>
+    <string name="layers_rename">Rename</string>
+    <string name="layers_duplicate">Duplicate</string>
+    <string name="layers_merge_down">Merge down</string>
+    <string name="layers_delete">Delete layer</string>
     <string name="layer_hidden">Hidden</string>
     <string name="layer_hide">Hide %1$s</string>
     <string name="layer_show">Show %1$s</string>
