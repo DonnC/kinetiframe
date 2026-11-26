@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -52,7 +51,6 @@ data class WideBarActions(
     val onHome: (() -> Unit)?,
     val onFrames: () -> Unit,
     val onGridSettings: () -> Unit,
-    val onFrameRate: () -> Unit,
     val onTracks: (() -> Unit)?,
     val onSave: (() -> Unit)?,
     val onExport: (() -> Unit)?,
@@ -98,7 +96,6 @@ internal fun RowScope.WideDrawingBar(state: StudioState, onIntent: (StudioIntent
     BarAction(Lucide.Frame, stringResource(R.string.editor_safe_frame), selected = state.canvas.showSafeFrame) {
         onIntent(StudioIntent.View.ToggleSafeFrame)
     }
-    BarAction(Icons.Filled.Speed, stringResource(R.string.fps_chip, state.animation.fps), onClick = actions.onFrameRate)
     actions.onTracks?.let { BarAction(Lucide.ListVideo, stringResource(R.string.workspace_tracks), onClick = it) }
     BarAction(Lucide.Image, stringResource(R.string.editor_background), onClick = actions.onBackground)
     actions.onFrameImage?.let {

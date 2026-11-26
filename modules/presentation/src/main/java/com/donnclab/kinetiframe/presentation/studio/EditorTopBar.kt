@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Layers
-import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.ViewTimeline
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -129,7 +128,6 @@ fun EditorTopBar(
     val (onHomeClick, onStudioClick, onGridSettingsClick, onOnionSettingsClick) = actions
     val context = androidx.compose.ui.platform.LocalContext.current
     var assetsExpanded by remember { mutableStateOf(false) }
-    var speedOpen by remember { mutableStateOf(false) }
     // Wide windows get the labelled workspace bar; Actor Studio and Pack Creator keep their own.
     val wideBar = windowWidthClass() == WindowWidthClass.EXPANDED && !isActorStudio && onSavePackClick == null
     Surface(
@@ -174,7 +172,6 @@ fun EditorTopBar(
                         onHome = onHomeClick,
                         onFrames = onStudioClick,
                         onGridSettings = onGridSettingsClick,
-                        onFrameRate = { speedOpen = true },
                         onTracks = onTracksOpen,
                         onSave = onSaveProjectClick,
                         onExport = onExportClick,
@@ -314,13 +311,6 @@ fun EditorTopBar(
                                         true
                                 }),
                             )
-                            addUnless(
-                                wideBar,
-                                ContextIconAction(Icons.Filled.Speed, stringResource(R.string.editor_frame_rate), {
-                                    onOverflowMenuToggle(false)
-                                    speedOpen = true
-                                }),
-                            )
                             if (state.actorDefinition() != null) {
                                 add(
                                     ContextIconAction(Lucide.Bone, stringResource(R.string.puppet_skeleton_overlay), {
@@ -377,29 +367,6 @@ fun EditorTopBar(
                 }
             }
         }
-    }
-    if (speedOpen) {
-        androidx.compose.material3.AlertDialog(
-            onDismissRequest = { speedOpen = false },
-            title = { Text(stringResource(R.string.editor_frame_rate)) },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
-                    Text(stringResource(R.string.editor_frame_rate_note), style = MaterialTheme.typography.bodySmall)
-                    com.donnclab.kinetiframe.presentation.common.FrameRatePicker(
-                        state.animation.fps,
-                        { onIntent(StudioIntent.Playback.SetFps(it)) },
-                    )
-                }
-            },
-            confirmButton = {
-                ContextIconButton(
-                    ContextIconAction(Icons.Filled.Check, stringResource(R.string.action_done), {
-                        speedOpen =
-                            false
-                    }),
-                )
-            },
-        )
     }
 }
 

@@ -25,11 +25,16 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - Collections: long-press a project and drop it on another to group them, such as the episodes of
   a series, or drop it on a collection to add it.
 - New projects show a live preview of the frame rate you pick, and canvas shapes as picture cards.
-  The same frame-rate picker changes a project's frame rate from the editor menu.
 - Backgrounds can come from your Library as well as your files.
 
 ### Changed
 
+- Export shows what you are about to make: a preview shaped like the video, the project's length,
+  frame rate and output size, and video sizes as cards with their shape and dimensions. Progress
+  shows over the preview, and a finished video can be watched from the preview, saved to Gallery
+  or shared. On a tablet the preview and the details sit side by side.
+- A project's frame rate is set when it is created and no longer changes in the studio, so timing
+  you have drawn stays as you drew it.
 - The tablet studio keeps the canvas clear: the frame reference and camera buttons, Background,
   Frame image and Focus are on the top bar, the menu no longer repeats what the bar shows, the
   tool panel fits the screen without scrolling (one colour row instead of the full picker), and
@@ -42,7 +47,7 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
   fade, whip pan…), with icons made for KinetiFrame, instead of a list of names.
 - On a tablet in landscape the drawing studio is a workspace: tools, colour and the chosen tool's
   settings in a panel on the left, layers on the right, a labelled top bar with Frames, Onion
-  skin, Grid, Safe frame, frame rate, Tracks, Save and Export out in the open, and asset tracks
+  skin, Grid, Safe frame, Tracks, Save and Export out in the open, and asset tracks
   docked under the canvas instead of covering it. The panels stay put, so the canvas never jumps.
 - Tablets and foldables get layouts of their own instead of a stretched phone layout: a
   navigation rail instead of the bottom bar, project, actor and pack grids with as many columns

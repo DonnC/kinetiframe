@@ -25,6 +25,7 @@ import com.donnclab.kinetiframe.data.db.ExportEntity
 import com.donnclab.kinetiframe.data.project.ProjectRepository
 import com.donnclab.kinetiframe.data.storage.DocumentFileStore
 import com.donnclab.kinetiframe.export.domain.VideoExporter
+import com.donnclab.kinetiframe.export.model.ExportProjectSummary
 import com.donnclab.kinetiframe.media.audio.StreamingAudioMix
 import com.donnclab.kinetiframe.studio.drawing.FontRegistry
 import com.donnclab.kinetiframe.studio.render.CompositorOptions
@@ -70,6 +71,17 @@ class ProjectExporter(
 ) : VideoExporter {
     override fun projectName(projectId: String): String? =
         (projectRepository.load(projectId) as? StoreResult.Value)?.value?.first?.displayName
+
+    override fun projectSummary(projectId: String): ExportProjectSummary? =
+        (projectRepository.load(projectId) as? StoreResult.Value)?.value?.first?.let { manifest ->
+            ExportProjectSummary(
+                manifest.displayName,
+                manifest.stage,
+                manifest.fps,
+                manifest.totalFrames,
+                manifest.thumbnailPath,
+            )
+        }
 
     /** Renders [projectId] to a private MP4 under `filesDir/video-exports/`, reporting progress
      *  in `[0f, 1f]`. The returned file is app-private: callers use [saveToGallery], or share it

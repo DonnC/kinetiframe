@@ -317,13 +317,16 @@
 
     <!-- Export -->
     <string name="export_title">Export Video</string>
-    <string name="export_choose_title">Export as</string>
     <string name="export_choose_hint">Only changes the exported video\'s resolution — your project\'s own canvas is untouched.</string>
-    <string name="export_preset_same_as_project">Same as project</string>
-    <string name="export_preset_square">Square (Instagram, Facebook post)</string>
-    <string name="export_preset_vertical">Vertical (TikTok, Reels, Shorts)</string>
-    <string name="export_preset_landscape">Landscape (YouTube, Facebook video)</string>
-    <string name="export_continue">Continue</string>
+    <string name="export_size_title">Video size</string>
+    <string name="export_size_same">As project</string>
+    <string name="export_size_square">Square</string>
+    <string name="export_size_vertical">Vertical</string>
+    <string name="export_size_landscape">Landscape</string>
+    <string name="export_dimensions">%1$d × %2$d</string>
+    <string name="export_output">%1$d × %2$d · MP4</string>
+    <string name="export_start">Export video</string>
+    <string name="export_try_again">Try again</string>
     <string name="export_rendering">Rendering your animation…</string>
     <string name="export_progress_percent">%1$d%%</string>
     <string name="export_ready">Your animation is ready!</string>
@@ -798,8 +801,6 @@
     <string name="pack_size_preview">Each item is drawn on a square canvas: %1$d × %1$d.</string>
     <string name="editor_background_from_library">Background from Library</string>
     <string name="editor_background_from_files">Background from files</string>
-    <string name="editor_frame_rate">Frame rate</string>
-    <string name="editor_frame_rate_note">This is the project\'s frame rate. Every drawing stays; the animation plays faster or slower.</string>
     <string name="library_tab_images">Images</string>
     <string name="library_tab_colours">Colours</string>
     <string name="library_filter_backgrounds">Backgrounds</string>
