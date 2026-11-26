@@ -5,3 +5,6 @@ import com.donnclab.kinetiframe.preferences.model.AppPreferences
 
 /** The user's current preferences. MainActivity provides them; screens read them where needed. */
 val LocalAppPreferences = staticCompositionLocalOf { AppPreferences() }
+
+/** Remembers the studio's current colour in the preferences. Does nothing where none is provided. */
+val LocalRememberPenColour = staticCompositionLocalOf<(Int) -> Unit> { {} }

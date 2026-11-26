@@ -71,6 +71,11 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 - A frame you deleted right after drawing on it no longer comes back in the next frame you add,
   and deleting or pasting frames while drawing no longer overwrites a neighbouring frame.
+- One colour for every tool: the colour you pick is the one the pen, shapes, fill and text use,
+  and the studio opens with the last colour you picked instead of black.
+- Paste puts a drawing exactly where it was copied from, so it carries to the next frame
+  without moving. It used to land a little down and to the right.
+- The editor's frame-rate chips wrap onto a second line instead of hiding 24 and 30.
 - Timeline and Frames thumbnails show the whole canvas on white paper, in the canvas's shape. A
   tall canvas used to be cropped to a square on a dark tile, so frames looked empty.
 - The frame-rate preview plays at the exact rate chosen. It used to run slow, so 24 fps looked

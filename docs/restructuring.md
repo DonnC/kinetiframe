@@ -152,6 +152,10 @@ beside the unchanged original:
 - R3-19: timeline and Frames thumbnails cropped the canvas to the tile, so a 9:16 frame showed a
   centre square on a dark tile. They now show the whole canvas on white paper in its own shape.
   Tiles keep their fixed size; shaping them to the canvas is part of Tablet layouts.
+- R3-21, R3-22, R3-14 and R3-29, with the maintainer's calls: one colour shared by every tool
+  that paints (size, opacity and brush stay per tool), Paste in place, the last colour picked
+  remembered in the app preferences (`penColor`, null in older settings), and frame-rate chips
+  that wrap.
 - `presentation`'s device tests compile again: `ActorArtworkControlsTest` still used the old
   `ActorArtworkMenu(BoneNode)` signature, so no device test in the module could run.
 

@@ -48,12 +48,14 @@ import com.donnclab.kinetiframe.preferences.model.StudioOrientation
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioTarget
 import com.donnclab.kinetiframe.presentation.common.BottomNavDestination
 import com.donnclab.kinetiframe.presentation.common.LocalAppPreferences
+import com.donnclab.kinetiframe.presentation.common.LocalRememberPenColour
 import com.donnclab.kinetiframe.presentation.common.LocalShowMenuLabels
 import com.donnclab.kinetiframe.presentation.export.ExportRoute
 import com.donnclab.kinetiframe.presentation.home.HomeRoute
 import com.donnclab.kinetiframe.presentation.library.LibraryOpenTarget
 import com.donnclab.kinetiframe.presentation.library.LibraryRoute
 import com.donnclab.kinetiframe.presentation.library.packs.PackCreatorRoute
+import com.donnclab.kinetiframe.presentation.settings.SettingsIntent
 import com.donnclab.kinetiframe.presentation.settings.SettingsScreen
 import com.donnclab.kinetiframe.presentation.settings.SettingsViewModel
 import com.donnclab.kinetiframe.presentation.studio.EditorScreen
@@ -72,6 +74,10 @@ class MainActivity : ComponentActivity() {
             val settings: SettingsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = viewModels)
             val settingsState by settings.state.collectAsStateWithLifecycle()
             val preferences = settingsState.preferences
+            // Stable, so providing it never recomposes the whole app.
+            val rememberPenColour: (Int) -> Unit = remember(settings) {
+                { argb -> settings.handleIntent(SettingsIntent.PenColour(argb)) }
+            }
             val dark = when (preferences.theme) {
                 AppTheme.SYSTEM -> isSystemInDarkTheme()
                 AppTheme.LIGHT -> false
@@ -79,6 +85,7 @@ class MainActivity : ComponentActivity() {
             }
             CompositionLocalProvider(
                 LocalAppPreferences provides preferences,
+                LocalRememberPenColour provides rememberPenColour,
                 LocalViewModelFactory provides viewModels,
                 LocalShowMenuLabels provides preferences.showMenuLabels,
             ) {

@@ -38,6 +38,20 @@ class AppPreferencesStoreTest {
         assertTrue(settings.autosave)
     }
 
+    @Test fun `settings saved before the pen colour existed open with no remembered colour`() = runBlocking {
+        val file = File(root, "settings.json")
+        file.writeText("""{"theme":"DARK","orientation":"DEVICE","hideSystemBars":false,"autosave":false}""")
+        val settings = AppPreferencesStore(file).load()
+        assertEquals(null, settings.penColor)
+        assertFalse(settings.autosave)
+    }
+
+    @Test fun `the last pen colour survives a new store instance`() = runBlocking {
+        val file = File(root, "settings.json")
+        AppPreferencesStore(file).save(AppPreferences(penColor = 0xFFFF8800.toInt()))
+        assertEquals(0xFFFF8800.toInt(), AppPreferencesStore(file).load().penColor)
+    }
+
     @Test fun `corrupt settings are not silently overwritten`() = runBlocking {
         val file = File(root, "settings.json")
         file.writeText("broken")

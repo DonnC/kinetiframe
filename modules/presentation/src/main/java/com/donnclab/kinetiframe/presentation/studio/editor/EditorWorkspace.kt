@@ -184,6 +184,7 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
     val autosaves = LocalAppPreferences.current.autosave && projectSave != null &&
         !host.isPackCreator && !host.isActorStudioSession
     EditorAutosave(viewModel, saves, autosaves)
+    EditorPenColourMemory(viewModel)
 
     fun requestExit(destination: () -> Unit) {
         viewModel.handleIntent(StudioIntent.Playback.Pause)

@@ -16,4 +16,7 @@ import kotlinx.serialization.Serializable
     /** Save gallery projects on their own: after a pause in editing, when the app goes to the
      *  background, and when leaving the editor. Settings saved before this field existed load as on. */
     val autosave: Boolean = true,
+    /** The colour the studio opens with: the last one picked, as ARGB. Null until a colour is
+     *  picked, and in settings saved before this field existed, which keeps the default black. */
+    val penColor: Int? = null,
 )
