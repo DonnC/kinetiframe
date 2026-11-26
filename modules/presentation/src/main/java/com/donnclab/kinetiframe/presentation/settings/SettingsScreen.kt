@@ -40,6 +40,7 @@ import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
 import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.readableWidth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +66,7 @@ fun SettingsScreen(
     }) { padding ->
         Column(
             Modifier.padding(padding).consumeWindowInsets(padding).fillMaxSize()
-                .verticalScroll(rememberScrollState()).padding(Dimens.spaceXl),
+                .verticalScroll(rememberScrollState()).readableWidth().padding(Dimens.spaceXl),
             verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
         ) {
             if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth())

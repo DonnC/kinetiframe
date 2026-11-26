@@ -38,6 +38,7 @@ import com.donnclab.kinetiframe.export.model.ExportPreset
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.readableWidth
 import com.donnclab.kinetiframe.presentation.common.shareFile
 import com.donnclab.kinetiframe.presentation.common.viewFile
 import com.donnclab.kinetiframe.ui.appViewModel
@@ -99,7 +100,7 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
         Box(Modifier.padding(padding).fillMaxSize()) {
             when (val current = state.phase) {
                 is ExportPhase.ChoosingPreset -> Column(
-                    Modifier.align(Alignment.Center).padding(Dimens.spaceXlPlus).fillMaxWidth(),
+                    Modifier.align(Alignment.Center).readableWidth().padding(Dimens.spaceXlPlus).fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
                 ) {
@@ -124,7 +125,7 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                 }
 
                 is ExportPhase.Rendering -> Column(
-                    Modifier.align(Alignment.Center).padding(Dimens.spaceXlPlus),
+                    Modifier.align(Alignment.Center).readableWidth().padding(Dimens.spaceXlPlus),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
                 ) {
@@ -138,7 +139,7 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                 }
 
                 is ExportPhase.Done -> Column(
-                    Modifier.align(Alignment.Center).padding(Dimens.spaceXlPlus),
+                    Modifier.align(Alignment.Center).readableWidth().padding(Dimens.spaceXlPlus),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
                 ) {
@@ -166,7 +167,7 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                 }
 
                 is ExportPhase.Failed -> Column(
-                    Modifier.align(Alignment.Center).padding(Dimens.spaceXlPlus),
+                    Modifier.align(Alignment.Center).readableWidth().padding(Dimens.spaceXlPlus),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
                 ) {

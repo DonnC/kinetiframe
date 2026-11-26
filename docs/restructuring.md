@@ -183,7 +183,7 @@ beside the unchanged original:
 - Tablet layouts, first pass: `WindowWidthClass` (Material 600/840 dp breakpoints) drives an
   `AppRootFrame` rail for Home, Library and Settings, `browseGridCells()` for the browsing grids,
   layers docked beside the canvas (`EditorSidePanel`), a grouped drawing bar, and Frames tiles
-  shaped like the canvas.
+  shaped like the canvas. Forms (New Project, Settings, Export) keep a 640 dp readable width.
 - `presentation`'s device tests compile again: `ActorArtworkControlsTest` still used the old
   `ActorArtworkMenu(BoneNode)` signature, so no device test in the module could run.
 

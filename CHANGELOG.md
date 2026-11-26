@@ -33,7 +33,8 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - Tablets and foldables get layouts of their own instead of a stretched phone layout: a
   navigation rail instead of the bottom bar, project, actor and pack grids with as many columns
   as fit, layers beside the canvas instead of over it, the drawing bar's buttons kept together,
-  and Frames tiles shaped like the canvas. Layouts follow the window's width, so split screen and
+  and Frames tiles shaped like the canvas. New Project, Settings and Export keep a readable width
+  instead of stretching across the screen. Layouts follow the window's width, so split screen and
   landscape phones get them too.
 
 - A new identity: a bouncing-ball logo that stays clear at small sizes, the Nunito font across

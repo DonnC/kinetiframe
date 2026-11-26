@@ -36,6 +36,7 @@ import com.donnclab.kinetiframe.presentation.common.AddFlowBottomBar
 import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.common.FrameRatePicker
+import com.donnclab.kinetiframe.presentation.common.readableWidth
 
 /**
  * Home's "New Project" flow: a name, a canvas size picked from picture cards for the places
@@ -72,7 +73,7 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
     ) { padding ->
         Column(
             Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState())
-                .padding(horizontal = Dimens.spaceXl),
+                .readableWidth().padding(horizontal = Dimens.spaceXl),
         ) {
             CompactTextField(
                 value = state.name,

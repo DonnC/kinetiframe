@@ -115,7 +115,7 @@ object Dimens {
     val gridColumns = 2
 
     /** A browsing card's least width on screens wider than a phone, where columns follow the room. */
-    val gridCellWide = 240.dp
+    val gridCellWide = 200.dp
 
     // Material window width breakpoints: medium from 600 dp, expanded from 840 dp.
     val windowMediumFrom = 600.dp
@@ -123,4 +123,7 @@ object Dimens {
 
     /** The navigation rail that replaces the bottom bar on wider screens. */
     val navRailWidth = 88.dp
+
+    /** The widest a form or settings column grows; wider windows centre it. */
+    val readableWidth = 640.dp
 }
