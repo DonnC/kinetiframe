@@ -59,9 +59,10 @@ private fun BottomBarColumn(
     // reacts to the keyboard by default. Pack Creator's name and description fields live in
     // this bar and need their own IME padding.
     Column(Modifier.fillMaxWidth().imePadding()) {
-        // Pack Creator drafts are raster drawing only: no actor, audio or video tracks.
-        if (!isPackCreator && panels.tracksWorkspaceVisible) {
-            TracksWorkspace(state, host, ui, storage.timeline, commands, docked = workspace)
+        // Pack Creator drafts are raster drawing only: no actor, audio or video tracks. The
+        // workspace docks them under the canvas instead (see [WorkspaceDockedTracks]).
+        if (!isPackCreator && !workspace && panels.tracksWorkspaceVisible) {
+            TracksWorkspace(state, host, ui, storage.timeline, commands, docked = false)
         }
         TimelineControls(
             actorRendererFactory = storage.actorRendering::newRenderer,
@@ -99,6 +100,24 @@ private fun BottomBarColumn(
     }
 }
 
+/**
+ * The tablet workspace's asset tracks, docked under the canvas between the tool and layer panels,
+ * so both panels keep their full height and the tools never scroll (tablet feedback).
+ */
+@Composable
+internal fun WorkspaceDockedTracks(
+    state: StudioState,
+    host: EditorHost,
+    ui: EditorUiState,
+    storage: EditorStorageViewModel,
+    commands: EditorCommands,
+) {
+    if (host.isPackCreator || !ui.panels.toolbarVisible || !ui.panels.tracksWorkspaceVisible) return
+    CompositionLocalProvider(LocalTimelineScale provides TimelineScale.wide(state.project.stage)) {
+        TracksWorkspace(state, host, ui, storage.timeline, commands, docked = true)
+    }
+}
+
 @Composable
 private fun TracksWorkspace(
     state: StudioState,
@@ -106,7 +125,7 @@ private fun TracksWorkspace(
     ui: EditorUiState,
     timeline: TimelineServices,
     commands: EditorCommands,
-    /** The tablet workspace docks tracks above the timeline instead of opening a sheet. */
+    /** The tablet workspace docks tracks under the canvas instead of opening a sheet. */
     docked: Boolean,
 ) {
     val panels = ui.panels

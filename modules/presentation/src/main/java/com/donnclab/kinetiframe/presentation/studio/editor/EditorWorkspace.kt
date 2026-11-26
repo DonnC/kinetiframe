@@ -3,10 +3,12 @@ package com.donnclab.kinetiframe.presentation.studio.editor
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
@@ -352,17 +354,20 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
             }
             Row(Modifier.fillMaxSize().padding(innerPadding)) {
                 if (workspace && panelsShown) WorkspaceToolPanel(state, viewModel::handleIntent)
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        // Pack drags are measured against this Box. The canvas and the pack tray
-                        // both fill it, so a drag's window position minus this one is canvas-local.
-                        .onGloballyPositioned { coordinates ->
-                            ui.tray.canvasRootPositionInWindow = coordinates.positionInWindow()
-                        },
-                ) {
-                    EditorCanvasStack(viewModel, state, host, ui, storage.actorRendering, commands)
+                Column(Modifier.weight(1f).fillMaxHeight()) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            // Pack drags are measured against this Box. The canvas and the pack tray
+                            // both fill it, so a drag's window position minus this one is canvas-local.
+                            .onGloballyPositioned { coordinates ->
+                                ui.tray.canvasRootPositionInWindow = coordinates.positionInWindow()
+                            },
+                    ) {
+                        EditorCanvasStack(viewModel, state, host, ui, storage.actorRendering, commands)
+                    }
+                    if (workspace) WorkspaceDockedTracks(state, host, ui, storage, commands)
                 }
                 if (docksLayers && panelsShown) {
                     EditorSidePanel {

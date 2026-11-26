@@ -48,7 +48,7 @@ fun TracksWorkspaceDialog(
     onIntent: (StudioIntent) -> Unit,
     onDismiss: () -> Unit,
     assetPicker: (@Composable () -> Unit)? = null,
-    /** The tablet workspace docks the lanes above the timeline instead (see [TracksDockedPanel]). */
+    /** The tablet workspace docks the lanes under the canvas instead (see [TracksDockedPanel]). */
     docked: Boolean = false,
     content: @Composable () -> Unit,
 ) {
@@ -82,7 +82,7 @@ fun TracksWorkspaceDialog(
 }
 
 /**
- * The tablet workspace's tracks: a panel docked above the timeline instead of a sheet over the
+ * The tablet workspace's tracks: a panel docked under the canvas instead of a sheet over the
  * whole studio, so the canvas stays in view while lanes are edited.
  */
 @Composable
