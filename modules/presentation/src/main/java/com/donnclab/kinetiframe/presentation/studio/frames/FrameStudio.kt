@@ -80,6 +80,7 @@ fun FrameStudio(
     val selected = remember { mutableStateListOf<Int>() }
     val previews = remember { mutableStateMapOf<Int, Bitmap>() }
     val gridState = rememberLazyGridState()
+    val drag = remember(gridState) { FrameGridDragState(gridState) }
 
     val thumbnailEditBitmap = state.currentBitmap.takeUnless { state.animation.isPlaying }
     LaunchedEffect(state.project, state.animation.totalFrames, state.layers, thumbnailEditBitmap) {
@@ -162,8 +163,14 @@ fun FrameStudio(
                             StudioFrameCard(
                                 index = index,
                                 bitmap = previews[index],
-                                selected = index in selected,
-                                modifier = Modifier.animateItem(),
+                                // While dragging, the frame under the finger shows where it lands.
+                                selected = index in selected || (drag.dragging != null && drag.target == index),
+                                modifier = with(drag) { Modifier.animateItem().lifted(index) }
+                                    .frameDrag(drag, index) { from, to ->
+                                        onIntent(StudioIntent.Frame.MoveFrame(from, to))
+                                        selected.clear()
+                                        selected.add(to)
+                                    },
                                 onClick = {
                                     if (index in selected) selected.remove(index) else selected.add(index)
                                 },
