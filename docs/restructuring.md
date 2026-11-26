@@ -176,6 +176,8 @@ beside the unchanged original:
 - Layers: R3-27 (a ⋮ menu per layer; `LayerContentManager` duplicates a layer and merges it down
   on every frame) and R3-28 (the panel wraps its layers). R1-27's one-option add menu is gone.
   The opacity slider is still a small dropdown under the % chip.
+- R3-30: Line, Rectangle and Ellipse construction shapes (Line is the default), and the brush
+  card's name is dark on its light well in every theme.
 - `presentation`'s device tests compile again: `ActorArtworkControlsTest` still used the old
   `ActorArtworkMenu(BoneNode)` signature, so no device test in the module could run.
 

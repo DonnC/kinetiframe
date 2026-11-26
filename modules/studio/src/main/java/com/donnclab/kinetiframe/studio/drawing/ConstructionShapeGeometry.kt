@@ -6,7 +6,8 @@ import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
 
-enum class ConstructionShape { CAPSULE, TRIANGLE, HEAD_GUIDE, THREE_POINT_ARC }
+/** Line, rectangle and ellipse are the everyday shapes animators expect (R3-30); the rest are guides. */
+enum class ConstructionShape { LINE, RECTANGLE, ELLIPSE, CAPSULE, TRIANGLE, HEAD_GUIDE, THREE_POINT_ARC }
 
 data class ShapeBounds(val startX: Float, val startY: Float, val endX: Float, val endY: Float) {
     val left get() = minOf(startX, endX)
@@ -25,6 +26,14 @@ object ConstructionShapeGeometry {
         peak: TouchPoint? = null,
         steps: Int = DEFAULT_STEPS,
     ): List<List<TouchPoint>> = when (shape) {
+        ConstructionShape.LINE -> listOf(
+            straightConstructionLine(bounds.startX, bounds.startY, bounds.endX, bounds.endY),
+        )
+
+        ConstructionShape.RECTANGLE -> listOf(rectangle(bounds))
+
+        ConstructionShape.ELLIPSE -> listOf(ellipse(bounds, steps))
+
         ConstructionShape.CAPSULE -> listOf(capsule(bounds, steps))
 
         ConstructionShape.TRIANGLE -> listOf(cornerPreservingTriangle(bounds))
@@ -121,6 +130,15 @@ object ConstructionShapeGeometry {
     }
 
     private fun point(x: Float, y: Float) = TouchPoint(x, y, pressure = 1f)
+
+    /** A closed outline: back to the first corner, so the last side is drawn. */
+    private fun rectangle(bounds: ShapeBounds) = listOf(
+        point(bounds.left, bounds.top),
+        point(bounds.right, bounds.top),
+        point(bounds.right, bounds.bottom),
+        point(bounds.left, bounds.bottom),
+        point(bounds.left, bounds.top),
+    )
     private fun straightConstructionLine(x1: Float, y1: Float, x2: Float, y2: Float): List<TouchPoint> =
         listOf(point(x1, y1), point(x1, y1), point(x2, y2), point(x2, y2))
     private fun cornerPreservingTriangle(bounds: ShapeBounds): List<TouchPoint> {

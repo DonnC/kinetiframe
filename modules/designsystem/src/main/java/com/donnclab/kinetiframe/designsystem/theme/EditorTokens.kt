@@ -32,6 +32,9 @@ object EditorTokens {
     val previewWell = Color(0xFFF8F8F8)
     val brushPreviewWell = BrandPaper
 
+    /** Text on [brushPreviewWell]: dark in every theme, since the well is always light (R3-30). */
+    val brushPreviewText = BrandGraphite
+
     /** The canvas's paper behind frame thumbnails, so a frame looks as it does on the canvas. */
     val framePaper = Color.White
     val hairline = Color(0xFFE0E0E0)

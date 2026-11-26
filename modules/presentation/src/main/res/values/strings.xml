@@ -871,6 +871,9 @@
     <string name="ruler_mirror">Mirror</string>
     <!-- Turns the drawing ruler off. -->
     <string name="ruler_off">Off</string>
+    <string name="shape_line">Line</string>
+    <string name="shape_rectangle">Rectangle</string>
+    <string name="shape_ellipse">Ellipse</string>
     <string name="shape_capsule">Capsule</string>
     <string name="shape_triangle">Triangle</string>
     <string name="shape_head_guide">Head guide</string>
