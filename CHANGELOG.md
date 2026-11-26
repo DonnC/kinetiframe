@@ -30,6 +30,8 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ### Changed
 
+- New Pack on a tablet shows the form and the size comparison side by side, with compact S, M and
+  L options instead of three huge empty squares.
 - Camera effects are picked from tiles that each draw and play their move (push in, pan, shake,
   fade, whip pan…), with icons made for KinetiFrame, instead of a list of names.
 - On a tablet in landscape the drawing studio is a workspace: tools, colour and the chosen tool's

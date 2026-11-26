@@ -23,10 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AddFlowBottomBar
 import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
+import com.donnclab.kinetiframe.presentation.common.windowWidthClass
 import com.donnclab.kinetiframe.presentation.studio.dialogs.SelectionDot
 
 /**
@@ -50,37 +52,55 @@ fun AddPackScreen(state: AddPackFormState, callbacks: AddPackCallbacks, modifier
             )
         },
     ) { padding ->
-        Column(
-            Modifier.fillMaxSize().padding(
-                padding,
-            ).verticalScroll(rememberScrollState()).padding(horizontal = Dimens.spaceXl),
-        ) {
-            CompactTextField(
-                value = state.name,
-                onValueChange = callbacks.onNameChange,
-                label = { Text(stringResource(R.string.pack_name)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth().padding(top = Dimens.spaceXl),
-            )
-            Text(
-                stringResource(R.string.pack_canvas_size),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = Dimens.spaceXlPlus, bottom = Dimens.spaceS),
-            )
-            Row(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM), modifier = Modifier.fillMaxWidth()) {
-                PACK_SIZES.forEach { (size, tag) ->
-                    PackSizeCard(
-                        size = size,
-                        tag = stringResource(tag),
-                        selected = size == state.dimension,
-                        onClick = { callbacks.onDimensionChange(size) },
-                        modifier = Modifier.weight(1f),
-                    )
-                }
+        // Wider windows show the size comparison beside the form, so it is always in view; a
+        // phone stacks it under the size options.
+        if (windowWidthClass().isCompact) {
+            Column(
+                Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState())
+                    .padding(horizontal = Dimens.spaceXl),
+            ) {
+                PackForm(state, callbacks)
+                PackSizePreview(state.dimension, Modifier.padding(top = Dimens.spaceXl))
+                Spacer(Modifier.height(Dimens.spaceXlPlus))
             }
-            PackSizePreview(state.dimension, Modifier.padding(top = Dimens.spaceXl))
-            Spacer(Modifier.height(Dimens.spaceXlPlus))
+        } else {
+            Row(
+                Modifier.fillMaxSize().padding(padding).padding(horizontal = Dimens.spaceXl),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXlPlus),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) { PackForm(state, callbacks) }
+                PackSizePreview(state.dimension, Modifier.weight(1f))
+            }
+        }
+    }
+}
+
+/** The pack's name and its three size options. */
+@Composable
+private fun PackForm(state: AddPackFormState, callbacks: AddPackCallbacks) {
+    CompactTextField(
+        value = state.name,
+        onValueChange = callbacks.onNameChange,
+        label = { Text(stringResource(R.string.pack_name)) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth().padding(top = Dimens.spaceXl),
+    )
+    Text(
+        stringResource(R.string.pack_canvas_size),
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(top = Dimens.spaceXlPlus, bottom = Dimens.spaceS),
+    )
+    Row(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM), modifier = Modifier.fillMaxWidth()) {
+        PACK_SIZES.forEach { (size, tag) ->
+            PackSizeCard(
+                size = size,
+                tag = stringResource(tag),
+                selected = size == state.dimension,
+                onClick = { callbacks.onDimensionChange(size) },
+                modifier = Modifier.weight(1f),
+            )
         }
     }
 }
@@ -141,7 +161,8 @@ private fun PackSizeCard(
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(Dimens.radiusL),
-        modifier = modifier.aspectRatio(1f),
+        // A fixed, compact height: square cards grew huge and empty on a tablet.
+        modifier = modifier.height(LibraryTokens.packSizeCardHeight),
         color = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
         border = BorderStroke(
             Dimens.borderMedium,

@@ -5,6 +5,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 object LibraryTokens {
+    /** New Pack's S, M and L options. */
+    val packSizeCardHeight = 112.dp
+
     /** Behind a pack's stamp drawings, which are dark marks on transparent paper. */
     val stampWell = Color(0xFFF1F1F1)
 
