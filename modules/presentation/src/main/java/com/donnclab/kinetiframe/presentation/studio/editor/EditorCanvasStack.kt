@@ -33,6 +33,7 @@ import com.donnclab.kinetiframe.presentation.studio.canvas.CanvasArea
 import com.donnclab.kinetiframe.presentation.studio.dock.SelectionDock
 import com.donnclab.kinetiframe.presentation.studio.dock.ToolDock
 import com.donnclab.kinetiframe.presentation.studio.timeline.StudioFocusControls
+import com.donnclab.kinetiframe.presentation.studio.workspace.usesWorkspace
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
@@ -115,7 +116,9 @@ internal fun BoxScope.EditorCanvasStack(
     // The dock sits above the canvas overlays so it stays draggable wherever the animator
     // places it, even over the timeline.
     val playbackHidesTools = LocalAppPreferences.current.hideToolsDuringPlayback
-    if (toolbarVisible && (!state.animation.isPlaying || !playbackHidesTools)) {
+    // The tablet workspace's tool panel replaces the floating dock.
+    val workspace = usesWorkspace(state, host.isActorStudioSession, host.isPackCreator)
+    if (!workspace && toolbarVisible && (!state.animation.isPlaying || !playbackHidesTools)) {
         ToolDock(
             state = state,
             onIntent = { intent ->

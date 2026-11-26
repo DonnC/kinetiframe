@@ -14,6 +14,7 @@ import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineControls
 import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineServices
 import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineTracksPanel
 import com.donnclab.kinetiframe.presentation.studio.timeline.TracksWorkspaceDialog
+import com.donnclab.kinetiframe.presentation.studio.workspace.usesWorkspace
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.StudioState
@@ -31,13 +32,14 @@ internal fun EditorBottomBarSlot(
     val panels = ui.panels
     if (state.scene.studioMode != StudioMode.RASTER_DRAWING || !panels.toolbarVisible) return
     val isPackCreator = host.isPackCreator
+    val workspace = usesWorkspace(state, host.isActorStudioSession, isPackCreator)
     // The Scaffold's window insets are zeroed so the canvas stays edge to edge, so nothing
     // reacts to the keyboard by default. Pack Creator's name and description fields live in
     // this bar and need their own IME padding.
     Column(Modifier.fillMaxWidth().imePadding()) {
         // Pack Creator drafts are raster drawing only: no actor, audio or video tracks.
         if (!isPackCreator && panels.tracksWorkspaceVisible) {
-            TracksWorkspace(state, host, ui, storage.timeline, commands)
+            TracksWorkspace(state, host, ui, storage.timeline, commands, docked = workspace)
         }
         TimelineControls(
             actorRendererFactory = storage.actorRendering::newRenderer,
@@ -54,7 +56,13 @@ internal fun EditorBottomBarSlot(
                 }
             },
             cacheManager = viewModel.cacheManager,
-            onLayerPanelToggle = { panels.layerSheetVisible = !panels.layerSheetVisible },
+            onLayerPanelToggle = {
+                if (workspace) {
+                    panels.workspaceLayersHidden = !panels.workspaceLayersHidden
+                } else {
+                    panels.layerSheetVisible = !panels.layerSheetVisible
+                }
+            },
             // Shared with the track lanes so scrolling either one keeps the other in step.
             listState = ui.timelineScrollState,
             packMode = isPackCreator,
@@ -76,6 +84,8 @@ private fun TracksWorkspace(
     ui: EditorUiState,
     timeline: TimelineServices,
     commands: EditorCommands,
+    /** The tablet workspace docks tracks above the timeline instead of opening a sheet. */
+    docked: Boolean,
 ) {
     val panels = ui.panels
     val closeThen: (() -> Unit) -> () -> Unit = { action ->
@@ -85,6 +95,7 @@ private fun TracksWorkspace(
         }
     }
     TracksWorkspaceDialog(
+        docked = docked,
         isPlaying = state.animation.isPlaying,
         onIntent = commands.onIntent,
         onDismiss = { panels.tracksWorkspaceVisible = false },

@@ -63,8 +63,11 @@ import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
 import com.donnclab.kinetiframe.presentation.common.IconContextMenu
+import com.donnclab.kinetiframe.presentation.common.WindowWidthClass
 import com.donnclab.kinetiframe.presentation.common.windowWidthClass
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.StudioModePill
+import com.donnclab.kinetiframe.presentation.studio.workspace.WideBarActions
+import com.donnclab.kinetiframe.presentation.studio.workspace.WideDrawingBar
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.actorDefinition
@@ -125,10 +128,12 @@ fun EditorTopBar(
     val context = androidx.compose.ui.platform.LocalContext.current
     var assetsExpanded by remember { mutableStateOf(false) }
     var speedOpen by remember { mutableStateOf(false) }
+    // Wide windows get the labelled workspace bar; Actor Studio and Pack Creator keep their own.
+    val wideBar = windowWidthClass() == WindowWidthClass.EXPANDED && !isActorStudio && onSavePackClick == null
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .height(EditorTokens.topBarHeight),
+            .height(if (wideBar) EditorTokens.workspaceTopBarHeight else EditorTokens.topBarHeight),
         color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
         contentColor = EditorTokens.dark,
         shape = RoundedCornerShape(bottomStart = Dimens.radiusL, bottomEnd = Dimens.radiusL),
@@ -144,7 +149,7 @@ fun EditorTopBar(
             // wider windows, where spreading put metres of bar between them. Actor Studio packs its own
             // controls from the start.
             horizontalArrangement = when {
-                isActorStudio -> Arrangement.Start
+                isActorStudio || wideBar -> Arrangement.Start
                 compactBar -> Arrangement.SpaceEvenly
                 else -> Arrangement.spacedBy(Dimens.spaceXl, Alignment.CenterHorizontally)
             },
@@ -159,7 +164,21 @@ fun EditorTopBar(
                     modifier = Modifier.padding(end = Dimens.spaceS),
                 )
             }
-            if (!isActorStudio) {
+            if (wideBar) {
+                WideDrawingBar(
+                    state,
+                    onIntent,
+                    WideBarActions(
+                        onHome = onHomeClick,
+                        onFrames = onStudioClick,
+                        onGridSettings = onGridSettingsClick,
+                        onFrameRate = { speedOpen = true },
+                        onTracks = onTracksOpen,
+                        onSave = onSaveProjectClick,
+                        onExport = onExportClick,
+                    ),
+                )
+            } else if (!isActorStudio) {
                 DrawingBarTools(state, onIntent, onHomeClick)
             } else {
                 Row(
@@ -205,7 +224,7 @@ fun EditorTopBar(
                     Icon(Lucide.Save, stringResource(R.string.action_save), tint = EditorTokens.dark)
                 }
             }
-            onTracksOpen?.let { open ->
+            onTracksOpen?.takeUnless { wideBar }?.let { open ->
                 ContextIconButton(
                     ContextIconAction(Icons.Filled.ViewTimeline, stringResource(R.string.editor_asset_tracks), open),
                 )

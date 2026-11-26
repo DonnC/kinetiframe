@@ -47,6 +47,8 @@ import com.donnclab.kinetiframe.presentation.studio.actorstudio.sketch.ActorSket
 import com.donnclab.kinetiframe.presentation.studio.timeline.LayerPanel
 import com.donnclab.kinetiframe.presentation.studio.timeline.durationFramesFor
 import com.donnclab.kinetiframe.presentation.studio.toUiText
+import com.donnclab.kinetiframe.presentation.studio.workspace.WorkspaceToolPanel
+import com.donnclab.kinetiframe.presentation.studio.workspace.usesWorkspace
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
@@ -323,9 +325,16 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
             snackbarHost = { SnackbarHost(snackbar) },
             contentWindowInsets = WindowInsets(0.dp),
         ) { innerPadding ->
-            // On wider windows layers dock beside the canvas instead of covering it.
-            val docksLayers = !windowWidthClass().isCompact && ui.panels.layerSheetVisible
+            // The tablet workspace keeps tools on the left and layers on the right, always in place,
+            // so the canvas between them never jumps. Medium windows dock layers only while open.
+            val workspace = usesWorkspace(state, host.isActorStudioSession, host.isPackCreator)
+            val docksLayers = if (workspace) {
+                !ui.panels.workspaceLayersHidden
+            } else {
+                !windowWidthClass().isCompact && ui.panels.layerSheetVisible
+            }
             Row(Modifier.fillMaxSize().padding(innerPadding)) {
+                if (workspace && ui.panels.toolbarVisible) WorkspaceToolPanel(state, viewModel::handleIntent)
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -338,7 +347,7 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
                 ) {
                     EditorCanvasStack(viewModel, state, host, ui, storage.actorRendering, commands)
                 }
-                if (docksLayers) {
+                if (docksLayers && ui.panels.toolbarVisible) {
                     EditorSidePanel {
                         LayerPanel(
                             state = state,

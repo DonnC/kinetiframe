@@ -18,6 +18,9 @@ internal class EditorPanels {
     var toolbarVisible by mutableStateOf(true)
     var tracksWorkspaceVisible by mutableStateOf(false)
     var layerSheetVisible by mutableStateOf(false)
+
+    /** The tablet workspace's layers panel is open unless the animator hides it for more canvas. */
+    var workspaceLayersHidden by mutableStateOf(false)
     var frameStudioVisible by mutableStateOf(false)
     var showOverflowMenu by mutableStateOf(false)
     var showGridMenu by mutableStateOf(false)

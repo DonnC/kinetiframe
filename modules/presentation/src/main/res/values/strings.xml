@@ -852,6 +852,13 @@
     <string name="tool_add_bone">Add Bone</string>
     <string name="tool_pose_limb">Pose Limb</string>
     <string name="tool_construction_shapes">Construction shapes</string>
+    <string name="workspace_tools">Tools</string>
+    <string name="workspace_tool_shapes">Shapes</string>
+    <string name="workspace_colour">Colour</string>
+    <string name="workspace_collapse_layers">Hide layers panel</string>
+    <string name="workspace_expand_layers">Show layers panel</string>
+    <string name="workspace_frames">Frames</string>
+    <string name="workspace_tracks">Tracks</string>
     <string name="tool_eraser">Eraser</string>
     <string name="tool_select_actor_part">Select actor part</string>
     <string name="tool_lasso">Lasso</string>

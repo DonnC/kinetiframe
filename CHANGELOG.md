@@ -30,6 +30,10 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ### Changed
 
+- On a tablet in landscape the drawing studio is a workspace: tools, colour and the chosen tool's
+  settings in a panel on the left, layers on the right, a labelled top bar with Frames, Onion
+  skin, Grid, Safe frame, frame rate, Tracks, Save and Export out in the open, and asset tracks
+  docked under the canvas instead of covering it. The panels stay put, so the canvas never jumps.
 - Tablets and foldables get layouts of their own instead of a stretched phone layout: a
   navigation rail instead of the bottom bar, project, actor and pack grids with as many columns
   as fit, layers beside the canvas instead of over it, the drawing bar's buttons kept together,

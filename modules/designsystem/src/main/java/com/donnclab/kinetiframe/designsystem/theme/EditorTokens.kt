@@ -99,6 +99,13 @@ object EditorTokens {
 
     /** A panel docked beside the canvas on wider windows, such as layers. */
     val sidePanelWidth = 400.dp
+
+    // The tablet workspace's fixed panels, so the canvas between them never jumps.
+    val workspaceToolPanelWidth = 300.dp
+    val workspaceLayersPanelWidth = 340.dp
+    val workspaceTopBarHeight = 64.dp
+    val wideBarActionWidth = 64.dp
+    val workspaceTracksHeight = 280.dp
     val popupHeight = 330.dp
     val popupNarrowWidth = 260.dp
     val popupMediumWidth = 280.dp

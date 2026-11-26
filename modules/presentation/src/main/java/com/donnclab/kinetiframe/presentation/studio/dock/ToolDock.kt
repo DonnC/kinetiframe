@@ -437,14 +437,7 @@ fun ToolDock(
                     shadowElevation = Dimens.elevationL,
                     border = androidx.compose.foundation.BorderStroke(Dimens.borderThin, EditorTokens.hairline),
                 ) {
-                    when (menuTool) {
-                        DrawingTool.BRUSH, DrawingTool.COLOR_FILL -> BrushOptionsContent(state, menuTool!!, onIntent)
-                        DrawingTool.ERASER -> EraserOptionsContent(state, onIntent) { menuTool = null }
-                        DrawingTool.LASSO -> SelectionOptionsContent(state, onIntent) { menuTool = null }
-                        DrawingTool.TEXT -> TypographyOptionsPanel(state, onIntent, onDismiss = { menuTool = null })
-                        DrawingTool.SMUDGE, DrawingTool.BLUR -> SmudgeBlurOptionsContent(state, menuTool!!, onIntent)
-                        else -> Box(Modifier.padding(Dimens.spaceL)) { Text(stringResource(R.string.tool_options)) }
-                    }
+                    menuTool?.let { tool -> ToolOptionsContent(state, tool, onIntent) { menuTool = null } }
                 }
             }
         }
