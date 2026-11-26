@@ -8,7 +8,14 @@ KF_UX_OUT="${KF_UX_OUT:-notes/ux-review/scratch}"
 A="adb -s $KF_DEVICE"
 
 # Screenshot to $KF_UX_OUT/<name>.png, printing the path.
-shot() { mkdir -p "$KF_UX_OUT"; timeout 20 $A exec-out screencap -p > "$KF_UX_OUT/$1.png"; echo "$KF_UX_OUT/$1.png"; }
+# Foldables have two displays, where a bare screencap prints a warning instead of an image, so it
+# captures the first display.
+shot() {
+  mkdir -p "$KF_UX_OUT"
+  local display; display=$($A shell dumpsys SurfaceFlinger --display-id 2>/dev/null | head -1 | awk '{print $2}')
+  timeout 20 $A exec-out screencap -p ${display:+-d "$display"} > "$KF_UX_OUT/$1.png"
+  echo "$KF_UX_OUT/$1.png"
+}
 
 # On-screen text and accessibility labels with bounds: label|x1|y1|x2|y2
 labels() {

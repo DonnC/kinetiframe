@@ -189,20 +189,12 @@ beside the unchanged original:
 
 ## Next
 
-1. **Tablet layouts.** In `milestone/ux-round-3`, after R3-19. The app is designed for phones and
-   only stretches on tablets; it should use the room it has. On a landscape tablet (2560×1600)
-   it shows a bottom bar instead of a rail, two oversized project cards whose captions the bar
-   cuts off and whose ⋮ the New project button covers, a studio where a 9:16 canvas fills under
-   a third of the width while the top bar spreads its icons across the whole screen, and a
-   Frames grid of tiny tiles in one row.
-   - Choose layouts by window size class (compact, medium, expanded), so foldables and
-     split-screen get them too, not only "tablet".
-   - Expanded browsing: a navigation rail, and grids whose column count follows the width.
-   - Expanded studio: frames and layers in side panels next to the canvas instead of over it,
-     with the top-bar actions grouped near the canvas rather than spread edge to edge.
-   - Frames grid and New Project lay out for the width they get.
-   - Check every change on `kf-phone`, `kf-foldable`, `kf-tablet-small` and `kf-tablet`, in both
-     orientations.
+1. **Tablet layouts, second pass.** The first pass is in UX round 3 (rail, adaptive grids, docked
+   layers, grouped drawing bar, canvas-shaped Frames tiles, readable forms), checked on
+   `kf-phone`, `kf-tablet` in both orientations and `kf-foldable` unfolded. Still to do: Library's
+   item details as a side panel instead of a bottom sheet on wide windows, the studio timeline and
+   Asset tracks using the extra height in landscape, and a check on `kf-tablet-small` and a phone
+   in landscape.
 2. **Packs in the studio.** `milestone/studio-packs`, the next milestone after UX round 2. The
    personas could not find how to use a pack while drawing: today it takes the Library picker, a
    tap on a pack, then a drag out of the floating tray. Using a pack is a drawing action, not a
