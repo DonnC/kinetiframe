@@ -165,6 +165,9 @@ beside the unchanged original:
 - Timeline: R3-20 (long-press and drag a frame in the Frames grid, or move one earlier or later
   with buttons), R3-25 (Duplicate in the frame menu) and R3-32 (clear action labels). R3-11 stays: the
   strip scrubs under a centre pointer by design, and its edge clips next to the pinned +.
+- Wording: R3-13 and R3-35. Existing installs keep "Tavi · All four views": renaming means a new
+  installer receipt and rewriting library metadata, not worth the risk for a name. R3-35's
+  duplicate Tavi cards didn't reproduce (Drawn and Four angles are both meant to ship).
 - `presentation`'s device tests compile again: `ActorArtworkControlsTest` still used the old
   `ActorArtworkMenu(BoneNode)` signature, so no device test in the module could run.
 

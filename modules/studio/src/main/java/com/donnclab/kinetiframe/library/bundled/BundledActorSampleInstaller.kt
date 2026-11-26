@@ -89,7 +89,7 @@ class BundledActorSampleInstaller(
         /** The drawn Tavi ships beside the cutout one, so the app shows both approaches. */
         const val DRAWN_TAVI_ID = "ls-tavi-drawn-v1"
         private val entries = listOf(
-            Entry("ls-tavi-all-views-v3", "Tavi · All four views"),
+            Entry("ls-tavi-all-views-v3", "Tavi · Four angles"),
             Entry(DRAWN_TAVI_ID, "Tavi · Drawn"),
         )
     }

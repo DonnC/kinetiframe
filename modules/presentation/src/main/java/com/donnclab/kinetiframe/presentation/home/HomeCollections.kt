@@ -52,6 +52,7 @@ import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.MediaCard
+import com.donnclab.kinetiframe.presentation.common.unusedName
 
 /** Drag label for a project being dragged onto another project or a collection. */
 private const val PROJECT_DRAG_LABEL = "kinetiframe-project"
@@ -192,7 +193,7 @@ internal fun OpenCollectionHeader(name: String, onBack: () -> Unit) {
 @Composable
 internal fun NewCollectionDialog(taken: Set<String>, onCreate: (String) -> Unit, onDismiss: () -> Unit) {
     val base = stringResource(R.string.home_collection_default_name)
-    var name by remember { mutableStateOf(unusedCollectionName(base, taken)) }
+    var name by remember { mutableStateOf(unusedName(base, taken)) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.home_collection_new)) },
@@ -214,10 +215,3 @@ internal fun NewCollectionDialog(taken: Set<String>, onCreate: (String) -> Unit,
 }
 
 private const val MAX_COLLECTION_NAME = 60
-
-/** [base], or [base] followed by the first number that makes it unused, ignoring case. */
-internal fun unusedCollectionName(base: String, taken: Set<String>): String {
-    val used = taken.mapTo(mutableSetOf()) { it.trim().lowercase() }
-    if (base.lowercase() !in used) return base
-    return generateSequence(2) { it + 1 }.map { "$base $it" }.first { it.lowercase() !in used }
-}
