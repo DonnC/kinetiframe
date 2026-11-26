@@ -76,6 +76,8 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ### Fixed
 
+- The camera button shows all the time, below the frame reference button. The two sat on top of
+  each other, so the camera only appeared during playback.
 - A frame you deleted right after drawing on it no longer comes back in the next frame you add,
   and deleting or pasting frames while drawing no longer overwrites a neighbouring frame.
 - One colour for every tool: the colour you pick is the one the pen, shapes, fill and text use,

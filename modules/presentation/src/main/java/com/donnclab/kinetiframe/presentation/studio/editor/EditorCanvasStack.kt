@@ -149,7 +149,11 @@ private fun BoxScope.CameraOverlay(
         preview,
         { preview = it },
         onIntent,
-        Modifier.align(Alignment.TopEnd).padding(Dimens.spaceS),
+        // Below the frame reference button, which shares the top-right corner. They used to sit on
+        // top of each other, so the camera only showed during playback, when the reference hides.
+        Modifier.align(
+            Alignment.TopEnd,
+        ).padding(top = Dimens.spaceS + Dimens.touchTarget + Dimens.spaceS, end = Dimens.spaceS),
     ) { pose, shot, frame ->
         val previewState = if (shot == null || frame == null) {
             state
