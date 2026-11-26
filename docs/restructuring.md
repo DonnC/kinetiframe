@@ -139,9 +139,63 @@ beside the unchanged original:
   in joint angles, so hands travel on arcs. The palm, point and fist poses are re-authored.
 - Torso, head, desk, eye and mouth artwork is the original. The sample is 32 MB.
 
+**UX round 3.** `milestone/ux-round-3` acts on the round 3 persona findings
+(`notes/ux-review/findings.md`), checked on a tablet as well as a phone.
+
+- The emulator script works on current SDKs (the API 37 image is `android-37.0`, the 7-inch
+  profile is `small_tablet`, and starting two emulators no longer fails), and `gradlew` is
+  executable again.
+- R3-18: a frame deleted right after drawing on it came back in the next frame added at its
+  place, and deleting or pasting around a frame being drawn could overwrite the frame that moved
+  into its slot. Frame deletes and pastes now settle the drawing before frames shift, and
+  appending a frame clears pixels left past the end by older builds.
+- R3-19: timeline and Frames thumbnails cropped the canvas to the tile, so a 9:16 frame showed a
+  centre square on a dark tile. They now show the whole canvas on white paper in its own shape.
+  Tiles keep their fixed size; shaping them to the canvas is part of Tablet layouts.
+- R3-21, R3-22, R3-14 and R3-29, with the maintainer's calls: one colour shared by every tool
+  that paints (size, opacity and brush stay per tool), Paste in place, the last colour picked
+  remembered in the app preferences (`penColor`, null in older settings), and frame-rate chips
+  that wrap.
+- Colours: R3-5, R3-6, R3-15 and the Delete half of R3-34. Palettes are chosen from a dropdown
+  (`PaletteDropdown`), the maintainer's call: chips for a growing list crowd the phone panel. R3-4 (Library search taking focus
+  after New palette) didn't reproduce on the emulator; the sheet now releases the keyboard and
+  the screen clears focus when it closes. Check it on the A56. The wheel handle on black stays on
+  white at full brightness on purpose (R1-03).
+- New Project, Home and Library: R3-8, R3-9, R3-10, R3-12, R3-33 and R3-36.
+- Timeline: R3-20 (long-press and drag a frame in the Frames grid, or move one earlier or later
+  with buttons), R3-25 (Duplicate in the frame menu) and R3-32 (clear action labels). R3-11 stays: the
+  strip scrubs under a centre pointer by design, and its edge clips next to the pinned +.
+- Wording: R3-13 and R3-35. Existing installs keep "Tavi · All four views": renaming means a new
+  installer receipt and rewriting library metadata, not worth the risk for a name. R3-35's
+  duplicate Tavi cards didn't reproduce (Drawn and Four angles are both meant to ship).
+- Studio, with the maintainer's calls: R3-31 (fill at once), R3-26 (onion skin switch on the
+  drawing bar; settings stay in ⋮), R3-23 (onion skin shows every visible layer, "Active layer
+  only" in its panel), and R1-25 (rail tall enough for its tools).
+- R3-24 (the maintainer's call): holds are picked on the timeline by tapping frames on either
+  side, and can reach back from the drawing (`HoldDrawing.source`). The typed-frame dialog is gone.
+- Layers: R3-27 (a ⋮ menu per layer; `LayerContentManager` duplicates a layer and merges it down
+  on every frame) and R3-28 (the panel wraps its layers). R1-27's one-option add menu is gone.
+  The opacity slider is still a small dropdown under the % chip.
+- R3-30: Line, Rectangle and Ellipse construction shapes (Line is the default), and the brush
+  card's name is dark on its light well in every theme.
+- R3-7: Export has a back arrow and a Watch button that plays the finished video in the
+  phone's player. A preview before exporting is still to come.
+- Tablet layouts, first pass: `WindowWidthClass` (Material 600/840 dp breakpoints) drives an
+  `AppRootFrame` rail for Home, Library and Settings, `browseGridCells()` for the browsing grids,
+  layers docked beside the canvas (`EditorSidePanel`), a grouped drawing bar, and Frames tiles
+  shaped like the canvas. Forms (New Project, Settings, Export) keep a 640 dp readable width.
+- `presentation`'s device tests compile again: `ActorArtworkControlsTest` still used the old
+  `ActorArtworkMenu(BoneNode)` signature, so no device test in the module could run.
+
 ## Next
 
-1. **Packs in the studio.** `milestone/studio-packs`, the next milestone after UX round 2. The
+1. **Tablet layouts, second pass.** The first pass is in UX round 3 (rail, adaptive grids, docked
+   layers, grouped drawing bar, canvas-shaped Frames tiles, readable forms), checked on
+   `kf-phone`, `kf-tablet` in both orientations and `kf-foldable` unfolded. Still to do: Library's
+   item details as a side panel instead of a bottom sheet on wide windows, the studio timeline and
+   Asset tracks using the extra height in landscape, and a check on `kf-tablet-small` and a phone
+   in landscape.
+2. **Packs in the studio.** `milestone/studio-packs`, the next milestone after UX round 2. The
    personas could not find how to use a pack while drawing: today it takes the Library picker, a
    tap on a pack, then a drag out of the floating tray. Using a pack is a drawing action, not a
    timeline one, so it goes on the tool rail rather than in Asset tracks.
@@ -155,12 +209,12 @@ beside the unchanged original:
    - Show pack drawings on a light paper well in every theme (see UX fixes).
    - Check: unit tests for the last-used pack and tap-to-place, then the expert and rigger
      personas use it to lip-sync a few frames on the test phone.
-2. **First release.** A maintainer merges `develop` into `main`, signs a release build and tags
+3. **First release.** A maintainer merges `develop` into `main`, signs a release build and tags
    `v0.1.0`, following steps 5 to 8 of the [release checklist](releases.md#release-checklist).
    The font licences must be added first (see Discoveries).
-3. **UX fixes.** Decide whether the bundled Tavi actor gets the same hand treatment (see UX
+4. **UX fixes.** Decide whether the bundled Tavi actor gets the same hand treatment (see UX
    fixes), then the Actor Studio and editor items.
-4. **Old device test failures.** Fix or delete the 13 failing `presentation` device tests as the
+5. **Old device test failures.** Fix or delete the 13 failing `presentation` device tests as the
    code they cover changes (see Later).
 
 ## Later
@@ -380,6 +434,8 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Discoveries
 
+- `verify` rewrites the four `modules/.artifacts/rigging/continuous-limb-*.png` images with
+  one-byte differences on macOS. Generate them in a platform-neutral way or stop tracking them.
 - The 17 fonts in `app/src/main/assets/fonts` are Google Fonts, most under the SIL Open Font
   License, which `THIRD_PARTY_NOTICES.md` doesn't list. Add each font's license before a release.
 - Mira was the only bundled actor drawn as one continuous piece with skinned bones. With her gone,

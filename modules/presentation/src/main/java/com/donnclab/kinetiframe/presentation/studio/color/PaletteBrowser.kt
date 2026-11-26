@@ -3,16 +3,13 @@ package com.donnclab.kinetiframe.presentation.studio.color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -69,24 +66,13 @@ fun PaletteBrowserContent(
 
             else -> {
                 var naming by remember { mutableStateOf(false) }
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
-                    item {
-                        AssistChip(
-                            onClick = { naming = true },
-                            label = {
-                                Text(stringResource(R.string.palette_new), style = MaterialTheme.typography.labelSmall)
-                            },
-                            leadingIcon = { Icon(Lucide.Plus, null, Modifier.size(Dimens.iconS)) },
-                        )
-                    }
-                    items(state.palettes, key = { it.id }) { palette ->
-                        FilterChip(
-                            selected = state.selectedId == palette.id,
-                            onClick = { onIntent(PaletteIntent.Select(palette.id)) },
-                            label = { Text(palette.displayName(state), style = MaterialTheme.typography.labelSmall) },
-                        )
-                    }
-                }
+                PaletteDropdown(
+                    state.palettes.map { PaletteChoice(it.id, it.displayName(state)) },
+                    state.selectedId,
+                    onSelect = { onIntent(PaletteIntent.Select(it)) },
+                    onNewPalette = { naming = true },
+                    modifier = Modifier.fillMaxWidth(),
+                )
                 state.palettes.firstOrNull { it.id == state.selectedId }?.let { palette ->
                     val editable = state.canEdit(palette)
                     PaletteSwatches(
@@ -99,7 +85,7 @@ fun PaletteBrowserContent(
                             null
                         },
                     )
-                    if (editable) EditablePaletteActions(palette.id, color, onIntent)
+                    if (editable) EditablePaletteActions(palette.id, color, !state.isMyColours(palette), onIntent)
                 }
                 if (naming) {
                     NewPaletteDialog(
@@ -123,14 +109,22 @@ fun PaletteBrowserContent(
 
 /** "Add current colour" and "Delete palette", for a palette the user made. */
 @Composable
-private fun EditablePaletteActions(paletteId: String, color: Color, onIntent: (PaletteIntent) -> Unit) {
+private fun EditablePaletteActions(
+    paletteId: String,
+    color: Color,
+    deletable: Boolean,
+    onIntent: (PaletteIntent) -> Unit,
+) {
     var confirmDelete by remember { mutableStateOf(false) }
     Row(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
         TextButton(onClick = { onIntent(PaletteIntent.Add(color.toArgb().toLong() and 0xFFFFFFFFL, paletteId)) }) {
             Icon(Lucide.Plus, null, Modifier.size(Dimens.iconS))
             Text(stringResource(R.string.palette_save_colour))
         }
-        TextButton(onClick = { confirmDelete = true }) { Text(stringResource(R.string.palette_delete)) }
+        // My colours is always there, so it can't be deleted (R3-6, R3-34).
+        if (deletable) {
+            TextButton(onClick = { confirmDelete = true }) { Text(stringResource(R.string.palette_delete)) }
+        }
     }
     Text(stringResource(R.string.palette_edit_hint), style = MaterialTheme.typography.bodySmall)
     if (confirmDelete) {

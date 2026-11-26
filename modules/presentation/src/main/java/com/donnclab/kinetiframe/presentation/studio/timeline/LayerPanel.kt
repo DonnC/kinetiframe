@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,6 +40,7 @@ import com.composables.icons.lucide.Layers
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Plus
 import com.donnclab.kinetiframe.core.document.Layer
+import com.donnclab.kinetiframe.core.document.LayerType
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
@@ -71,7 +70,6 @@ fun LayerPanel(
     // moving its drawings in front of other layers or even seeing which layer was selected.
     val layers = allLayers.reversed()
     var editingLayerId by remember { mutableStateOf<String?>(null) }
-    var addLayerMenuVisible by remember { mutableStateOf(false) }
     val previews = remember { mutableStateMapOf<String, Bitmap>() }
     val haptics = LocalHapticFeedback.current
 
@@ -85,8 +83,10 @@ fun LayerPanel(
     }
 
     Column(
+        // Wraps its layers instead of always filling its box, so a short stack leaves more of the
+        // canvas in view (R3-28).
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface),
     ) {
         Row(
@@ -109,35 +109,25 @@ fun LayerPanel(
                 color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(Modifier.weight(1f))
-            Box {
-                IconButton(
-                    onClick = { addLayerMenuVisible = true },
-                    modifier = Modifier.size(EditorTokens.control),
-                ) {
-                    Icon(
-                        Lucide.Plus,
-                        contentDescription = stringResource(R.string.layers_add),
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(Dimens.iconM),
-                    )
-                }
-                DropdownMenu(expanded = addLayerMenuVisible, onDismissRequest = { addLayerMenuVisible = false }) {
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.layers_drawing_layer)) },
-                        onClick = {
-                            onIntent(StudioIntent.Layer.AddLayer())
-                            addLayerMenuVisible = false
-                        },
-                        leadingIcon = { Icon(Lucide.Layers, null, modifier = Modifier.size(EditorTokens.icon)) },
-                    )
-                }
+            // A drawing layer is the only kind added here, so + adds one straight away instead of
+            // opening a menu with a single choice (R1-27).
+            IconButton(
+                onClick = { onIntent(StudioIntent.Layer.AddLayer()) },
+                modifier = Modifier.size(EditorTokens.control),
+            ) {
+                Icon(
+                    Lucide.Plus,
+                    contentDescription = stringResource(R.string.layers_add),
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(Dimens.iconM),
+                )
             }
         }
 
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
         LazyColumn(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f, fill = false),
             contentPadding = PaddingValues(bottom = Dimens.spaceL),
         ) {
             if (layers.isEmpty()) {
@@ -206,6 +196,30 @@ fun LayerPanel(
                             onIntent(StudioIntent.Layer.SetLayerOpacity(actualIndex, value))
                         },
                         onLockClick = { onIntent(StudioIntent.Layer.ToggleLayerLock(actualIndex)) },
+                        menu = {
+                            val raster = layer.type == LayerType.RASTER
+                            val below = allLayers.getOrNull(actualIndex - 1)
+                            LayerMenu(
+                                LayerMenuActions(
+                                    onRename = { editingLayerId = layer.id },
+                                    onDuplicate = if (raster) {
+                                        { onIntent(StudioIntent.Layer.DuplicateLayer(actualIndex)) }
+                                    } else {
+                                        null
+                                    },
+                                    onMergeDown = if (raster && below?.type == layer.type && below.isLocked.not()) {
+                                        { onIntent(StudioIntent.Layer.MergeLayerDown(actualIndex)) }
+                                    } else {
+                                        null
+                                    },
+                                    onDelete = if (allLayers.size > 1) {
+                                        { onIntent(StudioIntent.Layer.RemoveLayer(actualIndex)) }
+                                    } else {
+                                        null
+                                    },
+                                ),
+                            )
+                        },
                     )
                 }
             }

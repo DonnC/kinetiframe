@@ -159,59 +159,14 @@ class FrameManager(
 
     fun pasteFrame(index: Int, before: Boolean) {
         val clipboard = copiedFrame ?: return
-        val currentState = getState()
-        if (currentState.animation.totalFrames >= 1000) return
-        val destination = (if (before) index else index + 1).coerceIn(0, currentState.animation.totalFrames)
+        if (getState().animation.totalFrames >= 1000) return
         pendingOperations.launch(scope, dispatcher) {
             frameOperationMutex.withLock {
-                val sourceLayers = clipboard.layers
-                val cacheLayerIds = (currentState.currentFrameLayers() + sourceLayers).map { it.id }.distinct()
-                cacheLayerIds.forEach { layerId ->
-                    cacheManager.insertFrame(layerId, destination, currentState.animation.totalFrames)
-                }
-                sourceLayers.forEach { layer ->
-                    clipboard.bitmaps[layer.id]?.let { bitmap ->
-                        cacheManager.putFrame(
-                            layer.id,
-                            destination,
-                            bitmap.copy(bitmap.config ?: Bitmap.Config.ARGB_8888, true),
-                        )
-                    }
-                }
-                commitFrameStructure(destination, emptyList()) { state ->
-                    val shiftedLayers = state.layers.frameLayers.mapKeys { (key, _) ->
-                        if (key >=
-                            destination
-                        ) {
-                            key + 1
-                        } else {
-                            key
-                        }
-                    }.toMutableMap()
-                    val shiftedTransforms = state.animation.frameTransforms.mapKeys { (key, _) ->
-                        if (key >=
-                            destination
-                        ) {
-                            key + 1
-                        } else {
-                            key
-                        }
-                    }.toMutableMap()
-                    shiftedLayers[destination] = sourceLayers
-                    state.copy(
-                        animation = state.animation.copy(
-                            totalFrames = state.animation.totalFrames + 1,
-                            currentFrame = destination,
-                            frameTransforms = shiftedTransforms,
-                        ),
-                        layers = state.layers.copy(
-                            activeLayerIndex = 0,
-                            layers = sourceLayers,
-                            frameLayers = shiftedLayers,
-                        ),
-                    )
-                }
-                loadFrameInternal(destination)
+                val currentState = getState()
+                if (currentState.animation.totalFrames >= 1000) return@withLock
+                val destination = (if (before) index else index + 1).coerceIn(0, currentState.animation.totalFrames)
+                settleOutgoingDrawing(currentState.animation.currentFrame)
+                insertClipboardFrame(clipboard, destination)
             }
         }
     }
@@ -262,66 +217,168 @@ class FrameManager(
     }
 
     fun deleteFrames(indices: List<Int>) {
-        val currentState = getState()
-        val targets = indices.distinct().filter { it in 0 until currentState.animation.totalFrames }.sortedDescending()
-        if (targets.isEmpty()) return
+        if (indices.none { it in 0 until getState().animation.totalFrames }) return
 
         pendingOperations.launch(scope, dispatcher) {
             frameOperationMutex.withLock {
-                var currentTotalFrames = currentState.animation.totalFrames
-                val currentActiveLayers = currentState.currentFrameLayers()
-
-                for (index in targets) {
-                    currentActiveLayers.forEach { layer ->
-                        cacheManager.deleteFrame(layer.id, index, currentTotalFrames)
-                    }
-                    currentTotalFrames--
-                }
-
-                commitFrameStructure(null, targets) { state ->
-                    var newTotalFrames = state.animation.totalFrames
-                    var newFrameLayers = state.layers.frameLayers
-                    var newFrameTransforms = state.animation.frameTransforms
-                    var newCurrentFrame = state.animation.currentFrame
-
-                    for (index in targets) {
-                        newFrameLayers = newFrameLayers.entries
-                            .filter { entry -> entry.key != index }
-                            .associate { entry ->
-                                val newIndex = if (entry.key > index) entry.key - 1 else entry.key
-                                newIndex to entry.value
-                            }
-
-                        newFrameTransforms = newFrameTransforms.entries
-                            .filter { entry -> entry.key != index }
-                            .associate { entry ->
-                                val newIndex = if (entry.key > index) entry.key - 1 else entry.key
-                                newIndex to entry.value
-                            }
-
-                        if (newCurrentFrame > index) {
-                            newCurrentFrame--
-                        }
-                        newTotalFrames--
-                    }
-
-                    newCurrentFrame = newCurrentFrame.coerceIn(0, maxOf(0, newTotalFrames - 1))
-
-                    state.copy(
-                        animation = state.animation.copy(
-                            totalFrames = newTotalFrames,
-                            currentFrame = newCurrentFrame,
-                            frameTransforms = newFrameTransforms,
-                        ),
-                        layers = state.layers.copy(
-                            frameLayers = newFrameLayers,
-                            layers = newFrameLayers[newCurrentFrame] ?: state.layers.layers,
-                        ),
-                    )
-                }
-                loadFrameInternal(getState().animation.currentFrame)
+                val currentState = getState()
+                val targets = indices.distinct()
+                    .filter { it in 0 until currentState.animation.totalFrames }
+                    .sortedDescending()
+                if (targets.isEmpty()) return@withLock
+                settleOutgoingDrawing(currentState.animation.currentFrame)
+                removeFrames(currentState, targets)
             }
         }
+    }
+
+    /**
+     * Bakes the frame on the canvas into its own slot and drops its undo history. Must run before
+     * frames shift: the next frame load re-bakes any history at the old index, which after a
+     * delete or paste belongs to a different frame or to none (R3-18).
+     */
+    private suspend fun settleOutgoingDrawing(currentFrame: Int) {
+        finalizeFrame(currentFrame)
+        clearHistory()
+    }
+
+    /** Inserts [clipboard] as a new frame at [destination]. The caller holds the frame lock. */
+    private suspend fun insertClipboardFrame(clipboard: ClipboardFrame, destination: Int) {
+        val currentState = getState()
+        val sourceLayers = clipboard.layers
+        val cacheLayerIds = (currentState.currentFrameLayers() + sourceLayers).map { it.id }.distinct()
+        cacheLayerIds.forEach { layerId ->
+            cacheManager.insertFrame(layerId, destination, currentState.animation.totalFrames)
+        }
+        sourceLayers.forEach { layer ->
+            clipboard.bitmaps[layer.id]?.let { bitmap ->
+                cacheManager.putFrame(
+                    layer.id,
+                    destination,
+                    bitmap.copy(bitmap.config ?: Bitmap.Config.ARGB_8888, true),
+                )
+            }
+        }
+        commitFrameStructure(destination, emptyList()) { state ->
+            val shiftedLayers = state.layers.frameLayers.mapKeys { (key, _) ->
+                if (key >=
+                    destination
+                ) {
+                    key + 1
+                } else {
+                    key
+                }
+            }.toMutableMap()
+            val shiftedTransforms = state.animation.frameTransforms.mapKeys { (key, _) ->
+                if (key >=
+                    destination
+                ) {
+                    key + 1
+                } else {
+                    key
+                }
+            }.toMutableMap()
+            shiftedLayers[destination] = sourceLayers
+            state.copy(
+                animation = state.animation.copy(
+                    totalFrames = state.animation.totalFrames + 1,
+                    currentFrame = destination,
+                    frameTransforms = shiftedTransforms,
+                ),
+                layers = state.layers.copy(
+                    activeLayerIndex = 0,
+                    layers = sourceLayers,
+                    frameLayers = shiftedLayers,
+                ),
+            )
+        }
+        loadFrameInternal(destination)
+    }
+
+    /** Removes [targets], highest first, from the cache and the state. The caller holds the frame lock. */
+    private suspend fun removeFrames(currentState: StudioState, targets: List<Int>) {
+        var currentTotalFrames = currentState.animation.totalFrames
+        val currentActiveLayers = currentState.currentFrameLayers()
+
+        for (index in targets) {
+            currentActiveLayers.forEach { layer ->
+                cacheManager.deleteFrame(layer.id, index, currentTotalFrames)
+            }
+            currentTotalFrames--
+        }
+
+        commitFrameStructure(null, targets) { state ->
+            var newTotalFrames = state.animation.totalFrames
+            var newFrameLayers = state.layers.frameLayers
+            var newFrameTransforms = state.animation.frameTransforms
+            var newCurrentFrame = state.animation.currentFrame
+
+            for (index in targets) {
+                newFrameLayers = newFrameLayers.entries
+                    .filter { entry -> entry.key != index }
+                    .associate { entry ->
+                        val newIndex = if (entry.key > index) entry.key - 1 else entry.key
+                        newIndex to entry.value
+                    }
+
+                newFrameTransforms = newFrameTransforms.entries
+                    .filter { entry -> entry.key != index }
+                    .associate { entry ->
+                        val newIndex = if (entry.key > index) entry.key - 1 else entry.key
+                        newIndex to entry.value
+                    }
+
+                if (newCurrentFrame > index) {
+                    newCurrentFrame--
+                }
+                newTotalFrames--
+            }
+
+            newCurrentFrame = newCurrentFrame.coerceIn(0, maxOf(0, newTotalFrames - 1))
+
+            state.copy(
+                animation = state.animation.copy(
+                    totalFrames = newTotalFrames,
+                    currentFrame = newCurrentFrame,
+                    frameTransforms = newFrameTransforms,
+                ),
+                layers = state.layers.copy(
+                    frameLayers = newFrameLayers,
+                    layers = newFrameLayers[newCurrentFrame] ?: state.layers.layers,
+                ),
+            )
+        }
+        loadFrameInternal(getState().animation.currentFrame)
+    }
+
+    /**
+     * Moves one frame to [to], shifting the frames between (R3-20). Built from delete and insert,
+     * so per-frame guides, pack tags and camera shots follow as they do for those.
+     */
+    fun moveFrame(from: Int, to: Int) {
+        pendingOperations.launch(scope, dispatcher) {
+            frameOperationMutex.withLock {
+                val currentState = getState()
+                val total = currentState.animation.totalFrames
+                if (from !in 0 until total || to !in 0 until total || from == to) return@withLock
+                settleOutgoingDrawing(currentState.animation.currentFrame)
+                val moving = captureFrame(currentState, from)
+                removeFrames(currentState, listOf(from))
+                insertClipboardFrame(moving, to)
+            }
+        }
+    }
+
+    private suspend fun captureFrame(state: StudioState, index: Int): ClipboardFrame {
+        val layers = state.layers.frameLayers[index] ?: state.currentFrameLayers()
+        val bitmaps = buildMap {
+            layers.forEach { layer ->
+                cacheManager.getFrame(layer.id, index)?.let { bitmap ->
+                    put(layer.id, bitmap.copy(bitmap.config ?: Bitmap.Config.ARGB_8888, true))
+                }
+            }
+        }
+        return ClipboardFrame(layers, bitmaps)
     }
 
     fun deleteFrame(index: Int) {
@@ -402,6 +459,8 @@ class FrameManager(
             is StudioIntent.Frame.DeleteFrames -> deleteFrames(intent.indices)
 
             is StudioIntent.Frame.AddFrameAt -> addFrameAt(intent.index)
+
+            is StudioIntent.Frame.MoveFrame -> moveFrame(intent.from, intent.to)
 
             // Held drawings belong to CelHoldManager.
             is StudioIntent.Frame.HoldDrawing,

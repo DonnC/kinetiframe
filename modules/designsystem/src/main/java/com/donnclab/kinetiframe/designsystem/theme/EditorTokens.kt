@@ -31,13 +31,22 @@ object EditorTokens {
     // dark marks on paper whatever the theme.
     val previewWell = Color(0xFFF8F8F8)
     val brushPreviewWell = BrandPaper
+
+    /** Text on [brushPreviewWell]: dark in every theme, since the well is always light (R3-30). */
+    val brushPreviewText = BrandGraphite
+
+    /** The canvas's paper behind frame thumbnails, so a frame looks as it does on the canvas. */
+    val framePaper = Color.White
     val hairline = Color(0xFFE0E0E0)
 
     // The tool dock: its rail, whose height depends on the studio mode, and its menus.
     val dockRailWidth = 48.dp
     val dockRailHeightPuppetStudio = 300.dp
-    val dockRailHeightWithActor = 220.dp
-    val dockRailHeight = 180.dp
+    val dockRailHeightWithActor = 280.dp // Bone plus the five drawing tools.
+
+    // Room for the five drawing tools (Pen, Shapes, Eraser, Lasso, Fill) at 40 dp with gaps, so the
+    // last isn't cut off (R1-25). A short screen still limits the rail, which then scrolls.
+    val dockRailHeight = 236.dp
     val dockCorner = 24.dp
     val dockRailCorner = 28.dp
     val dockMenuWidth = 200.dp
@@ -84,6 +93,12 @@ object EditorTokens {
     // Editor shell, popups and hints.
     val topBarHeight = 48.dp
     val popupWidth = 340.dp
+
+    /** The layers panel's width. Its height follows its layers, so a short stack covers less (R3-28). */
+    val layerPopupWidth = 340.dp
+
+    /** A panel docked beside the canvas on wider windows, such as layers. */
+    val sidePanelWidth = 400.dp
     val popupHeight = 330.dp
     val popupNarrowWidth = 260.dp
     val popupMediumWidth = 280.dp
@@ -104,6 +119,12 @@ object EditorTokens {
     // The frame studio grid.
     val frameStudioCorner = 22.dp
     val frameStudioCell = 150.dp
+
+    /** The tallest a Frames tile gets for a portrait canvas, width to height, so phones stay usable. */
+    const val FRAME_TILE_TALLEST = 0.75f
+
+    /** The widest a Frames tile gets for a landscape canvas. */
+    const val FRAME_TILE_WIDEST = 16f / 9f
     val frameStudioCardThumb = 150.dp
     val frameStudioArrow = 10.dp
 }

@@ -29,12 +29,23 @@ import com.donnclab.kinetiframe.presentation.studio.FrameThumbnailContent
 
 @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
-fun FrameCard(index: Int, isCurrent: Boolean, thumbnail: Bitmap? = null, linked: Boolean = false, onClick: () -> Unit) {
+fun FrameCard(
+    index: Int,
+    isCurrent: Boolean,
+    thumbnail: Bitmap? = null,
+    linked: Boolean = false,
+    inHoldRange: Boolean = false,
+    onClick: () -> Unit,
+) {
     val borderColor = when {
         isCurrent -> EditorTokens.accent.copy(alpha = 0.6f)
+
+        // Frames a hold being picked will cover (R3-24).
+        inHoldRange -> EditorTokens.accent
+
         else -> EditorTokens.border
     }
-    val borderWidth = if (isCurrent) TimelineTokens.currentFrameBorder else Dimens.borderThin
+    val borderWidth = if (isCurrent || inHoldRange) TimelineTokens.currentFrameBorder else Dimens.borderThin
 
     Box(
         modifier = Modifier

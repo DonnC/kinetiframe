@@ -205,6 +205,10 @@ sealed class StudioIntent : ViewIntent {
         data class ToggleLayerLock(val index: Int) : Layer()
         data class SetLayerOpacity(val index: Int, val opacity: Float) : Layer()
         data class RenameLayer(val index: Int, val name: String) : Layer()
+        data class DuplicateLayer(val index: Int) : Layer()
+
+        /** Merges the layer at [index] into the one below it, on every frame. */
+        data class MergeLayerDown(val index: Int) : Layer()
     }
 
     sealed class Frame : StudioIntent() {
@@ -215,9 +219,14 @@ sealed class StudioIntent : ViewIntent {
         data class CopyFrames(val indices: List<Int>) : Frame()
         data class PasteFrame(val index: Int, val before: Boolean) : Frame()
         data class PasteFrames(val index: Int, val before: Boolean = true) : Frame()
+
+        /** Moves the frame at [from] to [to], shifting the frames between. */
+        data class MoveFrame(val from: Int, val to: Int) : Frame()
         data class DeleteFrames(val indices: List<Int>) : Frame()
         data class AddFrameAt(val index: Int) : Frame()
-        data class HoldDrawing(val first: Int, val last: Int) : Frame()
+
+        /** Holds the drawing at [source] over [first]..[last]; [source] may be anywhere in the range. */
+        data class HoldDrawing(val first: Int, val last: Int, val source: Int = first) : Frame()
         data class EditDrawingScope(val index: Int, val allLinked: Boolean) : Frame()
         data class UnlinkDrawing(val index: Int) : Frame()
     }
@@ -265,6 +274,7 @@ sealed class StudioIntent : ViewIntent {
         data class SetColorBefore(val color: Int) : OnionSkin()
         data class SetColorAfter(val color: Int) : OnionSkin()
         data class SetOpacity(val opacity: Float) : OnionSkin()
+        data class SetActiveLayerOnly(val activeOnly: Boolean) : OnionSkin()
         object Reset : OnionSkin()
     }
 
@@ -337,6 +347,9 @@ sealed class StudioIntent : ViewIntent {
 
     sealed class Fill : StudioIntent() {
         data class SetPendingTap(val offset: Point2?) : Fill()
+
+        /** Fills the area at [offset] at once; Undo takes it back (R3-31). */
+        data class At(val offset: Point2) : Fill()
         data class SetDockPosition(val offset: Point2) : Fill()
         object Confirm : Fill()
         object Cancel : Fill()

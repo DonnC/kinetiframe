@@ -204,6 +204,9 @@ class LayerManager(
             is StudioIntent.Layer.SetLayerOpacity -> setLayerOpacity(intent.index, intent.opacity)
 
             is StudioIntent.Layer.RenameLayer -> renameLayer(intent.index, intent.name)
+
+            // Pixel edits across frames belong to LayerContentManager.
+            is StudioIntent.Layer.DuplicateLayer, is StudioIntent.Layer.MergeLayerDown -> Unit
         }
     }
 }

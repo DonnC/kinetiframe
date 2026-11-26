@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.LinearProgressIndicator
@@ -37,8 +36,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.export.model.ExportPreset
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.readableWidth
 import com.donnclab.kinetiframe.presentation.common.shareFile
+import com.donnclab.kinetiframe.presentation.common.viewFile
 import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.launch
 
@@ -91,13 +93,14 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
     }
 
     Scaffold(
-        topBar = { CenterAlignedTopAppBar(title = { Text(stringResource(R.string.export_title)) }) },
+        // A way back without finishing an export (R3-7); the system Back does the same.
+        topBar = { AddFlowTopBar(title = stringResource(R.string.export_title), onBack = onExit) },
         snackbarHost = { SnackbarHost(snackbar) },
     ) { padding ->
         Box(Modifier.padding(padding).fillMaxSize()) {
             when (val current = state.phase) {
                 is ExportPhase.ChoosingPreset -> Column(
-                    Modifier.align(Alignment.Center).padding(Dimens.spaceXlPlus).fillMaxWidth(),
+                    Modifier.align(Alignment.Center).readableWidth().padding(Dimens.spaceXlPlus).fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
                 ) {
@@ -122,7 +125,7 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                 }
 
                 is ExportPhase.Rendering -> Column(
-                    Modifier.align(Alignment.Center).padding(Dimens.spaceXlPlus),
+                    Modifier.align(Alignment.Center).readableWidth().padding(Dimens.spaceXlPlus),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
                 ) {
@@ -136,11 +139,22 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                 }
 
                 is ExportPhase.Done -> Column(
-                    Modifier.align(Alignment.Center).padding(Dimens.spaceXlPlus),
+                    Modifier.align(Alignment.Center).readableWidth().padding(Dimens.spaceXlPlus),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
                 ) {
                     Text(stringResource(R.string.export_ready), style = MaterialTheme.typography.titleMedium)
+                    // Watch the video before saving or sharing it (R3-7).
+                    OutlinedButton(
+                        onClick = {
+                            if (!viewFile(context, current.file, "video/mp4")) {
+                                scope.launch { snackbar.showSnackbar(resources.getString(R.string.export_no_player)) }
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(stringResource(R.string.export_watch))
+                    }
                     Button(onClick = ::requestSaveToGallery, modifier = Modifier.fillMaxWidth()) {
                         Text(stringResource(R.string.export_save_to_gallery))
                     }
@@ -153,7 +167,7 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
                 }
 
                 is ExportPhase.Failed -> Column(
-                    Modifier.align(Alignment.Center).padding(Dimens.spaceXlPlus),
+                    Modifier.align(Alignment.Center).readableWidth().padding(Dimens.spaceXlPlus),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
                 ) {

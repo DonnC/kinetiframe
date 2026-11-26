@@ -30,6 +30,13 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ### Changed
 
+- Tablets and foldables get layouts of their own instead of a stretched phone layout: a
+  navigation rail instead of the bottom bar, project, actor and pack grids with as many columns
+  as fit, layers beside the canvas instead of over it, the drawing bar's buttons kept together,
+  and Frames tiles shaped like the canvas. New Project, Settings and Export keep a readable width
+  instead of stretching across the screen. Layouts follow the window's width, so split screen and
+  landscape phones get them too.
+
 - A new identity: a bouncing-ball logo that stays clear at small sizes, the Nunito font across
   the app and in the wordmark, and one brand colour, carmine, on graphite and paper. Every
   interface colour is a tone of that carmine, the greys are neutral so they don't tint your
@@ -69,6 +76,44 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ### Fixed
 
+- A frame you deleted right after drawing on it no longer comes back in the next frame you add,
+  and deleting or pasting frames while drawing no longer overwrites a neighbouring frame.
+- One colour for every tool: the colour you pick is the one the pen, shapes, fill and text use,
+  and the studio opens with the last colour you picked instead of black.
+- Paste puts a drawing exactly where it was copied from, so it carries to the next frame
+  without moving. It used to land a little down and to the right.
+- The editor's frame-rate chips wrap onto a second line instead of hiding 24 and 30.
+- Colours: the editor's colour picker chooses palettes from a dropdown instead of a row of chips
+  that cut the last palette off, My colours
+  can't be deleted, and long-pressing a colour shows its hex with Remove, as in Library, rather
+  than removing it at once. A screen reader says a saved colour's hex once, not twice.
+- Making a palette no longer grows the sheet under your finger when you add its first colour.
+- New Project says why Create is greyed out until the project has a name, and Custom size starts
+  from the size you had chosen, so its fields and label agree.
+- Home opens on Recent when the app starts, every project card shows its length as time and
+  frames ("0:02 · 48 frames"), and a new collection suggests a name not already in use.
+- Library's project sheet and the canvas size list stay clear of the navigation bar.
+- Frames can be reordered: in Frames, long-press a frame and drag it to its new place, or select
+  one and move it earlier or later. The timeline's frame
+  menu has Duplicate, and the Frames actions say what they do ("Paste after selection").
+- Wording: New Project's square card is "Facebook post", as on Export; the sample actor is
+  "Tavi · Four angles" on new installs; and a new performance gets a number ("New performance 2")
+  instead of repeating a name the actor already uses.
+- Fill fills with one tap; Undo takes it back. There is no confirm step any more.
+- Onion skin has a switch on the drawing bar that shows whether it is on, and shows every visible
+  layer, with "Active layer only" in its panel.
+- The tool rail is tall enough for all its tools, so Fill is no longer cut off.
+- Holding a drawing is picked on the timeline: choose Held drawing, then tap frames before or
+  after to set the range. A hold can now reach back as well as forward, and there's no frame
+  number to type.
+- Each layer has a menu with Rename, Duplicate, Merge down and Delete. Tapping a layer selects it
+  instead of starting a rename, + adds a drawing layer straight away, and the layers panel is only
+  as tall as its layers, so it covers less of the canvas.
+- Shapes has Line, Rectangle and Ellipse beside the construction guides, and starts on Line. The
+  brush name on its card is readable in dark mode.
+- Export has a back arrow, and a finished export can be watched before you save or share it.
+- Timeline and Frames thumbnails show the whole canvas on white paper, in the canvas's shape. A
+  tall canvas used to be cropped to a square on a dark tile, so frames looked empty.
 - The frame-rate preview plays at the exact rate chosen. It used to run slow, so 24 fps looked
   like about 20.
 - Dragging a project onto another to start a collection could be swallowed by the card's tap.

@@ -40,7 +40,7 @@ In Android Studio › Settings › Languages & Frameworks › Android SDK › SD
 Command-line Tools (latest)** and **Android Emulator**. Then:
 
 ```sh
-tools/dev-setup/emulators.sh install   # system images for API 37 and API 28 (once)
+tools/dev-setup/emulators.sh install   # system images for API 37.0 and API 28 (once)
 tools/dev-setup/emulators.sh create    # kf-phone-small, kf-phone, kf-foldable,
                                        # kf-tablet-small, kf-tablet, kf-phone-oldest
 tools/dev-setup/emulators.sh start kf-tablet kf-phone
@@ -52,7 +52,7 @@ tools/dev-setup/emulators.sh install-app   # build once, install on every runnin
 | kf-phone-small | small_phone | Cramped layouts and cut-off labels |
 | kf-phone | pixel_8 | The common case |
 | kf-foldable | pixel_9_pro_fold | Folding and unfolding mid-session, two-pane widths |
-| kf-tablet-small | nexus_7_2013 | 7-inch tablet in both orientations |
+| kf-tablet-small | small_tablet | 7-inch tablet in both orientations |
 | kf-tablet | pixel_tablet | 11-inch tablet, landscape drawing |
 | kf-phone-oldest | pixel_4 at API 28 | The oldest Android KinetiFrame supports |
 

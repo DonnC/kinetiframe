@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -43,11 +44,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
@@ -78,7 +83,21 @@ internal fun ColourPickSheet(
     var chosen by remember { mutableStateOf(emptyList<Long>()) }
     // A typed hex restarts the wheel there, so the slider then adjusts the typed colour.
     var wheelRestarts by remember { mutableIntStateOf(0) }
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(true)) {
+    // Let go of the name field before the sheet closes. Otherwise focus can pass to the Library's
+    // search field behind the sheet and open the keyboard there (R3-4, seen on a Galaxy A56).
+    val focus = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
+    fun releaseKeyboard() {
+        keyboard?.hide()
+        focus.clearFocus(force = true)
+    }
+    ModalBottomSheet(
+        onDismissRequest = {
+            releaseKeyboard()
+            onDismiss()
+        },
+        sheetState = rememberModalBottomSheetState(true),
+    ) {
         Column(
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
                 .padding(horizontal = Dimens.spaceXl).navigationBarsPadding(),
@@ -128,7 +147,10 @@ internal fun ColourPickSheet(
             }
             Button(
                 // A palette made without pressing "Add this colour" keeps the colour on the wheel.
-                onClick = { onSave(name.trim(), if (askName) chosen.ifEmpty { listOf(argb) } else listOf(argb)) },
+                onClick = {
+                    releaseKeyboard()
+                    onSave(name.trim(), if (askName) chosen.ifEmpty { listOf(argb) } else listOf(argb))
+                },
                 enabled = !askName || name.isNotBlank(),
                 modifier = Modifier.fillMaxWidth().padding(bottom = Dimens.spaceL),
             ) { Text(stringResource(if (askName) R.string.palette_create else R.string.colours_save)) }
@@ -144,27 +166,30 @@ private fun ChosenColours(chosen: List<Long>, onAdd: () -> Unit, onRemove: (Long
         OutlinedButton(onClick = onAdd, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.colours_add_this))
         }
-        if (chosen.isNotEmpty()) {
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
-                verticalArrangement = Arrangement.spacedBy(Dimens.spaceS),
-            ) {
-                chosen.forEach { argb ->
-                    val hex = PaletteEdits.hex(argb)
-                    ColourTile(
-                        argb,
-                        Modifier.size(LibraryTokens.colourSwatch)
-                            .semantics { contentDescription = hex }
-                            .clickable { onRemove(argb) },
-                    )
-                }
+        // Room for the first row and the hint is kept while empty, so adding the first colour
+        // doesn't grow the sheet and move the wheel under the finger (R3-5).
+        FlowRow(
+            Modifier.fillMaxWidth().heightIn(min = LibraryTokens.colourSwatch),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spaceS),
+        ) {
+            chosen.forEach { argb ->
+                val hex = PaletteEdits.hex(argb)
+                ColourTile(
+                    argb,
+                    Modifier.size(LibraryTokens.colourSwatch)
+                        .semantics { contentDescription = hex }
+                        .clickable { onRemove(argb) },
+                )
             }
-            Text(
-                stringResource(R.string.colours_tap_to_take_out),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
+        Text(
+            stringResource(R.string.colours_tap_to_take_out),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            // Hidden but still taking its space while empty, and silent to screen readers then.
+            modifier = if (chosen.isEmpty()) Modifier.alpha(0f).clearAndSetSemantics {} else Modifier,
+        )
     }
 }
 

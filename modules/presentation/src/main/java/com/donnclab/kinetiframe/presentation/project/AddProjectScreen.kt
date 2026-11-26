@@ -36,6 +36,7 @@ import com.donnclab.kinetiframe.presentation.common.AddFlowBottomBar
 import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.CompactTextField
 import com.donnclab.kinetiframe.presentation.common.FrameRatePicker
+import com.donnclab.kinetiframe.presentation.common.readableWidth
 
 /**
  * Home's "New Project" flow: a name, a canvas size picked from picture cards for the places
@@ -53,27 +54,31 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
                 buttonLabel = stringResource(R.string.add_project_create),
                 enabled = state.name.isNotBlank(),
                 onClick = callbacks.onCreate,
-                subtitle = with(state.canvasSelection) {
-                    stringResource(
-                        R.string.add_project_summary,
-                        preset.displayName(),
-                        dimensions.width,
-                        dimensions.height,
-                        state.fps,
-                    )
+                // Create stays disabled until there is a name; say so instead of leaving it unexplained (R3-9).
+                subtitle = if (state.name.isBlank()) {
+                    stringResource(R.string.add_project_name_needed)
+                } else {
+                    with(state.canvasSelection) {
+                        stringResource(
+                            R.string.add_project_summary,
+                            preset.displayName(),
+                            dimensions.width,
+                            dimensions.height,
+                            state.fps,
+                        )
+                    }
                 },
             )
         },
     ) { padding ->
         Column(
             Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState())
-                .padding(horizontal = Dimens.spaceXl),
+                .readableWidth().padding(horizontal = Dimens.spaceXl),
         ) {
             CompactTextField(
                 value = state.name,
                 onValueChange = { callbacks.onStateChange(state.copy(name = it)) },
                 label = { Text(stringResource(R.string.add_project_name)) },
-                placeholder = { Text(stringResource(R.string.add_project_name_placeholder)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(top = Dimens.spaceXl),
             )
@@ -83,7 +88,7 @@ fun AddProjectScreen(state: AddProjectFormState, callbacks: AddProjectCallbacks,
                 }
             }
             CanvasShapeCards(state.canvasSelection) { preset ->
-                callbacks.onStateChange(state.copy(canvasSelection = state.canvasSelection.copy(preset = preset)))
+                callbacks.onStateChange(state.copy(canvasSelection = state.canvasSelection.choose(preset)))
                 // Custom opens the sheet, where its width and height are typed.
                 if (preset.isCustom) callbacks.onOpenCanvasSize()
             }

@@ -63,6 +63,7 @@ import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextIconButton
 import com.donnclab.kinetiframe.presentation.common.IconContextMenu
+import com.donnclab.kinetiframe.presentation.common.windowWidthClass
 import com.donnclab.kinetiframe.presentation.studio.actorstudio.rigging.StudioModePill
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
@@ -133,13 +134,20 @@ fun EditorTopBar(
         shape = RoundedCornerShape(bottomStart = Dimens.radiusL, bottomEnd = Dimens.radiusL),
         tonalElevation = Dimens.elevationFlat,
     ) {
+        val compactBar = windowWidthClass().isCompact
         Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = Dimens.spaceXs),
             verticalAlignment = Alignment.CenterVertically,
-            // The drawing bar spreads its tools evenly; Actor Studio packs its own controls from the start.
-            horizontalArrangement = if (isActorStudio) Arrangement.Start else Arrangement.SpaceEvenly,
+            // The drawing bar spreads its tools evenly on a phone and keeps them together, centred, on
+            // wider windows, where spreading put metres of bar between them. Actor Studio packs its own
+            // controls from the start.
+            horizontalArrangement = when {
+                isActorStudio -> Arrangement.Start
+                compactBar -> Arrangement.SpaceEvenly
+                else -> Arrangement.spacedBy(Dimens.spaceXl, Alignment.CenterHorizontally)
+            },
         ) {
             if (isActorStudio) {
                 onHomeClick?.let { home ->
@@ -360,8 +368,9 @@ fun EditorTopBar(
 
 /**
  * The drawing studio's everyday tools, laid straight into the evenly spaced bar: Home, Undo, Redo,
- * Copy, Paste and Reset view, which undoes zoom, pan and rotation. Less frequent actions, such as Save,
- * Focus and the safe frame, are in the menu.
+ * Copy, Paste, Reset view, which undoes zoom, pan and rotation, and the onion skin switch, lit while
+ * it is on (R3-26). Less frequent actions, such as Save, Focus, the safe frame and onion skin
+ * settings, are in the menu.
  */
 @Composable
 private fun DrawingBarTools(state: StudioState, onIntent: (StudioIntent) -> Unit, onHomeClick: (() -> Unit)?) {
@@ -389,6 +398,14 @@ private fun DrawingBarTools(state: StudioState, onIntent: (StudioIntent) -> Unit
             stringResource(R.string.editor_reset_view),
             { onIntent(StudioIntent.View.ResetCanvasTransform) },
             enabled = state.isCanvasTransformed,
+        ),
+    )
+    ContextIconButton(
+        ContextIconAction(
+            Lucide.Ghost,
+            stringResource(R.string.editor_onion_skin_toggle),
+            { onIntent(StudioIntent.OnionSkin.SetEnabled(!state.onionSkin.enabled)) },
+            selected = state.onionSkin.enabled,
         ),
     )
 }

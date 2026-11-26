@@ -28,6 +28,9 @@ sealed interface SettingsIntent : ViewIntent {
     data class PlaybackTools(val hidden: Boolean) : SettingsIntent
     data class MenuLabels(val shown: Boolean) : SettingsIntent
     data class Autosave(val on: Boolean) : SettingsIntent
+
+    /** The studio picked a colour; it opens with it next time (R3-14). */
+    data class PenColour(val argb: Int) : SettingsIntent
 }
 sealed interface SettingsEffect : ViewEffect
 
@@ -72,6 +75,8 @@ class SettingsViewModel(private val store: AppPreferencesStore) :
                     is SettingsIntent.MenuLabels -> currentState.preferences.copy(showMenuLabels = intent.shown)
 
                     is SettingsIntent.Autosave -> currentState.preferences.copy(autosave = intent.on)
+
+                    is SettingsIntent.PenColour -> currentState.preferences.copy(penColor = intent.argb)
                 }
                 try {
                     store.save(next)

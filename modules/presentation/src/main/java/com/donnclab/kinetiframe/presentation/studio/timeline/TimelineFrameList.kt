@@ -33,6 +33,9 @@ fun TimelineFrameList(
     onContextDismissed: () -> Unit,
     modifier: Modifier = Modifier,
     onAddFrame: (() -> Unit)? = null,
+    /** While a hold is being picked, the frames it covers; taps then set its range instead. */
+    holdRange: IntRange? = null,
+    onHoldPick: ((Int) -> Unit)? = null,
 ) {
     ObserveTimelineScrubbing(
         listState,
@@ -70,8 +73,11 @@ fun TimelineFrameList(
                             linked = state.layers.layers.getOrNull(state.layers.activeLayerIndex)?.id?.let {
                                 state.layers.linkedCels[it]?.containsKey(index)
                             } == true,
+                            inHoldRange = holdRange?.contains(index) == true,
                             onClick = {
-                                if (index == state.animation.currentFrame) {
+                                if (onHoldPick != null) {
+                                    onHoldPick(index)
+                                } else if (index == state.animation.currentFrame) {
                                     onContextRequested(index)
                                 } else {
                                     onContextDismissed()

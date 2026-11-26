@@ -52,6 +52,8 @@ import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
 import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.MediaCard
+import com.donnclab.kinetiframe.presentation.common.browseGridCells
+import com.donnclab.kinetiframe.presentation.common.unusedName
 
 /** Drag label for a project being dragged onto another project or a collection. */
 private const val PROJECT_DRAG_LABEL = "kinetiframe-project"
@@ -131,7 +133,7 @@ internal fun CollectionGrid(
     onDropProject: (draggedKey: String, collection: String) -> Unit,
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = browseGridCells(),
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(
             start = Dimens.spaceL,
@@ -185,11 +187,14 @@ internal fun OpenCollectionHeader(name: String, onBack: () -> Unit) {
     }
 }
 
-/** Names the collection made by dropping one project onto another. */
+/**
+ * Names the collection made by dropping one project onto another. It suggests a name not already in
+ * [taken] ("My series", then "My series 2"…), since reusing one would merge the two (R3-10).
+ */
 @Composable
-internal fun NewCollectionDialog(onCreate: (String) -> Unit, onDismiss: () -> Unit) {
-    val defaultName = stringResource(R.string.home_collection_default_name)
-    var name by remember { mutableStateOf(defaultName) }
+internal fun NewCollectionDialog(taken: Set<String>, onCreate: (String) -> Unit, onDismiss: () -> Unit) {
+    val base = stringResource(R.string.home_collection_default_name)
+    var name by remember { mutableStateOf(unusedName(base, taken)) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.home_collection_new)) },

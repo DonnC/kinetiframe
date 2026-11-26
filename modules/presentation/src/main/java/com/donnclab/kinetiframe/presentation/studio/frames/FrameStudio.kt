@@ -80,6 +80,11 @@ fun FrameStudio(
     val selected = remember { mutableStateListOf<Int>() }
     val previews = remember { mutableStateMapOf<Int, Bitmap>() }
     val gridState = rememberLazyGridState()
+    val drag = remember(gridState) { FrameGridDragState(gridState) }
+    // Tiles take the canvas's shape (within limits) so a frame fills its tile instead of sitting in
+    // bands of empty card; the grid then fits as many as the window has room for.
+    val tileAspect = state.project.stage.let { it.width.toFloat() / it.height.coerceAtLeast(1) }
+        .coerceIn(EditorTokens.FRAME_TILE_TALLEST, EditorTokens.FRAME_TILE_WIDEST)
 
     val thumbnailEditBitmap = state.currentBitmap.takeUnless { state.animation.isPlaying }
     LaunchedEffect(state.project, state.animation.totalFrames, state.layers, thumbnailEditBitmap) {
@@ -162,8 +167,15 @@ fun FrameStudio(
                             StudioFrameCard(
                                 index = index,
                                 bitmap = previews[index],
-                                selected = index in selected,
-                                modifier = Modifier.animateItem(),
+                                // While dragging, the frame under the finger shows where it lands.
+                                selected = index in selected || (drag.dragging != null && drag.target == index),
+                                aspect = tileAspect,
+                                modifier = with(drag) { Modifier.animateItem().lifted(index) }
+                                    .frameDrag(drag, index) { from, to ->
+                                        onIntent(StudioIntent.Frame.MoveFrame(from, to))
+                                        selected.clear()
+                                        selected.add(to)
+                                    },
                                 onClick = {
                                     if (index in selected) selected.remove(index) else selected.add(index)
                                 },
@@ -179,64 +191,84 @@ fun FrameStudio(
                             exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
                             modifier = Modifier.padding(bottom = Dimens.spaceL),
                         ) {
-                            Surface(
-                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
-                                shape = RoundedCornerShape(Dimens.radiusPill),
-                                tonalElevation = Dimens.elevationFloating,
-                                border = BorderStroke(Dimens.borderThin, EditorTokens.border.copy(alpha = 0.25f)),
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(Dimens.spaceS),
                             ) {
-                                Row(
-                                    modifier = Modifier.padding(
-                                        horizontal = Dimens.spaceM,
-                                        vertical = Dimens.spaceXsPlus,
-                                    ),
-                                    horizontalArrangement = Arrangement.spacedBy(Dimens.spaceL),
-                                    verticalAlignment = Alignment.CenterVertically,
+                                // One frame selected: move it a place earlier or later (R3-20). A bar of
+                                // its own, since the main toolbar is already full on a phone.
+                                selected.singleOrNull()?.let { only ->
+                                    FrameMoveBar(
+                                        canMoveEarlier = only > 0,
+                                        canMoveLater = only < state.animation.totalFrames - 1,
+                                        onMove = { step ->
+                                            onIntent(StudioIntent.Frame.MoveFrame(only, only + step))
+                                            selected.clear()
+                                            selected.add(only + step)
+                                        },
+                                    )
+                                }
+                                Surface(
+                                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
+                                    shape = RoundedCornerShape(Dimens.radiusPill),
+                                    tonalElevation = Dimens.elevationFloating,
+                                    border = BorderStroke(Dimens.borderThin, EditorTokens.border.copy(alpha = 0.25f)),
                                 ) {
-                                    val minIdx = selected.minOrNull() ?: state.animation.currentFrame
-                                    val maxIdx = selected.maxOrNull() ?: state.animation.currentFrame
+                                    Row(
+                                        modifier = Modifier.padding(
+                                            horizontal = Dimens.spaceM,
+                                            vertical = Dimens.spaceXsPlus,
+                                        ),
+                                        horizontalArrangement = Arrangement.spacedBy(Dimens.spaceL),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        val minIdx = selected.minOrNull() ?: state.animation.currentFrame
+                                        val maxIdx = selected.maxOrNull() ?: state.animation.currentFrame
 
-                                    StudioToolbarAction(
-                                        icon = Lucide.ClipboardPaste,
-                                        arrowLeft = true,
-                                        label = stringResource(R.string.frame_studio_paste),
-                                        onClick = { onIntent(StudioIntent.Frame.PasteFrames(minIdx, before = true)) },
-                                    )
-                                    StudioToolbarAction(
-                                        icon = Lucide.SquarePlus,
-                                        arrowLeft = true,
-                                        label = stringResource(R.string.frame_studio_add),
-                                        onClick = { onIntent(StudioIntent.Frame.AddFrameAt(minIdx)) },
-                                    )
-                                    StudioToolbarAction(
-                                        icon = Lucide.Trash2,
-                                        label = stringResource(R.string.frame_studio_erase),
-                                        onClick = {
-                                            if (selected.size < state.animation.totalFrames) {
-                                                onIntent(StudioIntent.Frame.DeleteFrames(selected.toList()))
-                                                selected.clear()
-                                            }
-                                        },
-                                    )
-                                    StudioToolbarAction(
-                                        icon = Lucide.Copy,
-                                        label = stringResource(R.string.frame_studio_copy),
-                                        onClick = { onIntent(StudioIntent.Frame.CopyFrames(selected.toList())) },
-                                    )
-                                    StudioToolbarAction(
-                                        icon = Lucide.SquarePlus,
-                                        arrowRight = true,
-                                        label = stringResource(R.string.frame_studio_add),
-                                        onClick = { onIntent(StudioIntent.Frame.AddFrameAt(maxIdx + 1)) },
-                                    )
-                                    StudioToolbarAction(
-                                        icon = Lucide.ClipboardPaste,
-                                        arrowRight = true,
-                                        label = stringResource(R.string.frame_studio_paste),
-                                        onClick = {
-                                            onIntent(StudioIntent.Frame.PasteFrames(maxIdx, before = false))
-                                        },
-                                    )
+                                        StudioToolbarAction(
+                                            icon = Lucide.ClipboardPaste,
+                                            arrowLeft = true,
+                                            label = stringResource(R.string.frame_studio_paste_before),
+                                            onClick = {
+                                                onIntent(StudioIntent.Frame.PasteFrames(minIdx, before = true))
+                                            },
+                                        )
+                                        StudioToolbarAction(
+                                            icon = Lucide.SquarePlus,
+                                            arrowLeft = true,
+                                            label = stringResource(R.string.frame_studio_add_before),
+                                            onClick = { onIntent(StudioIntent.Frame.AddFrameAt(minIdx)) },
+                                        )
+                                        StudioToolbarAction(
+                                            icon = Lucide.Trash2,
+                                            label = stringResource(R.string.frame_studio_delete),
+                                            onClick = {
+                                                if (selected.size < state.animation.totalFrames) {
+                                                    onIntent(StudioIntent.Frame.DeleteFrames(selected.toList()))
+                                                    selected.clear()
+                                                }
+                                            },
+                                        )
+                                        StudioToolbarAction(
+                                            icon = Lucide.Copy,
+                                            label = stringResource(R.string.frame_studio_copy),
+                                            onClick = { onIntent(StudioIntent.Frame.CopyFrames(selected.toList())) },
+                                        )
+                                        StudioToolbarAction(
+                                            icon = Lucide.SquarePlus,
+                                            arrowRight = true,
+                                            label = stringResource(R.string.frame_studio_add_after),
+                                            onClick = { onIntent(StudioIntent.Frame.AddFrameAt(maxIdx + 1)) },
+                                        )
+                                        StudioToolbarAction(
+                                            icon = Lucide.ClipboardPaste,
+                                            arrowRight = true,
+                                            label = stringResource(R.string.frame_studio_paste_after),
+                                            onClick = {
+                                                onIntent(StudioIntent.Frame.PasteFrames(maxIdx, before = false))
+                                            },
+                                        )
+                                    }
                                 }
                             }
                         }

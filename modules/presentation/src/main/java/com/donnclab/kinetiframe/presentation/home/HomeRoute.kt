@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,12 +21,14 @@ import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
+import com.donnclab.kinetiframe.library.model.BrowserPosition
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerEffect
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
 import com.donnclab.kinetiframe.presentation.actors.ActorManagerViewModel
 import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.common.shareFile
+import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserIntent
 import com.donnclab.kinetiframe.presentation.library.LibraryPickerDialog
 import com.donnclab.kinetiframe.presentation.library.packs.PacksTabEffect
 import com.donnclab.kinetiframe.presentation.library.packs.PacksTabIntent
@@ -57,6 +60,15 @@ fun HomeRoute(
     val actorModel: ActorManagerViewModel = appViewModel()
     val hierarchyModel: com.donnclab.kinetiframe.presentation.library.HierarchyBrowserViewModel = appViewModel()
     val hierarchyState by hierarchyModel.state.collectAsStateWithLifecycle()
+    // Home opens on Recent each time the app starts, not on the last filter used (R3-12). Coming
+    // back from a project keeps the filter, since this flag survives the trip.
+    var openedOnRecent by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        if (!openedOnRecent) {
+            openedOnRecent = true
+            hierarchyModel.handleIntent(HierarchyBrowserIntent.Browse(HOME_PROJECTS_BROWSER, BrowserPosition()))
+        }
+    }
     val packModel: PacksTabViewModel = appViewModel()
 
     val projectState by projectModel.state.collectAsStateWithLifecycle()

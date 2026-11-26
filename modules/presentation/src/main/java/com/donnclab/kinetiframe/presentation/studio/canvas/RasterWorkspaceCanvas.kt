@@ -89,6 +89,7 @@ fun RasterWorkspaceCanvas(
             onEraserCursorChange = { offset -> onIntent(StudioIntent.Draw.SetEraserCursor(offset?.toPoint2())) },
             onionSkinEnabled = state.onionSkin.enabled && !state.animation.isPlaying,
             onionSkinFramesBefore = state.onionSkin.depthBefore,
+            onionSkinActiveLayerOnly = state.onionSkin.activeLayerOnly,
             onionSkinFramesAfter = state.onionSkin.depthAfter,
             onionSkinColorBefore = Color(state.onionSkin.colorBefore),
             onionSkinColorAfter = Color(state.onionSkin.colorAfter),

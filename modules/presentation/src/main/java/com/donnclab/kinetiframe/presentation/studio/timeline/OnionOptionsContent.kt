@@ -104,6 +104,21 @@ fun OnionOptionsContent(state: StudioState, onIntent: (StudioIntent) -> Unit, on
             }
         }
 
+        // Every visible layer by default; this narrows onion skin to the layer being drawn (R3-23).
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                stringResource(R.string.onion_active_layer_only),
+                style = MaterialTheme.typography.bodyMedium,
+                color = EditorTokens.dark,
+                modifier = Modifier.weight(1f),
+            )
+            Switch(
+                checked = state.onionSkin.activeLayerOnly,
+                onCheckedChange = { onIntent(StudioIntent.OnionSkin.SetActiveLayerOnly(it)) },
+                modifier = Modifier.scale(0.72f),
+            )
+        }
+
         Spacer(Modifier.height(Dimens.spaceM))
 
         // Visual Preview

@@ -19,3 +19,21 @@ fun shareFile(context: Context, file: File, title: String, mimeType: String = "a
     }
     context.startActivity(Intent.createChooser(sendIntent, title))
 }
+
+/**
+ * Opens [file] in an app that can show it, such as the phone's video player. False when no app can,
+ * so the caller can say so.
+ */
+fun viewFile(context: Context, file: File, mimeType: String): Boolean {
+    val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+    val view = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(uri, mimeType)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    return try {
+        context.startActivity(view)
+        true
+    } catch (_: android.content.ActivityNotFoundException) {
+        false
+    }
+}

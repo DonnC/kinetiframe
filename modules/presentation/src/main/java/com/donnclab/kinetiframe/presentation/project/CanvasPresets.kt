@@ -38,7 +38,9 @@ object CanvasPresets {
     val TikTok = CanvasPreset("TikTok", StageDimensions(1080, 1920))
     val InstagramPost = CanvasPreset("Instagram", StageDimensions(1080, 1350))
     val YouTube = CanvasPreset("YouTube", StageDimensions(1920, 1080))
-    val Facebook = CanvasPreset("Facebook", StageDimensions(1080, 1080))
+
+    // "post", since Facebook video is landscape and Export says so (R3-13).
+    val Facebook = CanvasPreset("Facebook post", StageDimensions(1080, 1080))
 
     /** The picture cards on New Project: the four places animators post most. Custom is in More sizes. */
     val shapes: List<CanvasPreset> = listOf(TikTok, InstagramPost, YouTube, Facebook)
@@ -85,4 +87,14 @@ data class CanvasSizeSelection(
     val customDimensions: StageDimensions = CanvasPresets.Custom.dimensions,
 ) {
     val dimensions: StageDimensions get() = if (preset.isCustom) customDimensions else preset.dimensions
+
+    /**
+     * Selects [next]. Custom starts from the size already chosen, so switching from TikTok keeps
+     * 1080 × 1920 to edit rather than jumping to Custom's 1920 × 1080 (R3-33).
+     */
+    fun choose(next: CanvasPreset): CanvasSizeSelection = if (next.isCustom && !preset.isCustom) {
+        copy(preset = next, customDimensions = dimensions)
+    } else {
+        copy(preset = next)
+    }
 }

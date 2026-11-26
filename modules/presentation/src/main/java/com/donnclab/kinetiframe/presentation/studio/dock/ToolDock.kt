@@ -272,7 +272,7 @@ fun ToolDock(
                                     onIntent(
                                         StudioIntent.Draw.SelectConstructionShape(
                                             state.tool.constructionShape
-                                                ?: com.donnclab.kinetiframe.studio.drawing.ConstructionShape.CAPSULE,
+                                                ?: com.donnclab.kinetiframe.studio.drawing.ConstructionShape.LINE,
                                         ),
                                     )
                                 },

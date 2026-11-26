@@ -13,6 +13,7 @@ import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AssetKind
 import com.donnclab.kinetiframe.presentation.common.AssetSummary
+import com.donnclab.kinetiframe.presentation.common.browseGridCells
 import com.donnclab.kinetiframe.presentation.library.LibraryIntent
 import com.donnclab.kinetiframe.presentation.library.catalog.AssetGridCard
 import com.donnclab.kinetiframe.presentation.library.catalog.FilterChipRow
@@ -53,7 +54,7 @@ private fun AssetGrid(items: List<AssetSummary>, onIntent: (LibraryIntent) -> Un
         return
     }
     LazyVerticalGrid(
-        columns = GridCells.Fixed(Dimens.gridColumns),
+        columns = browseGridCells(),
         contentPadding = PaddingValues(horizontal = Dimens.spaceXl, vertical = Dimens.spaceS),
         horizontalArrangement = Arrangement.spacedBy(Dimens.gridColumnGap),
         verticalArrangement = Arrangement.spacedBy(Dimens.gridColumnGap),

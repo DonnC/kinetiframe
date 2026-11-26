@@ -42,13 +42,16 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Plus
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.library.model.ColorSwatch
 import com.donnclab.kinetiframe.library.model.PaletteEdits
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.library.tabs.ColourDetailDialog
 import com.donnclab.kinetiframe.ui.appViewModel
 
 /**
  * The colours an animator reaches for most, under the colour wheel: recent colours, their saved
- * colours with a "+" to save the current one, and a hex field. Long-press a saved colour to remove it.
+ * colours with a "+" to save the current one, and a hex field. Long-press a saved colour to see its
+ * hex or remove it, as in Library.
  */
 @Composable
 fun QuickSwatches(color: Color, onPick: (Color) -> Unit) {
@@ -94,6 +97,7 @@ private fun SwatchRow(
     leading: (@Composable () -> Unit)? = null,
 ) {
     val haptics = LocalHapticFeedback.current
+    var opened by remember { mutableStateOf<Long?>(null) }
     LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
         leading?.let { item { it() } }
         items(colours, key = { it }) { argb ->
@@ -111,16 +115,23 @@ private fun SwatchRow(
                     .semantics { contentDescription = description }
                     .combinedClickable(
                         onClick = { onPick(swatch) },
-                        onLongClickLabel = onRemove?.let { stringResource(R.string.palette_remove_colour) },
+                        onLongClickLabel = onRemove?.let { stringResource(R.string.palette_open_colour) },
                         onLongClick = onRemove?.let {
                             {
                                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                                it(argb)
+                                opened = argb
                             }
                         },
                     ),
             )
         }
+    }
+    opened?.let { argb ->
+        ColourDetailDialog(
+            ColorSwatch(PaletteEdits.hex(argb), argb),
+            onRemove?.let { remove -> { remove(argb) } },
+            onDismiss = { opened = null },
+        )
     }
 }
 

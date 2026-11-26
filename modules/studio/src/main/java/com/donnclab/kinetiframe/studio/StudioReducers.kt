@@ -24,6 +24,10 @@ fun StudioState.reduce(intent: StudioIntent.OnionSkin): StudioState = when (inte
 
     is StudioIntent.OnionSkin.SetOpacity -> copy(onionSkin = onionSkin.copy(opacity = intent.opacity.coerceIn(0f, 1f)))
 
+    is StudioIntent.OnionSkin.SetActiveLayerOnly -> copy(
+        onionSkin = onionSkin.copy(activeLayerOnly = intent.activeOnly),
+    )
+
     StudioIntent.OnionSkin.Reset -> copy(onionSkin = OnionSkinState())
 }
 
@@ -34,7 +38,7 @@ internal fun StudioState.reduceToolSetting(intent: StudioIntent.Draw): StudioSta
         tool = tool.copy(activeTool = DrawingTool.BRUSH, constructionShape = intent.shape),
     )
 
-    is StudioIntent.Draw.SetBrushColor -> withActiveToolConfig { it.copy(color = intent.color) }
+    is StudioIntent.Draw.SetBrushColor -> withSharedColor(intent.color)
 
     is StudioIntent.Draw.SetBrushSize -> withActiveToolConfig { it.copy(size = intent.size.coerceIn(1f, 100f)) }
 
@@ -58,6 +62,17 @@ internal fun StudioState.reduceToolSetting(intent: StudioIntent.Draw): StudioSta
     StudioIntent.Draw.ClearAllHandwriting, StudioIntent.Draw.Undo, StudioIntent.Draw.Redo,
     -> this
 }
+
+/**
+ * One current colour for every tool that paints: pen, shapes, fill and text (R3-21). Size, opacity
+ * and brush stay per tool. Each config keeps a copy so saved tool settings keep their shape.
+ */
+internal fun StudioState.withSharedColor(color: Int): StudioState = copy(
+    tool = tool.copy(
+        configs = tool.configs.mapValues { (_, config) -> config.copy(color = color) },
+        constructionConfig = tool.constructionConfig.copy(color = color),
+    ),
+)
 
 /** Updates the active tool's settings, or the construction shape's while one is being drawn. */
 internal fun StudioState.withActiveToolConfig(block: (ToolConfig) -> ToolConfig): StudioState {
@@ -128,7 +143,7 @@ internal fun StudioState.reduceFillSetting(intent: StudioIntent.Fill): StudioSta
     is StudioIntent.Fill.SetDockPosition -> copy(fill = fill.copy(dockOffset = intent.offset))
     StudioIntent.Fill.Cancel -> clearFillPreview()
     is StudioIntent.Fill.SetPreviewBitmap -> copy(fill = fill.copy(previewBitmap = intent.bitmap))
-    is StudioIntent.Fill.SetPendingTap, StudioIntent.Fill.Confirm -> this
+    is StudioIntent.Fill.SetPendingTap, is StudioIntent.Fill.At, StudioIntent.Fill.Confirm -> this
 }
 
 internal fun StudioState.clearFillPreview(): StudioState =

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,6 +42,7 @@ import com.composables.icons.lucide.FlipHorizontal
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Minus
 import com.composables.icons.lucide.Pill
+import com.composables.icons.lucide.Slash
 import com.composables.icons.lucide.Spline
 import com.composables.icons.lucide.Square
 import com.composables.icons.lucide.Triangle
@@ -159,7 +161,29 @@ fun BrushOptionsContent(state: StudioState, tool: DrawingTool, onIntent: (Studio
             }
         } else if (state.tool.constructionShape != null) {
             HorizontalDivider(modifier = Modifier.padding(vertical = Dimens.spaceM))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+            // Wraps: seven shapes don't fit the panel's width in one row.
+            FlowRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
+                ToolIconButton(
+                    Lucide.Slash,
+                    stringResource(R.string.shape_line),
+                    state.tool.constructionShape == ConstructionShape.LINE,
+                ) {
+                    onIntent(StudioIntent.Draw.SelectConstructionShape(ConstructionShape.LINE))
+                }
+                ToolIconButton(
+                    Lucide.Square,
+                    stringResource(R.string.shape_rectangle),
+                    state.tool.constructionShape == ConstructionShape.RECTANGLE,
+                ) {
+                    onIntent(StudioIntent.Draw.SelectConstructionShape(ConstructionShape.RECTANGLE))
+                }
+                ToolIconButton(
+                    Lucide.Circle,
+                    stringResource(R.string.shape_ellipse),
+                    state.tool.constructionShape == ConstructionShape.ELLIPSE,
+                ) {
+                    onIntent(StudioIntent.Draw.SelectConstructionShape(ConstructionShape.ELLIPSE))
+                }
                 ToolIconButton(
                     Lucide.Pill,
                     stringResource(R.string.shape_capsule),
@@ -236,7 +260,12 @@ private fun BrushPickerRow(
                 contentScale = ContentScale.Fit,
             )
             Spacer(Modifier.size(EditorTokens.previewGap))
-            Text(brush.displayName, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+            Text(
+                brush.displayName,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = EditorTokens.brushPreviewText,
+            )
         }
         DropdownMenu(expanded = expanded, onDismissRequest = onDismiss) {
             BrushCatalog.drawingBrushes.forEach { option ->

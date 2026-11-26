@@ -367,7 +367,8 @@ class SelectionManager(
                 } else {
                     emptyMap() // Performances are project-scoped, not cross-project raw pixels.
                 }
-                val matrix = saved.transform.copy(tx = saved.transform.tx + 20f, ty = saved.transform.ty + 20f)
+                // In place, not offset: animators paste to carry a drawing to another frame unmoved (R3-22).
+                val matrix = saved.transform
                 // One video lane: copies append sequentially rather than introducing overlapping decoders.
                 var nextVideoFrame = getState().project.videoClips.values.maxOfOrNull { it.timelineEndFrame } ?: 0
                 val audioCopies = mutableMapOf<String, com.donnclab.kinetiframe.core.document.AudioClipPlacement>()

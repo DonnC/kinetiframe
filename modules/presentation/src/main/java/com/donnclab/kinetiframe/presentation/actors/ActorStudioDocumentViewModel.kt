@@ -25,6 +25,7 @@ import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.presentation.common.toUiText
+import com.donnclab.kinetiframe.presentation.common.unusedName
 import com.donnclab.kinetiframe.ui.BaseViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
@@ -293,7 +294,9 @@ class ActorStudioDocumentViewModel(
                             performanceId = existing?.performanceId ?: "performance-${id()}",
                             projectId = destination,
                             actorId = actor.actorId,
-                            actorRevisionId = revision.revisionId, displayName = name.trim(), durationMicros = duration,
+                            actorRevisionId = revision.revisionId,
+                            displayName = performanceName(name, destination, actor.actorId, existing?.performanceId),
+                            durationMicros = duration,
                             playback = if (preset?.recipe?.loop ==
                                 false
                             ) {
@@ -329,6 +332,20 @@ class ActorStudioDocumentViewModel(
         }
     }
 
+    /**
+     * [name], numbered if another performance of this actor in the project already has it, so a
+     * list of saves isn't a column of identical "New performance" rows (R3-35). [keep] is the
+     * performance being re-saved, which may keep its own name.
+     */
+    private fun performanceName(name: String, projectId: String, actorId: String, keep: String?): String {
+        val saved = when (val listed = performances?.list(projectId, actorId)) {
+            is StoreResult.Value -> listed.value
+            else -> emptyList()
+        }
+        val others = saved.filter { it.performanceId != keep }.map { it.displayName }
+        return unusedName(name, others)
+    }
+
     private fun duplicatePerformance(name: String) {
         val existing = currentState.performance ?: return
         val destination = projectId ?: return
@@ -338,7 +355,7 @@ class ActorStudioDocumentViewModel(
                     storeOperation {
                         val copy = existing.copy(
                             performanceId = "performance-${id()}",
-                            displayName = name.trim(),
+                            displayName = performanceName(name, destination, existing.actorId, keep = null),
                             createdAtEpochMs = now(),
                             updatedAtEpochMs = now(),
                         ).validate()

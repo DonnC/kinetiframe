@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Palette
@@ -90,18 +91,21 @@ fun LibraryScreen(
 
     state.openDetails?.let { details ->
         ModalBottomSheet(onDismissRequest = { onIntent(LibraryIntent.DismissDetails) }) {
-            AssetDetailsSheet(
-                details = details,
-                context = AssetDetailsContext(
-                    hasOpenProject = state.hasOpenProject,
-                    openLabel = when (libraryOpenTarget(details.id)) {
-                        is LibraryOpenTarget.Project -> stringResource(R.string.library_open_project)
-                        is LibraryOpenTarget.Actor -> stringResource(R.string.library_open_actor)
-                        null -> null
-                    },
-                ),
-                onAction = { onIntent(LibraryIntent.AddToCurrentProject(details.id)) },
-            )
+            // Clear of the navigation bar, which half covered the Open button (R3-8).
+            Box(Modifier.navigationBarsPadding()) {
+                AssetDetailsSheet(
+                    details = details,
+                    context = AssetDetailsContext(
+                        hasOpenProject = state.hasOpenProject,
+                        openLabel = when (libraryOpenTarget(details.id)) {
+                            is LibraryOpenTarget.Project -> stringResource(R.string.library_open_project)
+                            is LibraryOpenTarget.Actor -> stringResource(R.string.library_open_actor)
+                            null -> null
+                        },
+                    ),
+                    onAction = { onIntent(LibraryIntent.AddToCurrentProject(details.id)) },
+                )
+            }
         }
     }
 }

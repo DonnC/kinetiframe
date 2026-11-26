@@ -109,6 +109,7 @@ fun BufferedDrawingCanvas(
     onEraserCursorChange: (Offset?) -> Unit = {},
     onionSkinEnabled: Boolean = false,
     onionSkinFramesBefore: Int = 1,
+    onionSkinActiveLayerOnly: Boolean = false,
     onionSkinFramesAfter: Int = 1,
     onionSkinColorBefore: Color = EditorTokens.onionBefore,
     onionSkinColorAfter: Color = EditorTokens.onionAfter,
@@ -201,12 +202,16 @@ fun BufferedDrawingCanvas(
         onionSkinFramesAfter,
         cacheManager,
         activeLayerId,
+        onionSkinActiveLayerOnly,
+        studioState.layers.frameLayers,
     ) {
         if (onionSkinEnabled && cacheManager != null) {
+            suspend fun onion(frame: Int) =
+                onionFrameBitmap(cacheManager, studioState, frame, activeLayerId, onionSkinActiveLayerOnly)
             val past = mutableListOf<OnionFrame>()
             for (i in 1..onionSkinFramesBefore) {
                 val idx = studioState.animation.currentFrame - i
-                if (idx >= 0) cacheManager.getFrame(activeLayerId, idx)?.let { past.add(OnionFrame(it, i)) }
+                if (idx >= 0) onion(idx)?.let { past.add(OnionFrame(it, i)) }
             }
             val future = mutableListOf<OnionFrame>()
             for (i in 1..onionSkinFramesAfter) {
@@ -214,7 +219,7 @@ fun BufferedDrawingCanvas(
                 if (idx <
                     studioState.animation.totalFrames
                 ) {
-                    cacheManager.getFrame(activeLayerId, idx)?.let { future.add(OnionFrame(it, i)) }
+                    onion(idx)?.let { future.add(OnionFrame(it, i)) }
                 }
             }
             onionSnapshot = OnionSnapshot(studioState.animation.currentFrame, activeLayerId, past, future)

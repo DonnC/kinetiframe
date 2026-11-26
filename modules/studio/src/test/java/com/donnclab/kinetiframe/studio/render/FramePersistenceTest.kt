@@ -46,6 +46,24 @@ class FramePersistenceTest {
         }
     }
 
+    @Test fun appendingAFrameIgnoresPixelsLeftPastTheEndBySavedProjects() = runBlocking {
+        val directory = temporary.newFolder()
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+        try {
+            // Builds before R3-18 could leave a deleted frame's PNG one past the last frame.
+            val writer = FrameCacheManager(directory, scope)
+            writer.putFrame("main", 0, bitmap(Color.BLUE))
+            writer.putFrame("main", 1, bitmap(Color.RED))
+            writer.persistAllToDisk(listOf("main"), 2)
+            val reopened = FrameCacheManager(directory, scope)
+            reopened.insertFrame("main", 1, 1)
+            assertNull(reopened.getFrame("main", 1))
+            assertEquals(Color.BLUE, reopened.getFrame("main", 0)!!.getPixel(0, 0))
+        } finally {
+            scope.cancel()
+        }
+    }
+
     @Test fun evictionWritesAreCompletedBeforeSaveReturns() = runBlocking {
         val directory = temporary.newFolder()
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)

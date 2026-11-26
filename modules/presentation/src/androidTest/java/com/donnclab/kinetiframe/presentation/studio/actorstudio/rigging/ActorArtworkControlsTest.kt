@@ -38,14 +38,7 @@ class ActorArtworkControlsTest {
 
     @Test fun expressionMenuKeysTheChosenVariant() {
         var intent: StudioIntent? = null
-        val part = BoneNode(
-            hierarchy = BoneHierarchy("mouth", "Mouth", null),
-            rest = BoneRest(10f),
-            artwork = BoneArtwork(
-                artworkVariants = mapOf("smile" to ArtworkVariant("Smile", TextureBinding("art", 0f, 0f))),
-            ),
-        )
-        compose.setContent { ActorArtworkMenu(part) { intent = it } }
+        compose.setContent { ActorArtworkMenu("mouth", listOf("" to "Default", "smile" to "Smile")) { intent = it } }
         compose.onNodeWithContentDescription("Part artwork").performClick()
         compose.onNodeWithText("Smile").performClick()
         compose.runOnIdle { assertEquals(StudioIntent.Actor.SelectArtwork("mouth", "smile"), intent) }

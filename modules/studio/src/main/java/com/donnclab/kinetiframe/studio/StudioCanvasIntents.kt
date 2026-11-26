@@ -60,6 +60,11 @@ class StudioCanvasIntents(private val store: StudioStore, private val session: S
     }
 
     fun handleLayerIntent(intent: StudioIntent.Layer) {
+        when (intent) {
+            is StudioIntent.Layer.DuplicateLayer -> return session.layerContent.duplicate(intent.index)
+            is StudioIntent.Layer.MergeLayerDown -> return session.layerContent.mergeDown(intent.index)
+            else -> Unit
+        }
         if (intent !is StudioIntent.Layer.SelectLayer) return session.layerManager.handle(intent)
         if (intent.index in store.state.currentFrameLayers().indices) {
             if (store.state.scene.studioMode != StudioMode.RASTER_DRAWING) {
@@ -72,7 +77,7 @@ class StudioCanvasIntents(private val store: StudioStore, private val session: S
 
     fun handleFrameIntent(intent: StudioIntent.Frame) {
         when (intent) {
-            is StudioIntent.Frame.HoldDrawing -> session.celHoldManager.hold(intent.first, intent.last)
+            is StudioIntent.Frame.HoldDrawing -> session.celHoldManager.hold(intent.first, intent.last, intent.source)
             is StudioIntent.Frame.EditDrawingScope -> session.celHoldManager.editScope(intent.index, intent.allLinked)
             is StudioIntent.Frame.UnlinkDrawing -> session.celHoldManager.unlink(intent.index)
             else -> session.frameManager.handle(intent)
@@ -256,6 +261,11 @@ class StudioCanvasIntents(private val store: StudioStore, private val session: S
                 if (intent.offset != null) {
                     session.generateFillPreview(intent.offset)
                 }
+            }
+
+            is StudioIntent.Fill.At -> {
+                store.update { it.clearFillPreview() }
+                session.drawingManager.bakeStroke(listOf(TouchPoint(intent.offset.x, intent.offset.y)))
             }
 
             StudioIntent.Fill.Confirm -> {

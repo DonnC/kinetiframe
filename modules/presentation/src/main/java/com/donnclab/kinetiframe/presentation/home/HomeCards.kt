@@ -45,14 +45,16 @@ import java.io.File
  * with short facts as badges, and the name, a detail line and the ⋮ menu on a solid caption below.
  */
 
-/** The project's length as "m:ss", or its frame count when it is under a second, never a bare "0:00". */
+/**
+ * The project's length as "m:ss · N frames" on every card. Cards used to switch between "0:02" and
+ * "6 frames" depending on length, which read as two different measures (R3-36).
+ */
 @Composable
 private fun projectLength(totalFrames: Int, fps: Int): String {
-    if (fps <= 0 || totalFrames < fps) {
-        return pluralStringResource(R.plurals.home_card_frames, totalFrames, totalFrames)
-    }
-    val totalSeconds = totalFrames / fps
-    return "%d:%02d".format(totalSeconds / 60, totalSeconds % 60)
+    val totalSeconds = if (fps > 0) totalFrames / fps else 0
+    val duration = "%d:%02d".format(totalSeconds / 60, totalSeconds % 60)
+    val frames = pluralStringResource(R.plurals.home_card_frames, totalFrames, totalFrames)
+    return stringResource(R.string.home_card_length, duration, frames)
 }
 
 /** A project card: fps and canvas size on the picture, the duration under the name. */

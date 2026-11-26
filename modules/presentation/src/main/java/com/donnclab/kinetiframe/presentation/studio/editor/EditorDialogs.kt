@@ -6,6 +6,7 @@ import com.donnclab.kinetiframe.actors.render.ActorRendering
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.windowWidthClass
 import com.donnclab.kinetiframe.presentation.library.LibraryPickerDialog
 import com.donnclab.kinetiframe.presentation.library.LibraryScopeDialog
 import com.donnclab.kinetiframe.presentation.studio.GridOptionsPopup
@@ -102,7 +103,8 @@ internal fun EditorDialogs(
             onDismiss = { panels.frameStudioVisible = false },
         )
     }
-    if (panels.layerSheetVisible) {
+    // Wider windows dock layers beside the canvas instead (EditorWorkspace).
+    if (panels.layerSheetVisible && windowWidthClass().isCompact) {
         LayerPanelPopup(
             state = state,
             onIntent = onIntent,

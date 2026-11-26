@@ -272,6 +272,7 @@
         <item quantity="one">%d item</item>
         <item quantity="other">%d items</item>
     </plurals>
+    <string name="home_card_length">%1$s · %2$s</string>
     <plurals name="home_card_frames">
         <item quantity="one">%d frame</item>
         <item quantity="other">%d frames</item>
@@ -292,7 +293,7 @@
     <string name="add_project_title">New Project</string>
     <string name="add_project_create">Create Project</string>
     <string name="add_project_name">Project name</string>
-    <string name="add_project_name_placeholder">My awesome animation</string>
+    <string name="add_project_name_needed">Name your project to create it</string>
     <string name="add_project_canvas_size">Canvas size</string>
     <string name="add_project_frame_rate">Frame rate</string>
     <string name="add_project_fps_value">%1$d FPS</string>
@@ -326,6 +327,8 @@
     <string name="export_rendering">Rendering your animation…</string>
     <string name="export_progress_percent">%1$d%%</string>
     <string name="export_ready">Your animation is ready!</string>
+    <string name="export_watch">Watch</string>
+    <string name="export_no_player">No app on this phone can play the video. Save or share it instead.</string>
     <string name="export_save_to_gallery">Save to Gallery</string>
     <string name="export_failed">Export failed</string>
     <string name="export_saved_to_gallery">Saved to your gallery</string>
@@ -427,9 +430,9 @@
     <string name="clip_position_move">Move</string>
     <string name="hold_drawing_title">Hold drawing</string>
     <!-- The first frame of the range being held, followed by the last-frame field. -->
-    <string name="hold_drawing_from_frame">Frame %1$d →</string>
-    <string name="hold_drawing_last_frame">Last frame</string>
     <string name="hold_drawing_note">Replaces this layer’s drawings in the range. Other layers stay unchanged.</string>
+    <string name="hold_range_title">Hold frames %1$d–%2$d</string>
+    <string name="hold_range_hint">Tap frames before or after to set the range</string>
     <string name="hold_drawing_confirm">Hold range</string>
     <plurals name="linked_drawing_title">
         <item quantity="one">Drawing · %d linked frame</item>
@@ -467,8 +470,12 @@
     <string name="playback_fps_short">FPS</string>
     <string name="layers_title">Layers</string>
     <string name="layers_add">Add Layer</string>
-    <string name="layers_drawing_layer">Drawing layer</string>
     <string name="layers_empty">No layers</string>
+    <string name="layers_menu">Layer actions</string>
+    <string name="layers_rename">Rename</string>
+    <string name="layers_duplicate">Duplicate</string>
+    <string name="layers_merge_down">Merge down</string>
+    <string name="layers_delete">Delete layer</string>
     <string name="layer_hidden">Hidden</string>
     <string name="layer_hide">Hide %1$s</string>
     <string name="layer_show">Show %1$s</string>
@@ -476,6 +483,7 @@
     <string name="layer_unlock">Unlock %1$s</string>
     <string name="layer_opacity">Opacity %1$d%%</string>
     <string name="onion_title">Onion Skin</string>
+    <string name="onion_active_layer_only">Active layer only</string>
     <string name="onion_reset">Reset onion skin</string>
     <string name="onion_opacity">Opacity</string>
     <string name="onion_frames_before">Frames Before</string>
@@ -769,6 +777,7 @@
     <string name="editor_background">Background</string>
     <string name="editor_safe_frame">Safe frame</string>
     <string name="editor_onion_skin">Onion skin</string>
+    <string name="editor_onion_skin_toggle">Onion skin on or off</string>
     <string name="editor_frame_image">Frame image</string>
     <string name="editor_actor_library">Actor library</string>
     <string name="editor_background_image">Background image</string>
@@ -864,6 +873,9 @@
     <string name="ruler_mirror">Mirror</string>
     <!-- Turns the drawing ruler off. -->
     <string name="ruler_off">Off</string>
+    <string name="shape_line">Line</string>
+    <string name="shape_rectangle">Rectangle</string>
+    <string name="shape_ellipse">Ellipse</string>
     <string name="shape_capsule">Capsule</string>
     <string name="shape_triangle">Triangle</string>
     <string name="shape_head_guide">Head guide</string>
@@ -901,12 +913,14 @@
     <string name="palette_remove_colour">Remove colour</string>
     <string name="palette_hex">Hex</string>
     <string name="palette_new">New palette</string>
+    <string name="palette_choose">Choose palette</string>
     <string name="palette_name">Palette name</string>
     <string name="palette_new_hint">Starts with the current colour</string>
     <string name="palette_create">Create</string>
     <string name="palette_delete">Delete palette</string>
     <string name="palette_delete_title">Delete this palette?</string>
-    <string name="palette_edit_hint">Long-press a colour to remove it.</string>
+    <string name="palette_edit_hint">Long-press a colour to see its hex or remove it.</string>
+    <string name="palette_open_colour">Show colour</string>
     <string name="colours_mine_hint">Quick colours that sit under the colour wheel while you draw.</string>
     <string name="colours_palettes_hint">Named sets of colours, such as one for each character. Tap one to see and edit its colours.</string>
     <string name="colours_add">Add colour</string>
@@ -1162,8 +1176,21 @@
     <string name="library_frame_name">Frame %1$d</string>
 
     <!-- The frame studio's toolbar. -->
-    <string name="frame_studio_paste">PASTE</string>
-    <string name="frame_studio_add">ADD</string>
-    <string name="frame_studio_erase">ERASE</string>
-    <string name="frame_studio_copy">COPY</string>
+    <string name="frame_menu_paste_before">Paste before</string>
+    <string name="frame_menu_add_before">Add before</string>
+    <string name="frame_menu_delete">Delete</string>
+    <string name="frame_menu_duplicate">Duplicate</string>
+    <string name="frame_menu_copy">Copy</string>
+    <string name="frame_menu_add_after">Add after</string>
+    <string name="frame_menu_paste_after">Paste after</string>
+    <string name="frame_menu_held_drawing">Held drawing</string>
+    <string name="frame_menu_edit_details">Edit item details</string>
+    <string name="frame_studio_paste_before">Paste before selection</string>
+    <string name="frame_studio_add_before">Add frame before selection</string>
+    <string name="frame_studio_delete">Delete selected frames</string>
+    <string name="frame_studio_copy">Copy selected frames</string>
+    <string name="frame_studio_add_after">Add frame after selection</string>
+    <string name="frame_studio_paste_after">Paste after selection</string>
+    <string name="frame_studio_move_earlier">Move frame earlier</string>
+    <string name="frame_studio_move_later">Move frame later</string>
 </resources>

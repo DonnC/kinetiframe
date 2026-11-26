@@ -61,10 +61,12 @@ class FrameCacheManager(
     }
 
     /** Caller serialises authoring operations. Replacing a range is explicit, never implicit
-     * inheritance. One canonical cache key stores the held pixels regardless of range length. */
-    suspend fun holdDrawing(layerId: String, first: Int, last: Int, totalFrames: Int) {
-        require(first in 0 until totalFrames && last in first until totalFrames)
-        val source = requireNotNull(getFrame(layerId, first)) { "This layer has no drawing to hold" }
+     * inheritance. One canonical cache key stores the held pixels regardless of range length.
+     * [sourceFrame] is the drawing held; it may be anywhere in the range, so a hold can reach back
+     * as well as forward (R3-24). */
+    suspend fun holdDrawing(layerId: String, first: Int, last: Int, totalFrames: Int, sourceFrame: Int = first) {
+        require(first in 0 until totalFrames && last in first until totalFrames && sourceFrame in first..last)
+        val source = requireNotNull(getFrame(layerId, sourceFrame)) { "This layer has no drawing to hold" }
         val cel = "cel-${java.util.UUID.randomUUID()}"
         val key = linkedKey(layerId, cel)
         // Keep an independent snapshot so cached rendering clients cannot mutate linked pixels.
@@ -270,14 +272,7 @@ class FrameCacheManager(
 
     suspend fun deleteFrame(layerId: String, index: Int, totalFrames: Int) {
         awaitWrites()
-        // Remove the target frame from memory and disk
-        val targetKey = rawFrameKey(layerId, index)
-        ramCache.remove(targetKey)
-        withContext(Dispatchers.IO) {
-            val file = File(cacheDir, getFileName(targetKey))
-            if (file.exists()) file.delete()
-        }
-        diskFilesMutex.withLock { diskFiles.remove(targetKey) }
+        discardRawFrame(layerId, index)
 
         // Shift all subsequent frames left
         for (i in index + 1 until totalFrames) {
@@ -323,10 +318,29 @@ class FrameCacheManager(
         for (i in totalFrames - 1 downTo index) {
             moveFrame(layerId, i, i + 1)
         }
+        // Appending moves nothing into the new slot, so pixels left past the end (by an older
+        // build, see R3-18) would reappear in it. Clear the slot explicitly.
+        if (index >= totalFrames) discardRawFrame(layerId, index)
         val exposures = CelExposureIndex.insertContinuingHold(linkedCels[layerId].orEmpty(), index, totalFrames)
         linkedCels = linkedCels + (layerId to exposures)
         sharedEditTarget = null
         // The frame at 'index' is now empty in RAM and on disk, unless it continues a held drawing.
+    }
+
+    /** Removes one frame slot's own pixels from memory and disk. Held drawings are untouched. */
+    private suspend fun discardRawFrame(layerId: String, index: Int) {
+        val key = rawFrameKey(layerId, index)
+        // A newer version stops a queued eviction write from restoring the slot afterwards.
+        versions.merge(key, 1L, Long::plus)
+        ramCache.remove(key)
+        // Every file in the folder is indexed at start-up, so an unindexed slot has nothing on disk.
+        // Skipping the IO hop keeps ordinary appends off the disk.
+        val onDisk = diskFilesMutex.withLock { diskFiles.remove(key) }
+        if (onDisk) {
+            withContext(Dispatchers.IO) {
+                diskFilesMutex.withLock { if (key !in diskFiles) File(cacheDir, getFileName(key)).delete() }
+            }
+        }
     }
 
     private suspend fun moveFrame(layerId: String, fromIndex: Int, toIndex: Int) {

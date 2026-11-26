@@ -3,13 +3,11 @@ package com.donnclab.kinetiframe.presentation.common
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
@@ -50,8 +48,8 @@ fun FrameRatePicker(fps: Int, onFpsChange: (Int) -> Unit, modifier: Modifier = M
     val resources = LocalResources.current
     Column(modifier, verticalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
         BouncePreview(fps)
-        Row(
-            Modifier.horizontalScroll(rememberScrollState()),
+        // Wraps instead of scrolling: in the studio's narrow dialog a scrolling row hid 24 and 30 (R3-29).
+        FlowRow(
             horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
         ) {
             COMMON_FPS.forEach { rate ->

@@ -24,7 +24,7 @@ fun AddFlowBottomBar(
     subtitle: String? = null,
 ) {
     Surface(shadowElevation = Dimens.elevationRaised, modifier = modifier) {
-        Column(Modifier.fillMaxWidth().padding(Dimens.spaceXl)) {
+        Column(Modifier.fillMaxWidth().readableWidth().padding(Dimens.spaceXl)) {
             subtitle?.let {
                 Text(
                     it,

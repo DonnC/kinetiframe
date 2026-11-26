@@ -49,6 +49,8 @@ fun AppBottomNavBar(
     onNavigate: (BottomNavDestination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // Wider windows show the rail from AppRootFrame instead.
+    if (!windowWidthClass().isCompact) return
     Surface(
         modifier = modifier.fillMaxWidth().height(Dimens.bottomNavHeight),
         color = MaterialTheme.colorScheme.surface,

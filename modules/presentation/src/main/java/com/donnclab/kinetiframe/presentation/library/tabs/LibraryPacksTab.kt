@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.common.AssetSummary
+import com.donnclab.kinetiframe.presentation.common.browseGridCells
 import com.donnclab.kinetiframe.presentation.library.LibraryIntent
 import com.donnclab.kinetiframe.presentation.library.catalog.AssetGridCard
 import com.donnclab.kinetiframe.presentation.library.catalog.FlatListNote
@@ -26,7 +27,7 @@ fun LibraryPacksTab(packs: List<AssetSummary>, onIntent: (LibraryIntent) -> Unit
             return@Column
         }
         LazyVerticalGrid(
-            columns = GridCells.Fixed(Dimens.gridColumns),
+            columns = browseGridCells(),
             contentPadding = PaddingValues(horizontal = Dimens.spaceXl, vertical = Dimens.spaceS),
             horizontalArrangement = Arrangement.spacedBy(Dimens.gridColumnGap),
             verticalArrangement = Arrangement.spacedBy(Dimens.gridColumnGap),

@@ -3,8 +3,8 @@ package com.donnclab.kinetiframe.presentation.studio.frames
 import android.graphics.Bitmap
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +32,8 @@ fun StudioFrameCard(
     bitmap: Bitmap?,
     selected: Boolean,
     modifier: Modifier = Modifier,
+    /** Width over height of the tile: the canvas's shape within limits, so frames fill it. */
+    aspect: Float = 1f,
     onClick: () -> Unit,
     onOpen: () -> Unit,
 ) {
@@ -44,7 +46,7 @@ fun StudioFrameCard(
             if (selected) EditorTokens.accent else Color.Transparent,
         ),
     ) {
-        Box(Modifier.fillMaxWidth().height(EditorTokens.frameStudioCardThumb)) {
+        Box(Modifier.fillMaxWidth().aspectRatio(aspect)) {
             FrameThumbnailContent(bitmap, index, selected, numberAlignment = Alignment.TopStart) {
                 Surface(
                     Modifier.align(Alignment.TopEnd).padding(Dimens.spaceXsPlus),
@@ -63,5 +65,5 @@ fun StudioFrameCard(
 @Preview(showBackground = true)
 @Composable
 private fun StudioFrameCardPreview() {
-    MaterialTheme { StudioFrameCard(0, null, true, Modifier.size(190.dp, 150.dp), {}, {}) }
+    MaterialTheme { StudioFrameCard(0, null, true, Modifier.size(190.dp, 150.dp), onClick = {}, onOpen = {}) }
 }
