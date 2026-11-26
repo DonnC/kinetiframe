@@ -92,6 +92,10 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - Wording: New Project's square card is "Facebook post", as on Export; the sample actor is
   "Tavi · Four angles" on new installs; and a new performance gets a number ("New performance 2")
   instead of repeating a name the actor already uses.
+- Fill fills with one tap; Undo takes it back. There is no confirm step any more.
+- Onion skin has a switch on the drawing bar that shows whether it is on, and shows every visible
+  layer, with "Active layer only" in its panel.
+- The tool rail is tall enough for all its tools, so Fill is no longer cut off.
 - Timeline and Frames thumbnails show the whole canvas on white paper, in the canvas's shape. A
   tall canvas used to be cropped to a square on a dark tile, so frames looked empty.
 - The frame-rate preview plays at the exact rate chosen. It used to run slow, so 24 fps looked

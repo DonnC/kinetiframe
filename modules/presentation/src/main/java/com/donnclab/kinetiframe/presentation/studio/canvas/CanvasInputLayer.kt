@@ -229,7 +229,8 @@ fun CanvasInputLayer(
                         MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
                             val duration = event.eventTime - gesture.activePointerSession.startTime
                             if (duration < 250) {
-                                onIntent(StudioIntent.Fill.SetPendingTap(mappedPoint.toPoint2()))
+                                // A tap fills at once, as in most drawing apps; Undo takes it back (R3-31).
+                                onIntent(StudioIntent.Fill.At(mappedPoint.toPoint2()))
                                 gesture.activePointerSession.end(event.getPointerId(activePointerIndex))
                                 return@pointerInteropFilter true
                             }

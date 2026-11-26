@@ -24,6 +24,10 @@ fun StudioState.reduce(intent: StudioIntent.OnionSkin): StudioState = when (inte
 
     is StudioIntent.OnionSkin.SetOpacity -> copy(onionSkin = onionSkin.copy(opacity = intent.opacity.coerceIn(0f, 1f)))
 
+    is StudioIntent.OnionSkin.SetActiveLayerOnly -> copy(
+        onionSkin = onionSkin.copy(activeLayerOnly = intent.activeOnly),
+    )
+
     StudioIntent.OnionSkin.Reset -> copy(onionSkin = OnionSkinState())
 }
 
@@ -139,7 +143,7 @@ internal fun StudioState.reduceFillSetting(intent: StudioIntent.Fill): StudioSta
     is StudioIntent.Fill.SetDockPosition -> copy(fill = fill.copy(dockOffset = intent.offset))
     StudioIntent.Fill.Cancel -> clearFillPreview()
     is StudioIntent.Fill.SetPreviewBitmap -> copy(fill = fill.copy(previewBitmap = intent.bitmap))
-    is StudioIntent.Fill.SetPendingTap, StudioIntent.Fill.Confirm -> this
+    is StudioIntent.Fill.SetPendingTap, is StudioIntent.Fill.At, StudioIntent.Fill.Confirm -> this
 }
 
 internal fun StudioState.clearFillPreview(): StudioState =

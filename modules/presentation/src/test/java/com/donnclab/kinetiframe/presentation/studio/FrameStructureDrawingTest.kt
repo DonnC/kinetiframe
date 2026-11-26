@@ -4,10 +4,12 @@ package com.donnclab.kinetiframe.presentation.studio
 import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.lifecycle.ViewModelStore
+import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.core.document.Layer
 import com.donnclab.kinetiframe.core.document.ProjectDocument
 import com.donnclab.kinetiframe.core.document.StageDimensions
 import com.donnclab.kinetiframe.core.document.TouchPoint
+import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.studio.AnimationState
 import com.donnclab.kinetiframe.studio.LayerState
 import com.donnclab.kinetiframe.studio.StudioDirectories
@@ -98,6 +100,18 @@ class FrameStructureDrawingTest {
             assertEquals(3, editor.state.value.animation.totalFrames)
             val colours = (0..2).map { editor.cacheManager.getFrame("main", it)!!.getPixel(0, 0) }
             assertEquals(listOf(Color.RED, Color.GREEN, Color.BLUE), colours)
+        }
+    }
+
+    @Test fun aFillTapFillsAtOnceWithoutAConfirmStep() = runTest {
+        withEditor(listOf(Color.TRANSPARENT), currentFrame = 0) { editor ->
+            editor.handleIntent(StudioIntent.Draw.SelectTool(DrawingTool.COLOR_FILL))
+            editor.handleIntent(StudioIntent.Draw.SetBrushColor(Color.RED))
+            editor.handleIntent(StudioIntent.Fill.At(Point2(8f, 8f)))
+            editor.prepareProjectSave()
+
+            assertEquals(false, editor.state.value.fill.previewActive)
+            assertEquals(Color.RED, editor.cacheManager.getFrame("main", 0)!!.getPixel(8, 8))
         }
     }
 

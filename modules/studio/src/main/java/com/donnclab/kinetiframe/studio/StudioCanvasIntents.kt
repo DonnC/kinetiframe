@@ -258,6 +258,11 @@ class StudioCanvasIntents(private val store: StudioStore, private val session: S
                 }
             }
 
+            is StudioIntent.Fill.At -> {
+                store.update { it.clearFillPreview() }
+                session.drawingManager.bakeStroke(listOf(TouchPoint(intent.offset.x, intent.offset.y)))
+            }
+
             StudioIntent.Fill.Confirm -> {
                 val tap = store.state.fill.pendingTap
                 if (tap != null) {

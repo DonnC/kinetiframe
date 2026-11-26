@@ -39,8 +39,11 @@ object EditorTokens {
     // The tool dock: its rail, whose height depends on the studio mode, and its menus.
     val dockRailWidth = 48.dp
     val dockRailHeightPuppetStudio = 300.dp
-    val dockRailHeightWithActor = 220.dp
-    val dockRailHeight = 180.dp
+    val dockRailHeightWithActor = 280.dp // Bone plus the five drawing tools.
+
+    // Room for the five drawing tools (Pen, Shapes, Eraser, Lasso, Fill) at 40 dp with gaps, so the
+    // last isn't cut off (R1-25). A short screen still limits the rail, which then scrolls.
+    val dockRailHeight = 236.dp
     val dockCorner = 24.dp
     val dockRailCorner = 28.dp
     val dockMenuWidth = 200.dp

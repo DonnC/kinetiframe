@@ -360,8 +360,9 @@ fun EditorTopBar(
 
 /**
  * The drawing studio's everyday tools, laid straight into the evenly spaced bar: Home, Undo, Redo,
- * Copy, Paste and Reset view, which undoes zoom, pan and rotation. Less frequent actions, such as Save,
- * Focus and the safe frame, are in the menu.
+ * Copy, Paste, Reset view, which undoes zoom, pan and rotation, and the onion skin switch, lit while
+ * it is on (R3-26). Less frequent actions, such as Save, Focus, the safe frame and onion skin
+ * settings, are in the menu.
  */
 @Composable
 private fun DrawingBarTools(state: StudioState, onIntent: (StudioIntent) -> Unit, onHomeClick: (() -> Unit)?) {
@@ -389,6 +390,14 @@ private fun DrawingBarTools(state: StudioState, onIntent: (StudioIntent) -> Unit
             stringResource(R.string.editor_reset_view),
             { onIntent(StudioIntent.View.ResetCanvasTransform) },
             enabled = state.isCanvasTransformed,
+        ),
+    )
+    ContextIconButton(
+        ContextIconAction(
+            Lucide.Ghost,
+            stringResource(R.string.editor_onion_skin_toggle),
+            { onIntent(StudioIntent.OnionSkin.SetEnabled(!state.onionSkin.enabled)) },
+            selected = state.onionSkin.enabled,
         ),
     )
 }

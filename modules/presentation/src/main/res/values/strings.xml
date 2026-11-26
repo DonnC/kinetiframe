@@ -477,6 +477,7 @@
     <string name="layer_unlock">Unlock %1$s</string>
     <string name="layer_opacity">Opacity %1$d%%</string>
     <string name="onion_title">Onion Skin</string>
+    <string name="onion_active_layer_only">Active layer only</string>
     <string name="onion_reset">Reset onion skin</string>
     <string name="onion_opacity">Opacity</string>
     <string name="onion_frames_before">Frames Before</string>
@@ -770,6 +771,7 @@
     <string name="editor_background">Background</string>
     <string name="editor_safe_frame">Safe frame</string>
     <string name="editor_onion_skin">Onion skin</string>
+    <string name="editor_onion_skin_toggle">Onion skin on or off</string>
     <string name="editor_frame_image">Frame image</string>
     <string name="editor_actor_library">Actor library</string>
     <string name="editor_background_image">Background image</string>

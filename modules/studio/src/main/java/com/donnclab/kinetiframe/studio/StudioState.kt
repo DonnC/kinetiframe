@@ -229,6 +229,8 @@ data class OnionSkinState(
     /** ARGB. */
     val colorAfter: Int = OnionSkinColors.AFTER,
     val opacity: Float = 0.2f,
+    /** Onion skin shows every visible layer unless this narrows it to the active one (R3-23). */
+    val activeLayerOnly: Boolean = false,
 )
 
 data class SelectionState(

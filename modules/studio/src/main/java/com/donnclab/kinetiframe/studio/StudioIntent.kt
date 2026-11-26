@@ -268,6 +268,7 @@ sealed class StudioIntent : ViewIntent {
         data class SetColorBefore(val color: Int) : OnionSkin()
         data class SetColorAfter(val color: Int) : OnionSkin()
         data class SetOpacity(val opacity: Float) : OnionSkin()
+        data class SetActiveLayerOnly(val activeOnly: Boolean) : OnionSkin()
         object Reset : OnionSkin()
     }
 
@@ -340,6 +341,9 @@ sealed class StudioIntent : ViewIntent {
 
     sealed class Fill : StudioIntent() {
         data class SetPendingTap(val offset: Point2?) : Fill()
+
+        /** Fills the area at [offset] at once; Undo takes it back (R3-31). */
+        data class At(val offset: Point2) : Fill()
         data class SetDockPosition(val offset: Point2) : Fill()
         object Confirm : Fill()
         object Cancel : Fill()
