@@ -71,6 +71,8 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 - A frame you deleted right after drawing on it no longer comes back in the next frame you add,
   and deleting or pasting frames while drawing no longer overwrites a neighbouring frame.
+- Timeline and Frames thumbnails show the whole canvas on white paper, in the canvas's shape. A
+  tall canvas used to be cropped to a square on a dark tile, so frames looked empty.
 - The frame-rate preview plays at the exact rate chosen. It used to run slow, so 24 fps looked
   like about 20.
 - Dragging a project onto another to start a collection could be swallowed by the card's tap.

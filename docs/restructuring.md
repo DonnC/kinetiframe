@@ -149,6 +149,11 @@ beside the unchanged original:
   place, and deleting or pasting around a frame being drawn could overwrite the frame that moved
   into its slot. Frame deletes and pastes now settle the drawing before frames shift, and
   appending a frame clears pixels left past the end by older builds.
+- R3-19: timeline and Frames thumbnails cropped the canvas to the tile, so a 9:16 frame showed a
+  centre square on a dark tile. They now show the whole canvas on white paper in its own shape.
+  Tiles keep their fixed size; shaping them to the canvas is part of Tablet layouts.
+- `presentation`'s device tests compile again: `ActorArtworkControlsTest` still used the old
+  `ActorArtworkMenu(BoneNode)` signature, so no device test in the module could run.
 
 ## Next
 

@@ -31,6 +31,9 @@ object EditorTokens {
     // dark marks on paper whatever the theme.
     val previewWell = Color(0xFFF8F8F8)
     val brushPreviewWell = BrandPaper
+
+    /** The canvas's paper behind frame thumbnails, so a frame looks as it does on the canvas. */
+    val framePaper = Color.White
     val hairline = Color(0xFFE0E0E0)
 
     // The tool dock: its rail, whose height depends on the studio mode, and its menus.

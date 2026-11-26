@@ -3,8 +3,10 @@ package com.donnclab.kinetiframe.presentation.studio
 import android.graphics.Bitmap
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,7 +28,10 @@ import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.presentation.R
 
-/** Shared edge-to-edge policy. Crop preserves proportions; never stretches frame pixels. */
+/**
+ * A frame as it looks on the canvas: the whole drawing on paper, in the canvas's own shape and
+ * centred in the tile. Never crops or stretches frame pixels.
+ */
 @Composable
 fun FrameThumbnailContent(
     bitmap: Bitmap?,
@@ -39,12 +44,17 @@ fun FrameThumbnailContent(
     val dot = MaterialTheme.colorScheme.outlineVariant
     Box(Modifier.fillMaxSize()) {
         if (bitmap != null) {
-            Image(
-                bitmap.asImageBitmap(),
-                stringResource(R.string.frame_thumbnail_description, index + 1),
-                Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
-            )
+            // Cropping to the tile cut a portrait frame down to a centre square, and clear pixels
+            // on the dark tile hid dark lines (R3-19). Thumbnails keep the stage's proportions.
+            val canvasAspect = bitmap.width.toFloat() / bitmap.height.coerceAtLeast(1)
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Image(
+                    bitmap.asImageBitmap(),
+                    stringResource(R.string.frame_thumbnail_description, index + 1),
+                    Modifier.aspectRatio(canvasAspect).background(EditorTokens.framePaper),
+                    contentScale = ContentScale.Fit,
+                )
+            }
         } else {
             Canvas(Modifier.fillMaxSize()) { drawCircle(dot, radius = TimelineTokens.thumbDot.toPx()) }
         }
