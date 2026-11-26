@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
@@ -45,6 +47,7 @@ import com.donnclab.kinetiframe.library.model.ColorSwatch
 import com.donnclab.kinetiframe.library.model.PaletteDocument
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.windowWidthClass
 import com.donnclab.kinetiframe.presentation.studio.color.PaletteIntent
 import com.donnclab.kinetiframe.presentation.studio.color.PaletteState
 import com.donnclab.kinetiframe.presentation.studio.color.PaletteViewModel
@@ -85,8 +88,18 @@ internal fun LibraryColoursContent(state: PaletteState, onIntent: (PaletteIntent
             }
         }
 
-        else -> LazyColumn(
-            Modifier.fillMaxSize(),
+        // One column on a phone; on wider windows palettes sit side by side as a grid of cards,
+        // with the headings and My colours across the full width.
+        else -> LazyVerticalGrid(
+            columns = if (windowWidthClass().isCompact) {
+                GridCells.Fixed(
+                    1,
+                )
+            } else {
+                GridCells.Adaptive(LibraryTokens.paletteCardMin)
+            },
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
             contentPadding = PaddingValues(
                 start = Dimens.spaceXl,
                 end = Dimens.spaceXl,
@@ -95,14 +108,16 @@ internal fun LibraryColoursContent(state: PaletteState, onIntent: (PaletteIntent
             ),
             verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
         ) {
-            item { Section(stringResource(R.string.palette_my_colours), stringResource(R.string.colours_mine_hint)) }
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Section(stringResource(R.string.palette_my_colours), stringResource(R.string.colours_mine_hint))
+            }
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 val mine = state.myColours
                 SwatchGrid(mine?.swatches.orEmpty(), { mine?.let { p -> shown = ShownColour(p, it, true) } }) {
                     sheet = ColourSheet.AddTo(null)
                 }
             }
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Section(stringResource(R.string.color_palettes), stringResource(R.string.colours_palettes_hint))
             }
             item { NewPaletteCard { sheet = ColourSheet.NewPalette } }

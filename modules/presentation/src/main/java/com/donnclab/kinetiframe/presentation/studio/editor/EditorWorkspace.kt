@@ -320,7 +320,20 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
         },
     ) {
         Scaffold(
-            topBar = { EditorTopBarSlot(state, host, ui, commands) },
+            topBar = {
+                val workspaceBar = usesWorkspace(state, host.isActorStudioSession, host.isPackCreator)
+                EditorTopBarSlot(
+                    state,
+                    host,
+                    ui,
+                    commands,
+                    viewControls = if (workspaceBar) {
+                        { WorkspaceViewControls(viewModel, state, ui, storage.actorRendering, commands.onIntent) }
+                    } else {
+                        null
+                    },
+                )
+            },
             bottomBar = { EditorBottomBarSlot(viewModel, state, host, ui, storage, commands) },
             snackbarHost = { SnackbarHost(snackbar) },
             contentWindowInsets = WindowInsets(0.dp),
@@ -328,13 +341,17 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
             // The tablet workspace keeps tools on the left and layers on the right, always in place,
             // so the canvas between them never jumps. Medium windows dock layers only while open.
             val workspace = usesWorkspace(state, host.isActorStudioSession, host.isPackCreator)
+            // Playing gives the canvas the whole screen, like the floating dock on a phone, unless
+            // the animator turned that off in Settings.
+            val panelsShown = ui.panels.toolbarVisible &&
+                !(state.animation.isPlaying && LocalAppPreferences.current.hideToolsDuringPlayback)
             val docksLayers = if (workspace) {
                 !ui.panels.workspaceLayersHidden
             } else {
                 !windowWidthClass().isCompact && ui.panels.layerSheetVisible
             }
             Row(Modifier.fillMaxSize().padding(innerPadding)) {
-                if (workspace && ui.panels.toolbarVisible) WorkspaceToolPanel(state, viewModel::handleIntent)
+                if (workspace && panelsShown) WorkspaceToolPanel(state, viewModel::handleIntent)
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -347,7 +364,7 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
                 ) {
                     EditorCanvasStack(viewModel, state, host, ui, storage.actorRendering, commands)
                 }
-                if (docksLayers && ui.panels.toolbarVisible) {
+                if (docksLayers && panelsShown) {
                     EditorSidePanel {
                         LayerPanel(
                             state = state,

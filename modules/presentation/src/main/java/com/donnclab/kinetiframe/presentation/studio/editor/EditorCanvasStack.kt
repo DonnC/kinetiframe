@@ -53,7 +53,9 @@ internal fun BoxScope.EditorCanvasStack(
     val toolbarVisible = panels.toolbarVisible
     val isPuppetStudio = state.scene.studioMode != StudioMode.RASTER_DRAWING
     val showsCamera = !isPuppetStudio && !host.isPackCreator
-    val cameraPreview = remember(state.project.id) { mutableStateOf(CameraWorkspacePolicy.PREVIEW_ON_OPEN) }
+    val cameraPreview = panels.cameraPreview
+    // The tablet workspace puts the camera and frame reference buttons in the top bar instead.
+    val workspace = usesWorkspace(state, host.isActorStudioSession, host.isPackCreator)
     val frameReference = if (!host.isActorStudioSession && showsCamera && !state.animation.isPlaying) {
         viewModel.frameReferences.frame(state.animation.currentFrame)
     } else {
@@ -77,7 +79,20 @@ internal fun BoxScope.EditorCanvasStack(
         projectAssetManager = viewModel.projectAssetManager,
         videoFrameProvider = viewModel.videoFrameProvider,
     )
-    if (showsCamera) CameraOverlay(viewModel, state, actorRendering, cameraPreview, commands.onIntent)
+    if (showsCamera && !workspace) {
+        CameraControls(
+            viewModel,
+            state,
+            actorRendering,
+            cameraPreview,
+            commands.onIntent,
+            // Below the frame reference button, which shares the top-right corner. They used to sit
+            // on top of each other, so the camera only showed during playback.
+            Modifier.align(
+                Alignment.TopEnd,
+            ).padding(top = Dimens.spaceS + Dimens.touchTarget + Dimens.spaceS, end = Dimens.spaceS),
+        )
+    }
     if (!toolbarVisible && !isPuppetStudio) {
         StudioFocusControls(
             state.animation.isPlaying,
@@ -89,7 +104,7 @@ internal fun BoxScope.EditorCanvasStack(
     if (host.isPackCreator) PackAlignmentCrosshair()
 
     val stage = state.project.stage
-    frameReference?.takeIf { toolbarVisible }?.let { reference ->
+    frameReference?.takeIf { toolbarVisible && !workspace }?.let { reference ->
         key(reference) {
             ActorReferenceControls(
                 reference,
@@ -117,7 +132,6 @@ internal fun BoxScope.EditorCanvasStack(
     // places it, even over the timeline.
     val playbackHidesTools = LocalAppPreferences.current.hideToolsDuringPlayback
     // The tablet workspace's tool panel replaces the floating dock.
-    val workspace = usesWorkspace(state, host.isActorStudioSession, host.isPackCreator)
     if (!workspace && toolbarVisible && (!state.animation.isPlaying || !playbackHidesTools)) {
         ToolDock(
             state = state,
@@ -136,57 +150,6 @@ internal fun BoxScope.EditorCanvasStack(
         SelectionDock(state = state, onIntent = commands.onIntent, modifier = Modifier.fillMaxSize())
     }
     PackTrayOverlay(ui.tray, state, toolbarVisible, commands.onIntent)
-}
-
-@Composable
-private fun BoxScope.CameraOverlay(
-    viewModel: StudioViewModel,
-    state: StudioState,
-    actorRendering: ActorRendering,
-    cameraPreview: MutableState<Boolean>,
-    onIntent: (StudioIntent) -> Unit,
-) {
-    var preview by cameraPreview
-    CameraWorkspaceControls(
-        state,
-        preview,
-        { preview = it },
-        onIntent,
-        // Below the frame reference button, which shares the top-right corner. They used to sit on
-        // top of each other, so the camera only showed during playback, when the reference hides.
-        Modifier.align(
-            Alignment.TopEnd,
-        ).padding(top = Dimens.spaceS + Dimens.touchTarget + Dimens.spaceS, end = Dimens.spaceS),
-    ) { pose, shot, frame ->
-        val previewState = if (shot == null || frame == null) {
-            state
-        } else {
-            state.copy(
-                project = state.project.copy(
-                    cameraShots =
-                    state.project.cameraShots.filter { it.id != shot.id && it.endFrame <= shot.startFrame } +
-                        shot,
-                ),
-                animation = state.animation.copy(currentFrame = frame, playbackFrame = frame, isPlaying = true),
-            )
-        }
-        val latestPreview by rememberUpdatedState(previewState)
-        // The dialog owns its decoder. Closing it must not leave the real
-        // workspace holding a decoded video frame from the preview clock.
-        val previewVideo = remember { VideoFrameProvider { latestPreview } }
-        DisposableEffect(previewVideo) { onDispose { previewVideo.release() } }
-        CanvasArea(
-            state = previewState,
-            onIntent = {},
-            cameraPreview = true,
-            cameraPoseOverride = if (shot?.action == CameraAction.FOLLOW) null else pose,
-            fitStage = true,
-            cacheManager = viewModel.cacheManager,
-            actorRendering = actorRendering,
-            projectAssetManager = viewModel.projectAssetManager,
-            videoFrameProvider = previewVideo,
-        )
-    }
 }
 
 /**

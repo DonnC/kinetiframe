@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Speed
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -29,9 +28,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.composables.icons.lucide.Clapperboard
 import com.composables.icons.lucide.ClipboardPaste
 import com.composables.icons.lucide.Copy
+import com.composables.icons.lucide.Eye
 import com.composables.icons.lucide.Frame
 import com.composables.icons.lucide.Ghost
 import com.composables.icons.lucide.Grid2x2
+import com.composables.icons.lucide.Image
+import com.composables.icons.lucide.ImagePlus
 import com.composables.icons.lucide.ListVideo
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Maximize
@@ -54,6 +56,12 @@ data class WideBarActions(
     val onTracks: (() -> Unit)?,
     val onSave: (() -> Unit)?,
     val onExport: (() -> Unit)?,
+    val onBackground: () -> Unit = {},
+    val onFocus: (() -> Unit)? = null,
+    val onOnionSettings: () -> Unit = {},
+    val onFrameImage: (() -> Unit)? = null,
+    /** The frame reference and camera buttons, which need the editor's own state. */
+    val viewControls: (@Composable () -> Unit)? = null,
 )
 
 /**
@@ -74,9 +82,13 @@ internal fun RowScope.WideDrawingBar(state: StudioState, onIntent: (StudioIntent
     }
     Spacer(Modifier.weight(1f))
     BarAction(Lucide.Clapperboard, stringResource(R.string.workspace_frames), onClick = actions.onFrames)
-    BarAction(Lucide.Ghost, stringResource(R.string.editor_onion_skin), selected = state.onionSkin.enabled) {
-        onIntent(StudioIntent.OnionSkin.SetEnabled(!state.onionSkin.enabled))
-    }
+    // Opens onion skin's settings, which hold its on/off switch, so nothing repeats in a menu.
+    BarAction(
+        Lucide.Ghost,
+        stringResource(R.string.editor_onion_skin),
+        selected = state.onionSkin.enabled,
+        onClick = actions.onOnionSettings,
+    )
     BarAction(
         Lucide.Grid2x2,
         stringResource(R.string.grid_title),
@@ -88,13 +100,20 @@ internal fun RowScope.WideDrawingBar(state: StudioState, onIntent: (StudioIntent
     }
     BarAction(Icons.Filled.Speed, stringResource(R.string.fps_chip, state.animation.fps), onClick = actions.onFrameRate)
     actions.onTracks?.let { BarAction(Lucide.ListVideo, stringResource(R.string.workspace_tracks), onClick = it) }
+    BarAction(Lucide.Image, stringResource(R.string.editor_background), onClick = actions.onBackground)
+    actions.onFrameImage?.let {
+        BarAction(Lucide.ImagePlus, stringResource(R.string.workspace_frame_image), onClick = it)
+    }
+    actions.onFocus?.let { BarAction(Lucide.Eye, stringResource(R.string.workspace_focus), onClick = it) }
+    actions.viewControls?.let { controls ->
+        BarDivider()
+        controls()
+    }
     Spacer(Modifier.weight(1f))
     actions.onSave?.let { BarAction(Lucide.Save, stringResource(R.string.action_save), onClick = it) }
-    actions.onExport?.let { export ->
-        Button(onClick = export, modifier = Modifier.padding(horizontal = Dimens.spaceS)) {
-            Icon(Lucide.Share, null, Modifier.size(Dimens.iconS))
-            Text(stringResource(R.string.editor_export_video), Modifier.padding(start = Dimens.spaceS))
-        }
+    // Export is a bar action like the rest, in the accent colour, so the bar fits a tablet's width.
+    actions.onExport?.let {
+        BarAction(Lucide.Share, stringResource(R.string.workspace_export), accent = true, onClick = it)
     }
 }
 
@@ -105,11 +124,12 @@ private fun BarAction(
     label: String,
     selected: Boolean = false,
     enabled: Boolean = true,
+    accent: Boolean = false,
     onClick: () -> Unit,
 ) {
     val tint = when {
         !enabled -> EditorTokens.inactive
-        selected -> EditorTokens.accent
+        selected || accent -> EditorTokens.accent
         else -> EditorTokens.dark
     }
     Surface(

@@ -123,6 +123,8 @@ fun EditorTopBar(
     onExportClick: (() -> Unit)? = null,
     /** Opens the Library picker for background images. */
     onBackgroundFromLibraryClick: (() -> Unit)? = null,
+    /** The tablet workspace's frame reference and camera buttons, shown on the wide bar. */
+    wideBarExtras: (@Composable () -> Unit)? = null,
 ) {
     val (onHomeClick, onStudioClick, onGridSettingsClick, onOnionSettingsClick) = actions
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -176,6 +178,11 @@ fun EditorTopBar(
                         onTracks = onTracksOpen,
                         onSave = onSaveProjectClick,
                         onExport = onExportClick,
+                        onBackground = { assetsExpanded = true },
+                        onFocus = onFocusCanvas,
+                        onOnionSettings = onOnionSettingsClick,
+                        onFrameImage = onImportFrameImage,
+                        viewControls = wideBarExtras,
                     ),
                 )
             } else if (!isActorStudio) {
@@ -234,129 +241,140 @@ fun EditorTopBar(
                     ContextIconAction(Icons.Filled.EditNote, stringResource(R.string.editor_pack_item_details), edit),
                 )
             }
-            Box {
-                if (isActorStudio) {
-                    com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(
-                        Lucide.EllipsisVertical,
-                        stringResource(R.string.editor_more_settings),
-                    ) {
-                        onOverflowMenuToggle(true)
-                    }
-                } else {
-                    IconButton(onClick = {
-                        onOverflowMenuToggle(true)
-                    }) {
-                        Icon(
+            // On the wide bar the menu only holds what the bar doesn't show (the skeleton overlay).
+            if (!wideBar || state.actorDefinition() != null) {
+                Box {
+                    if (isActorStudio) {
+                        com.donnclab.kinetiframe.presentation.actors.rigging.ActorToolButton(
                             Lucide.EllipsisVertical,
                             stringResource(R.string.editor_more_settings),
-                            tint = EditorTokens.dark,
-                        )
+                        ) {
+                            onOverflowMenuToggle(true)
+                        }
+                    } else {
+                        IconButton(onClick = {
+                            onOverflowMenuToggle(true)
+                        }) {
+                            Icon(
+                                Lucide.EllipsisVertical,
+                                stringResource(R.string.editor_more_settings),
+                                tint = EditorTokens.dark,
+                            )
+                        }
                     }
-                }
-                IconContextMenu(
-                    showOverflowMenu,
-                    { onOverflowMenuToggle(false) },
-                    buildList {
-                        // Finishing an animation ends here, so export leads the menu.
-                        onExportClick?.let { export ->
-                            add(
-                                ContextIconAction(Lucide.Share, stringResource(R.string.editor_export_video), {
-                                    onOverflowMenuToggle(false)
-                                    export()
-                                }),
-                            )
-                        }
-                        onSaveProjectClick?.let { save ->
-                            add(
-                                ContextIconAction(Lucide.Save, stringResource(R.string.editor_save_project), {
-                                    onOverflowMenuToggle(false)
-                                    save()
-                                }),
-                            )
-                        }
-                        onFocusCanvas?.takeIf { !isActorStudio }?.let { focus ->
-                            add(
-                                ContextIconAction(Lucide.Eye, stringResource(R.string.timeline_focus_canvas), {
-                                    onOverflowMenuToggle(false)
-                                    focus()
-                                }),
-                            )
-                        }
-                        add(
-                            ContextIconAction(Lucide.Clapperboard, stringResource(R.string.library_kind_frames), {
-                                onOverflowMenuToggle(false)
-                                onStudioClick()
-                            }),
-                        )
-                        add(
-                            ContextIconAction(Lucide.Frame, stringResource(R.string.editor_safe_frame), {
-                                onIntent(StudioIntent.View.ToggleSafeFrame)
-                                onOverflowMenuToggle(false)
-                            }, selected = state.canvas.showSafeFrame),
-                        )
-                        add(
-                            ContextIconAction(Icons.Filled.Image, stringResource(R.string.editor_background), {
-                                onOverflowMenuToggle(false)
-                                assetsExpanded =
-                                    true
-                            }),
-                        )
-                        add(
-                            ContextIconAction(Icons.Filled.Speed, stringResource(R.string.editor_frame_rate), {
-                                onOverflowMenuToggle(false)
-                                speedOpen = true
-                            }),
-                        )
-                        if (state.actorDefinition() != null) {
-                            add(
-                                ContextIconAction(Lucide.Bone, stringResource(R.string.puppet_skeleton_overlay), {
-                                    onOverflowMenuToggle(false)
-                                    onIntent(StudioIntent.Rigging.ToggleSkeletonOverlay)
-                                }, selected = state.scene.skeletonOverlayVisible),
-                            )
-                        }
-                        add(
-                            ContextIconAction(Lucide.Grid2x2, stringResource(R.string.grid_title), {
-                                onOverflowMenuToggle(false)
-                                onGridSettingsClick()
-                            }),
-                        )
-                        add(
-                            ContextIconAction(Lucide.Ghost, stringResource(R.string.editor_onion_skin), {
-                                onOverflowMenuToggle(false)
-                                onOnionSettingsClick()
-                            }),
-                        )
-                        onImportFrameImage?.let { import ->
-                            add(
-                                ContextIconAction(
-                                    Icons.Filled.AddPhotoAlternate,
-                                    stringResource(
-                                        R.string.editor_frame_image,
-                                    ),
-                                    {
+                    IconContextMenu(
+                        showOverflowMenu,
+                        { onOverflowMenuToggle(false) },
+                        buildList {
+                            // Finishing an animation ends here, so export leads the menu. The wide bar
+                            // shows these actions itself, so its menu doesn't repeat them.
+                            onExportClick?.takeUnless { wideBar }?.let { export ->
+                                add(
+                                    ContextIconAction(Lucide.Share, stringResource(R.string.editor_export_video), {
                                         onOverflowMenuToggle(false)
-                                        import()
-                                    },
-                                ),
+                                        export()
+                                    }),
+                                )
+                            }
+                            onSaveProjectClick?.takeUnless { wideBar }?.let { save ->
+                                add(
+                                    ContextIconAction(Lucide.Save, stringResource(R.string.editor_save_project), {
+                                        onOverflowMenuToggle(false)
+                                        save()
+                                    }),
+                                )
+                            }
+                            onFocusCanvas?.takeIf { !isActorStudio && !wideBar }?.let { focus ->
+                                add(
+                                    ContextIconAction(Lucide.Eye, stringResource(R.string.timeline_focus_canvas), {
+                                        onOverflowMenuToggle(false)
+                                        focus()
+                                    }),
+                                )
+                            }
+                            addUnless(
+                                wideBar,
+                                ContextIconAction(Lucide.Clapperboard, stringResource(R.string.library_kind_frames), {
+                                    onOverflowMenuToggle(false)
+                                    onStudioClick()
+                                }),
                             )
-                        }
-                    },
-                )
-                EditorAssetMenu(
-                    assetsExpanded,
-                    { assetsExpanded = false },
-                    state.project.backgroundAssetId != null,
-                    BackgroundMenuActions(
-                        onChoose = onSetBackgroundClick,
-                        onRemove = { onIntent(StudioIntent.Background.Remove) },
-                        onSaveBackground = onAddBackgroundToLibraryClick,
-                        onSaveFrame = onAddCurrentFrameToLibraryClick,
-                        onToggleBackground = { onIntent(StudioIntent.Background.ToggleVisibility) },
-                        onChooseFromLibrary = onBackgroundFromLibraryClick,
-                    ),
-                    state.canvas.backgroundVisible,
-                )
+                            addUnless(
+                                wideBar,
+                                ContextIconAction(Lucide.Frame, stringResource(R.string.editor_safe_frame), {
+                                    onIntent(StudioIntent.View.ToggleSafeFrame)
+                                    onOverflowMenuToggle(false)
+                                }, selected = state.canvas.showSafeFrame),
+                            )
+                            addUnless(
+                                wideBar,
+                                ContextIconAction(Icons.Filled.Image, stringResource(R.string.editor_background), {
+                                    onOverflowMenuToggle(false)
+                                    assetsExpanded =
+                                        true
+                                }),
+                            )
+                            addUnless(
+                                wideBar,
+                                ContextIconAction(Icons.Filled.Speed, stringResource(R.string.editor_frame_rate), {
+                                    onOverflowMenuToggle(false)
+                                    speedOpen = true
+                                }),
+                            )
+                            if (state.actorDefinition() != null) {
+                                add(
+                                    ContextIconAction(Lucide.Bone, stringResource(R.string.puppet_skeleton_overlay), {
+                                        onOverflowMenuToggle(false)
+                                        onIntent(StudioIntent.Rigging.ToggleSkeletonOverlay)
+                                    }, selected = state.scene.skeletonOverlayVisible),
+                                )
+                            }
+                            addUnless(
+                                wideBar,
+                                ContextIconAction(Lucide.Grid2x2, stringResource(R.string.grid_title), {
+                                    onOverflowMenuToggle(false)
+                                    onGridSettingsClick()
+                                }),
+                            )
+                            addUnless(
+                                wideBar,
+                                ContextIconAction(Lucide.Ghost, stringResource(R.string.editor_onion_skin), {
+                                    onOverflowMenuToggle(false)
+                                    onOnionSettingsClick()
+                                }),
+                            )
+                            onImportFrameImage?.takeUnless { wideBar }?.let { import ->
+                                addUnless(
+                                    wideBar,
+                                    ContextIconAction(
+                                        Icons.Filled.AddPhotoAlternate,
+                                        stringResource(
+                                            R.string.editor_frame_image,
+                                        ),
+                                        {
+                                            onOverflowMenuToggle(false)
+                                            import()
+                                        },
+                                    ),
+                                )
+                            }
+                        },
+                    )
+                    EditorAssetMenu(
+                        assetsExpanded,
+                        { assetsExpanded = false },
+                        state.project.backgroundAssetId != null,
+                        BackgroundMenuActions(
+                            onChoose = onSetBackgroundClick,
+                            onRemove = { onIntent(StudioIntent.Background.Remove) },
+                            onSaveBackground = onAddBackgroundToLibraryClick,
+                            onSaveFrame = onAddCurrentFrameToLibraryClick,
+                            onToggleBackground = { onIntent(StudioIntent.Background.ToggleVisibility) },
+                            onChooseFromLibrary = onBackgroundFromLibraryClick,
+                        ),
+                        state.canvas.backgroundVisible,
+                    )
+                }
             }
         }
     }
@@ -440,4 +458,9 @@ private fun EditorTopBarPreview() {
         onOverflowMenuToggle = {},
         onFocusCanvas = {},
     )
+}
+
+/** Adds [action] unless [skip], as when the wide bar already shows it. */
+private fun MutableList<ContextIconAction>.addUnless(skip: Boolean, action: ContextIconAction) {
+    if (!skip) add(action)
 }

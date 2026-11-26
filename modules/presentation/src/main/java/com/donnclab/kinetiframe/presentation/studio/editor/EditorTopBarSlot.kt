@@ -24,7 +24,14 @@ import com.donnclab.kinetiframe.studio.actorPreviewDuration
 
 /** The rigging and posing bar in Actor Studio's puppet modes, and the drawing bar everywhere else. */
 @Composable
-internal fun EditorTopBarSlot(state: StudioState, host: EditorHost, ui: EditorUiState, commands: EditorCommands) {
+internal fun EditorTopBarSlot(
+    state: StudioState,
+    host: EditorHost,
+    ui: EditorUiState,
+    commands: EditorCommands,
+    /** The workspace's frame reference and camera buttons; null keeps them on the canvas. */
+    viewControls: (@Composable () -> Unit)? = null,
+) {
     val panels = ui.panels
     val onIntent = commands.onIntent
     val mode = state.scene.studioMode
@@ -62,16 +69,23 @@ internal fun EditorTopBarSlot(state: StudioState, host: EditorHost, ui: EditorUi
         Spacer(Modifier.height(with(LocalDensity.current) { barHeight.toDp() }))
         return
     }
-    Box(Modifier.onSizeChanged { barHeight = it.height }) { DrawingTopBar(state, host, ui, commands) }
+    Box(Modifier.onSizeChanged { barHeight = it.height }) { DrawingTopBar(state, host, ui, commands, viewControls) }
 }
 
 @Composable
-private fun DrawingTopBar(state: StudioState, host: EditorHost, ui: EditorUiState, commands: EditorCommands) {
+private fun DrawingTopBar(
+    state: StudioState,
+    host: EditorHost,
+    ui: EditorUiState,
+    commands: EditorCommands,
+    viewControls: (@Composable () -> Unit)?,
+) {
     val panels = ui.panels
     val onIntent = commands.onIntent
     val chooseArtwork: (Boolean) -> Unit = { asVariant -> ui.artwork.choose(asVariant, state, onIntent) }
     val isActorStudio = host.isActorStudioSession
     EditorTopBar(
+        wideBarExtras = viewControls,
         onFocusCanvas = { panels.toolbarVisible = false },
         onTracksOpen = if (!host.isPackCreator && !isActorStudio) ({ panels.tracksWorkspaceVisible = true }) else null,
         onEditPackItem = host.packCreatorConfig?.let {

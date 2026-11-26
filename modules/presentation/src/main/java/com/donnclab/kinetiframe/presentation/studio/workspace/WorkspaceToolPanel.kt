@@ -38,8 +38,6 @@ import com.donnclab.kinetiframe.core.document.DrawingTool
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.presentation.R
-import com.donnclab.kinetiframe.presentation.studio.color.QuickSwatches
-import com.donnclab.kinetiframe.presentation.studio.dock.ColorPicker
 import com.donnclab.kinetiframe.presentation.studio.dock.ToolOptionsContent
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
@@ -88,9 +86,11 @@ private const val TOOLS_PER_ROW = 3
 @Composable
 internal fun WorkspaceToolPanel(state: StudioState, onIntent: (StudioIntent) -> Unit, modifier: Modifier = Modifier) {
     WorkspacePanelSurface(modifier.width(EditorTokens.workspaceToolPanelWidth)) {
+        // Fits the height without scrolling: compact tiles, one colour row, and the tool's settings
+        // in the rest. Only settings that cannot fit scroll, inside their own area.
         Column(
-            Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(Dimens.spaceM),
-            verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+            Modifier.fillMaxHeight().padding(Dimens.spaceM),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spaceS),
         ) {
             PanelHeading(stringResource(R.string.workspace_tools))
             tools.chunked(TOOLS_PER_ROW).forEach { row ->
@@ -105,10 +105,11 @@ internal fun WorkspaceToolPanel(state: StudioState, onIntent: (StudioIntent) -> 
             HorizontalDivider()
             PanelHeading(stringResource(R.string.workspace_colour))
             val colour = Color((state.tool.configs[DrawingTool.BRUSH] ?: ToolConfig()).color)
-            ColorPicker(colour) { onIntent(StudioIntent.Draw.SetBrushColor(it.toArgb())) }
-            QuickSwatches(colour) { onIntent(StudioIntent.Draw.SetBrushColor(it.toArgb())) }
+            WorkspaceColourRow(colour) { onIntent(StudioIntent.Draw.SetBrushColor(it.toArgb())) }
             HorizontalDivider()
-            ToolOptionsContent(state, state.tool.activeTool, onIntent, onDismiss = {})
+            Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+                ToolOptionsContent(state, state.tool.activeTool, onIntent, onDismiss = {})
+            }
         }
     }
 }
@@ -123,7 +124,7 @@ private fun ToolTile(icon: ImageVector, label: String, selected: Boolean, modifi
         border = BorderStroke(Dimens.borderThin, if (selected) EditorTokens.accent else Color.Transparent),
     ) {
         Column(
-            Modifier.padding(vertical = Dimens.spaceS),
+            Modifier.padding(vertical = Dimens.spaceXs),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs),
         ) {

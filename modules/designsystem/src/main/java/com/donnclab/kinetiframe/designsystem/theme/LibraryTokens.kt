@@ -8,6 +8,12 @@ object LibraryTokens {
     /** New Pack's S, M and L options. */
     val packSizeCardHeight = 112.dp
 
+    // On wider windows Library lists become grids of cards at least this wide, and search stops
+    // growing, instead of each stretching across a tablet.
+    val paletteCardMin = 320.dp
+    val audioRowMin = 360.dp
+    val searchMaxWidth = 480.dp
+
     /** Behind a pack's stamp drawings, which are dark marks on transparent paper. */
     val stampWell = Color(0xFFF1F1F1)
 

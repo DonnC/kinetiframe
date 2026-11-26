@@ -30,6 +30,12 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ### Changed
 
+- The tablet studio keeps the canvas clear: the frame reference and camera buttons, Background,
+  Frame image and Focus are on the top bar, the menu no longer repeats what the bar shows, the
+  tool panel fits the screen without scrolling (one colour row instead of the full picker), and
+  the panels step aside while the animation plays.
+- Library on a tablet lays palettes and audio out as grids of cards, and its search box stops
+  growing instead of stretching across the screen.
 - New Pack on a tablet shows the form and the size comparison side by side, with compact S, M and
   L options instead of three huge empty squares.
 - Camera effects are picked from tiles that each draw and play their move (push in, pan, shake,
