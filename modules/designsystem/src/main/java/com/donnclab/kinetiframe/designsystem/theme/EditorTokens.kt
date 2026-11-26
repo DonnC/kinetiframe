@@ -113,6 +113,11 @@ object EditorTokens {
     val workspaceTopBarHeight = 64.dp
     val wideBarActionWidth = 64.dp
     val workspaceTracksHeight = 280.dp
+
+    // The camera moves grid: five tiles a row, each with its drawn, looping move.
+    val cameraGridWidth = 480.dp
+    val cameraTileWidth = 84.dp
+    val cameraIcon = 48.dp
     val popupHeight = 330.dp
     val popupNarrowWidth = 260.dp
     val popupMediumWidth = 280.dp

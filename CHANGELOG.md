@@ -30,6 +30,8 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ### Changed
 
+- Camera effects are picked from tiles that each draw and play their move (push in, pan, shake,
+  fade, whip pan…), with icons made for KinetiFrame, instead of a list of names.
 - On a tablet in landscape the drawing studio is a workspace: tools, colour and the chosen tool's
   settings in a panel on the left, layers on the right, a labelled top bar with Frames, Onion
   skin, Grid, Safe frame, frame rate, Tracks, Save and Export out in the open, and asset tracks

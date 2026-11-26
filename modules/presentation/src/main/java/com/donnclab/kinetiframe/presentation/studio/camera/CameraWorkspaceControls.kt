@@ -121,38 +121,36 @@ fun CameraWorkspaceControls(
                 state.animation.currentFrame,
                 state.project.fps * 2,
             )
-            CameraAction.entries.forEach { action ->
-                DropdownMenuItem(
-                    text = { Text(action.label()) },
-                    onClick = {
-                        menu = false
-                        onIntent(StudioIntent.Playback.Pause)
-                        val range = available ?: return@DropdownMenuItem
-                        val from = range.first
-                        val to = range.last + 1
-                        draft = SceneCamera.preset(
-                            java.util.UUID.randomUUID().toString(),
-                            action,
-                            from,
-                            to,
-                            SceneCamera.stablePose(state.project.cameraShots, from, state.project.fps),
-                        ).let {
-                            if (action ==
-                                CameraAction.FOLLOW
-                            ) {
-                                it.copy(
-                                    targetPlacementId = state.project.actorPlacements.keys.firstOrNull(),
-                                    end = CameraPose(zoom = it.end.zoom),
-                                )
-                            } else {
-                                it
-                            }
-                        }
-                    },
-                    enabled =
-                    available != null && (action != CameraAction.FOLLOW || state.project.actorPlacements.isNotEmpty()),
-                )
+            fun start(action: CameraAction) {
+                menu = false
+                onIntent(StudioIntent.Playback.Pause)
+                val range = available ?: return
+                val from = range.first
+                val to = range.last + 1
+                draft = SceneCamera.preset(
+                    java.util.UUID.randomUUID().toString(),
+                    action,
+                    from,
+                    to,
+                    SceneCamera.stablePose(state.project.cameraShots, from, state.project.fps),
+                ).let {
+                    if (action == CameraAction.FOLLOW) {
+                        it.copy(
+                            targetPlacementId = state.project.actorPlacements.keys.firstOrNull(),
+                            end = CameraPose(zoom = it.end.zoom),
+                        )
+                    } else {
+                        it
+                    }
+                }
             }
+            // Each move as a tile that plays it, so its effect is seen before it is chosen.
+            CameraActionGrid(
+                enabled = { action ->
+                    available != null && (action != CameraAction.FOLLOW || state.project.actorPlacements.isNotEmpty())
+                },
+                onChoose = ::start,
+            )
             if (available ==
                 null
             ) {
