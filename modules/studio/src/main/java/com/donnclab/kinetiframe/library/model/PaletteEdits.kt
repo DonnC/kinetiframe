@@ -54,6 +54,15 @@ object PaletteEdits {
         String.format(Locale.ROOT, "#%08X", argb and 0xFFFFFFFFL)
     }
 
+    /**
+     * What a screen reader says for a swatch: its name and hex, or the hex alone when the name is
+     * just the hex, as for colours the user saved, which used to be read twice (R3-15).
+     */
+    fun spokenName(name: String, argb: Long): String {
+        val hex = hex(argb)
+        return if (name.isBlank() || parseHex(name) == argb) hex else "$name, $hex"
+    }
+
     /** Parses "#RGB", "#RRGGBB" or "#AARRGGBB", with or without "#". Null when it isn't a colour. */
     fun parseHex(text: String): Long? {
         val digits = text.trim().removePrefix("#")

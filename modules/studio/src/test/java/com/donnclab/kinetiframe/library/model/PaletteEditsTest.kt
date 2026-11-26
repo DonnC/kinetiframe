@@ -51,4 +51,10 @@ class PaletteEditsTest {
         assertNull(PaletteEdits.parseHex("#12"))
         assertNull(PaletteEdits.parseHex("zzzzzz"))
     }
+
+    @Test fun `a swatch named after its hex is read once`() {
+        assertEquals("#FF7C00", PaletteEdits.spokenName("#FF7C00", 0xFFFF7C00L))
+        assertEquals("#FF7C00", PaletteEdits.spokenName("ff7c00", 0xFFFF7C00L))
+        assertEquals("Skin, #F2C9A0", PaletteEdits.spokenName("Skin", 0xFFF2C9A0L))
+    }
 }

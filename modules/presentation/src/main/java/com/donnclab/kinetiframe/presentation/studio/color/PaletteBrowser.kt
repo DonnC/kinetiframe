@@ -2,11 +2,10 @@ package com.donnclab.kinetiframe.presentation.studio.color
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
@@ -69,8 +68,10 @@ fun PaletteBrowserContent(
 
             else -> {
                 var naming by remember { mutableStateOf(false) }
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
-                    item {
+                // Wraps instead of scrolling: the panel is narrow and a scrolling row cut the last
+                // palette's chip off with no sign that more followed (R3-6).
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
+                    run {
                         AssistChip(
                             onClick = { naming = true },
                             label = {
@@ -79,7 +80,7 @@ fun PaletteBrowserContent(
                             leadingIcon = { Icon(Lucide.Plus, null, Modifier.size(Dimens.iconS)) },
                         )
                     }
-                    items(state.palettes, key = { it.id }) { palette ->
+                    state.palettes.forEach { palette ->
                         FilterChip(
                             selected = state.selectedId == palette.id,
                             onClick = { onIntent(PaletteIntent.Select(palette.id)) },
@@ -99,7 +100,7 @@ fun PaletteBrowserContent(
                             null
                         },
                     )
-                    if (editable) EditablePaletteActions(palette.id, color, onIntent)
+                    if (editable) EditablePaletteActions(palette.id, color, !state.isMyColours(palette), onIntent)
                 }
                 if (naming) {
                     NewPaletteDialog(
@@ -123,14 +124,22 @@ fun PaletteBrowserContent(
 
 /** "Add current colour" and "Delete palette", for a palette the user made. */
 @Composable
-private fun EditablePaletteActions(paletteId: String, color: Color, onIntent: (PaletteIntent) -> Unit) {
+private fun EditablePaletteActions(
+    paletteId: String,
+    color: Color,
+    deletable: Boolean,
+    onIntent: (PaletteIntent) -> Unit,
+) {
     var confirmDelete by remember { mutableStateOf(false) }
     Row(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
         TextButton(onClick = { onIntent(PaletteIntent.Add(color.toArgb().toLong() and 0xFFFFFFFFL, paletteId)) }) {
             Icon(Lucide.Plus, null, Modifier.size(Dimens.iconS))
             Text(stringResource(R.string.palette_save_colour))
         }
-        TextButton(onClick = { confirmDelete = true }) { Text(stringResource(R.string.palette_delete)) }
+        // My colours is always there, so it can't be deleted (R3-6, R3-34).
+        if (deletable) {
+            TextButton(onClick = { confirmDelete = true }) { Text(stringResource(R.string.palette_delete)) }
+        }
     }
     Text(stringResource(R.string.palette_edit_hint), style = MaterialTheme.typography.bodySmall)
     if (confirmDelete) {

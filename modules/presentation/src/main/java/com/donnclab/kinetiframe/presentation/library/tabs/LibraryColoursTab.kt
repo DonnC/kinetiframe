@@ -23,12 +23,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -64,6 +66,9 @@ fun LibraryColoursTab() {
 @Composable
 internal fun LibraryColoursContent(state: PaletteState, onIntent: (PaletteIntent) -> Unit) {
     var sheet by remember { mutableStateOf<ColourSheet?>(null) }
+    // When a sheet closes, nothing on this screen should take the keyboard focus it leaves (R3-4).
+    val screenFocus = LocalFocusManager.current
+    LaunchedEffect(sheet) { if (sheet == null) screenFocus.clearFocus() }
     var shown by remember { mutableStateOf<ShownColour?>(null) }
     when {
         state.loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

@@ -906,7 +906,8 @@
     <string name="palette_create">Create</string>
     <string name="palette_delete">Delete palette</string>
     <string name="palette_delete_title">Delete this palette?</string>
-    <string name="palette_edit_hint">Long-press a colour to remove it.</string>
+    <string name="palette_edit_hint">Long-press a colour to see its hex or remove it.</string>
+    <string name="palette_open_colour">Show colour</string>
     <string name="colours_mine_hint">Quick colours that sit under the colour wheel while you draw.</string>
     <string name="colours_palettes_hint">Named sets of colours, such as one for each character. Tap one to see and edit its colours.</string>
     <string name="colours_add">Add colour</string>

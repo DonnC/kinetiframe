@@ -12,6 +12,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -26,9 +30,14 @@ import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.model.BundledPalettes
 import com.donnclab.kinetiframe.library.model.ColorSwatch
 import com.donnclab.kinetiframe.library.model.PaletteDocument
+import com.donnclab.kinetiframe.library.model.PaletteEdits
 import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.library.tabs.ColourDetailDialog
 
-/** A palette's colours in rows of four. With [onRemove], long-pressing a colour removes it. */
+/**
+ * A palette's colours in rows of four. Long-pressing a colour opens it, with its hex and, given
+ * [onRemove], Remove: the same step as tapping a colour in Library (R3-6).
+ */
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 fun PaletteSwatches(
@@ -37,14 +46,15 @@ fun PaletteSwatches(
     onPick: (Color) -> Unit,
     onRemove: ((ColorSwatch) -> Unit)? = null,
 ) {
-    val removeLabel = stringResource(R.string.palette_remove_colour)
+    val openLabel = stringResource(R.string.palette_open_colour)
+    var opened by remember { mutableStateOf<ColorSwatch?>(null) }
     Column(verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
         palette.swatches.chunked(4).forEach { row ->
             Row(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs)) {
                 row.forEach { swatch ->
                     val color = Color(swatch.argb.toInt())
                     val isSelected = selectedColor.toArgb() == swatch.argb.toInt()
-                    val hex = swatch.argb.toString(16).padStart(8, '0').uppercase()
+                    val spoken = PaletteEdits.spokenName(swatch.name, swatch.argb)
                     Box(
                         Modifier.size(EditorTokens.paletteSwatch).background(color, RoundedCornerShape(Dimens.radiusXs))
                             .border(
@@ -57,18 +67,21 @@ fun PaletteSwatches(
                                 RoundedCornerShape(Dimens.radiusXs),
                             )
                             .semantics {
-                                contentDescription = "${swatch.name} #$hex"
+                                contentDescription = spoken
                                 selected = isSelected
                             }
                             .combinedClickable(
                                 onClick = { onPick(color) },
-                                onLongClickLabel = onRemove?.let { removeLabel },
-                                onLongClick = onRemove?.let { { it(swatch) } },
+                                onLongClickLabel = openLabel,
+                                onLongClick = { opened = swatch },
                             ),
                     )
                 }
             }
         }
+    }
+    opened?.let { swatch ->
+        ColourDetailDialog(swatch, onRemove?.let { remove -> { remove(swatch) } }, onDismiss = { opened = null })
     }
 }
 
