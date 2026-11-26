@@ -46,15 +46,16 @@ fun FrameCard(
         else -> EditorTokens.border
     }
     val borderWidth = if (isCurrent || inHoldRange) TimelineTokens.currentFrameBorder else Dimens.borderThin
+    val scale = LocalTimelineScale.current
 
     Box(
         modifier = Modifier
-            .width(TimelineTokens.frameThumbWidth)
+            .width(scale.thumbWidth)
             .combinedClickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Card(
-            modifier = Modifier.size(TimelineTokens.frameThumbWidth, TimelineTokens.frameThumbHeight),
+            modifier = Modifier.size(scale.thumbWidth, scale.thumbHeight),
             colors = CardDefaults.cardColors(
                 containerColor = when {
                     isCurrent -> EditorTokens.accent.copy(alpha = 0.15f)
@@ -68,7 +69,7 @@ fun FrameCard(
                 color = borderColor,
             ),
         ) {
-            FrameThumbnailContent(thumbnail, index, isCurrent, compact = true) {
+            FrameThumbnailContent(thumbnail, index, isCurrent, compact = !scale.largeLabels) {
                 if (linked) {
                     Icon(
                         Icons.Default.Link,

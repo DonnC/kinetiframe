@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioState
@@ -39,7 +38,7 @@ fun TimelineFrameList(
 ) {
     ObserveTimelineScrubbing(
         listState,
-        FRAME_CELL_WIDTH,
+        frameCellWidth,
         state.animation.currentFrame,
         state.animation.totalFrames,
         onStart = {
@@ -54,12 +53,12 @@ fun TimelineFrameList(
         horizontalArrangement = Arrangement.Start,
     ) {
         BoxWithConstraints(Modifier.weight(1f)) {
-            val edge = ((maxWidth - TimelineTokens.frameThumbWidth) / 2).coerceAtLeast(0.dp)
+            val edge = ((maxWidth - LocalTimelineScale.current.thumbWidth) / 2).coerceAtLeast(0.dp)
             LazyRow(
                 state = listState,
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(horizontal = edge),
-                horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXs),
+                horizontalArrangement = Arrangement.spacedBy(TimelineTokens.frameGap),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 items(state.animation.totalFrames) { index ->

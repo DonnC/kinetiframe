@@ -243,10 +243,12 @@ fun TimelineControls(
             border = BorderStroke(Dimens.borderThin, EditorTokens.border.copy(alpha = 0.2f)),
         ) {
             val hasAudio = !packMode && state.project.audioClips.isNotEmpty()
+            val strip = LocalTimelineScale.current.stripHeight
+            // The row grows with the strip: the phone's 48 dp strip keeps its 56 dp row.
+            val rowExtra = TimelineTokens.controlsHeight - TimelineScale.Phone.stripHeight
+            val ribbon = if (hasAudio) TimelineTokens.controlsHeightWithAudio - TimelineTokens.controlsHeight else 0.dp
             Row(
-                Modifier.fillMaxWidth().height(
-                    if (hasAudio) TimelineTokens.controlsHeightWithAudio else TimelineTokens.controlsHeight,
-                ).padding(horizontal = Dimens.spaceXs),
+                Modifier.fillMaxWidth().height(strip + rowExtra + ribbon).padding(horizontal = Dimens.spaceXs),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (!packMode) {
@@ -279,7 +281,7 @@ fun TimelineControls(
                         thumbnails = thumbnails,
                         onContextRequested = { contextFrameIndex = it },
                         onContextDismissed = { contextFrameIndex = null },
-                        modifier = Modifier.fillMaxWidth().height(Dimens.touchTarget),
+                        modifier = Modifier.fillMaxWidth().height(strip),
                         onAddFrame = onAddPackItem,
                         holdRange = holdPick?.range,
                         onHoldPick = holdPick?.let { pick -> { frame -> holdPick = pick.copy(other = frame) } },

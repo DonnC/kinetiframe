@@ -32,8 +32,8 @@ internal fun TimelineTrackViewport(
     content: @Composable (offsetFrames: Float, visibleFrames: Float) -> Unit,
 ) {
     BoxWithConstraints(modifier.clipToBounds()) {
-        val cellPx = with(LocalDensity.current) { FRAME_CELL_WIDTH.toPx() }
-        val visibleFrames = maxWidth / FRAME_CELL_WIDTH
+        val cellPx = with(LocalDensity.current) { frameCellWidth.toPx() }
+        val visibleFrames = maxWidth / frameCellWidth
         var offsetPx by remember { mutableFloatStateOf(0f) }
         val selected by rememberUpdatedState(currentFrame)
         val scrub by rememberUpdatedState(onScrubFrame)

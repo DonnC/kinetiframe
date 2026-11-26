@@ -29,6 +29,9 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ### Changed
 
+- On a tablet the timeline shows frames you can read: bigger thumbnails shaped like the canvas,
+  with the asset track lanes and the audio strip widened to match, so a clip still sits over the
+  frames it covers. Phones keep the compact strip.
 - Export shows what you are about to make: a preview shaped like the video, the project's length,
   frame rate and output size, and video sizes as cards with their shape and dimensions. Progress
   shows over the preview, and a finished video can be watched from the preview, saved to Gallery

@@ -6,11 +6,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import com.donnclab.kinetiframe.presentation.studio.timeline.ActorPerformancePicker
+import com.donnclab.kinetiframe.presentation.studio.timeline.LocalTimelineScale
 import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineControls
+import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineScale
 import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineServices
 import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineTracksPanel
 import com.donnclab.kinetiframe.presentation.studio.timeline.TracksWorkspaceDialog
@@ -31,6 +34,25 @@ internal fun EditorBottomBarSlot(
 ) {
     val panels = ui.panels
     if (state.scene.studioMode != StudioMode.RASTER_DRAWING || !panels.toolbarVisible) return
+    val workspace = usesWorkspace(state, host.isActorStudioSession, host.isPackCreator)
+    // The workspace's strip shows frames you can read, shaped like the canvas; the track lanes
+    // read the same scale, so clips stay over the frames they cover.
+    val scale = if (workspace) TimelineScale.wide(state.project.stage) else TimelineScale.Phone
+    CompositionLocalProvider(LocalTimelineScale provides scale) {
+        BottomBarColumn(viewModel, state, host, ui, storage, commands)
+    }
+}
+
+@Composable
+private fun BottomBarColumn(
+    viewModel: StudioViewModel,
+    state: StudioState,
+    host: EditorHost,
+    ui: EditorUiState,
+    storage: EditorStorageViewModel,
+    commands: EditorCommands,
+) {
+    val panels = ui.panels
     val isPackCreator = host.isPackCreator
     val workspace = usesWorkspace(state, host.isActorStudioSession, isPackCreator)
     // The Scaffold's window insets are zeroed so the canvas stays edge to edge, so nothing

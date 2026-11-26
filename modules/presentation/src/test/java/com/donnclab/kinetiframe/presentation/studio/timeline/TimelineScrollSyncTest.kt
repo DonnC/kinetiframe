@@ -33,7 +33,7 @@ class TimelineScrollSyncTest {
     }
 
     @Test fun `item-to-pixel is the exact inverse of pixel-to-item at fractional cell widths too`() {
-        // Real screen densities rarely land FRAME_CELL_WIDTH on a whole pixel -- this guards the
+        // Real screen densities rarely land frameCellWidth on a whole pixel -- this guards the
         // rounding in both directions still agrees with itself at an ugly, non-integral width.
         val fractional = 106.66667f // 40.dp at 2.66667x density, a real Android density bucket
         for (px in 0..1_500 step 11) {
