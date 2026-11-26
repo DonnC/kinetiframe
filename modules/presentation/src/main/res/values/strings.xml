@@ -1165,8 +1165,21 @@
     <string name="library_frame_name">Frame %1$d</string>
 
     <!-- The frame studio's toolbar. -->
-    <string name="frame_studio_paste">PASTE</string>
-    <string name="frame_studio_add">ADD</string>
-    <string name="frame_studio_erase">ERASE</string>
-    <string name="frame_studio_copy">COPY</string>
+    <string name="frame_menu_paste_before">Paste before</string>
+    <string name="frame_menu_add_before">Add before</string>
+    <string name="frame_menu_delete">Delete</string>
+    <string name="frame_menu_duplicate">Duplicate</string>
+    <string name="frame_menu_copy">Copy</string>
+    <string name="frame_menu_add_after">Add after</string>
+    <string name="frame_menu_paste_after">Paste after</string>
+    <string name="frame_menu_held_drawing">Held drawing</string>
+    <string name="frame_menu_edit_details">Edit item details</string>
+    <string name="frame_studio_paste_before">Paste before selection</string>
+    <string name="frame_studio_add_before">Add frame before selection</string>
+    <string name="frame_studio_delete">Delete selected frames</string>
+    <string name="frame_studio_copy">Copy selected frames</string>
+    <string name="frame_studio_add_after">Add frame after selection</string>
+    <string name="frame_studio_paste_after">Paste after selection</string>
+    <string name="frame_studio_move_earlier">Move frame earlier</string>
+    <string name="frame_studio_move_later">Move frame later</string>
 </resources>

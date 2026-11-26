@@ -215,6 +215,9 @@ sealed class StudioIntent : ViewIntent {
         data class CopyFrames(val indices: List<Int>) : Frame()
         data class PasteFrame(val index: Int, val before: Boolean) : Frame()
         data class PasteFrames(val index: Int, val before: Boolean = true) : Frame()
+
+        /** Moves the frame at [from] to [to], shifting the frames between. */
+        data class MoveFrame(val from: Int, val to: Int) : Frame()
         data class DeleteFrames(val indices: List<Int>) : Frame()
         data class AddFrameAt(val index: Int) : Frame()
         data class HoldDrawing(val first: Int, val last: Int) : Frame()

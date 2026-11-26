@@ -86,6 +86,8 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - Home opens on Recent when the app starts, every project card shows its length as time and
   frames ("0:02 · 48 frames"), and a new collection suggests a name not already in use.
 - Library's project sheet and the canvas size list stay clear of the navigation bar.
+- Frames can be moved: select one in Frames and move it earlier or later. The timeline's frame
+  menu has Duplicate, and the Frames actions say what they do ("Paste after selection").
 - Timeline and Frames thumbnails show the whole canvas on white paper, in the canvas's shape. A
   tall canvas used to be cropped to a square on a dark tile, so frames looked empty.
 - The frame-rate preview plays at the exact rate chosen. It used to run slow, so 24 fps looked

@@ -162,6 +162,9 @@ beside the unchanged original:
   the screen clears focus when it closes. Check it on the A56. The wheel handle on black stays on
   white at full brightness on purpose (R1-03).
 - New Project, Home and Library: R3-8, R3-9, R3-10, R3-12, R3-33 and R3-36.
+- Timeline: R3-20 (move a frame earlier or later from the Frames grid; drag to reorder can come
+  later), R3-25 (Duplicate in the frame menu) and R3-32 (clear action labels). R3-11 stays: the
+  strip scrubs under a centre pointer by design, and its edge clips next to the pinned +.
 - `presentation`'s device tests compile again: `ActorArtworkControlsTest` still used the old
   `ActorArtworkMenu(BoneNode)` signature, so no device test in the module could run.
 

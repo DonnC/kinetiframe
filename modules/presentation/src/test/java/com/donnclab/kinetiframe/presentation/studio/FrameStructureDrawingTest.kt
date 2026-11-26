@@ -90,6 +90,17 @@ class FrameStructureDrawingTest {
         }
     }
 
+    @Test fun movingAFrameShiftsTheFramesBetween() = runTest {
+        withEditor(listOf(Color.BLUE, Color.RED, Color.GREEN), currentFrame = 0) { editor ->
+            editor.handleIntent(StudioIntent.Frame.MoveFrame(0, 2))
+            editor.prepareProjectSave()
+
+            assertEquals(3, editor.state.value.animation.totalFrames)
+            val colours = (0..2).map { editor.cacheManager.getFrame("main", it)!!.getPixel(0, 0) }
+            assertEquals(listOf(Color.RED, Color.GREEN, Color.BLUE), colours)
+        }
+    }
+
     /** A short mark in the far corner, so pixel (0, 0) still shows the frame's fill colour. */
     private fun stroke() = listOf(TouchPoint(12f, 12f, timestamp = 1), TouchPoint(14f, 14f, timestamp = 2))
 
