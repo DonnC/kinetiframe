@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.HorizontalDivider
@@ -37,6 +39,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -411,6 +414,8 @@ fun ToolDock(
 
         if (menuTool != null) {
             val density = LocalDensity.current
+            val menuMaxHeight = with(density) { LocalWindowInfo.current.containerSize.height.toDp() } -
+                EditorTokens.dockMenuScreenMargin
             Popup(
                 alignment = Alignment.TopStart,
                 offset = IntOffset(
@@ -431,13 +436,17 @@ fun ToolDock(
                                 EditorTokens.dockMenuWidth
                             },
                         )
+                        // Never taller than the window: the brush menu ran past the bottom edge.
+                        .heightIn(max = menuMaxHeight)
                         .padding(vertical = Dimens.spaceS),
                     color = androidx.compose.material3.MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(Dimens.radiusL),
                     shadowElevation = Dimens.elevationL,
                     border = androidx.compose.foundation.BorderStroke(Dimens.borderThin, EditorTokens.hairline),
                 ) {
-                    menuTool?.let { tool -> ToolOptionsContent(state, tool, onIntent) { menuTool = null } }
+                    Column(Modifier.verticalScroll(rememberScrollState())) {
+                        menuTool?.let { tool -> ToolOptionsContent(state, tool, onIntent) { menuTool = null } }
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.presentation.studio.dock
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -249,6 +250,12 @@ private fun BrushPickerRow(
                 .fillMaxWidth()
                 .clip(androidx.compose.foundation.shape.RoundedCornerShape(EditorTokens.previewCorner))
                 .background(EditorTokens.brushPreviewWell)
+                // Outlined, so it reads as a button that opens the brush list.
+                .border(
+                    Dimens.borderThin,
+                    EditorTokens.hairline,
+                    androidx.compose.foundation.shape.RoundedCornerShape(EditorTokens.previewCorner),
+                )
                 .clickable(onClick = onClick)
                 .padding(Dimens.spaceS),
             verticalAlignment = Alignment.CenterVertically,

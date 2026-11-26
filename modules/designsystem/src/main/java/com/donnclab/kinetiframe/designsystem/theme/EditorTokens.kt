@@ -49,7 +49,12 @@ object EditorTokens {
     val dockRailHeight = 236.dp
     val dockCorner = 24.dp
     val dockRailCorner = 28.dp
-    val dockMenuWidth = 200.dp
+
+    // Wide enough for a settings row without wrapping; 200 dp squeezed sliders and shape rows.
+    val dockMenuWidth = 264.dp
+
+    /** Room kept above and below a tool menu, so a long one scrolls instead of running off screen. */
+    val dockMenuScreenMargin = 96.dp
     val dockGridMenuWidth = 240.dp
 
     /** How far a tool's menu opens to the right of the dock. */
@@ -66,7 +71,9 @@ object EditorTokens {
     val previewGap = 10.dp
     val previewCorner = 10.dp
     val previewHeight = 80.dp
-    val brushPreview = 48.dp
+
+    // A short stroke sample: 48 dp left a tall empty band around the brush name.
+    val brushPreview = 32.dp
     val brushMenuPreview = 44.dp
 
     // Color controls.

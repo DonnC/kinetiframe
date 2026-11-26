@@ -80,6 +80,8 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ### Fixed
 
+- Tool menus beside the dock are wider, never taller than the screen (a long one scrolls instead
+  of running off the bottom), and the brush picker is a compact outlined button.
 - The camera button shows all the time, below the frame reference button. The two sat on top of
   each other, so the camera only appeared during playback.
 - A frame you deleted right after drawing on it no longer comes back in the next frame you add,
