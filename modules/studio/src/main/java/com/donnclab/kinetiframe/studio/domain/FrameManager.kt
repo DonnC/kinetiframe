@@ -159,11 +159,13 @@ class FrameManager(
 
     fun pasteFrame(index: Int, before: Boolean) {
         val clipboard = copiedFrame ?: return
-        val currentState = getState()
-        if (currentState.animation.totalFrames >= 1000) return
-        val destination = (if (before) index else index + 1).coerceIn(0, currentState.animation.totalFrames)
+        if (getState().animation.totalFrames >= 1000) return
         pendingOperations.launch(scope, dispatcher) {
             frameOperationMutex.withLock {
+                val currentState = getState()
+                if (currentState.animation.totalFrames >= 1000) return@withLock
+                val destination = (if (before) index else index + 1).coerceIn(0, currentState.animation.totalFrames)
+                settleOutgoingDrawing(currentState.animation.currentFrame)
                 val sourceLayers = clipboard.layers
                 val cacheLayerIds = (currentState.currentFrameLayers() + sourceLayers).map { it.id }.distinct()
                 cacheLayerIds.forEach { layerId ->
@@ -262,12 +264,16 @@ class FrameManager(
     }
 
     fun deleteFrames(indices: List<Int>) {
-        val currentState = getState()
-        val targets = indices.distinct().filter { it in 0 until currentState.animation.totalFrames }.sortedDescending()
-        if (targets.isEmpty()) return
+        if (indices.none { it in 0 until getState().animation.totalFrames }) return
 
         pendingOperations.launch(scope, dispatcher) {
             frameOperationMutex.withLock {
+                val currentState = getState()
+                val targets = indices.distinct()
+                    .filter { it in 0 until currentState.animation.totalFrames }
+                    .sortedDescending()
+                if (targets.isEmpty()) return@withLock
+                settleOutgoingDrawing(currentState.animation.currentFrame)
                 var currentTotalFrames = currentState.animation.totalFrames
                 val currentActiveLayers = currentState.currentFrameLayers()
 
@@ -322,6 +328,16 @@ class FrameManager(
                 loadFrameInternal(getState().animation.currentFrame)
             }
         }
+    }
+
+    /**
+     * Bakes the frame on the canvas into its own slot and drops its undo history. Must run before
+     * frames shift: the next frame load re-bakes any history at the old index, which after a
+     * delete or paste belongs to a different frame or to none (R3-18).
+     */
+    private suspend fun settleOutgoingDrawing(currentFrame: Int) {
+        finalizeFrame(currentFrame)
+        clearHistory()
     }
 
     fun deleteFrame(index: Int) {

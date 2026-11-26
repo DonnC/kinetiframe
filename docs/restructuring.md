@@ -139,9 +139,34 @@ beside the unchanged original:
   in joint angles, so hands travel on arcs. The palm, point and fist poses are re-authored.
 - Torso, head, desk, eye and mouth artwork is the original. The sample is 32 MB.
 
+**UX round 3.** `milestone/ux-round-3` acts on the round 3 persona findings
+(`notes/ux-review/findings.md`), checked on a tablet as well as a phone.
+
+- The emulator script works on current SDKs (the API 37 image is `android-37.0`, the 7-inch
+  profile is `small_tablet`, and starting two emulators no longer fails), and `gradlew` is
+  executable again.
+- R3-18: a frame deleted right after drawing on it came back in the next frame added at its
+  place, and deleting or pasting around a frame being drawn could overwrite the frame that moved
+  into its slot. Frame deletes and pastes now settle the drawing before frames shift, and
+  appending a frame clears pixels left past the end by older builds.
+
 ## Next
 
-1. **Packs in the studio.** `milestone/studio-packs`, the next milestone after UX round 2. The
+1. **Tablet layouts.** In `milestone/ux-round-3`, after R3-19. The app is designed for phones and
+   only stretches on tablets; it should use the room it has. On a landscape tablet (2560×1600)
+   it shows a bottom bar instead of a rail, two oversized project cards whose captions the bar
+   cuts off and whose ⋮ the New project button covers, a studio where a 9:16 canvas fills under
+   a third of the width while the top bar spreads its icons across the whole screen, and a
+   Frames grid of tiny tiles in one row.
+   - Choose layouts by window size class (compact, medium, expanded), so foldables and
+     split-screen get them too, not only "tablet".
+   - Expanded browsing: a navigation rail, and grids whose column count follows the width.
+   - Expanded studio: frames and layers in side panels next to the canvas instead of over it,
+     with the top-bar actions grouped near the canvas rather than spread edge to edge.
+   - Frames grid and New Project lay out for the width they get.
+   - Check every change on `kf-phone`, `kf-foldable`, `kf-tablet-small` and `kf-tablet`, in both
+     orientations.
+2. **Packs in the studio.** `milestone/studio-packs`, the next milestone after UX round 2. The
    personas could not find how to use a pack while drawing: today it takes the Library picker, a
    tap on a pack, then a drag out of the floating tray. Using a pack is a drawing action, not a
    timeline one, so it goes on the tool rail rather than in Asset tracks.
@@ -155,12 +180,12 @@ beside the unchanged original:
    - Show pack drawings on a light paper well in every theme (see UX fixes).
    - Check: unit tests for the last-used pack and tap-to-place, then the expert and rigger
      personas use it to lip-sync a few frames on the test phone.
-2. **First release.** A maintainer merges `develop` into `main`, signs a release build and tags
+3. **First release.** A maintainer merges `develop` into `main`, signs a release build and tags
    `v0.1.0`, following steps 5 to 8 of the [release checklist](releases.md#release-checklist).
    The font licences must be added first (see Discoveries).
-3. **UX fixes.** Decide whether the bundled Tavi actor gets the same hand treatment (see UX
+4. **UX fixes.** Decide whether the bundled Tavi actor gets the same hand treatment (see UX
    fixes), then the Actor Studio and editor items.
-4. **Old device test failures.** Fix or delete the 13 failing `presentation` device tests as the
+5. **Old device test failures.** Fix or delete the 13 failing `presentation` device tests as the
    code they cover changes (see Later).
 
 ## Later
@@ -380,6 +405,8 @@ project, drawing, saving and reopening a new one, and applying a motion preset i
 
 ## Discoveries
 
+- `verify` rewrites the four `modules/.artifacts/rigging/continuous-limb-*.png` images with
+  one-byte differences on macOS. Generate them in a platform-neutral way or stop tracking them.
 - The 17 fonts in `app/src/main/assets/fonts` are Google Fonts, most under the SIL Open Font
   License, which `THIRD_PARTY_NOTICES.md` doesn't list. Add each font's license before a release.
 - Mira was the only bundled actor drawn as one continuous piece with skinned bones. With her gone,
