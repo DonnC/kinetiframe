@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.presentation.studio
 
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
 import com.donnclab.kinetiframe.core.document.DrawingTool
+import com.donnclab.kinetiframe.core.document.TouchPoint
 import com.donnclab.kinetiframe.core.geometry.Point2
 import com.donnclab.kinetiframe.presentation.studio.StudioViewModel
 import com.donnclab.kinetiframe.studio.StudioDirectories
@@ -9,6 +10,7 @@ import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
 import com.donnclab.kinetiframe.studio.TrackGroupKind
 import com.donnclab.kinetiframe.studio.currentFrameLayers
+import com.donnclab.kinetiframe.studio.drawing.ConstructionShape
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -190,6 +192,20 @@ class StudioViewModelTest {
 
         viewModel.handleIntent(StudioIntent.Draw.SelectTool(DrawingTool.BRUSH))
         assertEquals(DrawingTool.BRUSH, viewModel.state.value.tool.activeTool)
+    }
+
+    @Test
+    fun `switching tools drops a pending shape preview`() {
+        viewModel.handleIntent(StudioIntent.Draw.SelectConstructionShape(ConstructionShape.RECTANGLE))
+        viewModel.handleIntent(
+            StudioIntent.Construction.SetPreview(listOf(listOf(TouchPoint(0f, 0f), TouchPoint(10f, 10f)))),
+        )
+        assertTrue(viewModel.state.value.constructionShape.previewActive)
+
+        viewModel.handleIntent(StudioIntent.Draw.SelectTool(DrawingTool.ERASER))
+
+        assertFalse(viewModel.state.value.constructionShape.previewActive)
+        assertTrue(viewModel.state.value.constructionShape.previewStrokes.isEmpty())
     }
 
     @Test

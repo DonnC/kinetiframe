@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="docs/brand/kinetiframe-lockup.svg" alt="KinetiFrame" width="320">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/kinetiframe-lockup-dark.svg">
+    <img src="docs/brand/kinetiframe-lockup.svg" alt="KinetiFrame" width="320">
+  </picture>
 </p>
 
 <p align="center">
@@ -14,6 +17,10 @@
   <a href="CONTRIBUTING.md"><img alt="Contributions welcome" src="https://img.shields.io/badge/contributions-welcome-orange.svg"></a>
 </p>
 
+<p align="center">
+  <img src="docs/images/screenshots/showcase.png" alt="KinetiFrame's drawing studio on a tablet beside Actor Studio rigging Tavi on a phone" width="900">
+</p>
+
 ---
 
 Most mobile animation apps make you choose: hand-draw every frame, or move a puppet around.
@@ -22,6 +29,11 @@ movement with your finger, and add a voice-over and a camera move. Then export a
 share the editable project.
 
 It works offline, needs no account and has no ads, in-app purchases or tracking.
+
+<p align="center">
+  <img src="docs/images/screenshots/tavi-presents.gif" alt="Tavi presenting at a news desk, animated in KinetiFrame" width="640"><br>
+  <em>Tavi presents: one of the sample scenes, played straight from the app.</em>
+</p>
 
 ## What you can make
 
@@ -42,7 +54,42 @@ It works offline, needs no account and has no ads, in-app purchases or tracking.
 - Camera moves: push in, pull out, pan, tilt, shake, whip pan, follow and fades
 - MP4 video export, plus `.kframe` project files and `.kpack` stamp packs you can share
 
+**Packs, palettes and your Library**
+- Stamp packs are sets of drawings, such as eyes, mouths and props, that you drag onto any frame.
+  KinetiFrame ships packs of expressions, mouths for talking, and studio furniture to start with
+- Make packs from your own drawings, then reuse them in every project or share them as `.kpack`
+  files
+- Save colours to My colours, build palettes of your own, and pick from recent colours or a hex code
+- The Library keeps everything in one place: projects, actors, packs, images, audio and colours,
+  with favourites, collections and search. Drag one project onto another to start a collection
+
+**Your work stays yours**
+- Everything lives on your device. There's no account, no cloud and no tracking, and it all works
+  offline
+- Projects are open `.kframe` files you can back up, move to another device or share for others to
+  edit
+- Free and open source under Apache-2.0, so the app and your files never get locked away
+
 New to the terms? The [glossary](docs/glossary.md) explains actors, rigs, performances and the rest.
+
+## Screenshots
+
+**On a tablet** the studio becomes a workspace: tools on the left, a labelled top bar, the frame
+strip along the bottom, and layers that float in only when you want them.
+
+<p align="center">
+  <img src="docs/images/screenshots/tablet-layers.png" alt="Tablet studio with the layers panel open" width="49%">
+  <img src="docs/images/screenshots/tablet-export.png" alt="Export screen with the finished video ready to play, save or share" width="49%">
+</p>
+
+**On a phone** everything folds into a floating tool dock, so the canvas gets the screen.
+
+<p align="center">
+  <img src="docs/images/screenshots/phone-studio.png" alt="Phone studio with the floating tool dock" width="24%">
+  <img src="docs/images/screenshots/phone-actor-studio.png" alt="Actor Studio fitting a skeleton to Tavi" width="24%">
+  <img src="docs/images/screenshots/phone-new-project.png" alt="New Project with a live frame-rate preview" width="24%">
+  <img src="docs/images/screenshots/phone-packs-dark.png" alt="Stamp packs in the Library, in dark mode" width="24%">
+</p>
 
 ## Meet Tavi
 

@@ -40,7 +40,6 @@ import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.common.readableWidth
 import com.donnclab.kinetiframe.presentation.common.shareFile
-import com.donnclab.kinetiframe.presentation.common.viewFile
 import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.launch
 
@@ -97,98 +96,17 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
         topBar = { AddFlowTopBar(title = stringResource(R.string.export_title), onBack = onExit) },
         snackbarHost = { SnackbarHost(snackbar) },
     ) { padding ->
-        Box(Modifier.padding(padding).fillMaxSize()) {
-            when (val current = state.phase) {
-                is ExportPhase.ChoosingPreset -> Column(
-                    Modifier.align(Alignment.Center).readableWidth().padding(Dimens.spaceXlPlus).fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
-                ) {
-                    Text(stringResource(R.string.export_choose_title), style = MaterialTheme.typography.titleMedium)
-                    Text(
-                        stringResource(R.string.export_choose_hint),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    ExportPreset.entries.forEach { preset ->
-                        FilterChip(
-                            selected = preset == state.preset,
-                            onClick = { model.handleIntent(ExportIntent.ChoosePreset(preset)) },
-                            label = { Text(stringResource(preset.labelRes())) },
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    }
-                    Button(
-                        onClick = { model.handleIntent(ExportIntent.Start) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) { Text(stringResource(R.string.export_continue)) }
-                }
-
-                is ExportPhase.Rendering -> Column(
-                    Modifier.align(Alignment.Center).readableWidth().padding(Dimens.spaceXlPlus),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
-                ) {
-                    Text(stringResource(R.string.export_rendering), style = MaterialTheme.typography.titleMedium)
-                    LinearProgressIndicator(progress = { state.progress }, modifier = Modifier.fillMaxWidth())
-                    Text(
-                        stringResource(R.string.export_progress_percent, (state.progress * 100).toInt()),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-
-                is ExportPhase.Done -> Column(
-                    Modifier.align(Alignment.Center).readableWidth().padding(Dimens.spaceXlPlus),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
-                ) {
-                    Text(stringResource(R.string.export_ready), style = MaterialTheme.typography.titleMedium)
-                    // Watch the video before saving or sharing it (R3-7).
-                    OutlinedButton(
-                        onClick = {
-                            if (!viewFile(context, current.file, "video/mp4")) {
-                                scope.launch { snackbar.showSnackbar(resources.getString(R.string.export_no_player)) }
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text(stringResource(R.string.export_watch))
-                    }
-                    Button(onClick = ::requestSaveToGallery, modifier = Modifier.fillMaxWidth()) {
-                        Text(stringResource(R.string.export_save_to_gallery))
-                    }
-                    OutlinedButton(
-                        onClick = { model.handleIntent(ExportIntent.Share) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text(stringResource(R.string.action_share))
-                    }
-                }
-
-                is ExportPhase.Failed -> Column(
-                    Modifier.align(Alignment.Center).readableWidth().padding(Dimens.spaceXlPlus),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceL),
-                ) {
-                    Text(
-                        stringResource(R.string.export_failed),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                    Text(current.message.asString(), style = MaterialTheme.typography.bodyMedium)
-                    OutlinedButton(onClick = onExit) { Text(stringResource(R.string.action_close)) }
-                }
-            }
-        }
+        ExportContent(
+            state,
+            ExportActions(
+                onChoose = { model.handleIntent(ExportIntent.ChoosePreset(it)) },
+                onStart = { model.handleIntent(ExportIntent.Start) },
+                onSave = ::requestSaveToGallery,
+                onShare = { model.handleIntent(ExportIntent.Share) },
+                onClose = onExit,
+            ),
+            Modifier.padding(padding),
+        )
     }
     BackHandler(onBack = onExit)
-}
-
-@StringRes
-private fun ExportPreset.labelRes(): Int = when (this) {
-    ExportPreset.SAME_AS_PROJECT -> R.string.export_preset_same_as_project
-    ExportPreset.SQUARE -> R.string.export_preset_square
-    ExportPreset.VERTICAL -> R.string.export_preset_vertical
-    ExportPreset.LANDSCAPE -> R.string.export_preset_landscape
 }

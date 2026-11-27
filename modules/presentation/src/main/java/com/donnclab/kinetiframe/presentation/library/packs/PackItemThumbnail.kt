@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.presentation.library.packs
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,6 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.library.model.PackItemEntry
 import java.io.File
@@ -28,14 +30,17 @@ import java.io.File
 @Composable
 fun PackItemThumbnail(entry: PackItemEntry, file: File, modifier: Modifier = Modifier) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        // Pack drawings are dark marks made on paper, so they sit on a light well in every theme;
+        // the dark tile hid them in dark mode (owner feedback). Fitted, not cropped, so nothing is cut.
         AsyncImage(
             model = file,
             contentDescription = entry.name,
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Fit,
             modifier = Modifier
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(Dimens.radiusM))
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+                .background(EditorTokens.previewWell)
+                .padding(Dimens.spaceXs),
         )
         Text(
             entry.name,

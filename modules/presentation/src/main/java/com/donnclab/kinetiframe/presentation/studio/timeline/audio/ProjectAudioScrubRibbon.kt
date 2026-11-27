@@ -35,8 +35,8 @@ import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
 import com.donnclab.kinetiframe.media.audio.TimelineAudioSummary
 import com.donnclab.kinetiframe.presentation.R
-import com.donnclab.kinetiframe.presentation.studio.timeline.FRAME_CELL_WIDTH
 import com.donnclab.kinetiframe.presentation.studio.timeline.TimelineScrubPosition
+import com.donnclab.kinetiframe.presentation.studio.timeline.frameCellWidth
 import com.donnclab.kinetiframe.presentation.studio.timeline.timelineViewportOffsetFrames
 
 /** Bounded waveform viewport sharing the filmstrip's coordinates, not a project-sized canvas. */
@@ -51,7 +51,7 @@ fun ProjectAudioScrubRibbon(
     modifier: Modifier = Modifier,
 ) {
     val blue = EditorTokens.playhead
-    val cellPx = with(LocalDensity.current) { FRAME_CELL_WIDTH.toPx() }
+    val cellPx = with(LocalDensity.current) { frameCellWidth.toPx() }
     val seek by rememberUpdatedState(onSeek)
     var dragFrame by remember { mutableIntStateOf(-1) }
     val description = stringResource(R.string.timeline_audio_scrubber)
@@ -71,7 +71,7 @@ fun ProjectAudioScrubRibbon(
                     ?: kotlin.math.floor(offsetFrames()).toInt().coerceAtLeast(0)
             }
         }
-        val count = minOf((maxWidth / FRAME_CELL_WIDTH).toInt() + 2, totalFrames - first).coerceAtLeast(0)
+        val count = minOf((maxWidth / frameCellWidth).toInt() + 2, totalFrames - first).coerceAtLeast(0)
         val peaks = remember(clips, mutedTracks, first, count) {
             TimelineAudioSummary.window(clips, first, count, mutedTracks, samplesPerFrame = WAVE_SAMPLES_PER_FRAME)
         }

@@ -8,11 +8,10 @@ import kotlin.math.roundToInt
  * frames and isn't one-widget-per-frame) in lockstep with the frame filmstrip ([androidx.compose.
  * foundation.lazy.LazyRow], since it can hold hundreds of frame thumbnails and needs LazyRow's
  * windowed composition to stay cheap). Both scroll spaces represent the exact same horizontal
- * ruler -- [com.donnclab.kinetiframe.presentation.studio.timeline.FRAME_CELL_WIDTH]... see that constant's doc
- * comment -- per frame, so converting between "raw scrolled pixels" and "first visible item index
+ * ruler -- one [TimelineScale.cell] per frame, so converting between "raw scrolled pixels" and "first visible item index
  * plus that item's own scroll offset" is exact, not an approximation, as long as every item really
- * is [cellWidthPx] wide end to end (true for [FrameCard]'s fixed 36dp card + 4dp `spacedBy` gap,
- * which together equal `FRAME_CELL_WIDTH`, and true for a track lane rendering one cell per frame).
+ * is [cellWidthPx] wide end to end (true for [FrameCard]'s thumbnail plus the strip's `spacedBy` gap,
+ * which together equal the cell, and true for a track lane rendering one cell per frame).
  *
  * Kept as pure functions with no Compose types so this conversion has a plain JVM unit test
  * ([TimelineScrollSyncTest]) independent of a Compose UI test harness -- this project has no

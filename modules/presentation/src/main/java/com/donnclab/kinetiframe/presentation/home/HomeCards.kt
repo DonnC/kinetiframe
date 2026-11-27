@@ -38,24 +38,13 @@ import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.MediaBadge
 import com.donnclab.kinetiframe.presentation.common.MediaCard
 import com.donnclab.kinetiframe.presentation.common.MediaCardMenu
+import com.donnclab.kinetiframe.presentation.common.projectLength
 import java.io.File
 
 /*
  * Home's project, actor and pack cards. All three use the shared [MediaCard]: the picture on top
  * with short facts as badges, and the name, a detail line and the ⋮ menu on a solid caption below.
  */
-
-/**
- * The project's length as "m:ss · N frames" on every card. Cards used to switch between "0:02" and
- * "6 frames" depending on length, which read as two different measures (R3-36).
- */
-@Composable
-private fun projectLength(totalFrames: Int, fps: Int): String {
-    val totalSeconds = if (fps > 0) totalFrames / fps else 0
-    val duration = "%d:%02d".format(totalSeconds / 60, totalSeconds % 60)
-    val frames = pluralStringResource(R.plurals.home_card_frames, totalFrames, totalFrames)
-    return stringResource(R.string.home_card_length, duration, frames)
-}
 
 /** A project card: fps and canvas size on the picture, the duration under the name. */
 @Composable

@@ -49,7 +49,12 @@ object EditorTokens {
     val dockRailHeight = 236.dp
     val dockCorner = 24.dp
     val dockRailCorner = 28.dp
-    val dockMenuWidth = 200.dp
+
+    // Wide enough for a settings row without wrapping; 200 dp squeezed sliders and shape rows.
+    val dockMenuWidth = 264.dp
+
+    /** Room kept above and below a tool menu, so a long one scrolls instead of running off screen. */
+    val dockMenuScreenMargin = 96.dp
     val dockGridMenuWidth = 240.dp
 
     /** How far a tool's menu opens to the right of the dock. */
@@ -66,7 +71,9 @@ object EditorTokens {
     val previewGap = 10.dp
     val previewCorner = 10.dp
     val previewHeight = 80.dp
-    val brushPreview = 48.dp
+
+    // A short stroke sample: 48 dp left a tall empty band around the brush name.
+    val brushPreview = 32.dp
     val brushMenuPreview = 44.dp
 
     // Color controls.
@@ -99,6 +106,18 @@ object EditorTokens {
 
     /** A panel docked beside the canvas on wider windows, such as layers. */
     val sidePanelWidth = 400.dp
+
+    // The tablet workspace's fixed panels, so the canvas between them never jumps.
+    val workspaceToolPanelWidth = 300.dp
+    val workspaceTopBarHeight = 64.dp
+    val workspaceSwatch = 28.dp
+    val wideBarActionWidth = 56.dp
+    val workspaceTracksHeight = 280.dp
+
+    // The camera moves grid: five tiles a row, each with its drawn, looping move.
+    val cameraGridWidth = 480.dp
+    val cameraTileWidth = 84.dp
+    val cameraIcon = 48.dp
     val popupHeight = 330.dp
     val popupNarrowWidth = 260.dp
     val popupMediumWidth = 280.dp

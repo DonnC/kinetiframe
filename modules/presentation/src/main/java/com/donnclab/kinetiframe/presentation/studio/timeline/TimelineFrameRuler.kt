@@ -24,8 +24,8 @@ internal fun TimelineFrameRuler(frames: Int, offsetFrames: Float, visibleFrames:
             Text(
                 "${frame + 1}",
                 modifier = Modifier.offset(
-                    x = FRAME_CELL_WIDTH * (frame - offsetFrames),
-                ).width(FRAME_CELL_WIDTH).clickable {
+                    x = frameCellWidth * (frame - offsetFrames),
+                ).width(frameCellWidth).clickable {
                     onSeekFrame(frame)
                 },
                 style = MaterialTheme.typography.labelSmall,

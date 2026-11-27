@@ -3,6 +3,7 @@ package com.donnclab.kinetiframe.presentation.home
 
 import android.content.ClipData
 import android.content.ClipDescription
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -27,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -41,6 +44,7 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.DragAndDropTransferData
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -60,6 +64,40 @@ private const val PROJECT_DRAG_LABEL = "kinetiframe-project"
 
 /** One collection on Home: its name and its projects, newest first. */
 internal data class ProjectCollection(val name: String, val projects: List<ProjectManifest>)
+
+/** One cell of Home's project grid: a project on its own, or a whole collection as a stack. */
+internal sealed interface ProjectGridEntry {
+    val key: String
+
+    data class Single(val project: ProjectManifest) : ProjectGridEntry {
+        override val key get() = project.projectId
+    }
+
+    data class Stack(val collection: ProjectCollection) : ProjectGridEntry {
+        override val key get() = "collection:${collection.name}"
+    }
+}
+
+/**
+ * [projects] in their order, with each collection's members folded into one stack where its first
+ * (newest) member stands, so Recent and All show groups as groups.
+ */
+internal fun groupIntoStacks(
+    projects: List<ProjectManifest>,
+    collections: List<ProjectCollection>,
+    collectionOf: (ProjectManifest) -> String?,
+): List<ProjectGridEntry> {
+    val byName = collections.associateBy { it.name }
+    val shown = mutableSetOf<String>()
+    return projects.mapNotNull { project ->
+        val group = collectionOf(project)?.let(byName::get)
+        when {
+            group == null -> ProjectGridEntry.Single(project)
+            shown.add(group.name) -> ProjectGridEntry.Stack(group)
+            else -> null
+        }
+    }
+}
 
 /**
  * A project card's touch: a tap calls [onTap] (opens it) and a long-press starts dragging the
@@ -152,8 +190,40 @@ internal fun CollectionGrid(
     }
 }
 
+/**
+ * A collection as a stack: its newest project on top, with two cards tilted out behind, so a group
+ * reads as a pile of projects at a glance (owner feedback). Drop a project on it to add it.
+ */
 @Composable
-private fun CollectionCard(collection: ProjectCollection, onOpen: () -> Unit, onDrop: (String) -> Unit) {
+internal fun CollectionCard(
+    collection: ProjectCollection,
+    onOpen: () -> Unit,
+    onDrop: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier.padding(top = HomeTokens.stackLift, end = HomeTokens.stackLift)) {
+        StackedCardBehind(STACK_BACK_DEGREES, HomeTokens.stackLift, Modifier.matchParentSize())
+        StackedCardBehind(STACK_MIDDLE_DEGREES, HomeTokens.stackLift / 2, Modifier.matchParentSize())
+        CollectionCover(collection, onOpen, onDrop)
+    }
+}
+
+/** One of the cards peeking out behind a collection's cover. */
+@Composable
+private fun StackedCardBehind(degrees: Float, lift: androidx.compose.ui.unit.Dp, modifier: Modifier) {
+    Surface(
+        modifier = modifier.offset(x = lift, y = -lift).graphicsLayer { rotationZ = degrees },
+        shape = RoundedCornerShape(HomeTokens.cardCorner),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        border = BorderStroke(Dimens.borderThin, MaterialTheme.colorScheme.outlineVariant),
+    ) {}
+}
+
+private const val STACK_BACK_DEGREES = 4f
+private const val STACK_MIDDLE_DEGREES = 2f
+
+@Composable
+private fun CollectionCover(collection: ProjectCollection, onOpen: () -> Unit, onDrop: (String) -> Unit) {
     val count = collection.projects.size
     MediaCard(
         title = collection.name,

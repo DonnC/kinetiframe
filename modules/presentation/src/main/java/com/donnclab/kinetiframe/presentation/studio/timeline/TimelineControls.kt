@@ -151,8 +151,11 @@ fun TimelineControls(
     }
     val contextMenuOffset = with(LocalDensity.current) { IntOffset(0, -TimelineTokens.contextMenuOffset.roundToPx()) }
 
-    LaunchedEffect(state.animation.currentFrame) {
-        val frame = state.animation.currentFrame
+    // While playing, the strip follows the frame on screen, so you can see where the loop is
+    // (expert review); paused, it shows the frame you are drawing on.
+    val shownFrame = if (state.animation.isPlaying) state.animation.playbackFrame else state.animation.currentFrame
+    LaunchedEffect(shownFrame) {
+        val frame = shownFrame
         if (!listState.isScrollInProgress && centeredTimelineFrame(listState) != frame) {
             listState.scrollToItem(frame)
         }
@@ -243,10 +246,12 @@ fun TimelineControls(
             border = BorderStroke(Dimens.borderThin, EditorTokens.border.copy(alpha = 0.2f)),
         ) {
             val hasAudio = !packMode && state.project.audioClips.isNotEmpty()
+            val strip = LocalTimelineScale.current.stripHeight
+            // The row grows with the strip: the phone's 48 dp strip keeps its 56 dp row.
+            val rowExtra = TimelineTokens.controlsHeight - TimelineScale.Phone.stripHeight
+            val ribbon = if (hasAudio) TimelineTokens.controlsHeightWithAudio - TimelineTokens.controlsHeight else 0.dp
             Row(
-                Modifier.fillMaxWidth().height(
-                    if (hasAudio) TimelineTokens.controlsHeightWithAudio else TimelineTokens.controlsHeight,
-                ).padding(horizontal = Dimens.spaceXs),
+                Modifier.fillMaxWidth().height(strip + rowExtra + ribbon).padding(horizontal = Dimens.spaceXs),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (!packMode) {
@@ -261,11 +266,7 @@ fun TimelineControls(
                         com.donnclab.kinetiframe.presentation.studio.timeline.audio.ProjectAudioScrubRibbon(
                             clips = state.project.audioClips.values,
                             mutedTracks = state.project.audioTracks.filterValues { it.isMuted }.keys,
-                            currentFrame = if (state.animation.isPlaying) {
-                                state.animation.playbackFrame
-                            } else {
-                                state.animation.currentFrame
-                            },
+                            currentFrame = shownFrame,
                             totalFrames = state.animation.totalFrames,
                             listState = listState,
                             onSeek = { onIntent(StudioIntent.Playback.SetCurrentFrame(it)) },
@@ -279,7 +280,7 @@ fun TimelineControls(
                         thumbnails = thumbnails,
                         onContextRequested = { contextFrameIndex = it },
                         onContextDismissed = { contextFrameIndex = null },
-                        modifier = Modifier.fillMaxWidth().height(Dimens.touchTarget),
+                        modifier = Modifier.fillMaxWidth().height(strip),
                         onAddFrame = onAddPackItem,
                         holdRange = holdPick?.range,
                         onHoldPick = holdPick?.let { pick -> { frame -> holdPick = pick.copy(other = frame) } },

@@ -430,7 +430,7 @@ fun TimelineTracksPanel(
                             }
                         }
                         Box(
-                            Modifier.offset(x = FRAME_CELL_WIDTH * (state.animation.currentFrame - offsetFrames))
+                            Modifier.offset(x = frameCellWidth * (state.animation.currentFrame - offsetFrames))
                                 .width(TimelineTokens.playheadWidth).height(
                                     TimelineTokens.playheadOverhang +
                                         TRACK_HEIGHT *

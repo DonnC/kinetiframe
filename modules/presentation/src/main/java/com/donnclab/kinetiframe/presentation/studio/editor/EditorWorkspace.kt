@@ -3,10 +3,12 @@ package com.donnclab.kinetiframe.presentation.studio.editor
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
@@ -22,7 +24,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +38,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
 import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.library.domain.LibraryPick
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.LocalAppPreferences
@@ -47,9 +52,12 @@ import com.donnclab.kinetiframe.presentation.studio.actorstudio.sketch.ActorSket
 import com.donnclab.kinetiframe.presentation.studio.timeline.LayerPanel
 import com.donnclab.kinetiframe.presentation.studio.timeline.durationFramesFor
 import com.donnclab.kinetiframe.presentation.studio.toUiText
+import com.donnclab.kinetiframe.presentation.studio.workspace.WorkspaceToolPanel
+import com.donnclab.kinetiframe.presentation.studio.workspace.usesWorkspace
 import com.donnclab.kinetiframe.studio.StudioEffect
 import com.donnclab.kinetiframe.studio.StudioIntent
 import com.donnclab.kinetiframe.studio.StudioMode
+import com.donnclab.kinetiframe.studio.StudioState
 import com.donnclab.kinetiframe.studio.actorDefinition
 import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.CancellationException
@@ -318,36 +326,71 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
         },
     ) {
         Scaffold(
-            topBar = { EditorTopBarSlot(state, host, ui, commands) },
+            topBar = {
+                val workspaceBar = usesWorkspace(state, host.isActorStudioSession, host.isPackCreator)
+                EditorTopBarSlot(
+                    state,
+                    host,
+                    ui,
+                    commands,
+                    viewControls = if (workspaceBar) {
+                        { WorkspaceViewControls(viewModel, state, ui, storage.actorRendering, commands.onIntent) }
+                    } else {
+                        null
+                    },
+                )
+            },
             bottomBar = { EditorBottomBarSlot(viewModel, state, host, ui, storage, commands) },
             snackbarHost = { SnackbarHost(snackbar) },
             contentWindowInsets = WindowInsets(0.dp),
         ) { innerPadding ->
-            // On wider windows layers dock beside the canvas instead of covering it.
-            val docksLayers = !windowWidthClass().isCompact && ui.panels.layerSheetVisible
+            // The tablet workspace keeps tools on the left. Its layers float over the canvas's
+            // corner only while open, so the canvas keeps the room and never jumps when they
+            // toggle. Medium windows dock layers beside the canvas while open.
+            val workspace = usesWorkspace(state, host.isActorStudioSession, host.isPackCreator)
+            // Playing gives the canvas the whole screen, like the floating dock on a phone, unless
+            // the animator turned that off in Settings.
+            val panelsShown = ui.panels.toolbarVisible &&
+                !(state.animation.isPlaying && LocalAppPreferences.current.hideToolsDuringPlayback)
+            val docksLayers = if (workspace) {
+                ui.panels.workspaceLayersOpen
+            } else {
+                !windowWidthClass().isCompact && ui.panels.layerSheetVisible
+            }
             Row(Modifier.fillMaxSize().padding(innerPadding)) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        // Pack drags are measured against this Box. The canvas and the pack tray
-                        // both fill it, so a drag's window position minus this one is canvas-local.
-                        .onGloballyPositioned { coordinates ->
-                            ui.tray.canvasRootPositionInWindow = coordinates.positionInWindow()
-                        },
-                ) {
-                    EditorCanvasStack(viewModel, state, host, ui, storage.actorRendering, commands)
-                }
-                if (docksLayers) {
-                    EditorSidePanel {
-                        LayerPanel(
-                            state = state,
-                            onIntent = viewModel::handleIntent,
-                            cacheManager = viewModel.cacheManager,
-                        )
+                if (workspace && panelsShown) WorkspaceToolPanel(state, viewModel::handleIntent)
+                Column(Modifier.weight(1f).fillMaxHeight()) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            // The workspace canvas keeps a margin from the screen's edge, as the
+                            // tool panel does on the other side.
+                            .padding(end = if (workspace) Dimens.spaceS else 0.dp)
+                            // A zoomed canvas stays inside its area instead of covering the panels.
+                            .clipToBounds()
+                            // Pack drags are measured against this Box. The canvas and the pack tray
+                            // both fill it, so a drag's window position minus this one is canvas-local.
+                            .onGloballyPositioned { coordinates ->
+                                ui.tray.canvasRootPositionInWindow = coordinates.positionInWindow()
+                            },
+                    ) {
+                        EditorCanvasStack(viewModel, state, host, ui, storage.actorRendering, commands)
+                        if (workspace && docksLayers && panelsShown) {
+                            EditorSidePanel(Modifier.align(Alignment.TopEnd)) { EditorLayers(viewModel, state) }
+                        }
                     }
+                    if (workspace) WorkspaceDockedTracks(state, host, ui, storage, commands)
+                }
+                if (!workspace && docksLayers && panelsShown) {
+                    EditorSidePanel { EditorLayers(viewModel, state) }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun EditorLayers(viewModel: StudioViewModel, state: StudioState) {
+    LayerPanel(state = state, onIntent = viewModel::handleIntent, cacheManager = viewModel.cacheManager)
 }

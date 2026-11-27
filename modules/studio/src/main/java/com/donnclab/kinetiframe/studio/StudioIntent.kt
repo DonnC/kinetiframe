@@ -245,6 +245,13 @@ sealed class StudioIntent : ViewIntent {
         object ResetCanvasTransform : View()
 
         /**
+         * Fill and Fit: zooms so the canvas fills the whole view, its edges scrolling off screen,
+         * or, once the view is moved at all, fits the whole canvas again. Drawing stays on the
+         * project's own canvas either way; only the view changes.
+         */
+        object ToggleFillView : View()
+
+        /**
          * Zooms and pans so a stage rectangle, such as an actor's bounds, fills [fill] of the canvas
          * above [bottomInset], the share of its height that panels cover at the bottom.
          */

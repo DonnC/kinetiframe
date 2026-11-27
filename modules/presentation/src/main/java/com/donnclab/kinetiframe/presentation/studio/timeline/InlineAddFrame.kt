@@ -23,10 +23,11 @@ import com.donnclab.kinetiframe.presentation.R
 /** A pinned blank frame cell, not another standalone toolbar action. */
 @Composable
 fun InlineAddFrame(onClick: () -> Unit) {
-    Box(Modifier.size(TimelineTokens.frameCell, TimelineTokens.frameCellHeight), contentAlignment = Alignment.Center) {
+    val scale = LocalTimelineScale.current
+    Box(Modifier.size(scale.cell, scale.stripHeight), contentAlignment = Alignment.Center) {
         Surface(
             onClick = onClick,
-            modifier = Modifier.size(TimelineTokens.frameThumbWidth, TimelineTokens.frameThumbHeight),
+            modifier = Modifier.size(scale.thumbWidth, scale.thumbHeight),
             shape = RoundedCornerShape(TimelineTokens.frameThumbCorner),
             border = BorderStroke(Dimens.borderThin, MaterialTheme.colorScheme.outlineVariant),
         ) {

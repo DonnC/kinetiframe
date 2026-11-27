@@ -126,4 +126,13 @@ object Dimens {
 
     /** The widest a form or settings column grows; wider windows centre it. */
     val readableWidth = 640.dp
+
+    /** A large round control or progress ring over a preview, such as Export's. */
+    val progressLarge = 72.dp
+
+    /** A drawn shape glyph on a picture card, such as Export's size options. */
+    val iconXl = 40.dp
+
+    /** The tallest Export's preview gets on a phone, so a tall canvas leaves Export in view. */
+    val exportPreviewMaxHeight = 360.dp
 }

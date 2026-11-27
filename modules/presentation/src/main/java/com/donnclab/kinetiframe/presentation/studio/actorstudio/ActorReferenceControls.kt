@@ -50,6 +50,7 @@ import com.donnclab.kinetiframe.presentation.actors.ReferenceImageSize
 import com.donnclab.kinetiframe.presentation.common.ContextIconAction
 import com.donnclab.kinetiframe.presentation.common.ContextSliderButton
 import com.donnclab.kinetiframe.presentation.common.IconContextMenu
+import com.donnclab.kinetiframe.presentation.studio.workspace.WideBarButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -62,6 +63,8 @@ fun ActorReferenceControls(
     height: Int,
     modifier: Modifier = Modifier,
     description: String = stringResource(R.string.reference_layer_description),
+    /** A name under the icon, for the tablet workspace's labelled top bar. */
+    label: String? = null,
     onReplace: (android.graphics.Bitmap) -> Boolean = {
         session.replace(it, width, height)
         true
@@ -115,16 +118,29 @@ fun ActorReferenceControls(
     }
     Box(modifier) {
         Row {
-            FilledTonalIconButton(onClick = { expanded = true }, enabled = !loading) {
-                if (loading) {
-                    CircularProgressIndicator(Modifier.size(Dimens.iconM))
-                } else {
-                    Icon(Lucide.Image, description)
+            if (label != null) {
+                WideBarButton(
+                    Lucide.Image,
+                    label,
+                    selected = session.bitmap != null,
+                    enabled = !loading,
+                    description = description,
+                ) { expanded = true }
+                if (session.editing) {
+                    WideBarButton(Lucide.Check, stringResource(R.string.action_done)) { session.editing = false }
                 }
-            }
-            if (session.editing) {
-                FilledTonalIconButton(onClick = { session.editing = false }) {
-                    Icon(Lucide.Check, stringResource(R.string.reference_finish_positioning))
+            } else {
+                FilledTonalIconButton(onClick = { expanded = true }, enabled = !loading) {
+                    if (loading) {
+                        CircularProgressIndicator(Modifier.size(Dimens.iconM))
+                    } else {
+                        Icon(Lucide.Image, description)
+                    }
+                }
+                if (session.editing) {
+                    FilledTonalIconButton(onClick = { session.editing = false }) {
+                        Icon(Lucide.Check, stringResource(R.string.reference_finish_positioning))
+                    }
                 }
             }
         }

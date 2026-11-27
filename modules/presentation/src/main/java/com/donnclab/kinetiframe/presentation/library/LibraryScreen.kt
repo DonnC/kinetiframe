@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Refresh
@@ -29,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AppBottomNavBar
 import com.donnclab.kinetiframe.presentation.common.BottomNavDestination
@@ -118,7 +120,8 @@ private fun LibrarySearch(query: String, onIntent: (LibraryIntent) -> Unit) {
         placeholder = { Text(stringResource(R.string.library_search)) },
         singleLine = true,
         leadingIcon = { Icon(Icons.Filled.Search, null) },
-        modifier = Modifier.fillMaxWidth(),
+        // A search box, not a banner: it stops growing on a tablet.
+        modifier = Modifier.widthIn(max = LibraryTokens.searchMaxWidth).fillMaxWidth(),
     )
 }
 

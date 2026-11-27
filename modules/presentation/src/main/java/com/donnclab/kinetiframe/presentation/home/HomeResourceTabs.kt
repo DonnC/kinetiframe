@@ -85,6 +85,23 @@ internal fun ProjectsTabContent(
             BrowserView(organization, position, query),
         )
     }
+    // Recent and All show each collection as one stack; a search still finds single projects.
+    val stacks = query.isBlank() && position.mode in setOf(BrowseMode.RECENT, BrowseMode.ALL)
+    val entries = remember(filtered, collections, stacks) {
+        if (stacks) {
+            groupIntoStacks(filtered, collections) { project ->
+                collectionOf("project:${project.projectId}").takeIf { it != DEFAULT_COLLECTION }
+            }
+        } else {
+            filtered.map(ProjectGridEntry::Single)
+        }
+    }
+    fun openCollection(name: String) = onHierarchyIntent(
+        HierarchyBrowserIntent.Browse(
+            HOME_PROJECTS_BROWSER,
+            position.copy(mode = BrowseMode.COLLECTIONS, collection = name),
+        ),
+    )
     Column(Modifier.fillMaxSize()) {
         CollectionBrowserControls(
             position,
@@ -150,7 +167,13 @@ internal fun ProjectsTabContent(
                     horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
                     verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
                 ) {
-                    items(filtered, key = { it.projectId }) { project ->
+                    items(entries, key = { it.key }) { entry ->
+                        if (entry is ProjectGridEntry.Stack) {
+                            val name = entry.collection.name
+                            CollectionCard(entry.collection, { openCollection(name) }, { moveTo(it, name) })
+                            return@items
+                        }
+                        val project = (entry as ProjectGridEntry.Single).project
                         val open = {
                             onHierarchyIntent(HierarchyBrowserIntent.Used("project:${project.projectId}"))
                             onIntent(ProjectManagerIntent.Open(project.projectId))

@@ -6,8 +6,6 @@ import androidx.compose.ui.unit.dp
 /** Sizes for the editor's timeline: frame strip, transport, asset tracks and their markers. */
 object TimelineTokens {
     // Frame strip.
-    val frameCell = 40.dp
-    val frameCellHeight = 48.dp
     val frameThumbWidth = 36.dp
     val frameThumbHeight = 40.dp
     val frameThumbCorner = 4.dp
@@ -15,6 +13,18 @@ object TimelineTokens {
     val frameBadge = 12.dp
     val thumbDot = 2.dp
     val rulerHeight = 24.dp
+
+    // The tablet workspace's frame strip: a fixed height, and a width that follows the canvas's
+    // shape between these bounds, so a frame looks like the canvas and the lanes stay in step.
+    val wideThumbHeight = 56.dp
+    val wideThumbMinWidth = 44.dp
+    val wideThumbMaxWidth = 92.dp
+
+    /** The gap between frames; a cell is a thumbnail plus this gap. */
+    val frameGap = 4.dp
+
+    /** Room above and below the tablet strip's thumbnails for the current frame's border. */
+    val wideStripPadding = 8.dp
 
     // Frame actions under the strip.
     val actionColumnWidth = 34.dp

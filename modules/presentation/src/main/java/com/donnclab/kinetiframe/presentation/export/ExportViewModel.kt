@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.export.domain.VideoExporter
 import com.donnclab.kinetiframe.export.model.ExportPreset
+import com.donnclab.kinetiframe.export.model.ExportProjectSummary
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.UiText
 import com.donnclab.kinetiframe.presentation.common.toUiText
@@ -31,6 +32,8 @@ data class ExportState(
     val preset: ExportPreset = ExportPreset.SAME_AS_PROJECT,
     val phase: ExportPhase = ExportPhase.ChoosingPreset,
     val progress: Float = 0f,
+    /** The project's picture, size and length, once read. */
+    val summary: ExportProjectSummary? = null,
 ) : ViewState
 
 sealed interface ExportIntent : ViewIntent {
@@ -65,6 +68,8 @@ class ExportViewModel(
         viewModelScope.launch {
             val name = withContext(ioDispatcher) { exporter.projectName(projectId) }
             if (name != null) updateState { it.copy(displayName = name) }
+            val summary = withContext(ioDispatcher) { exporter.projectSummary(projectId) }
+            if (summary != null) updateState { it.copy(summary = summary) }
         }
     }
 

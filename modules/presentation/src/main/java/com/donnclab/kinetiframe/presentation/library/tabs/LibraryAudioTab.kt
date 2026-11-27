@@ -3,14 +3,17 @@ package com.donnclab.kinetiframe.presentation.library.tabs
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.donnclab.kinetiframe.designsystem.theme.Dimens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.AudioTrackSummary
+import com.donnclab.kinetiframe.presentation.common.windowWidthClass
 import com.donnclab.kinetiframe.presentation.library.LibraryIntent
 import com.donnclab.kinetiframe.presentation.library.catalog.AudioTrackRow
 import com.donnclab.kinetiframe.presentation.library.catalog.FilterChipRow
@@ -40,8 +43,17 @@ fun LibraryAudioTab(tracks: List<AudioTrackSummary>, selectedFilter: Int, onInte
             com.donnclab.kinetiframe.presentation.library.LibraryEmptyState()
             return@Column
         }
-        LazyColumn(
+        // One column on a phone; side by side on wider windows instead of rows stretched edge to edge.
+        LazyVerticalGrid(
+            columns = if (windowWidthClass().isCompact) {
+                GridCells.Fixed(
+                    1,
+                )
+            } else {
+                GridCells.Adaptive(LibraryTokens.audioRowMin)
+            },
             contentPadding = PaddingValues(horizontal = Dimens.spaceXl, vertical = Dimens.spaceS),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
             verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
         ) {
             items(filtered, key = {

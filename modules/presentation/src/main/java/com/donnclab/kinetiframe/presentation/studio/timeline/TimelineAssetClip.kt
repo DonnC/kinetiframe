@@ -42,7 +42,6 @@ import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.media.audio.AudioClipWaveform
 import kotlin.math.roundToInt
 
-internal val FRAME_CELL_WIDTH = TimelineTokens.frameCell
 internal val TRACK_GUTTER = TimelineTokens.trackGutter
 internal val TRACK_HEIGHT = TimelineTokens.trackHeight
 
@@ -80,7 +79,7 @@ internal fun TimelineAssetClip(
     contextMenu: (@Composable () -> Unit)? = null,
 ) {
     val (onSelect, onMove, onTrim) = gestures
-    val cellPx = with(LocalDensity.current) { FRAME_CELL_WIDTH.toPx() }
+    val cellPx = with(LocalDensity.current) { frameCellWidth.toPx() }
     val rowPx = with(LocalDensity.current) { TRACK_HEIGHT.toPx() }
     var previewStart by remember(id, start, duration) { mutableIntStateOf(start) }
     var previewDuration by remember(id, start, duration) { mutableIntStateOf(duration) }
@@ -124,9 +123,9 @@ internal fun TimelineAssetClip(
     )
 
     Box(
-        Modifier.offset(x = FRAME_CELL_WIDTH * (visibleStart - offsetFrames))
+        Modifier.offset(x = frameCellWidth * (visibleStart - offsetFrames))
             .width(
-                FRAME_CELL_WIDTH * (visibleEnd - visibleStart).coerceAtLeast(1f),
+                frameCellWidth * (visibleEnd - visibleStart).coerceAtLeast(1f),
             ).height(TRACK_HEIGHT).padding(vertical = TimelineTokens.clipInset)
             .border(
                 if (selected) TimelineTokens.clipBorderSelected else Dimens.borderThin,

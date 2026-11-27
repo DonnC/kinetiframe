@@ -2,6 +2,7 @@ package com.donnclab.kinetiframe.export.domain
 
 import com.donnclab.kinetiframe.core.contracts.StoreResult
 import com.donnclab.kinetiframe.core.document.StageDimensions
+import com.donnclab.kinetiframe.export.model.ExportProjectSummary
 import java.io.File
 
 /**
@@ -11,6 +12,9 @@ import java.io.File
 interface VideoExporter {
     /** The name the video is saved and shared under, or null when the project can't be read. */
     fun projectName(projectId: String): String?
+
+    /** The project's picture, size and length for the export screen, or null when it can't be read. */
+    fun projectSummary(projectId: String): ExportProjectSummary? = null
 
     /** Renders [projectId] to an app-private MP4, letterboxed into [targetDimensions] when set. */
     suspend fun export(

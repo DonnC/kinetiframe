@@ -6,6 +6,10 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ## Unreleased
 
+## 0.1.0 - 2026-11-27
+
+The first release. It needs Android 9 (API 28) or later.
+
 ### Added
 
 - *Tavi presents · natural hands*, a second sample beside the original. Tavi's arms and hands are
@@ -25,11 +29,64 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - Collections: long-press a project and drop it on another to group them, such as the episodes of
   a series, or drop it on a collection to add it.
 - New projects show a live preview of the frame rate you pick, and canvas shapes as picture cards.
-  The same frame-rate picker changes a project's frame rate from the editor menu.
 - Backgrounds can come from your Library as well as your files.
+
+- A per-app language setting, so KinetiFrame can use a different language from the rest of the
+  phone. Debug builds also offer pseudo-locales for checking layouts with longer and right-to-left
+  text.
+- All of the app's text, including error messages, slider values, camera presets and the default
+  library collection's name, now comes from string resources and can be translated.
 
 ### Changed
 
+- On a tablet the timeline shows frames you can read: bigger thumbnails shaped like the canvas,
+  with the asset track lanes and the audio strip widened to match, so a clip still sits over the
+  frames it covers. Phones keep the compact strip.
+- On a tablet the asset tracks open under the canvas, between the tools and layers, so the tool
+  panel keeps its full height and nothing in it is cut off.
+- The tablet top bar names the frame Reference and Camera buttons, like the rest of the bar.
+- A finished export plays in its preview, inside the app, instead of opening another app. Tap the
+  video to stop it.
+- While playing, the frame strip follows the frame on screen.
+- The export preview loops, so even a short animation can be watched.
+- Export uses the canvas you chose for the project, so it is one tap; other sizes wait behind "Use
+  another size", without one that matches the project. Watching is the preview's Play button, so
+  the separate Watch button is gone. On a phone the preview no longer pushes Export off screen.
+- On a tablet the layers panel starts closed and floats over the canvas's corner when opened, as
+  tall as its layers and scrolling when there are many, so the canvas keeps its full size.
+- Tap a layer's name to rename it; the Rename menu item is gone.
+- New Project's frame-rate preview shows every drawing of a second along a ball's arc, with the
+  count in words, so 6 and 24 fps look clearly different.
+- The README logo switches to a light version in dark mode.
+- Fill view: zoom so the canvas fills the space, its edges scrolling off screen, then Fit view
+  to see the whole canvas again. Tap the button on the top bar, or tap twice with two fingers.
+  Drawing stays on your project's canvas either way.
+- Collections show as a stack of cards, and Recent and All show each collection as one stack
+  instead of its projects one by one.
+- New Project names each canvas's quality ("9:16 · 1080p"), and keeps the frame-rate choices to
+  one row of common rates, with the slider for the rest.
+- On a tablet, Home's tabs and the library's filters keep a readable width, and the docked asset
+  tracks no longer repeat the frame strip's play buttons.
+- Export shows what you are about to make: a preview shaped like the video, the project's length,
+  frame rate and output size, and video sizes as cards with their shape and dimensions. Progress
+  shows over the preview, and a finished video can be watched from the preview, saved to Gallery
+  or shared. On a tablet the preview and the details sit side by side.
+- A project's frame rate is set when it is created and no longer changes in the studio, so timing
+  you have drawn stays as you drew it.
+- The tablet studio keeps the canvas clear: the frame reference and camera buttons, Background,
+  Frame image and Focus are on the top bar, the menu no longer repeats what the bar shows, the
+  tool panel fits the screen without scrolling (one colour row instead of the full picker), and
+  the panels step aside while the animation plays.
+- Library on a tablet lays palettes and audio out as grids of cards, and its search box stops
+  growing instead of stretching across the screen.
+- New Pack on a tablet shows the form and the size comparison side by side, with compact S, M and
+  L options instead of three huge empty squares.
+- Camera effects are picked from tiles that each draw and play their move (push in, pan, shake,
+  fade, whip pan…), with icons made for KinetiFrame, instead of a list of names.
+- On a tablet in landscape the drawing studio is a workspace: tools, colour and the chosen tool's
+  settings in a panel on the left, layers on the right, a labelled top bar with Frames, Onion
+  skin, Grid, Safe frame, Tracks, Save and Export out in the open, and asset tracks
+  docked under the canvas instead of covering it. The panels stay put, so the canvas never jumps.
 - Tablets and foldables get layouts of their own instead of a stretched phone layout: a
   navigation rail instead of the bottom bar, project, actor and pack grids with as many columns
   as fit, layers beside the canvas instead of over it, the drawing bar's buttons kept together,
@@ -74,8 +131,31 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - Library cards drop wording that said nothing ("Empty root", "Personal Library"), and image
   previews lose their "Static preview" label.
 
+- The app ID, module namespaces and source packages are now `com.donnclab.kinetiframe`. Saved
+  files keep their original type identifiers, so existing projects still open.
+- The whole project, including the Android app and the bundled sample artwork, is now licensed
+  under Apache-2.0.
+- Starter actors are stored separately from sample scenes, and retired sample projects were
+  removed.
+- Debug builds install as `com.donnclab.kinetiframe.dev`, and every successful build of
+  `develop` publishes a development APK.
+
 ### Fixed
 
+- In dark mode a pack's drawings sat on dark tiles and were hard to see; they now sit on light
+  paper, fitted instead of cropped.
+- A zoomed canvas on a tablet no longer spills over the tool panel.
+- Export's preview showed blank paper for a project whose thumbnail was written after its last
+  save, and a short animation's length read "0:00". Lengths under a minute now show seconds, on
+  Export and on project cards.
+- Exported videos had a black background wherever nothing was drawn; they now have the white paper
+  the studio shows.
+- On a tablet, a shape or fill could not be confirmed: its Confirm and Cancel buttons only showed
+  on the phone's tool dock. Switching tools now also drops an unconfirmed shape.
+- Tool menus beside the dock are wider, never taller than the screen (a long one scrolls instead
+  of running off the bottom), and the brush picker is a compact outlined button.
+- The camera button shows all the time, below the frame reference button. The two sat on top of
+  each other, so the camera only appeared during playback.
 - A frame you deleted right after drawing on it no longer comes back in the next frame you add,
   and deleting or pasting frames while drawing no longer overwrites a neighbouring frame.
 - One colour for every tool: the colour you pick is the one the pen, shapes, fill and text use,
@@ -126,21 +206,6 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - A fresh install no longer opens on a "Clean the trial library?" prompt.
 - The canvas no longer jumps when playback starts.
 
-## 0.1.0 - not yet tagged
-
-The first release. The maintainer sets the date when `v0.1.0` is tagged. It needs Android 9
-(API 28) or later.
-
-### Added
-
-- A per-app language setting, so KinetiFrame can use a different language from the rest of the
-  phone. Debug builds also offer pseudo-locales for checking layouts with longer and right-to-left
-  text.
-- All of the app's text, including error messages, slider values, camera presets and the default
-  library collection's name, now comes from string resources and can be translated.
-
-### Fixed
-
 - Sharing an exported video.
 - Error messages now say what failed in words instead of showing internal error text, except for
   a technical detail added after a few rare storage failures.
@@ -157,17 +222,6 @@ The first release. The maintainer sets the date when `v0.1.0` is tagged. It need
 - Unused libraries, including Google Play Services Location, CameraX, Retrofit and Moshi, which
   makes the app smaller and free of proprietary dependencies. OkHttp still comes in with the Coil
   image loader, but the app makes no network requests.
-
-### Changed
-
-- The app ID, module namespaces and source packages are now `com.donnclab.kinetiframe`. Saved
-  files keep their original type identifiers, so existing projects still open.
-- The whole project, including the Android app and the bundled sample artwork, is now licensed
-  under Apache-2.0.
-- Starter actors are stored separately from sample scenes, and retired sample projects were
-  removed.
-- Debug builds install as `com.donnclab.kinetiframe.dev`, and every successful build of
-  `develop` publishes a development APK.
 
 ### Known limits
 

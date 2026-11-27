@@ -18,6 +18,15 @@ internal class EditorPanels {
     var toolbarVisible by mutableStateOf(true)
     var tracksWorkspaceVisible by mutableStateOf(false)
     var layerSheetVisible by mutableStateOf(false)
+
+    /** The tablet workspace's layers panel starts closed, so the canvas gets the room; the
+     *  timeline's layers button opens it beside the canvas. */
+    var workspaceLayersOpen by mutableStateOf(false)
+
+    /** Showing the audience's framing through the camera instead of editing artwork. Shared by the
+     *  canvas and the camera controls, which sit on the canvas on a phone and in the top bar on a tablet. */
+    val cameraPreview =
+        mutableStateOf(com.donnclab.kinetiframe.presentation.studio.camera.CameraWorkspacePolicy.PREVIEW_ON_OPEN)
     var frameStudioVisible by mutableStateOf(false)
     var showOverflowMenu by mutableStateOf(false)
     var showGridMenu by mutableStateOf(false)

@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.HorizontalDivider
@@ -37,6 +39,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -411,6 +414,8 @@ fun ToolDock(
 
         if (menuTool != null) {
             val density = LocalDensity.current
+            val menuMaxHeight = with(density) { LocalWindowInfo.current.containerSize.height.toDp() } -
+                EditorTokens.dockMenuScreenMargin
             Popup(
                 alignment = Alignment.TopStart,
                 offset = IntOffset(
@@ -431,19 +436,16 @@ fun ToolDock(
                                 EditorTokens.dockMenuWidth
                             },
                         )
+                        // Never taller than the window: the brush menu ran past the bottom edge.
+                        .heightIn(max = menuMaxHeight)
                         .padding(vertical = Dimens.spaceS),
                     color = androidx.compose.material3.MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(Dimens.radiusL),
                     shadowElevation = Dimens.elevationL,
                     border = androidx.compose.foundation.BorderStroke(Dimens.borderThin, EditorTokens.hairline),
                 ) {
-                    when (menuTool) {
-                        DrawingTool.BRUSH, DrawingTool.COLOR_FILL -> BrushOptionsContent(state, menuTool!!, onIntent)
-                        DrawingTool.ERASER -> EraserOptionsContent(state, onIntent) { menuTool = null }
-                        DrawingTool.LASSO -> SelectionOptionsContent(state, onIntent) { menuTool = null }
-                        DrawingTool.TEXT -> TypographyOptionsPanel(state, onIntent, onDismiss = { menuTool = null })
-                        DrawingTool.SMUDGE, DrawingTool.BLUR -> SmudgeBlurOptionsContent(state, menuTool!!, onIntent)
-                        else -> Box(Modifier.padding(Dimens.spaceL)) { Text(stringResource(R.string.tool_options)) }
+                    Column(Modifier.verticalScroll(rememberScrollState())) {
+                        menuTool?.let { tool -> ToolOptionsContent(state, tool, onIntent) { menuTool = null } }
                     }
                 }
             }

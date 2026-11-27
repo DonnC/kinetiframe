@@ -22,7 +22,6 @@ import com.composables.icons.lucide.CopyPlus
 import com.composables.icons.lucide.EllipsisVertical
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Merge
-import com.composables.icons.lucide.Pencil
 import com.composables.icons.lucide.Trash2
 import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
 import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
@@ -31,15 +30,14 @@ import com.donnclab.kinetiframe.presentation.R
 
 /** What a layer's menu can do; a null action is left out, such as Merge down on the bottom layer. */
 data class LayerMenuActions(
-    val onRename: () -> Unit,
     val onDuplicate: (() -> Unit)?,
     val onMergeDown: (() -> Unit)?,
     val onDelete: (() -> Unit)?,
 )
 
 /**
- * A layer's ⋮ menu (R3-27): Rename, Duplicate, Merge down and Delete. Tapping a layer only selects
- * it now; tap and long-press used to both start renaming, and there was no way to delete.
+ * A layer's ⋮ menu: Duplicate, Merge down and Delete. Renaming isn't here: tapping the layer's
+ * name selects it and opens the name for typing (owner feedback, replacing R3-27's menu item).
  */
 @Composable
 fun LayerMenu(actions: LayerMenuActions, modifier: Modifier = Modifier) {
@@ -49,7 +47,6 @@ fun LayerMenu(actions: LayerMenuActions, modifier: Modifier = Modifier) {
             Icon(Lucide.EllipsisVertical, stringResource(R.string.layers_menu), Modifier.size(EditorTokens.iconSmall))
         }
         DropdownMenu(open, onDismissRequest = { open = false }) {
-            MenuItem(R.string.layers_rename, Lucide.Pencil, actions.onRename) { open = false }
             actions.onDuplicate?.let { MenuItem(R.string.layers_duplicate, Lucide.CopyPlus, it) { open = false } }
             actions.onMergeDown?.let { MenuItem(R.string.layers_merge_down, Lucide.Merge, it) { open = false } }
             actions.onDelete?.let { MenuItem(R.string.layers_delete, Lucide.Trash2, it) { open = false } }
@@ -72,5 +69,5 @@ private fun MenuItem(@StringRes label: Int, icon: ImageVector, action: () -> Uni
 @Preview(showBackground = true)
 @Composable
 private fun LayerMenuPreview() {
-    KinetiFrameTheme { LayerMenu(LayerMenuActions({}, {}, null, {})) }
+    KinetiFrameTheme { LayerMenu(LayerMenuActions({}, null, {})) }
 }

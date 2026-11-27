@@ -308,7 +308,11 @@
     <string name="add_project_more_sizes">Custom and more</string>
     <string name="fps_chip">%1$d fps</string>
     <string name="fps_preview_description">A bouncing ball played at %1$d fps</string>
-    <string name="fps_hint">More frames per second move more smoothly, but each second needs more drawings.</string>
+    <plurals name="fps_preview_caption">
+        <item quantity="one">%d drawing each second</item>
+        <item quantity="other">%d drawings each second</item>
+    </plurals>
+    <string name="canvas_ratio_quality">%1$s · %2$s</string>
     <string name="canvas_size_width">Width</string>
     <string name="canvas_size_height">Height</string>
     <string name="canvas_size_px">px</string>
@@ -317,18 +321,24 @@
 
     <!-- Export -->
     <string name="export_title">Export Video</string>
-    <string name="export_choose_title">Export as</string>
     <string name="export_choose_hint">Only changes the exported video\'s resolution — your project\'s own canvas is untouched.</string>
-    <string name="export_preset_same_as_project">Same as project</string>
-    <string name="export_preset_square">Square (Instagram, Facebook post)</string>
-    <string name="export_preset_vertical">Vertical (TikTok, Reels, Shorts)</string>
-    <string name="export_preset_landscape">Landscape (YouTube, Facebook video)</string>
-    <string name="export_continue">Continue</string>
+    <string name="export_size_title">Video size</string>
+    <string name="export_uses_canvas">Your video uses the canvas you chose for this project.</string>
+    <string name="export_other_size">Use another size</string>
+    <string name="export_size_same">As project</string>
+    <string name="export_size_square">Square</string>
+    <string name="export_size_vertical">Vertical</string>
+    <string name="export_size_landscape">Landscape</string>
+    <string name="export_dimensions">%1$d × %2$d</string>
+    <string name="export_output">%1$d × %2$d · MP4</string>
+    <string name="export_start">Export video</string>
+    <string name="export_stop_watching">Stop watching</string>
+    <string name="length_seconds">%1$s s</string>
+    <string name="export_try_again">Try again</string>
     <string name="export_rendering">Rendering your animation…</string>
     <string name="export_progress_percent">%1$d%%</string>
     <string name="export_ready">Your animation is ready!</string>
     <string name="export_watch">Watch</string>
-    <string name="export_no_player">No app on this phone can play the video. Save or share it instead.</string>
     <string name="export_save_to_gallery">Save to Gallery</string>
     <string name="export_failed">Export failed</string>
     <string name="export_saved_to_gallery">Saved to your gallery</string>
@@ -472,7 +482,6 @@
     <string name="layers_add">Add Layer</string>
     <string name="layers_empty">No layers</string>
     <string name="layers_menu">Layer actions</string>
-    <string name="layers_rename">Rename</string>
     <string name="layers_duplicate">Duplicate</string>
     <string name="layers_merge_down">Merge down</string>
     <string name="layers_delete">Delete layer</string>
@@ -773,7 +782,8 @@
     <string name="editor_more_settings">More Settings</string>
     <string name="editor_copy">Copy</string>
     <string name="editor_paste">Paste</string>
-    <string name="editor_reset_view">Reset view</string>
+    <string name="editor_fill_view">Fill view</string>
+    <string name="editor_fit_view">Fit view</string>
     <string name="editor_background">Background</string>
     <string name="editor_safe_frame">Safe frame</string>
     <string name="editor_onion_skin">Onion skin</string>
@@ -798,8 +808,6 @@
     <string name="pack_size_preview">Each item is drawn on a square canvas: %1$d × %1$d.</string>
     <string name="editor_background_from_library">Background from Library</string>
     <string name="editor_background_from_files">Background from files</string>
-    <string name="editor_frame_rate">Frame rate</string>
-    <string name="editor_frame_rate_note">This is the project\'s frame rate. Every drawing stays; the animation plays faster or slower.</string>
     <string name="library_tab_images">Images</string>
     <string name="library_tab_colours">Colours</string>
     <string name="library_filter_backgrounds">Backgrounds</string>
@@ -852,6 +860,20 @@
     <string name="tool_add_bone">Add Bone</string>
     <string name="tool_pose_limb">Pose Limb</string>
     <string name="tool_construction_shapes">Construction shapes</string>
+    <string name="workspace_tools">Tools</string>
+    <string name="workspace_tool_shapes">Shapes</string>
+    <string name="workspace_colour">Colour</string>
+    <string name="workspace_collapse_layers">Hide layers panel</string>
+    <string name="workspace_expand_layers">Show layers panel</string>
+    <string name="workspace_frames">Frames</string>
+    <string name="workspace_tracks">Tracks</string>
+    <string name="workspace_focus">Focus</string>
+    <string name="workspace_export">Export</string>
+    <string name="workspace_frame_image">Frame image</string>
+    <string name="workspace_reference">Reference</string>
+    <string name="workspace_camera">Camera</string>
+    <string name="workspace_camera_preview">Preview</string>
+    <string name="workspace_camera_draw">Draw</string>
     <string name="tool_eraser">Eraser</string>
     <string name="tool_select_actor_part">Select actor part</string>
     <string name="tool_lasso">Lasso</string>
