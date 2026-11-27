@@ -101,8 +101,8 @@ class BundledDemoLibraryInstaller(
                 "demo-stage-background-v1",
                 "Practice stage",
                 LibraryItemKind.BACKGROUND_IMAGE,
-                member = "stage.png",
-                directAsset = "library/stage.png",
+                member = "stage.webp",
+                directAsset = "library/stage.webp",
             ),
             Entry(
                 "demo-ball-audio-v1",
@@ -145,7 +145,7 @@ class BundledDemoLibraryInstaller(
                 scene.libraryId,
                 "Scene · ${scene.name}",
                 LibraryItemKind.BACKGROUND_IMAGE,
-                member = "${scene.slug}.png",
+                member = "${scene.slug}.webp",
                 directAsset = scene.assetPath,
                 tags = setOf("background", "scene", scene.category),
             )

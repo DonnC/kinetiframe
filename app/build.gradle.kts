@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         applicationId = "com.donnclab.kinetiframe"
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.1.1"
     }
 
     androidResources {
@@ -27,8 +27,10 @@ android {
             isPseudoLocalesEnabled = true
         }
         release {
+            // R8 shrinks the code to what the app uses: the unshrunk build shipped 63 MB of
+            // dex, mostly unused icons and library classes.
             optimization {
-                enable = false
+                enable = true
             }
         }
     }
@@ -91,7 +93,7 @@ dependencies {
 
 tasks.withType<Test>().configureEach {
     // Host-side archive/render tests read these directly, not via Android resources.
-    // A changed cutout/fixture must invalidate test results even when Kotlin is unchanged.
+    // A changed asset fixture must invalidate test results even when Kotlin is unchanged.
     inputs.dir("src/main/assets/packs").withPropertyName("packFixtures")
     inputs.dir("src/main/assets/samples").withPropertyName("sampleFixtures")
     inputs.file("src/main/assets/actor/starter-actors.zip").withPropertyName("starterActorFixtures")

@@ -29,25 +29,31 @@ class BundledActorSampleInstallerTest {
             BundledActorSampleInstaller(files) {
                 com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures.file(assets, it).inputStream()
             }
-        assertEquals(BundledDemoInstaller.Result(2, emptyList()), installer.install())
+        assertEquals(BundledDemoInstaller.Result(1, emptyList()), installer.install())
         val library = LibraryRepository(files)
         val entries = value(library.list())
-        assertEquals(2, entries.count { it.kind == LibraryItemKind.ACTOR })
+        assertEquals(1, entries.count { it.kind == LibraryItemKind.ACTOR })
         assertEquals(0, entries.count { it.kind == LibraryItemKind.PERFORMANCE })
         assertEquals(0, files.projectsRoot().listFiles().orEmpty().size)
         val actors = ActorRepository(files)
         val bundles = ActorBundleRepository(files, actors, PerformanceRepository(files))
         val imported =
-            value(bundles.importActor("starter-ls-tavi-all-views-v3", "copy", "revision-copy", 1791158400001L))
-        assertEquals(4, imported.authoredViews().size)
+            value(
+                bundles.importActor(
+                    "starter-${BundledActorSampleInstaller.DRAWN_TAVI_ID}",
+                    "copy",
+                    "revision-copy",
+                    1791158400001L,
+                ),
+            )
+        assertEquals(1, imported.authoredViews().size)
         imported.authoredViews().values.forEach { id ->
             val revision = value(actors.loadRevision("copy", id))
-            assertTrue(revision.artworkAssetPaths.size >= 20)
             revision.artworkAssetPaths.values.forEach { assertTrue(File(files.actorDirectory("copy"), it).isFile) }
         }
-        value(library.delete("starter-ls-tavi-all-views-v3"))
+        value(library.delete("starter-${BundledActorSampleInstaller.DRAWN_TAVI_ID}"))
         assertEquals(0, installer.install().installed)
-        assertFalse(files.libraryDirectory("starter-ls-tavi-all-views-v3").exists())
+        assertFalse(files.libraryDirectory("starter-${BundledActorSampleInstaller.DRAWN_TAVI_ID}").exists())
         assertTrue(File(root, "demo-receipts/actor-samples-v1").listFiles().orEmpty().none { it.isDirectory })
     }
 }

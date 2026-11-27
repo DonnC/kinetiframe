@@ -4,7 +4,10 @@ package com.donnclab.kinetiframe.library.bundled
 object BundledSceneBackgrounds {
     data class Scene(val slug: String, val name: String, val category: String) {
         val libraryId get() = "kf-background-$slug-v1"
-        val assetPath get() = "backgrounds/$category/$slug.png"
+
+        // WebP: the plates are painted scenes, and lossy WebP keeps them looking the same at a
+        // twentieth of the PNG size.
+        val assetPath get() = "backgrounds/$category/$slug.webp"
     }
 
     val entries = listOf(

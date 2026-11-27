@@ -50,9 +50,7 @@ class BundledDemoInstaller(
                                     tags = if (demo.id in curatedPackIds) {
                                         setOf("loose-signal", "starter") +
                                             (
-                                                if (demo.id.contains("cutouts")) {
-                                                    setOf("characters", demo.id.split('-')[1])
-                                                } else if (demo.id.contains("studio")) {
+                                                if (demo.id.contains("studio")) {
                                                     setOf("props", "studio")
                                                 } else {
                                                     setOf("expressions")
@@ -94,17 +92,15 @@ class BundledDemoInstaller(
     companion object {
         private val installLock = Any()
         private const val CREATED_AT = 1791158400000L
-        const val TAVI_PRESENTATION_ID = "ls-tavi-presentation-v2"
 
-        /** A copy of Tavi presents whose hands follow the forearm; the original ships unchanged beside it. */
-        const val TAVI_NATURAL_HANDS_ID = "ls-tavi-presentation-natural-hands-v1"
-        private val projectAssets = mapOf(
-            TAVI_PRESENTATION_ID to "samples/tavi-presents.kframe",
-            TAVI_NATURAL_HANDS_ID to "samples/tavi-presents-natural-hands.kframe",
-        )
+        /**
+         * Tavi presents, with hands drawn to follow the forearm. It is the only sample: the cutout
+         * original was retired. The ID is the natural-hands copy's, so installs that have it keep it.
+         */
+        const val TAVI_PRESENTATION_ID = "ls-tavi-presentation-natural-hands-v1"
+        private val projectAssets = mapOf(TAVI_PRESENTATION_ID to "samples/tavi-presents.kframe")
         val projectIds = projectAssets.keys.toList()
         val curatedPackIds = listOf(
-            "ls-tavi-cutouts-v6",
             "ls-expressions-v3",
             "ls-eyes-v3",
             "ls-mouths-v3",
@@ -113,7 +109,7 @@ class BundledDemoInstaller(
         val packIds = curatedPackIds
         fun projectAssetPath(id: String): String = requireNotNull(projectAssets[id]) { "Unknown bundled project" }
 
-        /** A pack ships as its saved ID without the `ls-` prefix and version: `packs/tavi-cutouts.kpack`. */
+        /** A pack ships as its saved ID without the `ls-` prefix and version: `packs/expressions.kpack`. */
         fun packAssetPath(id: String): String = "packs/${id.removePrefix("ls-").substringBeforeLast("-v")}.kpack"
         private val entries = projectIds.map { Entry(it, projectAssetPath(it)) } +
             curatedPackIds.map { Entry(it, packAssetPath(it), pack = true) }

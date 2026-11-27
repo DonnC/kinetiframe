@@ -23,8 +23,9 @@ class BundledActorSourceReaderTest {
             val entries = zip.entries().asSequence().map { it.name }.toList()
             assertTrue(entries.isNotEmpty())
             assertTrue(entries.all { it.startsWith("dependencies/actors/") })
-            assertEquals(2, entries.count { it.endsWith("/manifest.json") })
-            assertEquals(5, entries.count { it.contains("/revisions/") && it.endsWith(".json") })
+            // Only the drawn Tavi ships; the four-view cutout Tavi was retired.
+            assertEquals(1, entries.count { it.endsWith("/manifest.json") })
+            assertEquals(1, entries.count { it.contains("/revisions/") && it.endsWith(".json") })
         }
     }
 
@@ -34,9 +35,9 @@ class BundledActorSourceReaderTest {
         BundledActorSourceReader.read(
             File(assets, BundledActorSourceReader.ASSET_PATH),
             files,
-            setOf("ls-tavi-all-views-v3"),
+            setOf(BundledActorSampleInstaller.DRAWN_TAVI_ID),
         )
-        assertTrue(ActorRepository(files).load("ls-tavi-all-views-v3") is StoreResult.Value)
+        assertTrue(ActorRepository(files).load(BundledActorSampleInstaller.DRAWN_TAVI_ID) is StoreResult.Value)
         assertTrue(files.projectsRoot().listFiles().orEmpty().isEmpty())
     }
 

@@ -6,6 +6,23 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ## Unreleased
 
+## 0.1.1 - 2026-11-27
+
+A smaller app with one Tavi. The APK goes from 175 MB to 20 MB.
+
+### Changed
+
+- *Tavi presents* is the one sample scene: the refined version, whose hands are drawn to follow
+  the forearm. Drawings that stay the same across frames, such as the desk, are stored once as
+  held drawings, so the sample is 6 MB instead of 32 MB.
+- Release builds are shrunk with R8, and scene backgrounds are WebP instead of PNG. They look the
+  same at a twentieth of the size.
+
+### Removed
+
+- The cutout Tavi: the original *Tavi presents* scene, the four-view cutout actor and its cutout
+  pack. Tavi · Drawn is the bundled actor. Copies already installed stay in your library.
+
 ## 0.1.0 - 2026-11-27
 
 The first release. It needs Android 9 (API 28) or later.

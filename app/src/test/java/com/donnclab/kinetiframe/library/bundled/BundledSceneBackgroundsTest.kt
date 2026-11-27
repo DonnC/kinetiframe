@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
-import java.io.DataInputStream
 import java.io.File
 
 class BundledSceneBackgroundsTest {
@@ -23,7 +22,7 @@ class BundledSceneBackgroundsTest {
     private fun install(files: DocumentFileStore) =
         BundledDemoLibraryInstaller(files, { File(assets, it).inputStream() }).install()
 
-    @Test fun `fourteen unique real landscape PNGs cover all five categories within streaming budget`() {
+    @Test fun `fourteen unique real landscape WebPs cover all five categories within streaming budget`() {
         val scenes = BundledSceneBackgrounds.entries
         assertEquals(14, scenes.size)
         assertEquals(14, scenes.map { it.libraryId }.distinct().size)
@@ -36,15 +35,16 @@ class BundledSceneBackgroundsTest {
         for (scene in scenes) {
             val file = File(assets, scene.assetPath)
             assertTrue(file.isFile, scene.assetPath)
-            assertTrue(file.length() in 1..(8L * 1024 * 1024), scene.assetPath)
-            DataInputStream(file.inputStream()).use { input ->
-                assertEquals(0x89504e470d0a1a0aUL.toLong(), input.readLong(), "PNG signature")
-                assertEquals(13, input.readInt())
-                assertEquals(0x49484452, input.readInt(), "IHDR")
-                val width = input.readInt()
-                val height = input.readInt()
-                assertTrue(width >= 1280 && height >= 720 && width > height, "${scene.slug}: ${width}x$height")
-            }
+            // Lossy WebP keeps a painted plate small: well under a megabyte each.
+            assertTrue(file.length() in 1..(1024L * 1024), scene.assetPath)
+            val header = file.inputStream().use { it.readNBytes(WEBP_HEADER) }
+            assertEquals("RIFF", String(header, 0, 4, Charsets.US_ASCII), "RIFF signature")
+            assertEquals("WEBPVP8 ", String(header, 8, 8, Charsets.US_ASCII), "lossy WebP")
+            fun dimension(at: Int) = ((header[at].toInt() and 0xff) or ((header[at + 1].toInt() and 0xff) shl 8)) and
+                0x3fff
+            val width = dimension(26)
+            val height = dimension(28)
+            assertTrue(width >= 1280 && height >= 720 && width > height, "${scene.slug}: ${width}x$height")
         }
     }
 
@@ -81,5 +81,10 @@ class BundledSceneBackgroundsTest {
         assertEquals(BundledSceneBackgrounds.entries.size + 5, install(files).installed)
         assertEquals("my artwork", sentinel.readText())
         assertEquals(0, install(DocumentFileStore(root)).installed)
+    }
+
+    private companion object {
+        /** RIFF header, VP8 chunk header and frame tag up to the width and height fields. */
+        const val WEBP_HEADER = 30
     }
 }
