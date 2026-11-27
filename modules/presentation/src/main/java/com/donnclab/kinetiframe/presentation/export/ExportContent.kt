@@ -27,6 +27,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,7 +62,6 @@ import com.donnclab.kinetiframe.presentation.common.windowWidthClass
 data class ExportActions(
     val onChoose: (ExportPreset) -> Unit,
     val onStart: () -> Unit,
-    val onWatch: () -> Unit,
     val onSave: () -> Unit,
     val onShare: () -> Unit,
     val onClose: () -> Unit,
@@ -72,13 +75,18 @@ data class ExportActions(
  */
 @Composable
 fun ExportContent(state: ExportState, actions: ExportActions, modifier: Modifier = Modifier) {
+    // Watching plays the video in the preview, in the app, instead of handing it to another app
+    // (expert review). A new phase, such as exporting again, stops it.
+    var playing by remember(state.phase) { mutableStateOf(false) }
+    val watch = { playing = true }
+    val preview = PreviewPlayback(playing, watch) { playing = false }
     if (windowWidthClass().isCompact) {
         Column(
             modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(Dimens.spaceXl),
             verticalArrangement = Arrangement.spacedBy(Dimens.spaceXl),
         ) {
-            ExportPreview(state, actions.onWatch, Modifier.fillMaxWidth())
-            ExportDetails(state, actions)
+            ExportPreview(state, preview, Modifier.fillMaxWidth())
+            ExportDetails(state, actions, watch)
         }
     } else {
         Row(
@@ -87,12 +95,12 @@ fun ExportContent(state: ExportState, actions: ExportActions, modifier: Modifier
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(Modifier.weight(1.2f).fillMaxSize(), contentAlignment = Alignment.Center) {
-                ExportPreview(state, actions.onWatch)
+                ExportPreview(state, preview)
             }
             Column(
                 Modifier.weight(1f).widthIn(max = Dimens.readableWidth).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(Dimens.spaceXl),
-            ) { ExportDetails(state, actions) }
+            ) { ExportDetails(state, actions, watch) }
         }
     }
 }
@@ -106,7 +114,7 @@ private fun ExportState.outputSize(): StageDimensions? = preset.dimensions ?: su
  * renders, and Play once it's done.
  */
 @Composable
-private fun ExportPreview(state: ExportState, onWatch: () -> Unit, modifier: Modifier = Modifier) {
+private fun ExportPreview(state: ExportState, playback: PreviewPlayback, modifier: Modifier = Modifier) {
     val size = state.outputSize() ?: StageDimensions.LandscapeHd
     Box(
         modifier.aspectRatio(size.width.toFloat() / size.height.coerceAtLeast(1))
@@ -124,7 +132,9 @@ private fun ExportPreview(state: ExportState, onWatch: () -> Unit, modifier: Mod
             ) {
                 summary.thumbnailPath?.let { path ->
                     AsyncImage(
-                        model = path,
+                        // A File, so the image cache keys on its modified time and a re-saved
+                        // thumbnail at the same path isn't shown stale.
+                        model = java.io.File(path),
                         contentDescription = state.displayName,
                         contentScale = ContentScale.Fit,
                         modifier = Modifier.fillMaxSize(),
@@ -149,11 +159,15 @@ private fun ExportPreview(state: ExportState, onWatch: () -> Unit, modifier: Mod
                 )
             }
 
-            is ExportPhase.Done -> FilledIconButton(
-                onClick = onWatch,
-                modifier = Modifier.size(Dimens.progressLarge),
-            ) {
-                Icon(Lucide.Play, stringResource(R.string.export_watch))
+            is ExportPhase.Done -> if (playback.playing) {
+                ExportVideoPlayer(state.phase.file, playback.onStop, Modifier.fillMaxSize())
+            } else {
+                FilledIconButton(
+                    onClick = playback.onPlay,
+                    modifier = Modifier.size(Dimens.progressLarge),
+                ) {
+                    Icon(Lucide.Play, stringResource(R.string.export_watch))
+                }
             }
 
             else -> Unit
@@ -163,7 +177,7 @@ private fun ExportPreview(state: ExportState, onWatch: () -> Unit, modifier: Mod
 
 /** The project's name and facts, then the step: size and Export, progress, results or an error. */
 @Composable
-private fun ExportDetails(state: ExportState, actions: ExportActions) {
+private fun ExportDetails(state: ExportState, actions: ExportActions, onWatch: () -> Unit) {
     Text(
         state.displayName,
         style = MaterialTheme.typography.headlineSmall,
@@ -207,7 +221,7 @@ private fun ExportDetails(state: ExportState, actions: ExportActions) {
                     Icon(Lucide.Share2, null, Modifier.size(Dimens.iconS))
                     Text(stringResource(R.string.action_share), Modifier.padding(start = Dimens.spaceS))
                 }
-                OutlinedButton(onClick = actions.onWatch, modifier = Modifier.weight(1f)) {
+                OutlinedButton(onClick = onWatch, modifier = Modifier.weight(1f)) {
                     Icon(Lucide.Play, null, Modifier.size(Dimens.iconS))
                     Text(stringResource(R.string.export_watch), Modifier.padding(start = Dimens.spaceS))
                 }
@@ -236,10 +250,17 @@ private fun ExportDetails(state: ExportState, actions: ExportActions) {
 /** Length, frame rate and the video's size, as short facts under the name. */
 @Composable
 private fun ExportFacts(summary: ExportProjectSummary, output: StageDimensions?) {
-    val seconds = if (summary.fps > 0) summary.totalFrames / summary.fps else 0
+    val exact = if (summary.fps > 0) summary.totalFrames.toFloat() / summary.fps else 0f
+    val seconds = exact.toInt()
+    // A short loop showed "0:00" (expert review): under a minute, give seconds to a tenth.
+    val time = if (seconds < SECONDS_PER_MINUTE) {
+        stringResource(R.string.export_seconds, "%.1f".format(exact))
+    } else {
+        "%d:%02d".format(seconds / SECONDS_PER_MINUTE, seconds % SECONDS_PER_MINUTE)
+    }
     val length = stringResource(
         R.string.home_card_length,
-        "%d:%02d".format(seconds / SECONDS_PER_MINUTE, seconds % SECONDS_PER_MINUTE),
+        time,
         pluralStringResource(R.plurals.home_card_frames, summary.totalFrames, summary.totalFrames),
     )
     Row(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {

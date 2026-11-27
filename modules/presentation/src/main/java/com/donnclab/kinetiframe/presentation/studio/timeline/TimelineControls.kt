@@ -151,8 +151,11 @@ fun TimelineControls(
     }
     val contextMenuOffset = with(LocalDensity.current) { IntOffset(0, -TimelineTokens.contextMenuOffset.roundToPx()) }
 
-    LaunchedEffect(state.animation.currentFrame) {
-        val frame = state.animation.currentFrame
+    // While playing, the strip follows the frame on screen, so you can see where the loop is
+    // (expert review); paused, it shows the frame you are drawing on.
+    val shownFrame = if (state.animation.isPlaying) state.animation.playbackFrame else state.animation.currentFrame
+    LaunchedEffect(shownFrame) {
+        val frame = shownFrame
         if (!listState.isScrollInProgress && centeredTimelineFrame(listState) != frame) {
             listState.scrollToItem(frame)
         }
@@ -263,11 +266,7 @@ fun TimelineControls(
                         com.donnclab.kinetiframe.presentation.studio.timeline.audio.ProjectAudioScrubRibbon(
                             clips = state.project.audioClips.values,
                             mutedTracks = state.project.audioTracks.filterValues { it.isMuted }.keys,
-                            currentFrame = if (state.animation.isPlaying) {
-                                state.animation.playbackFrame
-                            } else {
-                                state.animation.currentFrame
-                            },
+                            currentFrame = shownFrame,
                             totalFrames = state.animation.totalFrames,
                             listState = listState,
                             onSeek = { onIntent(StudioIntent.Playback.SetCurrentFrame(it)) },

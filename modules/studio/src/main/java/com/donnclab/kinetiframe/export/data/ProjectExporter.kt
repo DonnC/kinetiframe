@@ -79,7 +79,9 @@ class ProjectExporter(
                 manifest.stage,
                 manifest.fps,
                 manifest.totalFrames,
-                manifest.thumbnailPath,
+                // The manifest is saved before its thumbnail is written, so it can still say none;
+                // the file on disk is what the gallery shows too.
+                projectRepository.thumbnailFile(projectId).takeIf(java.io.File::exists)?.absolutePath,
             )
         }
 

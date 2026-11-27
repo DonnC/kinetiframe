@@ -40,7 +40,6 @@ import com.donnclab.kinetiframe.presentation.common.AddFlowTopBar
 import com.donnclab.kinetiframe.presentation.common.asString
 import com.donnclab.kinetiframe.presentation.common.readableWidth
 import com.donnclab.kinetiframe.presentation.common.shareFile
-import com.donnclab.kinetiframe.presentation.common.viewFile
 import com.donnclab.kinetiframe.ui.appViewModel
 import kotlinx.coroutines.launch
 
@@ -102,14 +101,6 @@ fun ExportRoute(projectId: String, onExit: () -> Unit) {
             ExportActions(
                 onChoose = { model.handleIntent(ExportIntent.ChoosePreset(it)) },
                 onStart = { model.handleIntent(ExportIntent.Start) },
-                onWatch = {
-                    (state.phase as? ExportPhase.Done)?.let { done ->
-                        // Watch the video before saving or sharing it (R3-7).
-                        if (!viewFile(context, done.file, "video/mp4")) {
-                            scope.launch { snackbar.showSnackbar(resources.getString(R.string.export_no_player)) }
-                        }
-                    }
-                },
                 onSave = ::requestSaveToGallery,
                 onShare = { model.handleIntent(ExportIntent.Share) },
                 onClose = onExit,

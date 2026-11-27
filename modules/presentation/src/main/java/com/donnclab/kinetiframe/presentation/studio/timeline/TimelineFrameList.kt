@@ -65,7 +65,11 @@ fun TimelineFrameList(
                     Box {
                         FrameCard(
                             index = index,
-                            isCurrent = index == state.animation.currentFrame,
+                            isCurrent = index == if (state.animation.isPlaying) {
+                                state.animation.playbackFrame
+                            } else {
+                                state.animation.currentFrame
+                            },
                             thumbnail =
                             thumbnails[index]
                                 ?: if (index == state.animation.currentFrame) state.currentBitmap else null,

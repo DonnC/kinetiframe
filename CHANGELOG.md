@@ -35,6 +35,9 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - On a tablet the asset tracks open under the canvas, between the tools and layers, so the tool
   panel keeps its full height and nothing in it is cut off.
 - The tablet top bar names the frame Reference and Camera buttons, like the rest of the bar.
+- A finished export plays in its preview, inside the app, instead of opening another app. Tap the
+  video to stop it.
+- While playing, the frame strip follows the frame on screen.
 - Export shows what you are about to make: a preview shaped like the video, the project's length,
   frame rate and output size, and video sizes as cards with their shape and dimensions. Progress
   shows over the preview, and a finished video can be watched from the preview, saved to Gallery
@@ -101,6 +104,8 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ### Fixed
 
+- Export's preview showed blank paper for a project whose thumbnail was written after its last
+  save, and a short animation's length read "0:00"; lengths under a minute now show seconds.
 - Tool menus beside the dock are wider, never taller than the screen (a long one scrolls instead
   of running off the bottom), and the brush picker is a compact outlined button.
 - The camera button shows all the time, below the frame reference button. The two sat on top of
