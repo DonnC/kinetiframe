@@ -6,6 +6,10 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ## Unreleased
 
+## 0.1.0 - 2026-11-27
+
+The first release. It needs Android 9 (API 28) or later.
+
 ### Added
 
 - *Tavi presents · natural hands*, a second sample beside the original. Tavi's arms and hands are
@@ -26,6 +30,12 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
   a series, or drop it on a collection to add it.
 - New projects show a live preview of the frame rate you pick, and canvas shapes as picture cards.
 - Backgrounds can come from your Library as well as your files.
+
+- A per-app language setting, so KinetiFrame can use a different language from the rest of the
+  phone. Debug builds also offer pseudo-locales for checking layouts with longer and right-to-left
+  text.
+- All of the app's text, including error messages, slider values, camera presets and the default
+  library collection's name, now comes from string resources and can be translated.
 
 ### Changed
 
@@ -121,6 +131,15 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - Library cards drop wording that said nothing ("Empty root", "Personal Library"), and image
   previews lose their "Static preview" label.
 
+- The app ID, module namespaces and source packages are now `com.donnclab.kinetiframe`. Saved
+  files keep their original type identifiers, so existing projects still open.
+- The whole project, including the Android app and the bundled sample artwork, is now licensed
+  under Apache-2.0.
+- Starter actors are stored separately from sample scenes, and retired sample projects were
+  removed.
+- Debug builds install as `com.donnclab.kinetiframe.dev`, and every successful build of
+  `develop` publishes a development APK.
+
 ### Fixed
 
 - In dark mode a pack's drawings sat on dark tiles and were hard to see; they now sit on light
@@ -187,21 +206,6 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - A fresh install no longer opens on a "Clean the trial library?" prompt.
 - The canvas no longer jumps when playback starts.
 
-## 0.1.0 - not yet tagged
-
-The first release. The maintainer sets the date when `v0.1.0` is tagged. It needs Android 9
-(API 28) or later.
-
-### Added
-
-- A per-app language setting, so KinetiFrame can use a different language from the rest of the
-  phone. Debug builds also offer pseudo-locales for checking layouts with longer and right-to-left
-  text.
-- All of the app's text, including error messages, slider values, camera presets and the default
-  library collection's name, now comes from string resources and can be translated.
-
-### Fixed
-
 - Sharing an exported video.
 - Error messages now say what failed in words instead of showing internal error text, except for
   a technical detail added after a few rare storage failures.
@@ -218,17 +222,6 @@ The first release. The maintainer sets the date when `v0.1.0` is tagged. It need
 - Unused libraries, including Google Play Services Location, CameraX, Retrofit and Moshi, which
   makes the app smaller and free of proprietary dependencies. OkHttp still comes in with the Coil
   image loader, but the app makes no network requests.
-
-### Changed
-
-- The app ID, module namespaces and source packages are now `com.donnclab.kinetiframe`. Saved
-  files keep their original type identifiers, so existing projects still open.
-- The whole project, including the Android app and the bundled sample artwork, is now licensed
-  under Apache-2.0.
-- Starter actors are stored separately from sample scenes, and retired sample projects were
-  removed.
-- Debug builds install as `com.donnclab.kinetiframe.dev`, and every successful build of
-  `develop` publishes a development APK.
 
 ### Known limits
 
