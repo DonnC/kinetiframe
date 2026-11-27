@@ -67,7 +67,14 @@ class BrowserAndFrameCardsTest {
         try {
             compose.setContent {
                 KinetiFrameTheme {
-                    StudioFrameCard(0, bitmap, false, Modifier.size(190.dp, 150.dp), { selections++ }, { opens++ })
+                    StudioFrameCard(
+                        0,
+                        bitmap,
+                        false,
+                        Modifier.size(190.dp, 150.dp),
+                        onClick = { selections++ },
+                        onOpen = { opens++ },
+                    )
                 }
             }
             val pixels = compose.onNodeWithContentDescription("Preview of frame 1").captureToImage().toPixelMap()

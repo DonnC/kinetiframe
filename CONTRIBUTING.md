@@ -105,7 +105,7 @@ Compose UI tests, which run on a device or emulator.
 
 ```sh
 ./gradlew spotlessApply                        # format Kotlin with ktlint
-./gradlew verify                               # formatting, architecture check, host tests, lint
+./gradlew verify                               # formatting, architecture check, host tests, lint, device-test compile
 ./gradlew :app:connectedDebugAndroidTest       # device tests, needs a phone or emulator
 ```
 
