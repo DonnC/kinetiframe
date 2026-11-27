@@ -184,17 +184,24 @@ beside the unchanged original:
   `AppRootFrame` rail for Home, Library and Settings, `browseGridCells()` for the browsing grids,
   layers docked beside the canvas (`EditorSidePanel`), a grouped drawing bar, and Frames tiles
   shaped like the canvas. Forms (New Project, Settings, Export) keep a 640 dp readable width.
+- Tablet layouts, second pass (`milestone/tablet-studio`): a drawing workspace on expanded
+  windows (fixed tool panel, labelled top bar with no overflow repeats, layers floating over the
+  canvas corner and closed by default, panels hidden while playing), a wider frame strip whose
+  track lanes keep its scale (`TimelineScale`), asset tracks docked under the canvas, Fill and Fit
+  view, camera effects as animated tiles, New Pack in two panes, and Export redesigned with a
+  preview shaped like the video, in-app playback and the project's canvas size by default. Expert
+  and beginner personas ran on `kf-tablet`; their fixes include the shape and fill Confirm bars
+  on the workspace, white paper behind exported video, and collections shown as stacks.
 - `presentation`'s device tests compile again: `ActorArtworkControlsTest` still used the old
   `ActorArtworkMenu(BoneNode)` signature, so no device test in the module could run.
 
 ## Next
 
-1. **Tablet layouts, second pass.** The first pass is in UX round 3 (rail, adaptive grids, docked
-   layers, grouped drawing bar, canvas-shaped Frames tiles, readable forms), checked on
-   `kf-phone`, `kf-tablet` in both orientations and `kf-foldable` unfolded. Still to do: Library's
-   item details as a side panel instead of a bottom sheet on wide windows, the studio timeline and
-   Asset tracks using the extra height in landscape, and a check on `kf-tablet-small` and a phone
-   in landscape.
+1. **Tablet layouts, what's left.** The studio workspace, timeline, tracks and Export are done
+   (see Done). Still to do: the workspace on medium windows (600 to 840 dp), Library's item
+   details as a side panel instead of a bottom sheet on wide windows, Actor Studio as a tablet
+   workspace, a check on `kf-tablet-small` and a phone in landscape, and the creator, rigger,
+   access and stress personas on `kf-tablet`.
 2. **Packs in the studio.** `milestone/studio-packs`, the next milestone after UX round 2. The
    personas could not find how to use a pack while drawing: today it takes the Library picker, a
    tap on a pack, then a drag out of the floating tray. Using a pack is a drawing action, not a
