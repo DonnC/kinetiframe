@@ -19,8 +19,9 @@ internal class EditorPanels {
     var tracksWorkspaceVisible by mutableStateOf(false)
     var layerSheetVisible by mutableStateOf(false)
 
-    /** The tablet workspace's layers panel is open unless the animator hides it for more canvas. */
-    var workspaceLayersHidden by mutableStateOf(false)
+    /** The tablet workspace's layers panel starts closed, so the canvas gets the room; the
+     *  timeline's layers button opens it beside the canvas. */
+    var workspaceLayersOpen by mutableStateOf(false)
 
     /** Showing the audience's framing through the camera instead of editing artwork. Shared by the
      *  canvas and the camera controls, which sit on the canvas on a phone and in the top bar on a tablet. */

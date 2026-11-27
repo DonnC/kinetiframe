@@ -39,6 +39,15 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
   video to stop it.
 - While playing, the frame strip follows the frame on screen.
 - The export preview loops, so even a short animation can be watched.
+- Export uses the canvas you chose for the project, so it is one tap; other sizes wait behind "Use
+  another size", without one that matches the project. Watching is the preview's Play button, so
+  the separate Watch button is gone. On a phone the preview no longer pushes Export off screen.
+- On a tablet the layers panel starts closed and floats over the canvas's corner when opened, as
+  tall as its layers and scrolling when there are many, so the canvas keeps its full size.
+- Tap a layer's name to rename it; the Rename menu item is gone.
+- New Project's frame-rate preview shows every drawing of a second along a ball's arc, with the
+  count in words, so 6 and 24 fps look clearly different.
+- The README logo switches to a light version in dark mode.
 - On a tablet, Home's tabs and the library's filters keep a readable width, and the docked asset
   tracks no longer repeat the frame strip's play buttons.
 - Export shows what you are about to make: a preview shaped like the video, the project's length,

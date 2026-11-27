@@ -201,7 +201,6 @@ fun LayerPanel(
                             val below = allLayers.getOrNull(actualIndex - 1)
                             LayerMenu(
                                 LayerMenuActions(
-                                    onRename = { editingLayerId = layer.id },
                                     onDuplicate = if (raster) {
                                         { onIntent(StudioIntent.Layer.DuplicateLayer(actualIndex)) }
                                     } else {

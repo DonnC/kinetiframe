@@ -109,7 +109,6 @@ object EditorTokens {
 
     // The tablet workspace's fixed panels, so the canvas between them never jumps.
     val workspaceToolPanelWidth = 300.dp
-    val workspaceLayersPanelWidth = 340.dp
     val workspaceTopBarHeight = 64.dp
     val workspaceSwatch = 28.dp
     val wideBarActionWidth = 56.dp

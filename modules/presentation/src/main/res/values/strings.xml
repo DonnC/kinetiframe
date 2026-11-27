@@ -308,6 +308,10 @@
     <string name="add_project_more_sizes">Custom and more</string>
     <string name="fps_chip">%1$d fps</string>
     <string name="fps_preview_description">A bouncing ball played at %1$d fps</string>
+    <plurals name="fps_preview_caption">
+        <item quantity="one">%d drawing each second</item>
+        <item quantity="other">%d drawings each second</item>
+    </plurals>
     <string name="fps_hint">More frames per second move more smoothly, but each second needs more drawings.</string>
     <string name="canvas_size_width">Width</string>
     <string name="canvas_size_height">Height</string>
@@ -319,6 +323,8 @@
     <string name="export_title">Export Video</string>
     <string name="export_choose_hint">Only changes the exported video\'s resolution — your project\'s own canvas is untouched.</string>
     <string name="export_size_title">Video size</string>
+    <string name="export_uses_canvas">Your video uses the canvas you chose for this project.</string>
+    <string name="export_other_size">Use another size</string>
     <string name="export_size_same">As project</string>
     <string name="export_size_square">Square</string>
     <string name="export_size_vertical">Vertical</string>
@@ -476,7 +482,6 @@
     <string name="layers_add">Add Layer</string>
     <string name="layers_empty">No layers</string>
     <string name="layers_menu">Layer actions</string>
-    <string name="layers_rename">Rename</string>
     <string name="layers_duplicate">Duplicate</string>
     <string name="layers_merge_down">Merge down</string>
     <string name="layers_delete">Delete layer</string>

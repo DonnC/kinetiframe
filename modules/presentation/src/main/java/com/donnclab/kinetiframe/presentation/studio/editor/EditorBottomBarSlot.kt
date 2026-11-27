@@ -81,7 +81,7 @@ private fun BottomBarColumn(
             cacheManager = viewModel.cacheManager,
             onLayerPanelToggle = {
                 if (workspace) {
-                    panels.workspaceLayersHidden = !panels.workspaceLayersHidden
+                    panels.workspaceLayersOpen = !panels.workspaceLayersOpen
                 } else {
                     panels.layerSheetVisible = !panels.layerSheetVisible
                 }

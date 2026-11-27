@@ -4,10 +4,13 @@ package com.donnclab.kinetiframe.presentation.common
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +22,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -26,6 +30,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -76,7 +81,12 @@ fun FrameRatePicker(fps: Int, onFpsChange: (Int) -> Unit, modifier: Modifier = M
     }
 }
 
-/** A ball crossing and bouncing once a second, drawn only at the frames [fps] allows. */
+/**
+ * A ball crossing in one arc a second, drawn only at the frames [fps] allows. Every position of that
+ * second shows faintly, so 6 fps reads as six spaced balls and 30 as a near-solid trail even in a
+ * glance; a caption says it in words. A ball bouncing in place looked much the same at 12 and 24
+ * (owner feedback).
+ */
 @Composable
 private fun BouncePreview(fps: Int) {
     var frame by remember { mutableIntStateOf(0) }
@@ -92,33 +102,40 @@ private fun BouncePreview(fps: Int) {
     val ball = MaterialTheme.colorScheme.primary
     val ground = MaterialTheme.colorScheme.onSurfaceVariant
     val description = stringResource(R.string.fps_preview_description, rate)
-    Canvas(
+    Box(
         Modifier.fillMaxWidth().height(Dimens.fpsPreviewHeight)
             .clip(RoundedCornerShape(Dimens.radiusM))
             .background(MaterialTheme.colorScheme.surfaceVariant)
-            .semantics { contentDescription = description },
+            .semantics(mergeDescendants = true) { contentDescription = description },
     ) {
-        val radius = size.height * BALL_SIZE
-        val floor = size.height * FLOOR
-        val top = radius * 2
-        drawLine(ground, Offset(0f, floor), Offset(size.width, floor), strokeWidth = GROUND_STROKE)
-        // Faint copies of the last few drawn frames: far apart at a low rate, close together at a high
-        // one, so the difference reads at a glance even when the motion itself looks fast.
-        GHOST_ALPHAS.forEachIndexed { back, alpha ->
-            val past = (frame - back - 1 + rate) % rate
-            drawBall(ball.copy(alpha = alpha), past / rate.toFloat(), radius, floor, top)
+        Canvas(Modifier.fillMaxSize()) {
+            val radius = size.height * BALL_SIZE
+            val floor = size.height * FLOOR
+            // The arc peaks below the caption, so the two never overlap.
+            val top = size.height * ARC_TOP
+            drawLine(ground, Offset(0f, floor), Offset(size.width, floor), strokeWidth = GROUND_STROKE)
+            // Every drawing of the second, faintly: the gaps between them are the rate.
+            for (step in 0 until rate) {
+                drawBall(ball.copy(alpha = TRAIL_ALPHA), step / rate.toFloat(), radius, floor, top)
+            }
+            drawBall(ball, frame / rate.toFloat(), radius, floor, top)
         }
-        drawBall(ball, frame / rate.toFloat(), radius, floor, top)
+        Text(
+            pluralStringResource(R.plurals.fps_preview_caption, rate, rate),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.align(Alignment.TopStart).padding(Dimens.spaceS),
+        )
     }
 }
 
-/** The ball at time [t] (0 to 1) of a one-second bounce: straight up and down, squashed on the floor. */
+/** The ball at time [t] (0 to 1) of a one-second arc across the box, squashed where it lands. */
 private fun DrawScope.drawBall(colour: Color, t: Float, radius: Float, floor: Float, top: Float) {
     // A thrown ball rises and falls along a parabola: 0 on the floor, 1 at the top.
     val height = 1f - (2 * t - 1).pow(2)
     val squash = if (height < SQUASH_ZONE) 1f - (SQUASH_ZONE - height) * SQUASH_AMOUNT else 1f
     val y = floor - radius * squash - height * (floor - top - radius)
-    val x = size.width / 2
+    val x = radius * 2 + t * (size.width - radius * 4)
     drawOval(
         colour,
         topLeft = Offset(x - radius / squash, y - radius * squash),
@@ -126,7 +143,8 @@ private fun DrawScope.drawBall(colour: Color, t: Float, radius: Float, floor: Fl
     )
 }
 
-private val GHOST_ALPHAS = listOf(0.35f, 0.2f, 0.1f)
+private const val TRAIL_ALPHA = 0.18f
+private const val ARC_TOP = 0.32f
 private const val BALL_SIZE = 0.09f
 private const val FLOOR = 0.92f
 private const val GROUND_STROKE = 2f

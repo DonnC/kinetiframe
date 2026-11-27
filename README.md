@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="docs/brand/kinetiframe-lockup.svg" alt="KinetiFrame" width="320">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/kinetiframe-lockup-dark.svg">
+    <img src="docs/brand/kinetiframe-lockup.svg" alt="KinetiFrame" width="320">
+  </picture>
 </p>
 
 <p align="center">

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -26,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -86,8 +88,11 @@ fun ExportContent(state: ExportState, actions: ExportActions, modifier: Modifier
             modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(Dimens.spaceXl),
             verticalArrangement = Arrangement.spacedBy(Dimens.spaceXl),
         ) {
-            ExportPreview(state, preview, Modifier.fillMaxWidth())
-            ExportDetails(state, actions, watch)
+            Box(
+                Modifier.fillMaxWidth().heightIn(max = Dimens.exportPreviewMaxHeight),
+                contentAlignment = Alignment.Center,
+            ) { ExportPreview(state, preview) }
+            ExportDetails(state, actions)
         }
     } else {
         Row(
@@ -101,7 +106,7 @@ fun ExportContent(state: ExportState, actions: ExportActions, modifier: Modifier
             Column(
                 Modifier.weight(1f).widthIn(max = Dimens.readableWidth).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(Dimens.spaceXl),
-            ) { ExportDetails(state, actions, watch) }
+            ) { ExportDetails(state, actions) }
         }
     }
 }
@@ -178,7 +183,7 @@ private fun ExportPreview(state: ExportState, playback: PreviewPlayback, modifie
 
 /** The project's name and facts, then the step: size and Export, progress, results or an error. */
 @Composable
-private fun ExportDetails(state: ExportState, actions: ExportActions, onWatch: () -> Unit) {
+private fun ExportDetails(state: ExportState, actions: ExportActions) {
     Text(
         state.displayName,
         style = MaterialTheme.typography.headlineSmall,
@@ -187,18 +192,7 @@ private fun ExportDetails(state: ExportState, actions: ExportActions, onWatch: (
     )
     state.summary?.let { summary -> ExportFacts(summary, state.outputSize()) }
     when (val phase = state.phase) {
-        ExportPhase.ChoosingPreset -> {
-            Text(stringResource(R.string.export_size_title), style = MaterialTheme.typography.titleSmall)
-            Text(
-                stringResource(R.string.export_choose_hint),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            ExportSizeCards(state.preset, state.summary?.stage, actions.onChoose)
-            Button(onClick = actions.onStart, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.export_start))
-            }
-        }
+        ExportPhase.ChoosingPreset -> ExportChoosing(state, actions)
 
         ExportPhase.Rendering -> Text(
             stringResource(R.string.export_rendering),
@@ -217,15 +211,10 @@ private fun ExportDetails(state: ExportState, actions: ExportActions, onWatch: (
                 Icon(Lucide.Download, null, Modifier.size(Dimens.iconS))
                 Text(stringResource(R.string.export_save_to_gallery), Modifier.padding(start = Dimens.spaceS))
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM)) {
-                OutlinedButton(onClick = actions.onShare, modifier = Modifier.weight(1f)) {
-                    Icon(Lucide.Share2, null, Modifier.size(Dimens.iconS))
-                    Text(stringResource(R.string.action_share), Modifier.padding(start = Dimens.spaceS))
-                }
-                OutlinedButton(onClick = onWatch, modifier = Modifier.weight(1f)) {
-                    Icon(Lucide.Play, null, Modifier.size(Dimens.iconS))
-                    Text(stringResource(R.string.export_watch), Modifier.padding(start = Dimens.spaceS))
-                }
+            // Watching is the Play button on the preview, so there's no second Watch button here.
+            OutlinedButton(onClick = actions.onShare, modifier = Modifier.fillMaxWidth()) {
+                Icon(Lucide.Share2, null, Modifier.size(Dimens.iconS))
+                Text(stringResource(R.string.action_share), Modifier.padding(start = Dimens.spaceS))
             }
         }
 
@@ -245,6 +234,37 @@ private fun ExportDetails(state: ExportState, actions: ExportActions, onWatch: (
                 }
             }
         }
+    }
+}
+
+/**
+ * Before exporting: the video uses the canvas chosen when the project was made, so Export is one
+ * tap (owner feedback). Other sizes, for a platform that wants a different shape, wait behind
+ * "Use another size" and stay open once a different size is chosen.
+ */
+@Composable
+private fun ExportChoosing(state: ExportState, actions: ExportActions) {
+    var otherSizes by remember { mutableStateOf(state.preset != ExportPreset.SAME_AS_PROJECT) }
+    if (!otherSizes) {
+        Text(
+            stringResource(R.string.export_uses_canvas),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+    Button(onClick = actions.onStart, modifier = Modifier.fillMaxWidth()) {
+        Text(stringResource(R.string.export_start))
+    }
+    if (otherSizes) {
+        Text(stringResource(R.string.export_size_title), style = MaterialTheme.typography.titleSmall)
+        Text(
+            stringResource(R.string.export_choose_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        ExportSizeCards(state.preset, state.summary?.stage, actions.onChoose)
+    } else {
+        TextButton(onClick = { otherSizes = true }) { Text(stringResource(R.string.export_other_size)) }
     }
 }
 
@@ -274,7 +294,8 @@ private fun Fact(text: String) {
 @Composable
 private fun ExportSizeCards(chosen: ExportPreset, projectStage: StageDimensions?, onChoose: (ExportPreset) -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS), modifier = Modifier.fillMaxWidth()) {
-        ExportPreset.entries.forEach { preset ->
+        // A preset the same size as the project's canvas would be a second "As project".
+        ExportPreset.entries.filter { it.dimensions == null || it.dimensions != projectStage }.forEach { preset ->
             val size = preset.dimensions ?: projectStage
             val selected = preset == chosen
             val colours = MaterialTheme.colorScheme

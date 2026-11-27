@@ -158,8 +158,12 @@ fun LayerItem(
                 .weight(1f)
                 .then(
                     if (!editing) {
-                        // A tap selects; renaming is in the layer's menu (R3-27).
-                        Modifier.clickable(onClick = onClick)
+                        // Tapping the name selects the layer and opens its name for typing, so
+                        // renaming needs no menu (owner feedback). The rest of the row only selects.
+                        Modifier.clickable {
+                            onClick()
+                            onEdit()
+                        }
                     } else {
                         Modifier
                     },

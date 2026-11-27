@@ -132,4 +132,7 @@ object Dimens {
 
     /** A drawn shape glyph on a picture card, such as Export's size options. */
     val iconXl = 40.dp
+
+    /** The tallest Export's preview gets on a phone, so a tall canvas leaves Export in view. */
+    val exportPreviewMaxHeight = 360.dp
 }
