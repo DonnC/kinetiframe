@@ -69,6 +69,17 @@ object CanvasPresets {
     )
 }
 
+/**
+ * The size as video quality, by its shorter side as video names it: "720p", "1080p", "1440p" or
+ * "4K" for 2160 and up.
+ */
+fun StageDimensions.qualityLabel(): String {
+    val short = minOf(width, height)
+    return if (short >= UHD_SHORT_SIDE) "4K" else "${short}p"
+}
+
+private const val UHD_SHORT_SIDE = 2160
+
 /** The shape as a ratio such as "9:16" or "4:5". */
 fun StageDimensions.ratioLabel(): String {
     tailrec fun gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b)

@@ -6,7 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,11 +40,14 @@ import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
 import com.donnclab.kinetiframe.presentation.R
 import kotlin.math.pow
 
-/** Frame rates animators reach for most: 6 and 8 for limited animation, 12 the classic "on twos". */
-private val COMMON_FPS = listOf(6, 8, 12, 15, 24, 30)
+/**
+ * The rates animators reach for most, few enough for one row on a phone: 8 for limited animation,
+ * 12 the classic "on twos", 24 film and 30 video. The slider covers every other rate.
+ */
+private val COMMON_FPS = listOf(8, 12, 24, 30)
 
 /**
- * Picks a frame rate: chips for the common rates, a slider for anything between 1 and 30, and a live
+ * Picks a frame rate: one row of chips for the common rates, a slider for anything between 1 and 30, and a live
  * preview that plays the same one-second bounce at [fps], so a low rate looks choppy and a high one
  * smooth before anything is drawn.
  */
@@ -53,10 +56,7 @@ fun FrameRatePicker(fps: Int, onFpsChange: (Int) -> Unit, modifier: Modifier = M
     val resources = LocalResources.current
     Column(modifier, verticalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
         BouncePreview(fps)
-        // Wraps instead of scrolling: in the studio's narrow dialog a scrolling row hid 24 and 30 (R3-29).
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
-        ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
             COMMON_FPS.forEach { rate ->
                 FilterChip(
                     selected = rate == fps,
@@ -72,11 +72,6 @@ fun FrameRatePicker(fps: Int, onFpsChange: (Int) -> Unit, modifier: Modifier = M
             steps = 28,
             label = stringResource(R.string.add_project_frame_rate),
             valueDisplay = { resources.getString(R.string.add_project_fps_value, it.toInt()) },
-        )
-        Text(
-            stringResource(R.string.fps_hint),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

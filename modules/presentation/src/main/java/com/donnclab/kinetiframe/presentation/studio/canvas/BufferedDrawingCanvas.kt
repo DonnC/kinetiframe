@@ -292,6 +292,7 @@ fun BufferedDrawingCanvas(
                         transformHudVersion++
                         onIntent(StudioIntent.View.UpdateTransform(pan.toPoint2(), zoom, rotation, centre.toPoint2()))
                     },
+                    onTwoFingerDoubleTap = { onIntent(StudioIntent.View.ToggleFillView) },
                 )
             },
     ) {

@@ -51,6 +51,7 @@ import com.composables.icons.lucide.Grid2x2
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Maximize
 import com.composables.icons.lucide.Menu
+import com.composables.icons.lucide.Minimize
 import com.composables.icons.lucide.Redo
 import com.composables.icons.lucide.Save
 import com.composables.icons.lucide.Share
@@ -395,13 +396,13 @@ private fun DrawingBarTools(state: StudioState, onIntent: (StudioIntent) -> Unit
             onIntent(StudioIntent.Selection.Paste)
         }),
     )
-    // Dimmed until the canvas has been zoomed, panned or rotated, so it is always in the same place.
+    // Fill and Fit: fills the view with the canvas, or fits it again once the view has moved.
+    val fit = state.isCanvasTransformed
     ContextIconButton(
         ContextIconAction(
-            Lucide.Maximize,
-            stringResource(R.string.editor_reset_view),
-            { onIntent(StudioIntent.View.ResetCanvasTransform) },
-            enabled = state.isCanvasTransformed,
+            if (fit) Lucide.Minimize else Lucide.Maximize,
+            stringResource(if (fit) R.string.editor_fit_view else R.string.editor_fill_view),
+            { onIntent(StudioIntent.View.ToggleFillView) },
         ),
     )
     ContextIconButton(

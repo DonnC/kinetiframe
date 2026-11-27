@@ -54,6 +54,22 @@ It works offline, needs no account and has no ads, in-app purchases or tracking.
 - Camera moves: push in, pull out, pan, tilt, shake, whip pan, follow and fades
 - MP4 video export, plus `.kframe` project files and `.kpack` stamp packs you can share
 
+**Packs, palettes and your Library**
+- Stamp packs are sets of drawings, such as eyes, mouths and props, that you drag onto any frame.
+  KinetiFrame ships packs of expressions, mouths for talking, and studio furniture to start with
+- Make packs from your own drawings, then reuse them in every project or share them as `.kpack`
+  files
+- Save colours to My colours, build palettes of your own, and pick from recent colours or a hex code
+- The Library keeps everything in one place: projects, actors, packs, images, audio and colours,
+  with favourites, collections and search. Drag one project onto another to start a collection
+
+**Your work stays yours**
+- Everything lives on your device. There's no account, no cloud and no tracking, and it all works
+  offline
+- Projects are open `.kframe` files you can back up, move to another device or share for others to
+  edit
+- Free and open source under Apache-2.0, so the app and your files never get locked away
+
 New to the terms? The [glossary](docs/glossary.md) explains actors, rigs, performances and the rest.
 
 ## Screenshots

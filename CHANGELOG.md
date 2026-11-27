@@ -48,6 +48,13 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - New Project's frame-rate preview shows every drawing of a second along a ball's arc, with the
   count in words, so 6 and 24 fps look clearly different.
 - The README logo switches to a light version in dark mode.
+- Fill view: zoom so the canvas fills the space, its edges scrolling off screen, then Fit view
+  to see the whole canvas again. Tap the button on the top bar, or tap twice with two fingers.
+  Drawing stays on your project's canvas either way.
+- Collections show as a stack of cards, and Recent and All show each collection as one stack
+  instead of its projects one by one.
+- New Project names each canvas's quality ("9:16 · 1080p"), and keeps the frame-rate choices to
+  one row of common rates, with the slider for the rest.
 - On a tablet, Home's tabs and the library's filters keep a readable width, and the docked asset
   tracks no longer repeat the frame strip's play buttons.
 - Export shows what you are about to make: a preview shaped like the video, the project's length,
@@ -116,6 +123,9 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 
 ### Fixed
 
+- In dark mode a pack's drawings sat on dark tiles and were hard to see; they now sit on light
+  paper, fitted instead of cropped.
+- A zoomed canvas on a tablet no longer spills over the tool panel.
 - Export's preview showed blank paper for a project whose thumbnail was written after its last
   save, and a short animation's length read "0:00". Lengths under a minute now show seconds, on
   Export and on project cards.

@@ -5,6 +5,9 @@ import androidx.compose.ui.unit.dp
 
 object HomeTokens {
     val cardCorner = 16.dp
+
+    /** How far a collection's stacked cards peek out behind its cover. */
+    val stackLift = 6.dp
     val chipCorner = 8.dp
     val chipBg = Color(0x8C141210)
 

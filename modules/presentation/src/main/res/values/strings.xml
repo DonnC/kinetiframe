@@ -312,7 +312,7 @@
         <item quantity="one">%d drawing each second</item>
         <item quantity="other">%d drawings each second</item>
     </plurals>
-    <string name="fps_hint">More frames per second move more smoothly, but each second needs more drawings.</string>
+    <string name="canvas_ratio_quality">%1$s · %2$s</string>
     <string name="canvas_size_width">Width</string>
     <string name="canvas_size_height">Height</string>
     <string name="canvas_size_px">px</string>
@@ -782,7 +782,8 @@
     <string name="editor_more_settings">More Settings</string>
     <string name="editor_copy">Copy</string>
     <string name="editor_paste">Paste</string>
-    <string name="editor_reset_view">Reset view</string>
+    <string name="editor_fill_view">Fill view</string>
+    <string name="editor_fit_view">Fit view</string>
     <string name="editor_background">Background</string>
     <string name="editor_safe_frame">Safe frame</string>
     <string name="editor_onion_skin">Onion skin</string>

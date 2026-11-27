@@ -148,9 +148,10 @@ private fun CanvasShapeCards(selection: CanvasSizeSelection, onPick: (CanvasPres
                         ShapeOutline(size.width, size.height, Dimens.canvasShapeMax, selected)
                     }
                     Text(preset.displayName(), style = MaterialTheme.typography.labelMedium, maxLines = 1)
-                    // The ratio says the shape; the exact size is in the summary above Create.
+                    // The ratio says the shape and the quality the size, in the terms people
+                    // know from video ("1080p"); the exact pixels are in the summary above Create.
                     Text(
-                        size.ratioLabel(),
+                        stringResource(R.string.canvas_ratio_quality, size.ratioLabel(), size.qualityLabel()),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,

@@ -38,6 +38,7 @@ import com.composables.icons.lucide.ImagePlus
 import com.composables.icons.lucide.ListVideo
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Maximize
+import com.composables.icons.lucide.Minimize
 import com.composables.icons.lucide.Redo
 import com.composables.icons.lucide.Save
 import com.composables.icons.lucide.Share
@@ -79,9 +80,7 @@ internal fun RowScope.WideDrawingBar(state: StudioState, onIntent: (StudioIntent
     WideBarButton(Lucide.ClipboardPaste, stringResource(R.string.editor_paste)) {
         onIntent(StudioIntent.Selection.Paste)
     }
-    WideBarButton(Lucide.Maximize, stringResource(R.string.editor_reset_view), enabled = state.isCanvasTransformed) {
-        onIntent(StudioIntent.View.ResetCanvasTransform)
-    }
+    FillViewButton(state, onIntent)
     Spacer(Modifier.weight(1f))
     WideBarButton(Lucide.Clapperboard, stringResource(R.string.workspace_frames), onClick = actions.onFrames)
     // Opens onion skin's settings, which hold its on/off switch, so nothing repeats in a menu.
@@ -116,6 +115,19 @@ internal fun RowScope.WideDrawingBar(state: StudioState, onIntent: (StudioIntent
     actions.onExport?.let {
         WideBarButton(Lucide.Share, stringResource(R.string.workspace_export), accent = true, onClick = it)
     }
+}
+
+/**
+ * Fill and Fit: fills the view with the canvas, or fits the whole canvas once the view has moved.
+ * Two quick two-finger taps on the canvas do the same.
+ */
+@Composable
+private fun FillViewButton(state: StudioState, onIntent: (StudioIntent) -> Unit) {
+    val fit = state.isCanvasTransformed
+    WideBarButton(
+        if (fit) Lucide.Minimize else Lucide.Maximize,
+        stringResource(if (fit) R.string.editor_fit_view else R.string.editor_fill_view),
+    ) { onIntent(StudioIntent.View.ToggleFillView) }
 }
 
 /**

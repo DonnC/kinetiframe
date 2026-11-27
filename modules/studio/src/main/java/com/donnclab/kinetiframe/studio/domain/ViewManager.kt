@@ -122,6 +122,23 @@ class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Uni
         }
     }
 
+    /** Fits the canvas when the view has moved; otherwise zooms until the canvas fills the view. */
+    fun toggleFillView() {
+        updateState { state ->
+            val canvas = state.canvas
+            val stage = state.project.stage
+            val zoom = if (state.isCanvasTransformed || canvas.viewportWidth <= 0 || canvas.viewportHeight <= 0) {
+                1f
+            } else {
+                val across = canvas.viewportWidth.toFloat() / stage.width
+                val down = canvas.viewportHeight.toFloat() / stage.height
+                // Zoom is relative to the fitted stage, so filling is the larger scale over the smaller.
+                maxOf(across, down) / minOf(across, down)
+            }
+            updateMatrixInternal(state.copy(canvas = canvas.copy(zoom = zoom, pan = Point2.Zero, rotation = 0f)))
+        }
+    }
+
     /** Same terms as [updateMatrixInternal]: zoom is relative to the fitted stage, pan in pixels. */
     fun frameStageRect(rect: StudioIntent.View.FrameStageRect) {
         updateState { state ->
@@ -274,6 +291,8 @@ class ViewManager(private val updateState: ((StudioState) -> StudioState) -> Uni
             is StudioIntent.View.UpdateCanvasTransform -> updateCanvasTransform(intent.matrix)
 
             StudioIntent.View.ResetCanvasTransform -> resetCanvasTransform()
+
+            StudioIntent.View.ToggleFillView -> toggleFillView()
 
             is StudioIntent.View.FrameStageRect -> frameStageRect(intent)
 

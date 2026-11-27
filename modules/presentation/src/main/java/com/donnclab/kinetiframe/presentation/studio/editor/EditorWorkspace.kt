@@ -26,6 +26,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
@@ -366,6 +367,8 @@ internal fun EditorWorkspace(viewModel: StudioViewModel, host: EditorHost, folde
                             // The workspace canvas keeps a margin from the screen's edge, as the
                             // tool panel does on the other side.
                             .padding(end = if (workspace) Dimens.spaceS else 0.dp)
+                            // A zoomed canvas stays inside its area instead of covering the panels.
+                            .clipToBounds()
                             // Pack drags are measured against this Box. The canvas and the pack tray
                             // both fill it, so a drag's window position minus this one is canvas-local.
                             .onGloballyPositioned { coordinates ->
