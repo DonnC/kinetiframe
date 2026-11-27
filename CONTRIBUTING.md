@@ -65,11 +65,11 @@ New contributors often ask where something lives. The short version:
 
 | If you are changing... | Look in |
 | --- | --- |
-| Colors, spacing, typography or a reusable control | [`designsystem`](designsystem/README.md) |
+| Colors, spacing, typography or a reusable control | [`designsystem`](modules/designsystem/README.md) |
 | A screen, editor tool or app workflow | `app`, in its feature package such as `studio`, `actors` or `library` |
-| Rigging, IK, deformation or motion math | [`engine`](engine/README.md) |
-| Saved document models and their JSON codecs | [`core`](core/README.md) |
-| Durable file writes | [`data`](data/README.md) |
+| Rigging, IK, deformation or motion math | [`engine`](modules/engine/README.md) |
+| Saved document models and their JSON codecs | [`core`](modules/core/README.md) |
+| Durable file writes | [`data`](modules/data/README.md) |
 
 The [architecture overview](docs/architecture/README.md) explains the modules and how data
 flows between them. The [glossary](docs/glossary.md) explains project terms such as actor,
@@ -105,7 +105,7 @@ Compose UI tests, which run on a device or emulator.
 
 ```sh
 ./gradlew spotlessApply                        # format Kotlin with ktlint
-./gradlew verify                               # formatting, architecture check, host tests, lint
+./gradlew verify                               # formatting, architecture check, host tests, lint, device-test compile
 ./gradlew :app:connectedDebugAndroidTest       # device tests, needs a phone or emulator
 ```
 

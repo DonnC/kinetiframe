@@ -46,14 +46,17 @@ import com.donnclab.kinetiframe.navigation.SettingsKey
 import com.donnclab.kinetiframe.preferences.model.AppTheme
 import com.donnclab.kinetiframe.preferences.model.StudioOrientation
 import com.donnclab.kinetiframe.presentation.actors.ActorStudioTarget
+import com.donnclab.kinetiframe.presentation.common.AppRootFrame
 import com.donnclab.kinetiframe.presentation.common.BottomNavDestination
 import com.donnclab.kinetiframe.presentation.common.LocalAppPreferences
+import com.donnclab.kinetiframe.presentation.common.LocalRememberPenColour
 import com.donnclab.kinetiframe.presentation.common.LocalShowMenuLabels
 import com.donnclab.kinetiframe.presentation.export.ExportRoute
 import com.donnclab.kinetiframe.presentation.home.HomeRoute
 import com.donnclab.kinetiframe.presentation.library.LibraryOpenTarget
 import com.donnclab.kinetiframe.presentation.library.LibraryRoute
 import com.donnclab.kinetiframe.presentation.library.packs.PackCreatorRoute
+import com.donnclab.kinetiframe.presentation.settings.SettingsIntent
 import com.donnclab.kinetiframe.presentation.settings.SettingsScreen
 import com.donnclab.kinetiframe.presentation.settings.SettingsViewModel
 import com.donnclab.kinetiframe.presentation.studio.EditorScreen
@@ -72,6 +75,10 @@ class MainActivity : ComponentActivity() {
             val settings: SettingsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = viewModels)
             val settingsState by settings.state.collectAsStateWithLifecycle()
             val preferences = settingsState.preferences
+            // Stable, so providing it never recomposes the whole app.
+            val rememberPenColour: (Int) -> Unit = remember(settings) {
+                { argb -> settings.handleIntent(SettingsIntent.PenColour(argb)) }
+            }
             val dark = when (preferences.theme) {
                 AppTheme.SYSTEM -> isSystemInDarkTheme()
                 AppTheme.LIGHT -> false
@@ -79,6 +86,7 @@ class MainActivity : ComponentActivity() {
             }
             CompositionLocalProvider(
                 LocalAppPreferences provides preferences,
+                LocalRememberPenColour provides rememberPenColour,
                 LocalViewModelFactory provides viewModels,
                 LocalShowMenuLabels provides preferences.showMenuLabels,
             ) {
@@ -137,9 +145,11 @@ class MainActivity : ComponentActivity() {
                             }
                             SideEffect {
                                 if (!settingsState.loading) {
+                                    // The app follows the phone's orientation. Only the studios
+                                    // honour an animator's explicit choice to lock one.
                                     requestedOrientation =
                                         if (!studio) {
-                                            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                                            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                                         } else {
                                             preferences.orientation.activityOrientation()
                                         }
@@ -157,7 +167,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-                            // Browsing stays portrait. Studio's preference is independent of export geometry.
+                            // Studio orientation is independent of export geometry.
 
                             NavDisplay(
                                 backStack = backStack,
@@ -186,62 +196,77 @@ class MainActivity : ComponentActivity() {
                                 entryProvider = entryProvider {
                                     entry<ProjectGalleryKey> {
                                         // Home is one tabbed dashboard for projects, packs and actors.
-                                        HomeRoute(
-                                            refreshToken = homeRefreshToken,
-                                            onOpenProject = { projectId -> backStack.add(EditorKey(projectId)) },
-                                            onOpenPackCreator = { itemId ->
-                                                backStack.add(PackCreatorKey(editItemId = itemId))
-                                            },
-                                            onOpenExport = { projectId -> backStack.add(ExportKey(projectId)) },
-                                            onOpenActor = { actorId -> backStack.add(ActorStudioKey(actorId)) },
-                                            onOpenLibrary = { backStack.add(LibraryKey) },
-                                            onOpenSettings = { backStack.add(SettingsKey) },
-                                        )
+                                        AppRootFrame(BottomNavDestination.HOME, { destination ->
+                                            when (destination) {
+                                                BottomNavDestination.HOME -> Unit
+                                                BottomNavDestination.LIBRARY -> backStack.add(LibraryKey)
+                                                BottomNavDestination.SETTINGS -> backStack.add(SettingsKey)
+                                            }
+                                        }) {
+                                            HomeRoute(
+                                                refreshToken = homeRefreshToken,
+                                                onOpenProject = { projectId -> backStack.add(EditorKey(projectId)) },
+                                                onOpenPackCreator = { itemId ->
+                                                    backStack.add(PackCreatorKey(editItemId = itemId))
+                                                },
+                                                onOpenExport = { projectId -> backStack.add(ExportKey(projectId)) },
+                                                onOpenActor = { actorId -> backStack.add(ActorStudioKey(actorId)) },
+                                                onOpenLibrary = { backStack.add(LibraryKey) },
+                                                onOpenSettings = { backStack.add(SettingsKey) },
+                                            )
+                                        }
                                     }
                                     entry<LibraryKey> {
-                                        // Top-level destinations share one bottom nav (AppBottomNavBar).
-                                        // Home pops the back stack instead of stacking another copy.
-                                        LibraryRoute(onEditPack = { item ->
-                                            backStack.add(
-                                                PackCreatorKey(
-                                                    editItemId = item.libraryItemId,
-                                                    editScope = item.scope.name,
-                                                    sourceProjectId = item.sourceProjectId,
-                                                ),
-                                            )
-                                        }, onOpenDocument = { target ->
-                                            when (target) {
-                                                is LibraryOpenTarget.Project -> backStack.add(
-                                                    EditorKey(target.id),
-                                                )
-
-                                                is LibraryOpenTarget.Actor -> backStack.add(
-                                                    ActorStudioKey(target.id),
-                                                )
-                                            }
-                                        }, onNavigate = { destination ->
+                                        // Top-level destinations share one bottom nav (AppBottomNavBar),
+                                        // or a rail on wider windows. Home pops the back stack instead
+                                        // of stacking another copy.
+                                        val libraryNavigate: (BottomNavDestination) -> Unit = { destination ->
                                             when (destination) {
                                                 BottomNavDestination.HOME -> goBack()
                                                 BottomNavDestination.SETTINGS -> backStack.add(SettingsKey)
                                                 BottomNavDestination.LIBRARY -> Unit
                                             }
-                                        })
+                                        }
+                                        AppRootFrame(BottomNavDestination.LIBRARY, libraryNavigate) {
+                                            LibraryRoute(onEditPack = { item ->
+                                                backStack.add(
+                                                    PackCreatorKey(
+                                                        editItemId = item.libraryItemId,
+                                                        editScope = item.scope.name,
+                                                        sourceProjectId = item.sourceProjectId,
+                                                    ),
+                                                )
+                                            }, onOpenDocument = { target ->
+                                                when (target) {
+                                                    is LibraryOpenTarget.Project -> backStack.add(
+                                                        EditorKey(target.id),
+                                                    )
+
+                                                    is LibraryOpenTarget.Actor -> backStack.add(
+                                                        ActorStudioKey(target.id),
+                                                    )
+                                                }
+                                            }, onNavigate = libraryNavigate)
+                                        }
                                     }
                                     entry<SettingsKey> {
-                                        SettingsScreen(
-                                            settingsState,
-                                            settings::handleIntent,
-                                            goBack,
-                                            onShareDiagnostics = { shareDiagnostics(this@MainActivity) },
-                                            onNavigate = { destination ->
-                                                goHome()
-                                                when (destination) {
-                                                    BottomNavDestination.HOME -> Unit
-                                                    BottomNavDestination.LIBRARY -> backStack.add(LibraryKey)
-                                                    BottomNavDestination.SETTINGS -> backStack.add(SettingsKey)
-                                                }
-                                            },
-                                        )
+                                        val settingsNavigate: (BottomNavDestination) -> Unit = { destination ->
+                                            goHome()
+                                            when (destination) {
+                                                BottomNavDestination.HOME -> Unit
+                                                BottomNavDestination.LIBRARY -> backStack.add(LibraryKey)
+                                                BottomNavDestination.SETTINGS -> backStack.add(SettingsKey)
+                                            }
+                                        }
+                                        AppRootFrame(BottomNavDestination.SETTINGS, settingsNavigate) {
+                                            SettingsScreen(
+                                                settingsState,
+                                                settings::handleIntent,
+                                                goBack,
+                                                onShareDiagnostics = { shareDiagnostics(this@MainActivity) },
+                                                onNavigate = settingsNavigate,
+                                            )
+                                        }
                                     }
                                     entry<ExportKey> { key ->
                                         ExportRoute(key.projectId, onExit = goBack)
@@ -264,6 +289,7 @@ class MainActivity : ComponentActivity() {
                                             onBackClick = goBack,
                                             onSettingsClick = { backStack.add(SettingsKey) },
                                             onHomeClick = goHome,
+                                            onExport = key.projectId?.let { id -> { backStack.add(ExportKey(id)) } },
                                             onReturnedPerformanceConsumed = { returnedPerformance = null },
                                             onCreatePerformance = { actorId, projectId ->
                                                 backStack.add(ActorStudioKey(actorId, projectId))

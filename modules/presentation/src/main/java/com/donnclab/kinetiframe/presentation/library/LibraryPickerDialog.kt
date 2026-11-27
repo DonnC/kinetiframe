@@ -1,0 +1,301 @@
+package com.donnclab.kinetiframe.presentation.library
+
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.composables.icons.lucide.Clapperboard
+import com.composables.icons.lucide.Drama
+import com.composables.icons.lucide.Folder
+import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.Music
+import com.composables.icons.lucide.Shapes
+import com.composables.icons.lucide.Square
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemKind
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.core.actor.document.LibraryScope
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.LibraryTokens
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.ui.appViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
+
+/**
+ * The shared "add from Library" surface, opened from the unified Add menu
+ * ([com.donnclab.kinetiframe.presentation.studio.timeline.ActorPerformancePicker]) and from the project gallery's
+ * import action. [allowedKinds] narrows what's pickable to whatever the calling context can
+ * actually use (e.g. the in-editor Add menu excludes [LibraryItemKind.PROJECT], since importing a
+ * whole project only makes sense from the gallery, not while one is already open) -- null shows
+ * everything, for a general browse/manage use.
+ *
+ * [projectId], when non-null, is what makes the Project-vs-Personal split show up
+ * here at all: with it, the LIBRARY tab gains a "This Project" / "Personal" segmented toggle
+ * ([LibraryScope]), browsing that project's own `vault/` alongside the cross-project `library/`
+ * root -- omit it (the gallery's own import flow does) and the picker only ever shows PERSONAL
+ * items, since there is no "current project" to scope to there.
+ *
+ * [onPick] receives the chosen item's manifest, which records its scope. Routing what
+ * a picked item actually *does* (place an audio clip, set a background, stamp a drawing onto the
+ * current frame, ...) is the caller's job, mirroring how this whole system keeps "what a file
+ * means" separate from "where the file lives" everywhere else in this codebase.
+ *
+ * A [LibraryItemKind.PACK] item never reaches [onPick] at all -- per its own usage model (a
+ * floating, dockable tray a user drags items out of onto the canvas repeatedly, not a one-shot
+ * pick-and-close), tapping one dismisses this dialog and calls [onOpenPack] instead, handing the
+ * caller the pack's manifest so it can open [com.donnclab.kinetiframe.presentation.library.packs.PackTray].
+ */
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+fun LibraryPickerDialog(
+    allowedKinds: Set<LibraryItemKind>? = null,
+    projectId: String? = null,
+    dismissOnOpenPack: Boolean = true,
+    onDismiss: () -> Unit,
+    onOpenPack: (LibraryItemManifest) -> Unit = {},
+    onPick: (LibraryItemManifest) -> Unit,
+) {
+    val model: LibraryPickerViewModel = appViewModel(key = "library-picker-$projectId") {
+        projectId?.let { set(LibraryPickerViewModel.ProjectIdKey, it) }
+    }
+    val state by model.state.collectAsStateWithLifecycle()
+    LaunchedEffect(model) { model.handleIntent(LibraryPickerIntent.Open) }
+    val scope = state.scope
+    val kindFilter = state.kindFilter
+
+    val visibleItems = remember(state.items, kindFilter, allowedKinds) {
+        state.items.filter {
+            it.kind != LibraryItemKind.PALETTE && (allowedKinds == null || it.kind in allowedKinds) &&
+                (kindFilter == null || it.kind == kindFilter)
+        }
+    }
+    val filterableKinds = remember(state.items, allowedKinds) {
+        (allowedKinds ?: LibraryItemKind.entries.toSet()).filter { kind ->
+            kind != LibraryItemKind.PALETTE &&
+                state.items.any { it.kind == kind }
+        }
+    }
+
+    // An expandable sheet over the canvas: it opens at half height, never below 45% of the screen,
+    // and drags taller or closed.
+    val windowHeight = androidx.compose.ui.platform.LocalWindowInfo.current.containerSize.height
+    val minimumHeight = with(androidx.compose.ui.platform.LocalDensity.current) {
+        (windowHeight * MIN_SHEET_HEIGHT).toDp()
+    }
+    androidx.compose.material3.ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = androidx.compose.material3.rememberModalBottomSheetState(),
+        modifier = Modifier.fillMaxHeight(),
+    ) {
+        Box(Modifier.fillMaxSize().heightIn(min = minimumHeight)) {
+            Column(Modifier.fillMaxSize().navigationBarsPadding().padding(horizontal = Dimens.spaceL)) {
+                Text(stringResource(R.string.library_picker_title), style = MaterialTheme.typography.titleMedium)
+                if (projectId != null) {
+                    Spacer(Modifier.height(Dimens.spaceS))
+                    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+                        SegmentedButton(
+                            selected = scope == LibraryScope.PERSONAL,
+                            onClick = { model.handleIntent(LibraryPickerIntent.SelectScope(LibraryScope.PERSONAL)) },
+                            shape = SegmentedButtonDefaults.itemShape(0, 2),
+                        ) { Text(stringResource(R.string.library_scope_personal)) }
+                        SegmentedButton(
+                            selected = scope == LibraryScope.PROJECT,
+                            onClick = { model.handleIntent(LibraryPickerIntent.SelectScope(LibraryScope.PROJECT)) },
+                            shape = SegmentedButtonDefaults.itemShape(1, 2),
+                        ) { Text(stringResource(R.string.library_scope_project)) }
+                    }
+                }
+                Spacer(Modifier.height(Dimens.spaceS))
+                if (filterableKinds.size > 1) {
+                    // Chips toggle, as in Library: none selected shows everything.
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXsPlus)) {
+                        items(filterableKinds) { kind ->
+                            FilterChip(selected = kindFilter == kind, onClick = {
+                                model.handleIntent(LibraryPickerIntent.Filter(kind.takeIf { kindFilter != it }))
+                            }, label = { Text(stringResource(kind.labelRes())) })
+                        }
+                    }
+                    Spacer(Modifier.height(Dimens.spaceS))
+                }
+                Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    when {
+                        kindFilter == LibraryItemKind.PACK ->
+                            PackPickerBrowser(scope, projectId, { pack ->
+                                openPackFromPicker(dismissOnOpenPack, onDismiss) { onOpenPack(pack) }
+                            })
+
+                        state.loading -> CircularProgressIndicator()
+
+                        state.error != null -> Text(
+                            state.error?.asString().orEmpty(),
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(Dimens.spaceXlPlus),
+                        )
+
+                        visibleItems.isEmpty() -> Text(
+                            stringResource(R.string.library_picker_empty),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+
+                        else -> LazyVerticalGrid(
+                            GridCells.Adaptive(LibraryTokens.pickerCell),
+                            Modifier.fillMaxSize(),
+                            horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS),
+                            verticalArrangement = Arrangement.spacedBy(Dimens.spaceS),
+                        ) {
+                            items(visibleItems, key = { it.libraryItemId }) { libraryItem ->
+                                LibraryItemCard(
+                                    libraryItem,
+                                    loadThumbnail = model::previewImage,
+                                    onClick = {
+                                        if (libraryItem.kind == LibraryItemKind.PACK) {
+                                            openPackFromPicker(dismissOnOpenPack, onDismiss) { onOpenPack(libraryItem) }
+                                        } else {
+                                            onPick(libraryItem)
+                                        }
+                                    },
+                                    onPreview = if (libraryItem.kind == LibraryItemKind.AUDIO) {
+                                        ({ model.handleIntent(LibraryPickerIntent.Preview(libraryItem)) })
+                                    } else {
+                                        null
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(Modifier.height(Dimens.spaceS))
+            }
+        }
+    }
+
+    state.preview?.let { preview ->
+        LibraryAudioPreviewDialog(preview, { model.handleIntent(LibraryPickerIntent.ClosePreview) }, {
+            model.handleIntent(LibraryPickerIntent.ClosePreview)
+            onPick(preview.item)
+        })
+    }
+}
+
+/** [loadThumbnail] finds the card's image off the main thread; without it the card has none. */
+@Composable
+internal fun LibraryItemCard(
+    item: LibraryItemManifest,
+    onClick: () -> Unit,
+    onPreview: (() -> Unit)? = null,
+    loadThumbnail: ((LibraryItemManifest) -> File?)? = null,
+) {
+    val thumbnail by produceState<File?>(null, item, loadThumbnail) {
+        value = loadThumbnail?.let { load -> withContext(Dispatchers.IO) { load(item) } }
+    }
+    Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(Dimens.spaceSPlus)) {
+            thumbnail?.let { LibraryImageThumbnail(it, item.displayName) }
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Icon(iconFor(item.kind), null, modifier = Modifier.size(Dimens.iconM))
+                Spacer(Modifier.weight(1f))
+                onPreview?.let { preview ->
+                    IconButton(onClick = preview) {
+                        Icon(
+                            androidx.compose.material.icons.Icons.Filled.PlayArrow,
+                            stringResource(R.string.library_preview_audio),
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.height(Dimens.spaceXsPlus))
+            Text(
+                item.displayName,
+                style = MaterialTheme.typography.labelMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                stringResource(item.kind.labelRes()),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+            )
+            if (item.tags.isNotEmpty()) {
+                Text(
+                    item.tags.joinToString(" · "),
+                    style = MaterialTheme.typography.labelSmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+    }
+}
+
+@StringRes
+private fun LibraryItemKind.labelRes(): Int = when (this) {
+    LibraryItemKind.ACTOR -> R.string.library_kind_actors
+    LibraryItemKind.PERFORMANCE -> R.string.library_kind_performances
+    LibraryItemKind.BUNDLE -> R.string.library_kind_bundles
+    LibraryItemKind.AUDIO -> R.string.library_kind_audio
+    LibraryItemKind.BACKGROUND_IMAGE -> R.string.library_kind_backgrounds
+    LibraryItemKind.FRAME -> R.string.library_kind_frames
+    LibraryItemKind.PROJECT -> R.string.library_kind_projects
+    LibraryItemKind.PACK -> R.string.library_kind_packs
+    LibraryItemKind.PALETTE -> R.string.library_kind_palettes
+}
+
+private fun iconFor(kind: LibraryItemKind): ImageVector = when (kind) {
+    LibraryItemKind.ACTOR, LibraryItemKind.PERFORMANCE -> Lucide.Drama
+    LibraryItemKind.BUNDLE -> Lucide.Folder
+    LibraryItemKind.AUDIO -> Lucide.Music
+    LibraryItemKind.BACKGROUND_IMAGE, LibraryItemKind.FRAME -> Lucide.Square
+    LibraryItemKind.PROJECT -> Lucide.Clapperboard
+    LibraryItemKind.PACK -> Lucide.Shapes
+    LibraryItemKind.PALETTE -> Lucide.Shapes
+}
+
+/** The share of the screen height the Library sheet opens at, at least. */
+private const val MIN_SHEET_HEIGHT = 0.45f

@@ -26,8 +26,6 @@ next, with the debt counts that show progress.
 ## Then: easier to contribute to
 
 - **Public API docs** for `core` and `engine`, generated with Dokka.
-- **Cross-platform asset tools.** Port the PowerShell asset builders in `tools/loose_signal` to
-  Python so they run on Linux and macOS too.
 
 ## Later: for animators
 

@@ -58,6 +58,6 @@ hurt real animators. Before changing the studio:
 Screenshots and a passing build don't prove a gesture feels right. Say in your pull request what
 you tried on a device.
 
-See also the [design-system README](../designsystem/README.md), the
+See also the [design-system README](../modules/designsystem/README.md), the
 [code guidelines](code-guidelines.md) and the
 [design-system decision](architecture/decisions/design-system-boundary.md).

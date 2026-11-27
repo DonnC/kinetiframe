@@ -30,4 +30,4 @@
 Community policies live at the repository root: [code of conduct](../CODE_OF_CONDUCT.md),
 [security](../SECURITY.md) and the [changelog](../CHANGELOG.md).
 
-Artwork sources and their build notes are under [`art-direction`](art-direction).
+Where the bundled artwork lives and how to contribute more is in the [asset guide](assets.md).

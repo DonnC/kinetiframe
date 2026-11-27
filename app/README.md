@@ -3,7 +3,7 @@
 The KinetiFrame Android app. It holds the entry point (`MainActivity`, `KinetiFrameApplication`),
 navigation (`navigation`), the service container (`AppContainer`), the ViewModel factory,
 diagnostics sharing and the bundled sample assets. Every screen lives in
-[`presentation`](../presentation/README.md). It depends on all the other production modules.
+[`presentation`](../modules/presentation/README.md). It depends on all the other production modules.
 
 Its host tests check the app's shipped assets, its namespace and its brand resources; every
 other test lives in the module it covers. See the

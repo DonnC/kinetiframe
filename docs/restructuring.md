@@ -14,54 +14,214 @@ Keep this page current:
 ## Now
 
 Work collects on one milestone branch per milestone, with a commit per chunk and one pull request
-into `develop` when the milestone is done. The module restructuring is finished: #54 ended the
-module work, and #75 to #87 finished strings, tokens, code limits, UI separation, the preset
-types, tests and dependency updates. `milestone/finish` (#88) closed the remaining tracks.
+into `develop` when the milestone is done. The module restructuring is finished (#54 to #88), and
+#89 prepared version 0.1.0: the release checklist passed up to signing. #91 cleaned up the
+repository. #90 merged `develop` into `main` before #91, so `main` doesn't have the cleanup yet.
+#92 shipped the natural-hands copy of `Tavi presents`.
 
-**Release preparation.** `milestone/release-0.1.0` runs the
-[release checklist](releases.md#release-checklist) up to signing:
+**Natural actors.** `milestone/natural-actors` reworks actors so they look drawn and are easy to
+pose. The plan and the decisions behind it are in `notes/actor-redesign.md` (local). So far:
 
-- The app's `versionName` is `0.1.0`, and the changelog's entries sit under 0.1.0 with known
-  limits. The maintainer dates it when tagging.
-- CI passed on `develop`, `./gradlew verify` passes locally, and the release build assembles.
-- No keys, keystores, tokens or passwords appear anywhere in the history.
-- The development APK installs on an A56 with Android 17. `Tavi presents` opens and plays, using
-  about 330 MB, and its camera effects open. A new project draws, saves, reopens and exports a
-  video. Tavi opens in Actor Studio and its Performance Stage. Audio, import, updating over an
-  older install and older sample archives were not checked on the phone; the format tests cover
-  older files.
+- Four new scene backgrounds, and the Gemini copies removed from `docs/images`.
+- Drawn actors. `SceneGraph.figure` holds curves instead of image cutouts. One base serves every
+  kind of thing, with nothing human-specific in the model or renderer:
+  - parts: rigid drawings on one bone, with variants;
+  - tubes: inked tubes along bone chains, which can taper, bend at every joint and have cuffs;
+  - surfaces: drawings that bend with the nearest bones.
+- Drawn figures render through the same plan as cutouts, in the editor, export, thumbnails and
+  Actor Studio.
+- *Tavi · Drawn* is bundled beside the cutout Tavi, with front view only for now.
+- Animate mode shows handles only at the tips of chains, and dragging one bends the chain through
+  IK. Every joint stays editable in Setup.
+- Skeleton templates are one registry (`SkeletonTemplate`). Two legs, Four legs and Start from
+  scratch are entries in it. A new kind of actor, such as a bird or a car, is one class that
+  lists its bones, and gets posing, keys, recording, presets and saving from the shared base.
+  Saved template IDs no longer need to be in a fixed list.
+- The studio's tool dock fits the tools a mode shows, instead of keeping a fixed height with
+  empty space where tools were hidden.
+- Animate mode's hint describes posing pose to pose. Recording a take stays as an option, and its
+  hint shows only while a take runs.
+- Actor Studio, checked on a Galaxy A73:
+  - The mode switch reads "Setup | Animate" in words.
+  - The duplicate bone buttons in the top bar and dock are gone.
+  - The actor is framed large in every mode, in the area the panels leave clear.
+  - The selected part's tools sit in the part rail instead of floating over the actor.
+  - The part chips use theme colours and count drawn pieces as artwork.
+  - Drawn actors don't show the continuous-drawing toggle, and get a Setup hint about their build.
+  - Animate offers a drawn part's variants, such as Tavi's hand poses, from a labelled chip on
+    the stage's edge.
+- The app follows the phone's orientation instead of forcing landscape in the studios and
+  portrait elsewhere. In portrait, Actor Studio stacks the part tools above the chip rail, keeps
+  the hint clear of the image button, and wraps the timeline controls. Checked on a Galaxy A56.
 
-Signing, the tag and the GitHub release stay with the maintainer.
+Next, in a follow-up milestone: setup sliders for proportions, then side views by mirroring.
 
-The notes below are from `milestone/finish`.
+**Brand.** `milestone/brand` replaces the teal and amber identity, which read as generic, with
+one drawn from the animator's desk. The reasons are in [the brand](assets.md#the-brand).
 
-**Compose test rule.** All 46 device test files use the `v2` `createComposeRule`, which queues
-coroutines on a `StandardTestDispatcher` until the test idles. Run on an A56 with Android 16:
+- The mark is a bouncing ball in three frames on one diagonal: round, stretched as it falls, and
+  squashed on the ground, in carmine and graphite on a paper tile. It reads at 16 px and as a
+  themed icon.
+- The interface and the wordmark use Nunito, bundled as five static weights under the OFL. The
+  wordmark is Nunito ExtraBold with carmine balls for the i dots.
+- One brand colour: the logo's carmine is the primary, and every other interface colour is a
+  tone of it from its Material HCT palette, over the logo's graphite and paper neutrals. The
+  greys are neutral, so the interface doesn't tint the artwork.
+- Every brand image is a vector generated from one geometry: the launcher, themed and splash
+  icons, the in-app mark and wordmark (`BrandArt`), and the SVGs and board in `docs/brand`. The
+  generator is in `tools/brand`. The raster brand PNGs and the `tools/branding` scripts are gone.
+- The default onion skins are carmine before and blue after, the paper convention. That blue is
+  the only colour outside the brand, and only on the canvas.
+- Checked on a Galaxy A73 in the dark theme: splash, Home and the editor. The light theme and the
+  launcher icon on a home screen aren't checked on a phone yet.
 
-- Compose's test library brought an Espresso too old for Android 16, so every Compose module's
-  device tests now depend on Espresso 3.7.0 through the Compose convention plugin.
-- `DockToolButtonTest` advances the test clock past the button's double-tap wait, which the `v2`
-  rule doesn't do on its own.
-- `presentation` fails the same 13 tests that failed before the restructuring, and nothing else.
-  `app` and `designsystem` pass.
+**Studio essentials.** `milestone/studio-essentials` fixes what the first UX review round found.
+The six-persona panel that ran it is in [tools/ux-review](../tools/ux-review/README.md).
 
-**Preview fixtures.** Every user of `PreviewCatalog` is in the library, so it moved to
-`presentation.library.preview`.
+- Trust: leaving only asks to save when something changed since the last save, and a
+  successful save is a short notice instead of a dialog. Adding an actor performance that
+  lengthens the scene says so and offers Undo. Back during a lasso move applies the move. A fresh
+  install no longer opens on the trial-library cleanup. The canvas no longer jumps when playback
+  starts.
+- Colour: the current colour is a dot on the tool rail, the wheel starts at full brightness
+  from a dark colour, and the picker has recent colours, My colours with a + to save the current
+  colour, and hex entry. Palettes you make can be added to, trimmed by long-press and deleted;
+  starter palettes stay read-only.
+- Layers: every layer shows its eye and lock, and its opacity opens a slider. A held drawing
+  continues onto frames added inside it or after its end, so a background held to the end stays
+  held as the scene grows.
+- Words and layout: actor views are called angles. Asset tracks open as a half-height sheet in
+  portrait that can be dragged taller or closed, and New Project's canvas sizes are a scrollable
+  sheet. The bottom bar has three equal tabs on every screen, with a labelled New button above it
+  on Home. Home, Library and Settings share the same app bar, with no back arrow on Settings, and
+  Library's filter chips toggle instead of starting with All. Export video is in the editor's
+  menu and saves first.
 
-**Strings.** `DEFAULT_COLLECTION` names the default library collection in `studio`. It stays the
-saved English key, and the library's collection menu shows it through a string resource. The
-`require` checks in `core`'s documents keep English messages on purpose: only corrupt files break
-them, and the screens show a translated failure first, with that text only as a technical detail.
+**UX round 2.** `milestone/ux-round-2` acts on the maintainer's own review after Studio essentials.
 
-**Changelog.** The changelog's Unreleased section now covers the user-visible changes and the
-contributor changes since #8, ready for the first release.
+- Autosave is on by default: gallery projects save a few seconds after editing pauses, when the
+  app goes to the background and when leaving the editor, so leaving no longer asks. A Settings
+  switch turns it off. Save is in the editor's menu, and Pack Creator and Actor Studio keep their
+  explicit saves.
+- The drawing bar spreads Home, Undo, Redo, Copy, Paste, Reset view and Asset tracks evenly, with
+  Safe frame, Focus and Save in the menu. Reset view brings back the zoom, pan and tilt and is
+  greyed out when the canvas is already reset. Speed is now Frame rate, with the same picker as New Project and a
+  note that drawings stay while speed changes. Background asks Library or files.
+- Root screens share one app bar with no title under it. Library's bar holds the logo, its search
+  and refresh; Library has tabs per kind (Projects, Actors, Packs, Images, Audio, Colours), so the
+  palette icon is gone. Colours is its own full-width page: My colours as large tiles with an add
+  tile (wheel and hex in a sheet), then each palette as a card with a strip of its colours that
+  opens to show them all. A colour shows its hex to copy, with Remove in your own palettes. It has
+  no eyedropper.
+- Every grid card (Home's projects, actors, packs and collections; Library's projects, actors,
+  packs and images) is the same `MediaCard`: a 4:3 picture with short facts as badges, and the name,
+  a detail line and the ⋮ menu on a solid caption below, readable on any art.
+- New Project picks the canvas from picture cards (Landscape, Portrait, Square, Custom; Local is
+  now Custom) with every platform size in More sizes, and the frame rate from chips with a live
+  bouncing-ball preview. New Pack shows each size against the largest. Add flows have a proper app
+  bar.
+- Collections show as cards. Long-press a project and drop it on another to start a named
+  collection, or on a collection to add it; Move to collection stays in the project menu.
+- The Library picker used by the editor and asset tracks is a draggable bottom sheet, with toggle
+  chips like Library's. In portrait it opens at least 45% of the screen tall.
+
+**Tavi presents with natural hands.** `milestone/tavi-hands` ships a copy of `Tavi presents`
+beside the unchanged original:
+
+- Arms and hands are drawn with curves in every frame instead of pasted cutouts, matching the
+  [model sheet](images/tavi-model-sheet.png): one continuous sleeve from shoulder to wrist with
+  a soft elbow, a fold when it bends, and a cuff whose mouth overlaps the wrist. The relaxed,
+  point, fist and palm-up hands are chunky mittens with the thumb on the silhouette.
+- The arms are in the hands layer (renamed "arms + hands"), above the desk, so a hand on the desk
+  or the chest stays attached to its arm. Where an arm leaves the shirt, its outline joins the
+  shirt's, so the shoulder reads as one silhouette.
+- Hands turn with the forearm, and a spring makes them trail a turning arm and settle. Arms ease
+  in joint angles, so hands travel on arcs. The palm, point and fist poses are re-authored.
+- Torso, head, desk, eye and mouth artwork is the original. The sample is 32 MB.
+
+**UX round 3.** `milestone/ux-round-3` acts on the round 3 persona findings
+(`notes/ux-review/findings.md`), checked on a tablet as well as a phone.
+
+- The emulator script works on current SDKs (the API 37 image is `android-37.0`, the 7-inch
+  profile is `small_tablet`, and starting two emulators no longer fails), and `gradlew` is
+  executable again.
+- R3-18: a frame deleted right after drawing on it came back in the next frame added at its
+  place, and deleting or pasting around a frame being drawn could overwrite the frame that moved
+  into its slot. Frame deletes and pastes now settle the drawing before frames shift, and
+  appending a frame clears pixels left past the end by older builds.
+- R3-19: timeline and Frames thumbnails cropped the canvas to the tile, so a 9:16 frame showed a
+  centre square on a dark tile. They now show the whole canvas on white paper in its own shape.
+  Tiles keep their fixed size; shaping them to the canvas is part of Tablet layouts.
+- R3-21, R3-22, R3-14 and R3-29, with the maintainer's calls: one colour shared by every tool
+  that paints (size, opacity and brush stay per tool), Paste in place, the last colour picked
+  remembered in the app preferences (`penColor`, null in older settings), and frame-rate chips
+  that wrap.
+- Colours: R3-5, R3-6, R3-15 and the Delete half of R3-34. Palettes are chosen from a dropdown
+  (`PaletteDropdown`), the maintainer's call: chips for a growing list crowd the phone panel. R3-4 (Library search taking focus
+  after New palette) didn't reproduce on the emulator; the sheet now releases the keyboard and
+  the screen clears focus when it closes. Check it on the A56. The wheel handle on black stays on
+  white at full brightness on purpose (R1-03).
+- New Project, Home and Library: R3-8, R3-9, R3-10, R3-12, R3-33 and R3-36.
+- Timeline: R3-20 (long-press and drag a frame in the Frames grid, or move one earlier or later
+  with buttons), R3-25 (Duplicate in the frame menu) and R3-32 (clear action labels). R3-11 stays: the
+  strip scrubs under a centre pointer by design, and its edge clips next to the pinned +.
+- Wording: R3-13 and R3-35. Existing installs keep "Tavi · All four views": renaming means a new
+  installer receipt and rewriting library metadata, not worth the risk for a name. R3-35's
+  duplicate Tavi cards didn't reproduce (Drawn and Four angles are both meant to ship).
+- Studio, with the maintainer's calls: R3-31 (fill at once), R3-26 (onion skin switch on the
+  drawing bar; settings stay in ⋮), R3-23 (onion skin shows every visible layer, "Active layer
+  only" in its panel), and R1-25 (rail tall enough for its tools).
+- R3-24 (the maintainer's call): holds are picked on the timeline by tapping frames on either
+  side, and can reach back from the drawing (`HoldDrawing.source`). The typed-frame dialog is gone.
+- Layers: R3-27 (a ⋮ menu per layer; `LayerContentManager` duplicates a layer and merges it down
+  on every frame) and R3-28 (the panel wraps its layers). R1-27's one-option add menu is gone.
+  The opacity slider is still a small dropdown under the % chip.
+- R3-30: Line, Rectangle and Ellipse construction shapes (Line is the default), and the brush
+  card's name is dark on its light well in every theme.
+- R3-7: Export has a back arrow and a Watch button that plays the finished video in the
+  phone's player. A preview before exporting is still to come.
+- Tablet layouts, first pass: `WindowWidthClass` (Material 600/840 dp breakpoints) drives an
+  `AppRootFrame` rail for Home, Library and Settings, `browseGridCells()` for the browsing grids,
+  layers docked beside the canvas (`EditorSidePanel`), a grouped drawing bar, and Frames tiles
+  shaped like the canvas. Forms (New Project, Settings, Export) keep a 640 dp readable width.
+- Tablet layouts, second pass (`milestone/tablet-studio`): a drawing workspace on expanded
+  windows (fixed tool panel, labelled top bar with no overflow repeats, layers floating over the
+  canvas corner and closed by default, panels hidden while playing), a wider frame strip whose
+  track lanes keep its scale (`TimelineScale`), asset tracks docked under the canvas, Fill and Fit
+  view, camera effects as animated tiles, New Pack in two panes, and Export redesigned with a
+  preview shaped like the video, in-app playback and the project's canvas size by default. Expert
+  and beginner personas ran on `kf-tablet`; their fixes include the shape and fill Confirm bars
+  on the workspace, white paper behind exported video, and collections shown as stacks.
+- `presentation`'s device tests compile again: `ActorArtworkControlsTest` still used the old
+  `ActorArtworkMenu(BoneNode)` signature, so no device test in the module could run.
 
 ## Next
 
-1. **First release.** A maintainer merges `develop` into `main`, signs a release build and tags
+1. **Tablet layouts, what's left.** The studio workspace, timeline, tracks and Export are done
+   (see Done). Still to do: the workspace on medium windows (600 to 840 dp), Library's item
+   details as a side panel instead of a bottom sheet on wide windows, Actor Studio as a tablet
+   workspace, a check on `kf-tablet-small` and a phone in landscape, and the creator, rigger,
+   access and stress personas on `kf-tablet`.
+2. **Packs in the studio.** `milestone/studio-packs`, the next milestone after UX round 2. The
+   personas could not find how to use a pack while drawing: today it takes the Library picker, a
+   tap on a pack, then a drag out of the floating tray. Using a pack is a drawing action, not a
+   timeline one, so it goes on the tool rail rather than in Asset tracks.
+   - A Packs button on the tool rail opens the tray on the last pack used. With none, it opens a
+     small chooser with recent packs first and All packs below.
+   - A chip at the top of the tray names the pack and swaps to another without closing.
+   - Tapping a drawing places it in the middle of the canvas, selected so it can be moved and
+     scaled. Dragging still drops it under the finger.
+   - The tray shrinks to a small tab to give back drawing space, and opens again with one tap.
+   - Opening a pack from the Library picker stays as a second route.
+   - Show pack drawings on a light paper well in every theme (see UX fixes).
+   - Check: unit tests for the last-used pack and tap-to-place, then the expert and rigger
+     personas use it to lip-sync a few frames on the test phone.
+3. **First release.** A maintainer merges `develop` into `main`, signs a release build and tags
    `v0.1.0`, following steps 5 to 8 of the [release checklist](releases.md#release-checklist).
-2. **UX fixes**, starting with the improved copy of `Tavi presents` (see UX fixes).
-3. **Old device test failures.** Fix or delete the 13 failing `presentation` device tests as the
+   The font licences must be added first (see Discoveries).
+4. **UX fixes.** Decide whether the bundled Tavi actor gets the same hand treatment (see UX
+   fixes), then the Actor Studio and editor items.
+5. **Old device test failures.** Fix or delete the 13 failing `presentation` device tests as the
    code they cover changes (see Later).
 
 ## Later
@@ -108,14 +268,20 @@ Tracks that run alongside the module work, a screen or feature at a time:
 Found during device checks on a Galaxy A56. None of them comes from the restructuring. They are
 fixed after the module work, unless one blocks testing.
 
-**Tavi presents** (first task of the next phase, on its own branch)
+**Tavi's hands**
 
 - Tavi's expressions animate well, but the hands move like glued-on cutouts. They don't bend like
-  the hand poses on the [model sheet](art-direction/loose-signal/characters/tavi/references/model-sheet.png),
-  so the actor looks stiff. Either rework the actor's rigging and hand cutouts, or animate the
-  hands frame by frame.
-- Don't change the bundled `Tavi presents`. Make a copy, improve the copy and ship both, so the
-  app itself shows the difference.
+  the hand poses on the [model sheet](images/tavi-model-sheet.png),
+  so the actor looks stiff. Don't change the originals: make copies, improve them and ship both,
+  so the app itself shows the difference.
+- `Tavi presents` was drawn layer by layer without the rig. Each hand was an upright stamp with
+  its own darker cuff, pasted over a rounded sleeve end and barely turned with the forearm, and
+  the forearms sat behind the torso and desk while the hands sat in front. The natural-hands copy
+  draws the arms and hands instead (see Now).
+- The rigged Tavi actor has the same problem: large, detailed hand cutouts with an outlined wrist,
+  drawn on top of three rigid arm cutouts. A copy of the actor needs drawn, bendable sleeves and
+  mitten hands like the sample's, which means the actor renderer must draw curves, not only
+  place images.
 
 **Actor Studio**
 
@@ -136,10 +302,25 @@ fixed after the module work, unless one blocks testing.
 - In the brush panel, the brush name ("Pen") is white text on the white preview card.
 - The export screen has no back button.
 - In portrait, Actor Studio's hint banner runs into the gold asset button.
-- The asset tracks panel covers the whole stage and says only "No clips yet".
-- "Save before leaving?" appears even right after saving with nothing changed. In that dialog,
-  Discard looks like the safe buttons although it throws work away.
-- A successful save opens a blocking dialog that needs OK. A short message would do.
+- The asset tracks sheet says only "No clips yet" when empty, with no hint of what to add.
+- In "Save before leaving?", Discard looks like the safe buttons although it throws work away.
+- "Menu labels" only labels context menus. The top bar, frame menu and selection menu stay
+  icon-only, and long labels such as "Edit asset tracks" need a layout that fits seven icons.
+- Library picker cards show empty selection boxes that do nothing.
+- Library's project cards fit the picture with light bands above and below, while Home's crop it
+  to fill. Crop project pictures in Library too, keeping Fit for actors and pack drawings.
+- In dark mode, pack drawings (dark marks on transparent paper) need a light paper well
+  (`LibraryTokens.stampWell`) in every theme. Home's and Library's pack cards now have one; pack
+  contents, the tray and the picker still need checking.
+- A collection made by dropping one project on another shows as a plain card. Show it as a stack
+  of its projects' pictures, so it reads as a group at a glance.
+- The frame strip doesn't follow the playhead during playback.
+- Frames could not be reordered by dragging in the frame manager in a scripted test; check by
+  hand. There is no one-tap duplicate and no hold count per frame in the strip.
+- Fill and lasso need a confirm tap every time. Consider applying on the next action.
+- "Playback FPS" changes the project's frame rate, not only the preview.
+- In portrait the canvas fills about a quarter of the screen, and Focus hides the controls
+  without enlarging it.
 - Unlabelled top bar icons: the document and eye icons, and the round gold button on the right.
 - The tool dock's grip doesn't read as draggable.
 - Frame thumbnails are dark grey while the canvas is white, so strokes are barely visible in them.
@@ -153,19 +334,19 @@ fixed after the module work, unless one blocks testing.
 
 **Home and actors**
 
-- A fresh install opens on "Clean the trial library?", although there is nothing to clean yet.
-
 - Project thumbnails are transparent PNGs. A black drawing shows as an empty dark card. Draw
   thumbnails on the stage's white paper.
 - A one-frame project shows a duration of "0:00".
 - Card badges (fps, size) have no scrim over light artwork.
-- Actor cards have no visible surface, the "4 views" chip floats above them and repeats "All four
-  views" in the title, and the last card sits under the + button.
-- Actor views are listed alphabetically; Front should come first.
+- Actor cards have no visible surface, and the "4 angles" chip floats above them and repeats "All
+  four views" in the title.
+- Actor angles are listed alphabetically; Front should come first.
+- Home and Library both list projects, packs and actors, so it isn't clear what Library is for.
+- Pack items do nothing when tapped, and their names look like file names ("ls-eyes-neutral").
+- Putting a character in a scene takes four or five steps through Asset tracks.
 - Leaving Actor Studio returns to the Projects tab, not the Actors tab it was opened from.
 - On a fresh install the Library's Audio tab says "No matching items. Try another filter or
   search." with no filter or search applied.
-- Settings is a bottom bar tab but shows a back arrow and a second header under the brand bar.
 - Sharing the 34 MB demo project took about three and a half minutes on an A73, with no sign
   that anything was happening after the menu closed. Show progress, and look at why the
   archive is slow.
@@ -252,16 +433,28 @@ fixed after the module work, unless one blocks testing.
 | #86 | Parsed sources without `KotlinCoreEnvironment` and moved the logic tests from `app` into their modules |
 | #87 | Updated Gradle 9.9.1, AGP 9.5.1 and the rest, and let IDE imports create the Compose Preview task |
 | #88 | Moved the device tests to the `v2` Compose rule and Android 16, moved the preview fixtures and translated the default collection's name |
+| #89 | Set version 0.1.0, moved the changelog under it and recorded the release checks |
+| #91 | Removed the art sources and pack builders, shipped unversioned assets with Tavi only, and moved the modules into `modules/` |
 
 The combined result of #13 to #18 was checked on a device: opening and playing an existing
 project, drawing, saving and reopening a new one, and applying a motion preset in Actor Studio.
 
 ## Discoveries
 
+- `verify` rewrites the four `modules/.artifacts/rigging/continuous-limb-*.png` images with
+  one-byte differences on macOS. Generate them in a platform-neutral way or stop tracking them.
+- The 17 fonts in `app/src/main/assets/fonts` are Google Fonts, most under the SIL Open Font
+  License, which `THIRD_PARTY_NOTICES.md` doesn't list. Add each font's license before a release.
+- Mira was the only bundled actor drawn as one continuous piece with skinned bones. With her gone,
+  no shipped actor exercises that path; cover it with a test fixture when the actor work resumes.
 - Coil 2.7 brings OkHttp into the release build for loading images over the network, which the
   app never does. Coil 3 without its network module would drop it. The resolved release libraries
   are Apache-2.0, apart from the Lucide icon set, whose artwork is ISC. Keep its notice with
   releases.
+- [File formats](file-formats.md) promises that unknown JSON fields are ignored on read, but
+  the actor, performance and preset repositories use `ignoreUnknownKeys = false`. An older app
+  therefore rejects a revision that has a new field, such as a drawn actor's `figure`, instead of
+  loading what it understands. Either relax the readers or correct the promise.
 
 - **Project storage depends on actors.** One Room database holds the actor, performance, library,
   export and project tables. One file store, named `ActorFileStore` until 4a, serves every

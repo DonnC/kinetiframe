@@ -1,0 +1,96 @@
+package com.donnclab.kinetiframe.presentation.settings
+
+import androidx.lifecycle.viewModelScope
+import com.donnclab.kinetiframe.preferences.data.AppPreferencesStore
+import com.donnclab.kinetiframe.preferences.model.AppPreferences
+import com.donnclab.kinetiframe.preferences.model.AppTheme
+import com.donnclab.kinetiframe.preferences.model.StudioOrientation
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.common.UiText
+import com.donnclab.kinetiframe.ui.BaseViewModel
+import com.donnclab.kinetiframe.ui.ViewEffect
+import com.donnclab.kinetiframe.ui.ViewIntent
+import com.donnclab.kinetiframe.ui.ViewState
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+
+data class SettingsState(
+    val preferences: AppPreferences = AppPreferences(),
+    val loading: Boolean = true,
+    val error: UiText? = null,
+) : ViewState
+sealed interface SettingsIntent : ViewIntent {
+    data class Theme(val value: AppTheme) : SettingsIntent
+    data class Orientation(val value: StudioOrientation) : SettingsIntent
+    data class SystemBars(val hidden: Boolean) : SettingsIntent
+    data class PlaybackTools(val hidden: Boolean) : SettingsIntent
+    data class MenuLabels(val shown: Boolean) : SettingsIntent
+    data class Autosave(val on: Boolean) : SettingsIntent
+
+    /** The studio picked a colour; it opens with it next time (R3-14). */
+    data class PenColour(val argb: Int) : SettingsIntent
+}
+sealed interface SettingsEffect : ViewEffect
+
+class SettingsViewModel(private val store: AppPreferencesStore) :
+    BaseViewModel<SettingsState, SettingsIntent, SettingsEffect>(SettingsState()) {
+    private val writes = Mutex()
+    init {
+        viewModelScope.launch {
+            writes.withLock {
+                try {
+                    val loaded = store.load()
+                    updateState { it.copy(preferences = loaded, loading = false) }
+                } catch (
+                    cancelled: CancellationException,
+                ) {
+                    throw cancelled
+                } catch (
+                    _: Exception,
+                ) {
+                    updateState {
+                        it.copy(loading = false, error = UiText.Resource(R.string.settings_load_failed))
+                    }
+                }
+            }
+        }
+    }
+    override fun handleIntent(intent: SettingsIntent) {
+        viewModelScope.launch {
+            // Serialize rapid taps so an older disk write cannot overwrite a newer preference.
+            writes.withLock {
+                val next = when (intent) {
+                    is SettingsIntent.Theme -> currentState.preferences.copy(theme = intent.value)
+
+                    is SettingsIntent.Orientation -> currentState.preferences.copy(orientation = intent.value)
+
+                    is SettingsIntent.SystemBars -> currentState.preferences.copy(hideSystemBars = intent.hidden)
+
+                    is SettingsIntent.PlaybackTools -> currentState.preferences.copy(
+                        hideToolsDuringPlayback = intent.hidden,
+                    )
+
+                    is SettingsIntent.MenuLabels -> currentState.preferences.copy(showMenuLabels = intent.shown)
+
+                    is SettingsIntent.Autosave -> currentState.preferences.copy(autosave = intent.on)
+
+                    is SettingsIntent.PenColour -> currentState.preferences.copy(penColor = intent.argb)
+                }
+                try {
+                    store.save(next)
+                    updateState { it.copy(preferences = next, error = null) }
+                } catch (
+                    cancelled: CancellationException,
+                ) {
+                    throw cancelled
+                } catch (
+                    _: Exception,
+                ) {
+                    updateState { it.copy(error = UiText.Resource(R.string.settings_save_failed)) }
+                }
+            }
+        }
+    }
+}

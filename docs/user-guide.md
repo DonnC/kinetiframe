@@ -5,13 +5,13 @@ This guide walks through making your first scene. If a word is unfamiliar, check
 
 ## Your first scene
 
-1. **Create a project** from the home screen, or open the bundled *Tavi presents* example to see
-   a finished scene.
+1. **Create a project** from the home screen, or open the bundled *Tavi presents* scene to see a
+   finished animation.
 2. **Draw.** Pick a brush, draw on the canvas, and add frames in the timeline. Use layers to keep
    the background, characters and effects apart. Turn on onion skinning to see neighboring
    frames while you draw.
 3. **Add a character.** Open the Add menu, choose *Actor performance* and pick a character. The
-   bundled characters (Tavi, Mira and Kuda) are a good place to start before building your own.
+   bundled Tavi actor is a good place to start before building your own.
 4. **Make it move.** Pick one of the character's saved performances, or create a new one in Actor
    Studio by moving the character's parts while recording. Watch the take back before you keep it.
 5. **Add sound.** Import audio or record a voice-over. Scrub the timeline to line up sound with

@@ -1,0 +1,98 @@
+package com.donnclab.kinetiframe.presentation.studio.timeline
+
+import android.graphics.Bitmap
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Link
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.designsystem.theme.KinetiFrameTheme
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.studio.FrameThumbnailContent
+
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+@Composable
+fun FrameCard(
+    index: Int,
+    isCurrent: Boolean,
+    thumbnail: Bitmap? = null,
+    linked: Boolean = false,
+    inHoldRange: Boolean = false,
+    onClick: () -> Unit,
+) {
+    val borderColor = when {
+        isCurrent -> EditorTokens.accent.copy(alpha = 0.6f)
+
+        // Frames a hold being picked will cover (R3-24).
+        inHoldRange -> EditorTokens.accent
+
+        else -> EditorTokens.border
+    }
+    val borderWidth = if (isCurrent || inHoldRange) TimelineTokens.currentFrameBorder else Dimens.borderThin
+    val scale = LocalTimelineScale.current
+
+    Box(
+        modifier = Modifier
+            .width(scale.thumbWidth)
+            .combinedClickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Card(
+            modifier = Modifier.size(scale.thumbWidth, scale.thumbHeight),
+            colors = CardDefaults.cardColors(
+                containerColor = when {
+                    isCurrent -> EditorTokens.accent.copy(alpha = 0.15f)
+                    else -> MaterialTheme.colorScheme.surfaceVariant
+                },
+                contentColor = if (isCurrent) EditorTokens.accent else MaterialTheme.colorScheme.onSurfaceVariant,
+            ),
+            shape = RoundedCornerShape(TimelineTokens.frameThumbCorner),
+            border = BorderStroke(
+                width = borderWidth,
+                color = borderColor,
+            ),
+        ) {
+            FrameThumbnailContent(thumbnail, index, isCurrent, compact = !scale.largeLabels) {
+                if (linked) {
+                    Icon(
+                        Icons.Default.Link,
+                        stringResource(R.string.timeline_linked_drawing),
+                        modifier = Modifier.align(Alignment.BottomStart).size(TimelineTokens.frameBadge),
+                        tint = EditorTokens.accent,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FrameCardPreview() {
+    KinetiFrameTheme {
+        Box(Modifier.padding(Dimens.spaceL)) {
+            FrameCard(
+                index = 0,
+                isCurrent = true,
+                onClick = {},
+            )
+        }
+    }
+}

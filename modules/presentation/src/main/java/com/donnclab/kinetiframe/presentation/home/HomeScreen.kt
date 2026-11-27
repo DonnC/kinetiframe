@@ -1,0 +1,413 @@
+package com.donnclab.kinetiframe.presentation.home
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.FileOpen
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.composables.icons.lucide.Folder
+import com.composables.icons.lucide.Layers
+import com.composables.icons.lucide.Lucide
+import com.donnclab.kinetiframe.core.actor.document.LibraryItemManifest
+import com.donnclab.kinetiframe.core.document.ProjectManifest
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
+import com.donnclab.kinetiframe.library.model.PackItemEntry
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
+import com.donnclab.kinetiframe.presentation.actors.ActorManagerState
+import com.donnclab.kinetiframe.presentation.actors.ActorNameDialog
+import com.donnclab.kinetiframe.presentation.actors.AddActorScreen
+import com.donnclab.kinetiframe.presentation.common.AppBottomNavBar
+import com.donnclab.kinetiframe.presentation.common.AppBrandBar
+import com.donnclab.kinetiframe.presentation.common.BottomNavDestination
+import com.donnclab.kinetiframe.presentation.common.CompactTextField
+import com.donnclab.kinetiframe.presentation.common.FullScreenDialog
+import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserIntent
+import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserState
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabCallbacks
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabIntent
+import com.donnclab.kinetiframe.presentation.library.packs.PacksTabState
+import com.donnclab.kinetiframe.presentation.project.AddProjectRoute
+import com.donnclab.kinetiframe.presentation.project.ProjectManagerIntent
+import com.donnclab.kinetiframe.presentation.project.ProjectManagerState
+import java.io.File
+
+/**
+ * The app's Home dashboard: one tabbed destination for projects, packs and actors. The top bar
+ * (brand mark, search, import), the tab row and the bottom nav bar with its center "add" action
+ * are shared by all three tabs; "add" creates whatever the open tab holds.
+ */
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun HomeScreen(
+    states: HomeStates,
+    intents: HomeIntents,
+    onShareProject: (ProjectManifest) -> Unit = {},
+    onSaveToLibraryProject: (ProjectManifest) -> Unit = {},
+    onExportVideoProject: (ProjectManifest) -> Unit = {},
+    onSharePack: (LibraryItemManifest) -> Unit = {},
+    onImportFromFile: () -> Unit = {},
+    onImportFromLibrary: () -> Unit = {},
+    onOpenPackCreator: (String?) -> Unit = {},
+    detailsPreviewFile: (String, PackItemEntry) -> File = { _, _ -> File("") },
+    onBrowseLibrary: () -> Unit = {},
+    onSettingsTapped: () -> Unit = {},
+) {
+    val (projectState, packState, packPreviewFiles, actorState, hierarchyState) = states
+    val (onProjectIntent, onPackIntent, onActorIntent, onHierarchyIntent) = intents
+    var selectedTab by remember { mutableIntStateOf(0) }
+    var searchActive by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
+    var showNewProjectDialog by remember { mutableStateOf(false) }
+    var showAddActorScreen by remember { mutableStateOf(false) }
+    var renameActorId by remember { mutableStateOf<String?>(null) }
+    var showImportSheet by remember { mutableStateOf(false) }
+
+    val tabTitles = listOf(
+        stringResource(R.string.home_tab_projects),
+        stringResource(R.string.home_tab_packs),
+        stringResource(R.string.home_tab_actors),
+    )
+    val searchPlaceholder = stringResource(
+        when (selectedTab) {
+            0 -> R.string.home_search_projects
+            1 -> R.string.home_search_packs
+            else -> R.string.home_search_actors
+        },
+    )
+
+    val fabDescription = when (selectedTab) {
+        0 -> stringResource(R.string.home_new_project)
+        1 -> stringResource(R.string.home_new_pack)
+        else -> stringResource(R.string.home_new_actor)
+    }
+    val onFabClick: () -> Unit = when (selectedTab) {
+        0 -> {
+            { showNewProjectDialog = true }
+        }
+
+        1 -> {
+            { onOpenPackCreator(null) }
+        }
+
+        else -> {
+            { showAddActorScreen = true }
+        }
+    }
+
+    Box(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize()) {
+            HomeTopBar(
+                searchActive = searchActive,
+                searchQuery = searchQuery,
+                searchPlaceholder = searchPlaceholder,
+                onSearchQueryChange = { searchQuery = it },
+                onSearchToggle = {
+                    searchActive = !searchActive
+                    if (!searchActive) searchQuery = ""
+                },
+                onImportClick = { showImportSheet = true },
+            )
+            if (!searchActive) {
+                // Three tabs don't need a tablet's whole width.
+                PrimaryTabRow(
+                    selectedTabIndex = selectedTab,
+                    modifier = Modifier.widthIn(max = Dimens.readableWidth),
+                    containerColor = MaterialTheme.colorScheme.background,
+                ) {
+                    tabTitles.forEachIndexed { index, title ->
+                        Tab(
+                            selected = selectedTab == index,
+                            onClick = { selectedTab = index },
+                            // Only the selected tab carries the brand colour.
+                            selectedContentColor = MaterialTheme.colorScheme.primary,
+                            unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            text = {
+                                Text(
+                                    title,
+                                    fontWeight = if (selectedTab ==
+                                        index
+                                    ) {
+                                        FontWeight.Bold
+                                    } else {
+                                        FontWeight.Normal
+                                    },
+                                )
+                            },
+                        )
+                    }
+                }
+            }
+            Box(Modifier.weight(1f).fillMaxWidth()) {
+                when (selectedTab) {
+                    0 -> ProjectsTabContent(
+                        hierarchy = hierarchyState,
+                        state = projectState,
+                        query = searchQuery,
+                        callbacks = ProjectsTabCallbacks(
+                            onIntent = onProjectIntent,
+                            onHierarchyIntent = onHierarchyIntent,
+                            onShare = onShareProject,
+                            onSaveToLibrary = onSaveToLibraryProject,
+                            onExportVideo = onExportVideoProject,
+                            onRequestCreate = { showNewProjectDialog = true },
+                        ),
+                    )
+
+                    1 -> PacksTabContent(
+                        state = packState,
+                        previewFiles = packPreviewFiles,
+                        query = searchQuery,
+                        callbacks = PacksTabCallbacks(
+                            onIntent = onPackIntent,
+                            onShare = onSharePack,
+                            onRequestCreate = { onOpenPackCreator(null) },
+                            onEdit = { pack -> onOpenPackCreator(pack.libraryItemId) },
+                            detailsPreviewFile = detailsPreviewFile,
+                        ),
+                    )
+
+                    else -> ActorsTabContent(
+                        projectNames = projectState.projects.associate { it.projectId to it.displayName },
+                        hierarchy = hierarchyState,
+                        state = actorState,
+                        query = searchQuery,
+                        callbacks = ActorsTabCallbacks(
+                            onIntent = onActorIntent,
+                            onHierarchyIntent = onHierarchyIntent,
+                            onOpenPerformanceProject = { onProjectIntent(ProjectManagerIntent.Open(it)) },
+                            onRequestCreate = { showAddActorScreen = true },
+                            onRequestRename = { renameActorId = it },
+                        ),
+                    )
+                }
+            }
+        }
+        AppBottomNavBar(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            active = BottomNavDestination.HOME,
+            onNavigate = { destination ->
+                when (destination) {
+                    BottomNavDestination.HOME -> {
+                        selectedTab = 0
+                        searchActive =
+                            false
+                        searchQuery = ""
+                    }
+
+                    BottomNavDestination.LIBRARY -> onBrowseLibrary()
+
+                    BottomNavDestination.SETTINGS -> onSettingsTapped()
+                }
+            },
+        )
+        // Above the bar at the bottom end, labelled with what it makes on this tab.
+        ExtendedFloatingActionButton(
+            onClick = onFabClick,
+            icon = { Icon(Icons.Filled.Add, contentDescription = null) },
+            text = { Text(fabDescription) },
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = Dimens.spaceL, bottom = Dimens.bottomNavHeight + Dimens.spaceL),
+        )
+    }
+
+    if (showNewProjectDialog) {
+        AddProjectRoute(
+            onDismiss = { showNewProjectDialog = false },
+            onCreate = { name, canvas, fps ->
+                onProjectIntent(ProjectManagerIntent.Create(name, canvas.dimensions, fps))
+                showNewProjectDialog = false
+            },
+        )
+    }
+    if (showAddActorScreen) {
+        FullScreenDialog(onDismiss = { showAddActorScreen = false }) {
+            AddActorScreen(
+                onBack = { showAddActorScreen = false },
+                onCreate = { name, template ->
+                    onActorIntent(ActorManagerIntent.Create(name, template))
+                    showAddActorScreen = false
+                },
+            )
+        }
+    }
+    renameActorId?.let { actorId ->
+        ActorNameDialog(
+            initialName = actorState.actors.firstOrNull { it.actorId == actorId }?.displayName.orEmpty(),
+            title = stringResource(R.string.home_rename_actor),
+            onDismiss = { renameActorId = null },
+            onConfirm = { name ->
+                onActorIntent(ActorManagerIntent.Rename(actorId, name))
+                renameActorId = null
+            },
+        )
+    }
+    if (showImportSheet) {
+        ModalBottomSheet(onDismissRequest = { showImportSheet = false }) {
+            ImportSheetContent(
+                onFile = {
+                    showImportSheet = false
+                    onImportFromFile()
+                },
+                onLibrary = {
+                    showImportSheet = false
+                    onImportFromLibrary()
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomeTopBar(
+    searchActive: Boolean,
+    searchQuery: String,
+    searchPlaceholder: String,
+    onSearchQueryChange: (String) -> Unit,
+    onSearchToggle: () -> Unit,
+    onImportClick: () -> Unit,
+) {
+    if (!searchActive) {
+        AppBrandBar {
+            IconButton(onClick = onSearchToggle) { Icon(Icons.Filled.Search, stringResource(R.string.action_search)) }
+            IconButton(onClick = onImportClick) { Icon(Icons.Filled.FileOpen, stringResource(R.string.import_title)) }
+        }
+        return
+    }
+    Row(
+        Modifier.fillMaxWidth().padding(horizontal = Dimens.spaceL, vertical = Dimens.spaceSPlus),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        if (searchActive) {
+            CompactTextField(
+                value = searchQuery,
+                onValueChange = onSearchQueryChange,
+                modifier = Modifier.weight(1f).padding(end = Dimens.spaceS),
+                placeholder = { Text(searchPlaceholder) },
+                singleLine = true,
+            )
+            IconButton(onClick = onSearchToggle) {
+                Icon(Icons.Filled.Close, stringResource(R.string.action_close_search))
+            }
+        }
+    }
+}
+
+@Composable
+internal fun LoadingBox() {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+}
+
+@Composable
+internal fun EmptySearchMessage() {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text(
+            stringResource(R.string.home_search_empty),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(Dimens.spaceXlPlus),
+        )
+    }
+}
+
+/** The Import bottom sheet's content: From File or From Library. Both import a `.kframe` project
+ *  archive; see [HomeRoute]. */
+@Composable
+private fun ImportSheetContent(onFile: () -> Unit, onLibrary: () -> Unit) {
+    Column(Modifier.fillMaxWidth().padding(horizontal = Dimens.spaceXl, vertical = Dimens.spaceS)) {
+        Text(
+            stringResource(R.string.import_title),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Black,
+        )
+        Text(
+            stringResource(R.string.import_subtitle),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = Dimens.spaceXxs, bottom = Dimens.spaceM),
+        )
+        ImportRow(
+            Lucide.Folder,
+            MaterialTheme.colorScheme.primary,
+            stringResource(R.string.import_from_file_title),
+            stringResource(R.string.import_from_file_subtitle),
+            onFile,
+        )
+        ImportRow(
+            Lucide.Layers,
+            MaterialTheme.colorScheme.secondary,
+            stringResource(R.string.import_from_library_title),
+            stringResource(R.string.import_from_library_subtitle),
+            onLibrary,
+        )
+        Spacer(Modifier.height(Dimens.spaceM))
+    }
+}
+
+@Composable
+private fun ImportRow(icon: ImageVector, tint: Color, label: String, description: String, onClick: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = Dimens.spaceM),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Surface(
+            shape = RoundedCornerShape(Dimens.radiusMPlus),
+            color = tint.copy(alpha = 0.14f),
+            modifier = Modifier.size(HomeTokens.createOptionTile),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(icon, null, tint = tint, modifier = Modifier.size(Dimens.iconMPlus))
+            }
+        }
+        Column(Modifier.padding(start = Dimens.spaceMPlus).weight(1f)) {
+            Text(label, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            Text(
+                description,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}

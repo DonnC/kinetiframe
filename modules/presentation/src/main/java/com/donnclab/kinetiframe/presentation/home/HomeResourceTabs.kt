@@ -1,0 +1,398 @@
+package com.donnclab.kinetiframe.presentation.home
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.donnclab.kinetiframe.core.actor.document.ActorManifest
+import com.donnclab.kinetiframe.core.document.ProjectManifest
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.HomeTokens
+import com.donnclab.kinetiframe.library.model.AssetOrganization
+import com.donnclab.kinetiframe.library.model.BrowseMode
+import com.donnclab.kinetiframe.library.model.BrowserPosition
+import com.donnclab.kinetiframe.library.model.DEFAULT_COLLECTION
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.actors.ActorManagerIntent
+import com.donnclab.kinetiframe.presentation.actors.ActorManagerMessage
+import com.donnclab.kinetiframe.presentation.actors.ActorManagerState
+import com.donnclab.kinetiframe.presentation.actors.ActorNameDialog
+import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.browseGridCells
+import com.donnclab.kinetiframe.presentation.library.BrowserView
+import com.donnclab.kinetiframe.presentation.library.CollectionAssignmentDialog
+import com.donnclab.kinetiframe.presentation.library.CollectionBrowserControls
+import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserIndex
+import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserIntent
+import com.donnclab.kinetiframe.presentation.library.HierarchyBrowserState
+import com.donnclab.kinetiframe.presentation.project.ProjectManagerIntent
+import com.donnclab.kinetiframe.presentation.project.ProjectManagerState
+
+@Composable
+internal fun ProjectsTabContent(
+    hierarchy: HierarchyBrowserState,
+    state: ProjectManagerState,
+    query: String,
+    callbacks: ProjectsTabCallbacks,
+) {
+    val (onIntent, onHierarchyIntent, onShare, onSaveToLibrary, onExportVideo, onRequestCreate) = callbacks
+    var renameCandidate by remember { mutableStateOf<ProjectManifest?>(null) }
+    var deleteCandidate by remember { mutableStateOf<ProjectManifest?>(null) }
+    var organiseCandidate by remember { mutableStateOf<ProjectManifest?>(null) }
+    // A project dropped onto one that isn't in a collection yet: both go into a new, named one.
+    var newCollectionFor by remember { mutableStateOf<Pair<String, String>?>(null) }
+    val organization = hierarchy.organization
+    val position = organization.browsers[HOME_PROJECTS_BROWSER] ?: BrowserPosition()
+    fun collectionOf(key: String) = organization.items[key]?.collection ?: DEFAULT_COLLECTION
+    fun moveTo(key: String, collection: String) = onHierarchyIntent(
+        HierarchyBrowserIntent.Organise(
+            key,
+            (organization.items[key] ?: AssetOrganization()).copy(collection = collection),
+        ),
+    )
+    fun dropOnProject(dragged: String, target: String) {
+        val collection = collectionOf(target)
+        if (collection == DEFAULT_COLLECTION) newCollectionFor = dragged to target else moveTo(dragged, collection)
+    }
+    val collections = remember(state.projects, organization) {
+        state.projects.groupBy { collectionOf("project:${it.projectId}") }
+            .filterKeys { it != DEFAULT_COLLECTION }
+            .map { (name, projects) -> ProjectCollection(name, projects.sortedByDescending { it.updatedAtEpochMs }) }
+            .sortedBy { it.name.lowercase() }
+    }
+    val showingCollections = position.mode == BrowseMode.COLLECTIONS && position.collection == null
+    val filtered = remember(state.projects, query, organization, position) {
+        HierarchyBrowserIndex.filter(
+            state.projects,
+            { "project:${it.projectId}" },
+            { it.displayName },
+            { it.updatedAtEpochMs },
+            BrowserView(organization, position, query),
+        )
+    }
+    // Recent and All show each collection as one stack; a search still finds single projects.
+    val stacks = query.isBlank() && position.mode in setOf(BrowseMode.RECENT, BrowseMode.ALL)
+    val entries = remember(filtered, collections, stacks) {
+        if (stacks) {
+            groupIntoStacks(filtered, collections) { project ->
+                collectionOf("project:${project.projectId}").takeIf { it != DEFAULT_COLLECTION }
+            }
+        } else {
+            filtered.map(ProjectGridEntry::Single)
+        }
+    }
+    fun openCollection(name: String) = onHierarchyIntent(
+        HierarchyBrowserIntent.Browse(
+            HOME_PROJECTS_BROWSER,
+            position.copy(mode = BrowseMode.COLLECTIONS, collection = name),
+        ),
+    )
+    Column(Modifier.fillMaxSize()) {
+        CollectionBrowserControls(
+            position,
+            HierarchyBrowserIndex.collections(state.projects, {
+                "project:${it.projectId}"
+            }, organization),
+            { onHierarchyIntent(HierarchyBrowserIntent.Browse(HOME_PROJECTS_BROWSER, it)) },
+            showCollectionMenu = false,
+        )
+        position.collection?.takeIf { position.mode == BrowseMode.COLLECTIONS }?.let { name ->
+            OpenCollectionHeader(name) {
+                onHierarchyIntent(
+                    HierarchyBrowserIntent.Browse(HOME_PROJECTS_BROWSER, position.copy(collection = null)),
+                )
+            }
+        }
+        hierarchy.error?.let { Text(it.asString(), style = MaterialTheme.typography.labelSmall) }
+        Box(Modifier.weight(1f)) {
+            val error = state.error
+            when {
+                state.loading -> LoadingBox()
+
+                error != null -> ActorManagerMessage(error.asString(), stringResource(R.string.action_retry)) {
+                    onIntent(ProjectManagerIntent.Reload)
+                }
+
+                state.projects.isEmpty() -> ActorManagerMessage(
+                    stringResource(R.string.home_projects_empty),
+                    stringResource(R.string.home_new_project),
+                    onRequestCreate,
+                )
+
+                showingCollections && collections.isEmpty() -> ActorManagerMessage(
+                    stringResource(R.string.home_collections_empty),
+                    stringResource(R.string.home_collections_show_all),
+                ) {
+                    onHierarchyIntent(
+                        HierarchyBrowserIntent.Browse(HOME_PROJECTS_BROWSER, position.copy(mode = BrowseMode.ALL)),
+                    )
+                }
+
+                showingCollections -> CollectionGrid(
+                    collections,
+                    onOpen = {
+                        onHierarchyIntent(
+                            HierarchyBrowserIntent.Browse(HOME_PROJECTS_BROWSER, position.copy(collection = it)),
+                        )
+                    },
+                    onDropProject = ::moveTo,
+                )
+
+                filtered.isEmpty() -> EmptySearchMessage()
+
+                else -> LazyVerticalGrid(
+                    columns = browseGridCells(),
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(
+                        start = Dimens.spaceL,
+                        end = Dimens.spaceL,
+                        top = Dimens.spaceXs,
+                        bottom = HomeTokens.listBottomReserve,
+                    ),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+                ) {
+                    items(entries, key = { it.key }) { entry ->
+                        if (entry is ProjectGridEntry.Stack) {
+                            val name = entry.collection.name
+                            CollectionCard(entry.collection, { openCollection(name) }, { moveTo(it, name) })
+                            return@items
+                        }
+                        val project = (entry as ProjectGridEntry.Single).project
+                        val open = {
+                            onHierarchyIntent(HierarchyBrowserIntent.Used("project:${project.projectId}"))
+                            onIntent(ProjectManagerIntent.Open(project.projectId))
+                        }
+                        HomeProjectCard(
+                            project,
+                            open,
+                            { renameCandidate = project }, { deleteCandidate = project },
+                            onShare = { onShare(project) },
+                            onSaveToLibrary = { onSaveToLibrary(project) },
+                            onExportVideo = { onExportVideo(project) },
+                            favourite = organization.items["project:${project.projectId}"]?.favourite == true,
+                            onFavourite = {
+                                onHierarchyIntent(HierarchyBrowserIntent.Favourite("project:${project.projectId}"))
+                            },
+                            onOrganise = { organiseCandidate = project },
+                            // Long-press and drag onto another project or a collection to group them.
+                            // One detector inside the card handles tap-to-open and long-press-to-drag.
+                            modifier = Modifier.projectDropTarget("project:${project.projectId}") { dragged ->
+                                dropOnProject(dragged, "project:${project.projectId}")
+                            },
+                            dragModifier = Modifier.projectDragSource("project:${project.projectId}", open),
+                        )
+                    }
+                }
+            }
+        }
+    }
+    newCollectionFor?.let { (dragged, target) ->
+        NewCollectionDialog(
+            taken = collections.mapTo(mutableSetOf()) { it.name },
+            onCreate = { name ->
+                moveTo(target, name)
+                moveTo(dragged, name)
+                newCollectionFor = null
+            },
+            onDismiss = { newCollectionFor = null },
+        )
+    }
+    organiseCandidate?.let { project ->
+        CollectionAssignmentDialog(
+            organization.items["project:${project.projectId}"] ?: AssetOrganization(),
+            { organiseCandidate = null },
+            {
+                onHierarchyIntent(HierarchyBrowserIntent.Organise("project:${project.projectId}", it))
+                organiseCandidate =
+                    null
+            },
+        )
+    }
+    renameCandidate?.let { project ->
+        ActorNameDialog(
+            initialName = project.displayName,
+            title = stringResource(R.string.home_rename_project),
+            onDismiss = { renameCandidate = null },
+            onConfirm = { name ->
+                onIntent(ProjectManagerIntent.Rename(project.projectId, name))
+                renameCandidate = null
+            },
+        )
+    }
+    deleteCandidate?.let { project ->
+        AlertDialog(
+            onDismissRequest = { deleteCandidate = null },
+            title = { Text(stringResource(R.string.home_delete_project_title, project.displayName)) },
+            text = {
+                Text(
+                    stringResource(R.string.home_delete_project_message),
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    onIntent(ProjectManagerIntent.Delete(project.projectId))
+                    deleteCandidate =
+                        null
+                }) { Text(stringResource(R.string.action_delete)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { deleteCandidate = null }) { Text(stringResource(R.string.action_cancel)) }
+            },
+        )
+    }
+}
+
+@Composable
+internal fun ActorsTabContent(
+    projectNames: Map<String, String>,
+    hierarchy: HierarchyBrowserState,
+    state: ActorManagerState,
+    query: String,
+    callbacks: ActorsTabCallbacks,
+) {
+    val (onIntent, onHierarchyIntent, onOpenPerformanceProject, onRequestCreate, onRequestRename) = callbacks
+    var archiveCandidate by remember { mutableStateOf<ActorManifest?>(null) }
+    var selectedActor by remember { mutableStateOf<ActorManifest?>(null) }
+    var organiseCandidate by remember { mutableStateOf<ActorManifest?>(null) }
+    val organization = hierarchy.organization
+    val position = organization.browsers["actors"] ?: BrowserPosition()
+    val filtered = remember(state.actors, state.performances, query, organization, position) {
+        HierarchyBrowserIndex.filter(state.actors, { "actor:${it.actorId}" }, { actor ->
+            actor.displayName + " " +
+                state.performances.filter { it.actorId == actor.actorId }.joinToString { it.displayName }
+        }, { it.updatedAtEpochMs }, BrowserView(organization, position, query))
+    }
+    Column(Modifier.fillMaxSize()) {
+        CollectionBrowserControls(
+            position,
+            HierarchyBrowserIndex.collections(state.actors, {
+                "actor:${it.actorId}"
+            }, organization),
+            { onHierarchyIntent(HierarchyBrowserIntent.Browse("actors", it)) },
+        )
+        hierarchy.error?.let { Text(it.asString(), style = MaterialTheme.typography.labelSmall) }
+        Box(Modifier.weight(1f)) {
+            when {
+                state.loading -> LoadingBox()
+
+                state.error != null -> ActorManagerMessage(
+                    state.error.asString(),
+                    stringResource(R.string.action_retry),
+                ) {
+                    onIntent(ActorManagerIntent.Reload)
+                }
+
+                state.actors.isEmpty() -> ActorManagerMessage(
+                    stringResource(R.string.home_actors_empty),
+                    stringResource(R.string.home_new_actor),
+                    onRequestCreate,
+                )
+
+                filtered.isEmpty() -> EmptySearchMessage()
+
+                else -> LazyVerticalGrid(
+                    columns = browseGridCells(),
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(
+                        start = Dimens.spaceL,
+                        end = Dimens.spaceL,
+                        top = Dimens.spaceXs,
+                        bottom = HomeTokens.listBottomReserve,
+                    ),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spaceM),
+                ) {
+                    items(filtered, key = { it.actorId }) { actor ->
+                        HomeActorCard(
+                            actor,
+                            state.thumbnailPaths[actor.actorId],
+                            {
+                                selectedActor = actor
+                                onHierarchyIntent(HierarchyBrowserIntent.Used("actor:${actor.actorId}"))
+                            },
+                            ActorCardActions(
+                                onRename = { onRequestRename(actor.actorId) },
+                                onDuplicate = { onIntent(ActorManagerIntent.Duplicate(actor.actorId)) },
+                                onExport = { onIntent(ActorManagerIntent.Export(actor.actorId)) },
+                                onArchive = { archiveCandidate = actor },
+                                onFavourite = {
+                                    onHierarchyIntent(HierarchyBrowserIntent.Favourite("actor:${actor.actorId}"))
+                                },
+                                onOrganise = { organiseCandidate = actor },
+                            ),
+                            favourite = organization.items["actor:${actor.actorId}"]?.favourite == true,
+                        )
+                    }
+                }
+            }
+        }
+    }
+    selectedActor?.let { actor ->
+        com.donnclab.kinetiframe.presentation.actors.CharacterDetailsSheet(
+            actor,
+            state.thumbnailPaths[actor.actorId],
+            state.performances.filter { it.actorId == actor.actorId },
+            { selectedActor = null },
+            { view ->
+                selectedActor = null
+                onIntent(ActorManagerIntent.OpenView(actor.actorId, view))
+            },
+            { projectId ->
+                selectedActor = null
+                onOpenPerformanceProject(projectId)
+            },
+            projectNames,
+        )
+    }
+    organiseCandidate?.let { actor ->
+        CollectionAssignmentDialog(
+            organization.items["actor:${actor.actorId}"] ?: AssetOrganization(),
+            { organiseCandidate = null },
+            {
+                onHierarchyIntent(HierarchyBrowserIntent.Organise("actor:${actor.actorId}", it))
+                organiseCandidate =
+                    null
+            },
+        )
+    }
+    archiveCandidate?.let { actor ->
+        AlertDialog(
+            onDismissRequest = { archiveCandidate = null },
+            title = { Text(stringResource(R.string.home_archive_actor_title, actor.displayName)) },
+            text = {
+                Text(
+                    stringResource(R.string.home_archive_actor_message),
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    onIntent(ActorManagerIntent.Archive(actor.actorId))
+                    archiveCandidate =
+                        null
+                }) { Text(stringResource(R.string.action_archive)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { archiveCandidate = null }) { Text(stringResource(R.string.action_cancel)) }
+            },
+        )
+    }
+}
+
+/** The organisation key for where Home's Projects tab is browsing. */
+internal const val HOME_PROJECTS_BROWSER = "projects"

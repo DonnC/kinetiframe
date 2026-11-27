@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="docs/art-direction/brand/approved/lockup-source.png" alt="KinetiFrame" width="260">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/kinetiframe-lockup-dark.svg">
+    <img src="docs/brand/kinetiframe-lockup.svg" alt="KinetiFrame" width="320">
+  </picture>
 </p>
 
 <p align="center">
@@ -14,6 +17,10 @@
   <a href="CONTRIBUTING.md"><img alt="Contributions welcome" src="https://img.shields.io/badge/contributions-welcome-orange.svg"></a>
 </p>
 
+<p align="center">
+  <img src="docs/images/screenshots/showcase.png" alt="KinetiFrame's drawing studio on a tablet beside Actor Studio rigging Tavi on a phone" width="900">
+</p>
+
 ---
 
 Most mobile animation apps make you choose: hand-draw every frame, or move a puppet around.
@@ -22,6 +29,11 @@ movement with your finger, and add a voice-over and a camera move. Then export a
 share the editable project.
 
 It works offline, needs no account and has no ads, in-app purchases or tracking.
+
+<p align="center">
+  <img src="docs/images/screenshots/tavi-presents.gif" alt="Tavi presenting at a news desk, animated in KinetiFrame" width="640"><br>
+  <em>Tavi presents: one of the sample scenes, played straight from the app.</em>
+</p>
 
 ## What you can make
 
@@ -42,16 +54,51 @@ It works offline, needs no account and has no ads, in-app purchases or tracking.
 - Camera moves: push in, pull out, pan, tilt, shake, whip pan, follow and fades
 - MP4 video export, plus `.kframe` project files and `.kpack` stamp packs you can share
 
+**Packs, palettes and your Library**
+- Stamp packs are sets of drawings, such as eyes, mouths and props, that you drag onto any frame.
+  KinetiFrame ships packs of expressions, mouths for talking, and studio furniture to start with
+- Make packs from your own drawings, then reuse them in every project or share them as `.kpack`
+  files
+- Save colours to My colours, build palettes of your own, and pick from recent colours or a hex code
+- The Library keeps everything in one place: projects, actors, packs, images, audio and colours,
+  with favourites, collections and search. Drag one project onto another to start a collection
+
+**Your work stays yours**
+- Everything lives on your device. There's no account, no cloud and no tracking, and it all works
+  offline
+- Projects are open `.kframe` files you can back up, move to another device or share for others to
+  edit
+- Free and open source under Apache-2.0, so the app and your files never get locked away
+
 New to the terms? The [glossary](docs/glossary.md) explains actors, rigs, performances and the rest.
 
-## Meet the sample cast
+## Screenshots
 
-KinetiFrame ships with three ready-to-animate characters: Tavi, Mira and Kuda. Each is drawn
-from four directions and comes with hand poses and facial expressions, so you can try character
-animation before drawing your own.
+**On a tablet** the studio becomes a workspace: tools on the left, a labelled top bar, the frame
+strip along the bottom, and layers that float in only when you want them.
 
 <p align="center">
-  <img src="docs/art-direction/loose-signal/characters/tavi/references/model-sheet.png" alt="Tavi model sheet with expressions and hand poses" width="640">
+  <img src="docs/images/screenshots/tablet-layers.png" alt="Tablet studio with the layers panel open" width="49%">
+  <img src="docs/images/screenshots/tablet-export.png" alt="Export screen with the finished video ready to play, save or share" width="49%">
+</p>
+
+**On a phone** everything folds into a floating tool dock, so the canvas gets the screen.
+
+<p align="center">
+  <img src="docs/images/screenshots/phone-studio.png" alt="Phone studio with the floating tool dock" width="24%">
+  <img src="docs/images/screenshots/phone-actor-studio.png" alt="Actor Studio fitting a skeleton to Tavi" width="24%">
+  <img src="docs/images/screenshots/phone-new-project.png" alt="New Project with a live frame-rate preview" width="24%">
+  <img src="docs/images/screenshots/phone-packs-dark.png" alt="Stamp packs in the Library, in dark mode" width="24%">
+</p>
+
+## Meet Tavi
+
+KinetiFrame ships with Tavi, a hand-drawn character with a skeleton, ready to pose and animate,
+plus packs of his expressions and mouth shapes. The bundled *Tavi presents* scene shows him at
+work, so you can see character animation before drawing your own.
+
+<p align="center">
+  <img src="docs/images/tavi-model-sheet.png" alt="Tavi model sheet with expressions and hand poses" width="640">
 </p>
 
 ## Try it
@@ -94,7 +141,7 @@ Everyone is welcome, whether you write code or not.
 | An illustrator | Drawing actor kits, stamp packs, backgrounds and brushes | [Asset guide](docs/assets.md) |
 | An Android developer | Fixing bugs, building features, improving performance | [Contributing](CONTRIBUTING.md) |
 | A UI designer | Improving controls and screens with Compose previews, no project needed | [UI contributions](docs/ui-contributions.md) |
-| Into math or graphics | IK, skinning, interpolation and rendering in the engine | [Engine](engine/README.md) |
+| Into math or graphics | IK, skinning, interpolation and rendering in the engine | [Engine](modules/engine/README.md) |
 | A writer or translator | Improving guides, translating the app | [Roadmap](ROADMAP.md) |
 
 Look for issues labeled
@@ -108,11 +155,11 @@ KinetiFrame is a Kotlin and Jetpack Compose app split into a few Gradle modules:
 | Module | What it holds |
 | --- | --- |
 | [`app`](app/README.md) | The Android app: screens, editor, media, persistence and wiring |
-| [`core`](core/README.md) | Plain Kotlin data models, file codecs and validation. No Android |
-| [`engine`](engine/README.md) | Rigging, IK, deformation, timing and motion presets |
-| [`data`](data/README.md) | Durable file storage |
-| [`presentation`](presentation/README.md) | Shared ViewModel (MVI) infrastructure |
-| [`designsystem`](designsystem/README.md) | Theme, design tokens and reusable Compose controls |
+| [`core`](modules/core/README.md) | Plain Kotlin data models, file codecs and validation. No Android |
+| [`engine`](modules/engine/README.md) | Rigging, IK, deformation, timing and motion presets |
+| [`data`](modules/data/README.md) | Durable file storage |
+| [`presentation`](modules/presentation/README.md) | Shared ViewModel (MVI) infrastructure |
+| [`designsystem`](modules/designsystem/README.md) | Theme, design tokens and reusable Compose controls |
 
 Read the [architecture overview](docs/architecture/README.md) for how a stroke becomes a frame
 and how a performance becomes a pose. Project and pack files are described in

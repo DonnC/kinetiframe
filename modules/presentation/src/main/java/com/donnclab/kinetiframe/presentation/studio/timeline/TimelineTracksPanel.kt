@@ -1,0 +1,498 @@
+package com.donnclab.kinetiframe.presentation.studio.timeline
+
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import com.composables.icons.lucide.Box
+import com.composables.icons.lucide.ChevronDown
+import com.composables.icons.lucide.ChevronRight
+import com.composables.icons.lucide.Ellipsis
+import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.Move
+import com.composables.icons.lucide.Text
+import com.composables.icons.lucide.Video
+import com.composables.icons.lucide.X
+import com.donnclab.kinetiframe.core.document.ActorPlacementReference
+import com.donnclab.kinetiframe.core.document.AudioClipPlacement
+import com.donnclab.kinetiframe.core.document.AudioTrackSettings
+import com.donnclab.kinetiframe.core.document.MAX_AUDIO_TRACKS
+import com.donnclab.kinetiframe.core.document.VideoClipPlacement
+import com.donnclab.kinetiframe.designsystem.theme.Dimens
+import com.donnclab.kinetiframe.designsystem.theme.TimelineTokens
+import com.donnclab.kinetiframe.presentation.R
+import com.donnclab.kinetiframe.presentation.studio.timeline.audio.AudioLaneHeader
+import com.donnclab.kinetiframe.studio.StudioIntent
+import com.donnclab.kinetiframe.studio.StudioState
+
+/** A bounded track workspace. One horizontal viewport owns every asset lane. */
+@Composable
+fun TimelineTracksPanel(
+    modifier: Modifier = Modifier,
+    state: StudioState,
+    onIntent: (StudioIntent) -> Unit,
+    timeline: TimelineServices,
+    onEditPlacement: (ActorPlacementReference) -> Unit,
+    onAddToLibrary: (ActorPlacementReference) -> Unit,
+    onAddAudioToLibrary: (AudioClipPlacement) -> Unit = {},
+    onCreatePerformance: ((String, String) -> Unit)? = null,
+    filmstripScrollState: LazyListState = androidx.compose.foundation.lazy.rememberLazyListState(),
+    workspaceMode: Boolean = false,
+) {
+    val actors =
+        remember(state.project.actorPlacements) { state.project.actorPlacements.values.sortedBy { it.startFrame } }
+    val audio = remember(state.project.audioClips) { state.project.audioClips.values.sortedBy { it.startFrame } }
+    val videos =
+        remember(state.project.videoClips) { state.project.videoClips.values.sortedBy { it.timelineStartFrame } }
+    val camera = state.project.cameraShots
+    if (actors.isEmpty() && audio.isEmpty() && videos.isEmpty() && camera.isEmpty()) {
+        if (workspaceMode) {
+            Text(
+                stringResource(R.string.tracks_no_clips),
+                Modifier.padding(Dimens.spaceL),
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+        return
+    }
+    val resources = LocalResources.current
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    val windowHeight = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() }
+    val laneHeight = if (workspaceMode) {
+        (windowHeight - TimelineTokens.tracksPanelTopReserve).coerceAtLeast(TimelineTokens.tracksPanelMin)
+    } else {
+        (windowHeight * .24f).coerceIn(TimelineTokens.tracksPanelMin, TimelineTokens.tracksPanelMax)
+    }
+    var dropLane by remember { mutableStateOf<Int?>(null) }
+    // A typed key prevents an actor and an audio clip from exposing competing controls.
+    var selected by remember { mutableStateOf<String?>(null) }
+    var actionsOpen by remember { mutableStateOf(false) }
+    var moveOpen by remember { mutableStateOf(false) }
+    var notice by remember { mutableStateOf<String?>(null) }
+    val actor = actors.firstOrNull { "actor:${it.placementId}" == selected }
+    val sound = audio.firstOrNull { "audio:${it.clipId}" == selected }
+    val video = videos.firstOrNull { "video:${it.clipId}" == selected }
+    val label = actor?.label ?: sound?.label ?: video?.label
+    val selectedStart = actor?.startFrame ?: sound?.startFrame ?: video?.timelineStartFrame ?: 0
+    LaunchedEffect(label) {
+        if (label == null) {
+            selected = null
+            actionsOpen = false
+            moveOpen = false
+        }
+    }
+    fun select(key: String) {
+        selected = key
+        actionsOpen = true
+        notice = null
+    }
+    fun placeVideo(clip: VideoClipPlacement, start: Int, end: Int, sourceOffset: Double) {
+        val linkedAudio = clip.linkedAudioClipId?.let { state.project.audioClips[it] }
+        if (linkedAudio != null && state.project.audioTracks[linkedAudio.trackIndex]?.isLocked == true) {
+            notice = resources.getString(R.string.tracks_unlock_linked_sound)
+        } else if (videos.any {
+                it.clipId != clip.clipId && start < it.timelineEndFrame && it.timelineStartFrame < end
+            }
+        ) {
+            notice = resources.getString(R.string.tracks_video_overlap)
+        } else {
+            onIntent(StudioIntent.Video.Trim(clip.clipId, start, end, sourceOffset))
+        }
+    }
+    fun move(start: Int, lane: Int = sound?.trackIndex ?: 0) {
+        when {
+            actor != null -> onIntent(StudioIntent.ActorPlacement.Move(actor.placementId, start))
+
+            sound != null -> {
+                if (state.project.videoClips.values.any { it.linkedAudioClipId == sound.clipId }) {
+                    notice = resources.getString(R.string.tracks_detach_sound_first)
+                } else if (state.project.audioTracks[lane]?.isLocked == true) {
+                    notice = resources.getString(R.string.tracks_audio_lane_locked, lane + 1)
+                } else {
+                    onIntent(StudioIntent.Audio.Move(sound.clipId, lane, start))
+                }
+            }
+
+            video != null -> {
+                val end = start + video.timelineEndFrame - video.timelineStartFrame
+                placeVideo(video, start, end, video.videoSourceOffsetSeconds)
+            }
+        }
+    }
+    val clipMenu: @Composable () -> Unit = {
+        TrackClipContextMenu(
+            actionsOpen,
+            state,
+            TrackClipTarget(actor, sound, video),
+            timeline,
+            TrackClipActions(
+                onDismiss = { actionsOpen = false },
+                onIntent = onIntent,
+                onPosition = { moveOpen = true },
+                onEdit = onEditPlacement,
+                onSaveActor = onAddToLibrary,
+                onSaveAudio = onAddAudioToLibrary,
+                onCreatePerformance = onCreatePerformance,
+            ),
+        )
+    }
+    // Show contiguous audio lanes, including one empty drop target. Never renumber sparse tracks.
+    val audioLaneCount = if (audio.isEmpty()) {
+        0
+    } else {
+        (
+            (
+                audio.maxOf {
+                    it.trackIndex
+                } + 2
+                ).coerceAtMost(MAX_AUDIO_TRACKS)
+            )
+    }
+    val frameCount = maxOf(
+        state.animation.totalFrames,
+        actors.maxOfOrNull { it.startFrame + it.durationFrames * it.repeatCount } ?: 0,
+        audio.maxOfOrNull { it.startFrame + it.durationFrames } ?: 0,
+        videos.maxOfOrNull { it.timelineEndFrame } ?: 0,
+        camera.maxOfOrNull { it.endFrame } ?: 0,
+    ).coerceAtLeast(1)
+    Surface(modifier, color = MaterialTheme.colorScheme.surfaceContainerLow, shape = MaterialTheme.shapes.medium) {
+        Column {
+            Row(
+                Modifier.fillMaxWidth().height(TimelineTokens.trackHeaderHeight),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (!workspaceMode) {
+                    IconButton(onClick = {
+                        expanded = !expanded
+                    }) {
+                        Icon(
+                            if (expanded) Lucide.ChevronDown else Lucide.ChevronRight,
+                            stringResource(R.string.tracks_expand_collapse),
+                        )
+                    }
+                }
+                val clipCount = actors.size + audio.size + videos.size
+                Text(
+                    notice ?: label ?: pluralStringResource(R.plurals.tracks_summary, clipCount, clipCount),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.weight(1f),
+                )
+                if (label != null) {
+                    IconButton(onClick = { actionsOpen = true }) {
+                        Icon(Lucide.Ellipsis, stringResource(R.string.tracks_clip_actions))
+                    }
+                    IconButton(onClick = {
+                        selected = null
+                        actionsOpen = false
+                    }) { Icon(Lucide.X, stringResource(R.string.tracks_deselect_clip)) }
+                }
+            }
+            if (expanded || workspaceMode) {
+                Row(Modifier.heightIn(max = laneHeight).verticalScroll(rememberScrollState())) {
+                    Column(Modifier.width(TRACK_GUTTER)) {
+                        Text(
+                            stringResource(R.string.tracks_frames),
+                            Modifier.height(TimelineTokens.trackLabelHeight).padding(start = Dimens.spaceS),
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                        if (camera.isNotEmpty()) TrackLabel(stringResource(R.string.tracks_camera))
+                        actors.forEachIndexed { i, _ -> TrackLabel(stringResource(R.string.tracks_actor_lane, i + 1)) }
+                        repeat(audioLaneCount) { lane ->
+                            val settings = state.project.audioTracks[lane] ?: AudioTrackSettings()
+                            Row(Modifier.height(TRACK_HEIGHT), verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    stringResource(R.string.tracks_audio_lane, lane + 1),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    modifier = Modifier.width(TimelineTokens.trackIconWidth),
+                                )
+                                AudioLaneHeader(
+                                    settings.isMuted,
+                                    settings.isLocked,
+                                    { onIntent(StudioIntent.Audio.SetTrackMuted(lane, !settings.isMuted)) },
+                                    { onIntent(StudioIntent.Audio.SetTrackLocked(lane, !settings.isLocked)) },
+                                )
+                            }
+                        }
+                        if (videos.isNotEmpty()) TrackLabel(stringResource(R.string.tracks_video))
+                    }
+                    TimelineTrackViewport(
+                        frameCount,
+                        filmstripScrollState,
+                        Modifier.weight(1f),
+                        currentFrame = state.animation.currentFrame,
+                        onScrubFrame = {
+                            onIntent(StudioIntent.Playback.SetCurrentFrame(it))
+                        },
+                    ) { offsetFrames, visibleFrames ->
+                        Column(Modifier.fillMaxWidth()) {
+                            TimelineFrameRuler(frameCount, offsetFrames, visibleFrames) {
+                                onIntent(StudioIntent.Playback.SetCurrentFrame(it))
+                            }
+                            if (camera.isNotEmpty()) {
+                                com.donnclab.kinetiframe.presentation.studio.camera.CameraTimelineLane(
+                                    camera,
+                                    state.animation.totalFrames,
+                                    offsetFrames,
+                                    visibleFrames,
+                                    onIntent,
+                                )
+                            }
+                            actors.forEach { placement ->
+                                Box(Modifier.fillMaxWidth().height(TRACK_HEIGHT)) {
+                                    TimelineAssetClip(
+                                        placement.placementId, placement.label, placement.startFrame,
+                                        placement.durationFrames * placement.repeatCount, actor == placement,
+                                        gestures = ClipGestures(
+                                            onSelect = { select("actor:${placement.placementId}") },
+                                            onMove = { start, _ ->
+                                                onIntent(StudioIntent.ActorPlacement.Move(placement.placementId, start))
+                                            },
+                                            onTrim = { start, duration ->
+                                                onIntent(
+                                                    StudioIntent.ActorPlacement.Trim(
+                                                        placement.placementId,
+                                                        start,
+                                                        duration,
+                                                    ),
+                                                )
+                                            },
+                                        ),
+                                        minStart = (placement.startFrame - placement.sourceOffsetFrames).coerceAtLeast(
+                                            0,
+                                        ),
+                                        maxEnd =
+                                        placement.startFrame - placement.sourceOffsetFrames +
+                                            (
+                                                placement.sourceSpanFrames.takeIf { it > 0 }
+                                                    ?: (
+                                                        placement.durationFrames * placement.repeatCount +
+                                                            placement.sourceOffsetFrames
+                                                        )
+                                                ),
+                                        offsetFrames = offsetFrames,
+                                        visibleFrames = visibleFrames,
+                                        contextMenu = clipMenu,
+                                    )
+                                }
+                            }
+                            repeat(audioLaneCount) { lane ->
+                                Box(
+                                    Modifier.fillMaxWidth().height(TRACK_HEIGHT).background(
+                                        if (dropLane ==
+                                            lane
+                                        ) {
+                                            MaterialTheme.colorScheme.primary.copy(alpha = .18f)
+                                        } else {
+                                            MaterialTheme.colorScheme.onSurface.copy(
+                                                alpha = if (lane %
+                                                    2 ==
+                                                    0
+                                                ) {
+                                                    .025f
+                                                } else {
+                                                    .05f
+                                                },
+                                            )
+                                        },
+                                    ),
+                                ) {
+                                    audio.filter { it.trackIndex == lane }.forEach { clip ->
+                                        key(clip.clipId) {
+                                            TimelineAssetClip(
+                                                clip.clipId, clip.label, clip.startFrame, clip.durationFrames,
+                                                sound == clip,
+                                                locked = state.project.audioTracks[lane]?.isLocked == true,
+                                                peaks = clip.trimSource?.peaks ?: clip.waveformPeaks,
+                                                muted =
+                                                state.project.audioTracks[lane]?.isMuted == true,
+                                                track = lane, trackCount = audioLaneCount,
+                                                gestures = ClipGestures(
+                                                    onSelect = { select("audio:${clip.clipId}") },
+                                                    onMove = { start, target ->
+                                                        if (state.project.audioTracks[target]?.isLocked ==
+                                                            true
+                                                        ) {
+                                                            notice =
+                                                                resources.getString(
+                                                                    R.string.tracks_audio_lane_locked,
+                                                                    target + 1,
+                                                                )
+                                                        } else {
+                                                            onIntent(
+                                                                StudioIntent.Audio.Move(clip.clipId, target, start),
+                                                            )
+                                                        }
+                                                    },
+                                                    onTrim = { start, duration ->
+                                                        onIntent(StudioIntent.Audio.Trim(clip.clipId, start, duration))
+                                                    },
+                                                ),
+                                                minStart = (clip.startFrame - clip.trimOffsetFrames).coerceAtLeast(0),
+                                                maxEnd =
+                                                clip.startFrame - clip.trimOffsetFrames +
+                                                    (clip.trimSource?.durationFrames ?: clip.durationFrames),
+                                                waveformStart = clip.startFrame - clip.trimOffsetFrames,
+                                                waveformDuration =
+                                                clip.trimSource?.durationFrames ?: clip.durationFrames,
+                                                offsetFrames = offsetFrames, visibleFrames = visibleFrames,
+                                                onDragTarget = { dropLane = it }, contextMenu = clipMenu,
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                            if (videos.isNotEmpty()) {
+                                Box(Modifier.fillMaxWidth().height(TRACK_HEIGHT)) {
+                                    videos.forEach { clip ->
+                                        key(clip.clipId) {
+                                            TimelineAssetClip(
+                                                clip.clipId, clip.label, clip.timelineStartFrame,
+                                                clip.timelineEndFrame - clip.timelineStartFrame, video == clip,
+                                                gestures = ClipGestures(
+                                                    onSelect = { select("video:${clip.clipId}") },
+                                                    onMove = { start, _ ->
+                                                        val length = clip.timelineEndFrame - clip.timelineStartFrame
+                                                        placeVideo(
+                                                            clip,
+                                                            start,
+                                                            start + length,
+                                                            clip.videoSourceOffsetSeconds,
+                                                        )
+                                                    },
+                                                    onTrim = { start, duration ->
+                                                        placeVideo(
+                                                            clip,
+                                                            start,
+                                                            start + duration,
+                                                            clip.videoSourceOffsetSeconds +
+                                                                (start - clip.timelineStartFrame).toDouble() /
+                                                                state.project.fps.coerceAtLeast(1),
+                                                        )
+                                                    },
+                                                ),
+                                                minStart =
+                                                (clip.timelineStartFrame - clip.sourceOffsetFrames).coerceAtLeast(
+                                                    0,
+                                                ),
+                                                maxEnd =
+                                                clip.timelineStartFrame - clip.sourceOffsetFrames +
+                                                    (
+                                                        clip.sourceDurationFrames.takeIf { it > 0 }
+                                                            ?: (
+                                                                clip.timelineEndFrame - clip.timelineStartFrame +
+                                                                    clip.sourceOffsetFrames
+                                                                )
+                                                        ),
+                                                offsetFrames = offsetFrames,
+                                                visibleFrames = visibleFrames,
+                                                contextMenu = clipMenu,
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Box(
+                            Modifier.offset(x = frameCellWidth * (state.animation.currentFrame - offsetFrames))
+                                .width(TimelineTokens.playheadWidth).height(
+                                    TimelineTokens.playheadOverhang +
+                                        TRACK_HEIGHT *
+                                        (
+                                            actors.size + audioLaneCount + (if (videos.isEmpty()) 0 else 1) +
+                                                (if (camera.isEmpty()) 0 else 1)
+                                            ),
+                                )
+                                .background(MaterialTheme.colorScheme.error),
+                        )
+                    }
+                }
+            }
+        }
+    }
+    if (moveOpen && label != null) {
+        ClipPositionDialog(
+            label,
+            selectedStart,
+            sound?.trackIndex,
+            onDismiss = { moveOpen = false },
+            onConfirm = { start, lane ->
+                move(start, lane)
+                moveOpen = false
+            },
+        )
+    }
+}
+
+@Composable
+private fun TrackLabel(label: String) {
+    Box(Modifier.width(TRACK_GUTTER).height(TRACK_HEIGHT), contentAlignment = Alignment.CenterStart) {
+        Text(label, style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(start = Dimens.spaceS))
+    }
+}
+
+/** Only user drags propagate back. Programmatic sync must never become another scroll source. */
+@Composable
+internal fun rememberLaneScrollState(filmstripScrollState: LazyListState, cellWidthPx: Float): ScrollState {
+    val lane = rememberScrollState()
+    val dragging by lane.interactionSource.collectIsDraggedAsState()
+    LaunchedEffect(filmstripScrollState, cellWidthPx) {
+        snapshotFlow { filmstripScrollState.firstVisibleItemIndex to filmstripScrollState.firstVisibleItemScrollOffset }
+            .collect { (index, offset) ->
+                if (!dragging) lane.scrollTo(TimelineScrollSync.itemToPixels(index, offset, cellWidthPx))
+            }
+    }
+    LaunchedEffect(lane, filmstripScrollState, cellWidthPx) {
+        snapshotFlow { lane.value to dragging }.collect { (px, userDragging) ->
+            if (userDragging) {
+                val (index, offset) = TimelineScrollSync.pixelsToItem(px, cellWidthPx)
+                filmstripScrollState.scrollToItem(
+                    index.coerceAtMost(
+                        (
+                            filmstripScrollState.layoutInfo.totalItemsCount -
+                                1
+                            ).coerceAtLeast(0),
+                    ),
+                    offset,
+                )
+            }
+        }
+    }
+    return lane
+}

@@ -11,15 +11,16 @@ spotless {
         ktlint(libs.versions.ktlint.get())
     }
     kotlinGradle {
-        target("*.gradle.kts", "*/*.gradle.kts")
+        target("*.gradle.kts", "*/*.gradle.kts", "modules/*/*.gradle.kts")
         ktlint(libs.versions.ktlint.get())
     }
 }
 
 val architectureParser by configurations.creating
 dependencies { architectureParser("org.jetbrains.kotlin:kotlin-compiler-embeddable:${libs.versions.kotlin.get()}") }
-val auditedModules =
-    listOf("app", "core", "engine", "data", "media", "actors", "studio", "presentation", "designsystem")
+// Module folders relative to the repository root.
+val auditedModules = listOf("app") +
+    listOf("core", "engine", "data", "media", "actors", "studio", "presentation", "designsystem").map { "modules/$it" }
 tasks.register<quality.ArchitectureCheckTask>("checkArchitecture") {
     repository.set(layout.projectDirectory)
     modules.set(auditedModules)
@@ -37,7 +38,8 @@ tasks.register<quality.ArchitectureCheckTask>("reportArchitectureDebt") {
 // Device tests (connectedDebugAndroidTest) still need an emulator or phone and run separately.
 tasks.register("verify") {
     group = "verification"
-    description = "Runs formatting, the architecture check, host tests and lint for every module."
+    description =
+        "Runs formatting, the architecture check, host tests and lint for every module, and compiles the device tests."
     dependsOn(
         "spotlessCheck",
         "checkArchitecture",
@@ -58,5 +60,10 @@ tasks.register("verify") {
         ":presentation:lintDebug",
         ":designsystem:lintDebug",
         ":app:lintDebug",
+        // CI compiles the device tests too; compiling them here stops a changed signature from
+        // passing locally and failing on GitHub.
+        ":app:compileDebugAndroidTestKotlin",
+        ":designsystem:compileDebugAndroidTestKotlin",
+        ":presentation:compileDebugAndroidTestKotlin",
     )
 }

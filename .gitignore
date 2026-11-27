@@ -16,6 +16,9 @@ captures/
 .settings/
 **/bin/
 .DS_Store
+._*
+.AppleDouble
+.LSOverride
 Thumbs.db
 
 # Local machine configuration and secrets
@@ -35,6 +38,8 @@ __pycache__/
 # Working notes, plans and generated review output. These stay on your machine.
 # Use notes/ for brainstorming, planning and scratch documents.
 /notes/
+/kf-handover*/
+/kf-handover*.zip
 /.artifacts/
 /state/
 *.local.md

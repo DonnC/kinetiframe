@@ -47,7 +47,7 @@ class TaviProductionTest {
         assertTrue(saved.project.audioClips.isEmpty())
         assertTrue(
             saved.project.actorPlacements.isEmpty(),
-            "FxF cutout scene must not advertise a rig it does not contain",
+            "The drawn scene must not advertise a rig it does not contain",
         )
         assertEquals(
             listOf("ls-body", "ls-desk", "ls-hands", "ls-eyes", "ls-mouths"),
@@ -65,7 +65,7 @@ class TaviProductionTest {
         assertArrayEquals(
             com.donnclab.kinetiframe.library.bundled.DemoAssetFixtures.file(
                 assets,
-                "loose-signal/v2/ls-room-background-v2.png",
+                "samples/room-background.png",
             ).readBytes(),
             plate.readBytes(),
         )
@@ -74,7 +74,11 @@ class TaviProductionTest {
         listOf(0, 24, 40, 60, 80, 95).forEach { frame ->
             saved.frameLayers.getValue(frame).forEach { layer ->
                 assertTrue(frame in layer.populatedFrames)
-                val file = File(files.projectDirectory(id), "frames/frame_v2_${layer.id}_frame_$frame.png")
+                // A held drawing is stored once and shared by the frames it covers.
+                val key = saved.linkedCels[layer.id]?.get(frame)?.let {
+                    com.donnclab.kinetiframe.core.document.CelExposureIndex.storageKey(layer.id, it)
+                } ?: "${layer.id}_frame_$frame"
+                val file = File(files.projectDirectory(id), "frames/frame_v2_$key.png")
                 val image = ImageIO.read(file)
                 assertEquals(1280, image.width)
                 assertEquals(720, image.height)
@@ -83,6 +87,9 @@ class TaviProductionTest {
             }
         }
         assertTrue(bodyProofs.size >= 4)
+        // The desk never changes, so the sample stores it once for all 96 frames.
+        assertEquals(1, saved.linkedCels.getValue("ls-desk").values.toSet().size)
+        assertEquals(96, saved.linkedCels.getValue("ls-desk").size)
         assertTrue(mouthProofs.size >= 3)
         val archive = value(KframeArchiver.export(files, id, File(root, "tavi.kframe")))
         val importedFiles = DocumentFileStore(File(root, "reimport"))

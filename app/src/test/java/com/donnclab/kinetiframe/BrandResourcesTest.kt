@@ -1,16 +1,16 @@
 package com.donnclab.kinetiframe
 
 import androidx.compose.ui.graphics.toArgb
-import com.donnclab.kinetiframe.designsystem.theme.BrandAmber
-import com.donnclab.kinetiframe.designsystem.theme.BrandInk
-import com.donnclab.kinetiframe.designsystem.theme.BrandIvory
-import com.donnclab.kinetiframe.designsystem.theme.BrandMint
-import com.donnclab.kinetiframe.designsystem.theme.BrandTeal
+import com.donnclab.kinetiframe.designsystem.theme.BrandCarmine
+import com.donnclab.kinetiframe.designsystem.theme.BrandGraphite
+import com.donnclab.kinetiframe.designsystem.theme.BrandPaper
+import com.donnclab.kinetiframe.designsystem.theme.EditorTokens
+import com.donnclab.kinetiframe.studio.OnionSkinColors
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.File
-import javax.imageio.ImageIO
 import javax.xml.parsers.DocumentBuilderFactory
 
 class BrandResourcesTest {
@@ -20,48 +20,50 @@ class BrandResourcesTest {
         setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
     }
 
-    @Test fun `XML and Compose share the five identity colours`() {
+    @Test fun `XML and Compose share the three identity colours`() {
         val nodes = factory.newDocumentBuilder().parse(File(res, "values/colors.xml")).getElementsByTagName("color")
         val colours = (0 until nodes.length).associate {
             nodes.item(it).attributes.getNamedItem("name").nodeValue to nodes.item(it).textContent
         }
         mapOf(
-            "brand_teal" to BrandTeal,
-            "brand_amber" to BrandAmber,
-            "brand_ivory" to BrandIvory,
-            "brand_ink" to BrandInk,
-            "brand_rig" to BrandMint,
+            "brand_carmine" to BrandCarmine,
+            "brand_graphite" to BrandGraphite,
+            "brand_paper" to BrandPaper,
         ).forEach { (name, colour) ->
             assertEquals(colour.toArgb() and 0xFFFFFF, colours.getValue(name).removePrefix("#").toInt(16))
         }
     }
 
-    @Test fun `launcher and splash resources use Android canonical dimensions`() {
-        mapOf(
-            "brand_launcher_pixels" to 108,
-            "brand_monochrome_pixels" to 108,
-            "brand_splash_pixels" to 288,
+    @Test fun `launcher, themed and splash icons are vectors`() {
+        listOf(
+            "ic_launcher_foreground.xml" to "108dp",
+            "ic_launcher_monochrome.xml" to "108dp",
+            "ic_splash_mark.xml" to "240dp",
         ).forEach { (file, size) ->
-            mapOf(
-                "mdpi" to 1.0,
-                "hdpi" to 1.5,
-                "xhdpi" to 2.0,
-                "xxhdpi" to 3.0,
-                "xxxhdpi" to 4.0,
-            ).forEach { (density, scale) ->
-                val image = ImageIO.read(File(res, "drawable-$density/$file.png"))
-                assertEquals((size * scale).toInt(), image.width)
-                assertEquals((size * scale).toInt(), image.height)
-            }
+            val vector = factory.newDocumentBuilder().parse(File(res, "drawable/$file")).documentElement
+            assertEquals("vector", vector.tagName, file)
+            assertEquals(size, vector.getAttribute("android:width"), file)
+            assertTrue(vector.getElementsByTagName("path").length > 0, file)
         }
+        // A themed icon is tinted by the system: one shape, no brand colours of its own.
+        val monochrome = File(res, "drawable/ic_launcher_monochrome.xml").readText()
+        assertFalse(monochrome.contains("@color/"))
+        assertEquals(1, Regex("<path").findAll(monochrome).count())
         listOf("ic_launcher.xml", "ic_launcher_round.xml").forEach { file ->
             val icon = factory.newDocumentBuilder().parse(File(res, "mipmap-anydpi/$file"))
-            val monochrome = icon.getElementsByTagName("monochrome").item(0)
+            val monochromeLayer = icon.getElementsByTagName("monochrome").item(0)
             assertEquals(
                 "@drawable/ic_launcher_monochrome",
-                monochrome.attributes.getNamedItem("android:drawable").nodeValue,
+                monochromeLayer.attributes.getNamedItem("android:drawable").nodeValue,
             )
         }
         assertTrue(File(res, "values-night/colors.xml").isFile)
+        // No raster brand art remains to drift from the vectors.
+        assertTrue(res.walkTopDown().none { it.name.startsWith("brand_") && it.extension == "png" })
+    }
+
+    @Test fun `onion skins default to the editor's carmine and blue`() {
+        assertEquals(EditorTokens.onionBefore.toArgb(), OnionSkinColors.BEFORE)
+        assertEquals(EditorTokens.onionAfter.toArgb(), OnionSkinColors.AFTER)
     }
 }

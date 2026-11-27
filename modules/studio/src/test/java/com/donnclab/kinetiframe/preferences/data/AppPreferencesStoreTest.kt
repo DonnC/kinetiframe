@@ -1,0 +1,61 @@
+package com.donnclab.kinetiframe.preferences.data
+
+import com.donnclab.kinetiframe.preferences.model.AppPreferences
+import com.donnclab.kinetiframe.preferences.model.AppTheme
+import com.donnclab.kinetiframe.preferences.model.StudioOrientation
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.io.File
+
+class AppPreferencesStoreTest {
+    @TempDir lateinit var root: File
+
+    @Test fun `missing settings use studio friendly defaults`() = runBlocking {
+        val settings = AppPreferencesStore(File(root, "settings.json")).load()
+        assertEquals(AppTheme.SYSTEM, settings.theme)
+        assertEquals(StudioOrientation.DEVICE, settings.orientation)
+        assertFalse(settings.hideSystemBars)
+        assertTrue(settings.showMenuLabels)
+    }
+
+    @Test fun `preferences survive a new store instance`() = runBlocking {
+        val file = File(root, "settings.json")
+        val chosen = AppPreferences(AppTheme.DARK, StudioOrientation.PORTRAIT, true, false, false)
+        AppPreferencesStore(file).save(chosen)
+        assertEquals(chosen, AppPreferencesStore(file).load())
+        assertEquals(listOf("settings.json"), root.listFiles()!!.map { it.name })
+    }
+
+    @Test fun `settings saved before autosave existed load with autosave on`() = runBlocking {
+        val file = File(root, "settings.json")
+        file.writeText("""{"theme":"DARK","orientation":"DEVICE","hideSystemBars":false,"showMenuLabels":true}""")
+        val settings = AppPreferencesStore(file).load()
+        assertEquals(AppTheme.DARK, settings.theme)
+        assertTrue(settings.autosave)
+    }
+
+    @Test fun `settings saved before the pen colour existed open with no remembered colour`() = runBlocking {
+        val file = File(root, "settings.json")
+        file.writeText("""{"theme":"DARK","orientation":"DEVICE","hideSystemBars":false,"autosave":false}""")
+        val settings = AppPreferencesStore(file).load()
+        assertEquals(null, settings.penColor)
+        assertFalse(settings.autosave)
+    }
+
+    @Test fun `the last pen colour survives a new store instance`() = runBlocking {
+        val file = File(root, "settings.json")
+        AppPreferencesStore(file).save(AppPreferences(penColor = 0xFFFF8800.toInt()))
+        assertEquals(0xFFFF8800.toInt(), AppPreferencesStore(file).load().penColor)
+    }
+
+    @Test fun `corrupt settings are not silently overwritten`() = runBlocking {
+        val file = File(root, "settings.json")
+        file.writeText("broken")
+        assertTrue(runCatching { AppPreferencesStore(file).load() }.isFailure)
+        assertEquals("broken", file.readText())
+    }
+}

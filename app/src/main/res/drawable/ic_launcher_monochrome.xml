@@ -1,3 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/brand_monochrome_pixels" android:gravity="fill" android:filter="true" />
+<!-- Generated from tools/brand/BrandExport.java: the bouncing-ball mark. Do not edit by hand. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="512" android:viewportHeight="512">
+    <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd"
+        android:pathData="M183 138.7C168.4 138.7 156.6 150.6 156.6 165.2C156.6 179.8 168.4 191.6 183 191.6C197.6 191.6 209.4 179.8 209.4 165.2C209.4 150.6 197.6 138.7 183 138.7ZM216.2 203C212.8 203 209.7 203.8 206.9 205.5C195.2 212.9 195 233.9 206.6 252.5C215.5 266.7 228.7 275.3 239.6 275.3C243 275.3 246.2 274.5 248.9 272.8C260.7 265.4 260.8 244.4 249.2 225.9C240.3 211.7 227.2 203 216.2 203ZM290 293.3C259.4 293.3 234.5 306.3 234.5 322.4C234.5 338.4 259.4 351.5 290 351.5C320.7 351.5 345.5 338.4 345.5 322.4C345.5 306.3 320.7 293.3 290 293.3ZM233.2 356.1C228.5 356.1 224.6 359.9 224.6 364.7C224.6 369.4 228.5 373.3 233.2 373.3L346.8 373.3C351.6 373.3 355.4 369.4 355.4 364.7C355.4 359.9 351.6 356.1 346.8 356.1Z" />
+</vector>

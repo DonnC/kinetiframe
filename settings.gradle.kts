@@ -23,4 +23,11 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "KinetiFrame"
-include(":app", ":core", ":engine", ":data", ":media", ":actors", ":studio", ":presentation", ":designsystem")
+include(":app")
+
+// Every module except app lives in modules/. Project paths stay short: :core, not :modules:core.
+val modules = listOf("core", "engine", "data", "media", "actors", "studio", "presentation", "designsystem")
+modules.forEach { name ->
+    include(":$name")
+    project(":$name").projectDir = file("modules/$name")
+}
