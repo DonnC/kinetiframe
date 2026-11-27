@@ -17,6 +17,10 @@
   <a href="CONTRIBUTING.md"><img alt="Contributions welcome" src="https://img.shields.io/badge/contributions-welcome-orange.svg"></a>
 </p>
 
+<p align="center">
+  <img src="docs/images/screenshots/showcase.png" alt="KinetiFrame's drawing studio on a tablet beside Actor Studio rigging Tavi on a phone" width="900">
+</p>
+
 ---
 
 Most mobile animation apps make you choose: hand-draw every frame, or move a puppet around.
@@ -25,6 +29,11 @@ movement with your finger, and add a voice-over and a camera move. Then export a
 share the editable project.
 
 It works offline, needs no account and has no ads, in-app purchases or tracking.
+
+<p align="center">
+  <img src="docs/images/screenshots/tavi-presents.gif" alt="Tavi presenting at a news desk, animated in KinetiFrame" width="640"><br>
+  <em>Tavi presents: one of the sample scenes, played straight from the app.</em>
+</p>
 
 ## What you can make
 
@@ -46,6 +55,25 @@ It works offline, needs no account and has no ads, in-app purchases or tracking.
 - MP4 video export, plus `.kframe` project files and `.kpack` stamp packs you can share
 
 New to the terms? The [glossary](docs/glossary.md) explains actors, rigs, performances and the rest.
+
+## Screenshots
+
+**On a tablet** the studio becomes a workspace: tools on the left, a labelled top bar, the frame
+strip along the bottom, and layers that float in only when you want them.
+
+<p align="center">
+  <img src="docs/images/screenshots/tablet-layers.png" alt="Tablet studio with the layers panel open" width="49%">
+  <img src="docs/images/screenshots/tablet-export.png" alt="Export screen with the finished video ready to play, save or share" width="49%">
+</p>
+
+**On a phone** everything folds into a floating tool dock, so the canvas gets the screen.
+
+<p align="center">
+  <img src="docs/images/screenshots/phone-studio.png" alt="Phone studio with the floating tool dock" width="24%">
+  <img src="docs/images/screenshots/phone-actor-studio.png" alt="Actor Studio fitting a skeleton to Tavi" width="24%">
+  <img src="docs/images/screenshots/phone-new-project.png" alt="New Project with a live frame-rate preview" width="24%">
+  <img src="docs/images/screenshots/phone-packs-dark.png" alt="Stamp packs in the Library, in dark mode" width="24%">
+</p>
 
 ## Meet Tavi
 
