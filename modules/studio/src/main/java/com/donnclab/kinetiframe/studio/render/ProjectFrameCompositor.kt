@@ -21,6 +21,12 @@ data class CompositorOptions(
     val outputMaxEdge: Int? = null,
     /** Off only for gallery posters, so they stay legible even when every frame is faded. */
     val includeFades: Boolean = true,
+    /**
+     * White drawing paper under the stage, as the studio shows it. Video has no transparency, so
+     * export turns this on; without it a drawing with no background came out on black (tablet
+     * beginner review). Thumbnails keep their transparency.
+     */
+    val paper: Boolean = false,
 )
 
 /**
@@ -51,6 +57,7 @@ class ProjectFrameCompositor(
 ) {
     private val fontRegistry = options.fontRegistry
     private val includeFades = options.includeFades
+    private val paper = options.paper
     private val outputMaxEdge = options.outputMaxEdge ?: maxOf(project.stage.width, project.stage.height)
     private val scale = minOf(
         1f,
@@ -107,9 +114,9 @@ class ProjectFrameCompositor(
         )
         canvas.concat(cameraMatrix)
         try {
-            // Camera previews use white drawing paper when no background is attached; exposed
-            // offstage pixels remain black. Preserve legacy transparent exports without camera.
-            if (project.cameraShots.isNotEmpty()) {
+            // Camera previews and video export use white drawing paper when no background is
+            // attached; exposed offstage pixels remain black. Thumbnails stay transparent.
+            if (project.cameraShots.isNotEmpty() || paper) {
                 fadePaint.alpha = 255
                 fadePaint.color = Color.WHITE
                 canvas.drawRect(stageRect, fadePaint)

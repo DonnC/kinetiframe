@@ -327,7 +327,7 @@
     <string name="export_output">%1$d × %2$d · MP4</string>
     <string name="export_start">Export video</string>
     <string name="export_stop_watching">Stop watching</string>
-    <string name="export_seconds">%1$s s</string>
+    <string name="length_seconds">%1$s s</string>
     <string name="export_try_again">Try again</string>
     <string name="export_rendering">Rendering your animation…</string>
     <string name="export_progress_percent">%1$d%%</string>

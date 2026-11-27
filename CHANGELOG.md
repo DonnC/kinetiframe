@@ -38,6 +38,9 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 - A finished export plays in its preview, inside the app, instead of opening another app. Tap the
   video to stop it.
 - While playing, the frame strip follows the frame on screen.
+- The export preview loops, so even a short animation can be watched.
+- On a tablet, Home's tabs and the library's filters keep a readable width, and the docked asset
+  tracks no longer repeat the frame strip's play buttons.
 - Export shows what you are about to make: a preview shaped like the video, the project's length,
   frame rate and output size, and video sizes as cards with their shape and dimensions. Progress
   shows over the preview, and a finished video can be watched from the preview, saved to Gallery
@@ -105,7 +108,12 @@ Notable changes for people who use KinetiFrame are recorded here. The format fol
 ### Fixed
 
 - Export's preview showed blank paper for a project whose thumbnail was written after its last
-  save, and a short animation's length read "0:00"; lengths under a minute now show seconds.
+  save, and a short animation's length read "0:00". Lengths under a minute now show seconds, on
+  Export and on project cards.
+- Exported videos had a black background wherever nothing was drawn; they now have the white paper
+  the studio shows.
+- On a tablet, a shape or fill could not be confirmed: its Confirm and Cancel buttons only showed
+  on the phone's tool dock. Switching tools now also drops an unconfirmed shape.
 - Tool menus beside the dock are wider, never taller than the screen (a long one scrolls instead
   of running off the bottom), and the brush picker is a compact outlined button.
 - The camera button shows all the time, below the frame reference button. The two sat on top of

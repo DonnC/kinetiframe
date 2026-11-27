@@ -30,6 +30,8 @@ import com.donnclab.kinetiframe.presentation.studio.actorstudio.ActorReferenceCo
 import com.donnclab.kinetiframe.presentation.studio.camera.CameraWorkspaceControls
 import com.donnclab.kinetiframe.presentation.studio.camera.CameraWorkspacePolicy
 import com.donnclab.kinetiframe.presentation.studio.canvas.CanvasArea
+import com.donnclab.kinetiframe.presentation.studio.dock.ConstructionShapeDock
+import com.donnclab.kinetiframe.presentation.studio.dock.FillDock
 import com.donnclab.kinetiframe.presentation.studio.dock.SelectionDock
 import com.donnclab.kinetiframe.presentation.studio.dock.ToolDock
 import com.donnclab.kinetiframe.presentation.studio.timeline.StudioFocusControls
@@ -145,6 +147,14 @@ internal fun BoxScope.EditorCanvasStack(
             onInteraction = {},
             modifier = Modifier.fillMaxSize(),
         )
+    }
+    // The floating dock carries the Confirm bars for a fill or shape preview; the workspace has no
+    // dock, so it shows them here, or a shape could never be confirmed (tablet expert review).
+    if (workspace && toolbarVisible) {
+        if (state.fill.previewActive) FillDock(state = state, onIntent = commands.onIntent)
+        if (state.constructionShape.previewActive) {
+            ConstructionShapeDock(state = state, onIntent = commands.onIntent)
+        }
     }
     if (toolbarVisible && !isPuppetStudio && state.selection.active && !state.animation.isPlaying) {
         SelectionDock(state = state, onIntent = commands.onIntent, modifier = Modifier.fillMaxSize())

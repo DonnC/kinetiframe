@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
@@ -41,7 +42,9 @@ fun CollectionBrowserControls(
     val allCollections = stringResource(R.string.library_all_collections)
     val allCategories = stringResource(R.string.library_all_categories)
     Column(
-        Modifier.fillMaxWidth().padding(horizontal = Dimens.spaceM, vertical = Dimens.spaceXs),
+        // On a tablet the filters keep a readable width instead of stretching across the screen.
+        Modifier.widthIn(max = Dimens.readableWidth).fillMaxWidth()
+            .padding(horizontal = Dimens.spaceM, vertical = Dimens.spaceXs),
         verticalArrangement = Arrangement.spacedBy(Dimens.spaceXs),
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Dimens.spaceXxs)) {

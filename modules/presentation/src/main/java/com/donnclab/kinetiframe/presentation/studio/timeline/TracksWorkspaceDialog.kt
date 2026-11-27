@@ -53,7 +53,7 @@ fun TracksWorkspaceDialog(
     content: @Composable () -> Unit,
 ) {
     if (docked) {
-        TracksDockedPanel(isPlaying, onIntent, onDismiss, assetPicker, content)
+        TracksDockedPanel(onDismiss, assetPicker, content)
         return
     }
     val portrait = LocalConfiguration.current.orientation != Configuration.ORIENTATION_LANDSCAPE
@@ -87,8 +87,6 @@ fun TracksWorkspaceDialog(
  */
 @Composable
 fun TracksDockedPanel(
-    isPlaying: Boolean,
-    onIntent: (StudioIntent) -> Unit,
     onDismiss: () -> Unit,
     assetPicker: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit,
@@ -107,7 +105,7 @@ fun TracksDockedPanel(
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f).padding(start = Dimens.spaceL),
                 )
-                PlaybackControls(isPlaying, onIntent)
+                // No transport here: the frame strip's sits right below (expert review).
                 assetPicker?.invoke()
                 IconButton(onClick = onDismiss) { Icon(Lucide.X, stringResource(R.string.tracks_close)) }
             }

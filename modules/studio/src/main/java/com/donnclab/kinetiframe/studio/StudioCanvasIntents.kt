@@ -43,7 +43,9 @@ class StudioCanvasIntents(private val store: StudioStore, private val session: S
                     (intent.tool == DrawingTool.LASSO && store.state.scene.studioMode == StudioMode.RIG_SETUP)
                 if (rigTool != (store.state.scene.studioMode != StudioMode.RASTER_DRAWING)) return
                 store.update {
-                    it.copy(tool = it.tool.copy(activeTool = intent.tool, constructionShape = null)).clearFillPreview()
+                    // A pending fill or shape is dropped, not left as a ghost on the next tool.
+                    it.copy(tool = it.tool.copy(activeTool = intent.tool, constructionShape = null))
+                        .clearFillPreview().clearConstructionPreview()
                 }
             }
 

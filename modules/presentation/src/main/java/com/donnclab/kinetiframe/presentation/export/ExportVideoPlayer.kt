@@ -18,8 +18,9 @@ import java.io.File
 internal data class PreviewPlayback(val playing: Boolean, val onPlay: () -> Unit, val onStop: () -> Unit)
 
 /**
- * Plays an exported video once inside the export preview, using the platform's player so no other
- * app opens. Tapping it stops; reaching the end or failing to play returns to the Play button.
+ * Plays an exported video inside the export preview, looping, using the platform's player so no
+ * other app opens. A short loop ends in a blink if played once (tablet beginner review). Tapping
+ * it stops; failing to play returns to the Play button.
  */
 @Composable
 internal fun ExportVideoPlayer(file: File, onStop: () -> Unit, modifier: Modifier = Modifier) {
@@ -28,7 +29,7 @@ internal fun ExportVideoPlayer(file: File, onStop: () -> Unit, modifier: Modifie
     AndroidView(
         factory = { context ->
             VideoView(context).apply {
-                setOnCompletionListener { stop() }
+                setOnPreparedListener { player -> player.isLooping = true }
                 setOnErrorListener { _, _, _ ->
                     stop()
                     true

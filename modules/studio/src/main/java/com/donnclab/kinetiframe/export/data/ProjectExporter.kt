@@ -133,7 +133,7 @@ class ProjectExporter(
                 cacheManager,
                 actorRenderer,
                 backgroundBitmap,
-                CompositorOptions(fontRegistry = fonts),
+                CompositorOptions(fontRegistry = fonts, paper = true),
             )
 
         val outputDirectory = File(context.filesDir, "video-exports").apply { mkdirs() }

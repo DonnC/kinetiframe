@@ -56,6 +56,7 @@ import com.donnclab.kinetiframe.export.model.ExportPreset
 import com.donnclab.kinetiframe.export.model.ExportProjectSummary
 import com.donnclab.kinetiframe.presentation.R
 import com.donnclab.kinetiframe.presentation.common.asString
+import com.donnclab.kinetiframe.presentation.common.projectLength
 import com.donnclab.kinetiframe.presentation.common.windowWidthClass
 
 /** What the export screen's buttons do. */
@@ -250,19 +251,7 @@ private fun ExportDetails(state: ExportState, actions: ExportActions, onWatch: (
 /** Length, frame rate and the video's size, as short facts under the name. */
 @Composable
 private fun ExportFacts(summary: ExportProjectSummary, output: StageDimensions?) {
-    val exact = if (summary.fps > 0) summary.totalFrames.toFloat() / summary.fps else 0f
-    val seconds = exact.toInt()
-    // A short loop showed "0:00" (expert review): under a minute, give seconds to a tenth.
-    val time = if (seconds < SECONDS_PER_MINUTE) {
-        stringResource(R.string.export_seconds, "%.1f".format(exact))
-    } else {
-        "%d:%02d".format(seconds / SECONDS_PER_MINUTE, seconds % SECONDS_PER_MINUTE)
-    }
-    val length = stringResource(
-        R.string.home_card_length,
-        time,
-        pluralStringResource(R.plurals.home_card_frames, summary.totalFrames, summary.totalFrames),
-    )
+    val length = projectLength(summary.totalFrames, summary.fps)
     Row(horizontalArrangement = Arrangement.spacedBy(Dimens.spaceS)) {
         Fact(length)
         Fact(stringResource(R.string.fps_chip, summary.fps))
@@ -345,7 +334,6 @@ private fun ExportPreset.shortLabel(): Int = when (this) {
 
 private const val SCRIM = 0.55f
 private const val PERCENT = 100
-private const val SECONDS_PER_MINUTE = 60
 private const val GLYPH = 0.8f
 private const val CORNER = 0.08f
 private const val LINE = 0.06f

@@ -64,6 +64,23 @@ class SceneCameraCompositorTest {
         }
     }
 
+    @Test fun exportPaperIsWhiteWhileThumbnailsStayTransparent() = runBlocking {
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+        val cache = FrameCacheManager(temporary.newFolder(), scope)
+        val project = ProjectDocument(stage = StageDimensions(100, 100))
+        val video = ProjectFrameCompositor(project, emptyMap(), cache, null, null, CompositorOptions(paper = true))
+        val poster = ProjectFrameCompositor(project, emptyMap(), cache, null, null)
+        try {
+            // Video has no alpha: undrawn pixels must be the studio's white paper, not black.
+            assertEquals(Color.WHITE, video.composite(0).getPixel(50, 50))
+            assertEquals(Color.TRANSPARENT, poster.composite(0).getPixel(50, 50))
+        } finally {
+            video.release()
+            poster.release()
+            scope.cancel()
+        }
+    }
+
     @Test fun impactShakeHasNoRenderedResidueAfterFrame21EvenWhenScrubbingBackward() = runBlocking {
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         val cache = FrameCacheManager(temporary.newFolder(), scope)
