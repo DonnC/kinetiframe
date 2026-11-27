@@ -11,15 +11,17 @@ and file names carry no version numbers. A replaced asset overwrites the file it
 
 | Location | Contents |
 | --- | --- |
-| `actor/starter-actors.zip` | The four-view cutout Tavi and the drawn Tavi: actor documents and artwork, with no project frames or performances |
+| `actor/starter-actors.zip` | The drawn Tavi: his actor document, with no project frames or performances |
 | `actor/presets/views` | Motion presets for each actor view |
-| `packs` | Stamp packs: Tavi's cutouts and the shared expressions, eyes, mouths and studio items |
-| `samples` | The `Tavi presents` project, its natural-hands copy and their studio background |
-| `backgrounds` | Scene backgrounds by category |
+| `packs` | Stamp packs: expressions, eyes, mouths and studio items |
+| `samples` | The `Tavi presents` project (drawings that repeat across frames are stored once, as held drawings) and its studio background |
+| `backgrounds` | Scene backgrounds by category, as lossy WebP |
 | `library` | Demo library items: a stage background and audio clips |
 | `fonts` | Text fonts |
 
-The IDs saved inside these files, such as `ls-tavi-cutouts-v6` and `ls-tavi-all-views-v3`, are
+The cutout Tavi, his four-view actor and his cutout pack were retired in 0.1.1; copies already
+installed stay in people's libraries. The IDs saved inside these files, such as
+`ls-tavi-presentation-natural-hands-v1` and `ls-tavi-drawn-v1`, are
 stored in people's libraries and projects. They keep their names when a file is replaced. A
 changed ID needs a migration (see [file formats](file-formats.md)).
 

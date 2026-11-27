@@ -120,6 +120,6 @@ class CuratedLibraryMigration(private val files: DocumentFileStore) {
     companion object {
         private const val RECEIPT = "demo-receipts/curated-v3.installed"
         private val lock = Any()
-        val castIds = setOf("ls-tavi-all-views-v3", BundledActorSampleInstaller.DRAWN_TAVI_ID)
+        val castIds = setOf(BundledActorSampleInstaller.DRAWN_TAVI_ID)
     }
 }

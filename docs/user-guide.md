@@ -5,8 +5,8 @@ This guide walks through making your first scene. If a word is unfamiliar, check
 
 ## Your first scene
 
-1. **Create a project** from the home screen, or open one of the bundled *Tavi presents* examples
-   to see a finished scene. The *natural hands* version shows smoother arm and hand movement.
+1. **Create a project** from the home screen, or open the bundled *Tavi presents* scene to see a
+   finished animation.
 2. **Draw.** Pick a brush, draw on the canvas, and add frames in the timeline. Use layers to keep
    the background, characters and effects apart. Turn on onion skinning to see neighboring
    frames while you draw.

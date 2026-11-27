@@ -86,11 +86,8 @@ class BundledActorSampleInstaller(
         private val lock = Any()
         private const val CREATED_AT = 1791158400000L
 
-        /** The drawn Tavi ships beside the cutout one, so the app shows both approaches. */
+        /** The drawn Tavi is the bundled actor; the four-view cutout Tavi was retired. */
         const val DRAWN_TAVI_ID = "ls-tavi-drawn-v1"
-        private val entries = listOf(
-            Entry("ls-tavi-all-views-v3", "Tavi · Four angles"),
-            Entry(DRAWN_TAVI_ID, "Tavi · Drawn"),
-        )
+        private val entries = listOf(Entry(DRAWN_TAVI_ID, "Tavi · Drawn"))
     }
 }

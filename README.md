@@ -93,8 +93,9 @@ strip along the bottom, and layers that float in only when you want them.
 
 ## Meet Tavi
 
-KinetiFrame ships with Tavi, a ready-to-animate character drawn from four directions, with hand
-poses and facial expressions, so you can try character animation before drawing your own.
+KinetiFrame ships with Tavi, a hand-drawn character with a skeleton, ready to pose and animate,
+plus packs of his expressions and mouth shapes. The bundled *Tavi presents* scene shows him at
+work, so you can see character animation before drawing your own.
 
 <p align="center">
   <img src="docs/images/tavi-model-sheet.png" alt="Tavi model sheet with expressions and hand poses" width="640">
